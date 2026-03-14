@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma/"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────
+
+enum UserRole {
+  PATIENT
+  CAREGIVER
+  ADMIN
+}
+
+enum CareLinkStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+}
+
+enum ReminderCategory {
+  MEDICATION
+  APPOINTMENT
+  TASK
+  HYDRATION
+  MEAL
+  CALL
+  CUSTOM
+}
+
+enum ReminderEventType {
+  CREATED
+  EDITED
+  FIRED
+  DONE
+  SNOOZED
+  SKIPPED
+  DISMISSED
+  DEACTIVATED
+  REACTIVATED
+}
+
+enum ChecklistRunStatus {
+  STARTED
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+// ─── Models ───────────────────────────────────────────
+
+model User {
+  id                        String   @id @default(uuid())
+  googleId                  String   @unique
+  email                     String   @unique
+  displayName               String
+  role                      UserRole @default(PATIENT)
+  language                  String   @default("en") // "ar" | "en"
+  timezone                  String   @default("UTC")
+  isActive                  Boolean  @default(true)
+  accessibilitySettings     Json     @default("{\"textSize\": \"medium\", \"highContrast\": false, \"audioCuesEnabled\": false}")
+  preferredNotificationMode String   @default("push") // push | local | silent
+  lastSeenAt                DateTime?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  // Relations
+  caregiverLinks     CareLink[]          @relation("CaregiverLinks")
+  patientLinks       CareLink[]          @relation("PatientLinks")
+  invitedCareLinks   CareLink[]          @relation("InvitedByUser")
+  patientReminders   Reminder[]          @relation("PatientReminders")
+  createdReminders   Reminder[]          @relation("CreatedReminders")
+  editedReminders    Reminder[]          @relation("EditedReminders")
+  reminderEvents     ReminderEvent[]     @relation("PatientReminderEvents")
+  actorEvents        ReminderEvent[]     @relation("ActorReminderEvents")
+  checklistTemplates ChecklistTemplate[] @relation("PatientTemplates")
+  createdTemplates   ChecklistTemplate[] @relation("CreatedTemplates")
+  editedTemplates    ChecklistTemplate[] @relation("EditedTemplates")
+  checklistRuns      ChecklistRun[]      @relation("PatientRuns")
+  actorRuns          ChecklistRun[]      @relation("ActorRuns")
+  gameSessions       GameSession[]       @relation("PatientGames")
+  actorGameSessions  GameSession[]       @relation("ActorGames")
+  analyticsEvents    AnalyticsEvent[]    @relation("PatientAnalytics")
+  actorAnalytics     AnalyticsEvent[]    @relation("ActorAnalytics")
+
+  @@index([email])
+  @@index([googleId])
+  @@index([role])
+  @@map("users")
+}
+
+model CareLink {
+  id              String         @id @default(uuid())
+  caregiverUserId String
+  patientUserId   String?
+  inviteCode      String         @unique
+  status          CareLinkStatus @default(PENDING)
+  permissions     Json           @default("{\"canCreateReminders\": true, \"canEditReminders\": true, \"canViewProgress\": true, \"canCreateChecklists\": true, \"canEditChecklists\": true, \"canMarkTasksOnBehalf\": false}")
+  invitedByUserId String
+  acceptedAt      DateTime?
+  revokedAt       DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  caregiver User  @relation("CaregiverLinks", fields: [caregiverUserId], references: [id])
+  patient   User? @relation("PatientLinks", fields: [patientUserId], references: [id])
+  invitedBy User  @relation("InvitedByUser", fields: [invitedByUserId], references: [id])
+
+  @@index([caregiverUserId])
+  @@index([patientUserId])
+  @@index([inviteCode])
+  @@index([status])
+  @@map("care_links")
+}
+
+model Reminder {
+  id                          String           @id @default(uuid())
+  patientUserId               String
+  title                       String
+  category                    ReminderCategory @default(TASK)
+  scheduledTime               String           // HH:mm format
+  repeatRule                  Json?            // { type: "daily" | "weekly" | "custom", interval?: number }
+  startDate                   DateTime
+  endDate                     DateTime?
+  daysOfWeek                  Int[]            @default([]) // 0=Sun..6=Sat
+  description                 String?
+  priority                    Int              @default(1) // 1=low, 2=medium, 3=high
+  linkedChecklistTemplateId   String?
+  snoozeEnabled               Boolean          @default(true)
+  defaultSnoozeMinutes        Int              @default(10)
+  isActive                    Boolean          @default(true)
+  archivedAt                  DateTime?
+  createdByUserId             String
+  lastEditedByUserId          String
+  createdAt                   DateTime         @default(now())
+  updatedAt                   DateTime         @updatedAt
+
+  patient          User              @relation("PatientReminders", fields: [patientUserId], references: [id])
+  createdBy        User              @relation("CreatedReminders", fields: [createdByUserId], references: [id])
+  lastEditedBy     User              @relation("EditedReminders", fields: [lastEditedByUserId], references: [id])
+  linkedChecklist  ChecklistTemplate? @relation(fields: [linkedChecklistTemplateId], references: [id])
+  events           ReminderEvent[]
+
+  @@index([patientUserId])
+  @@index([patientUserId, isActive])
+  @@index([category])
+  @@index([createdByUserId])
+  @@map("reminders")
+}
+
+model ReminderEvent {
+  id                 String            @id @default(uuid())
+  reminderId         String
+  patientUserId      String
+  eventType          ReminderEventType
+  scheduledFor       DateTime?
+  timestamp          DateTime          @default(now())
+  actorUserId        String
+  actorRole          String            // "patient" | "caregiver" | "system"
+  source             String            @default("system_scheduler") // notification | home | reminder_list | caregiver_panel | system_scheduler
+  actionValue        Json?             // e.g. { snoozeDurationMinutes: 10 }
+  optionalReasonCode String?
+  createdAt          DateTime          @default(now())
+
+  reminder Reminder @relation(fields: [reminderId], references: [id])
+  patient  User     @relation("PatientReminderEvents", fields: [patientUserId], references: [id])
+  actor    User     @relation("ActorReminderEvents", fields: [actorUserId], references: [id])
+
+  @@index([reminderId])
+  @@index([patientUserId])
+  @@index([eventType])
+  @@index([timestamp])
+  @@map("reminder_events")
+}
+
+model ChecklistTemplate {
+  id                     String   @id @default(uuid())
+  patientUserId          String
+  title                  String
+  description            String?
+  category               String   @default("routine")
+  steps                  Json     // [{ stepId, label, order, optionalHint }]
+  estimatedDurationMinutes Int?
+  isActive               Boolean  @default(true)
+  archivedAt             DateTime?
+  createdByUserId        String
+  lastEditedByUserId     String
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  patient    User           @relation("PatientTemplates", fields: [patientUserId], references: [id])
+  createdBy  User           @relation("CreatedTemplates", fields: [createdByUserId], references: [id])
+  editedBy   User           @relation("EditedTemplates", fields: [lastEditedByUserId], references: [id])
+  runs       ChecklistRun[]
+  reminders  Reminder[]
+
+  @@index([patientUserId])
+  @@index([isActive])
+  @@map("checklist_templates")
+}
+
+model ChecklistRun {
+  id                    String             @id @default(uuid())
+  checklistTemplateId   String
+  patientUserId         String
+  status                ChecklistRunStatus @default(STARTED)
+  startedAt             DateTime?
+  completedAt           DateTime?
+  abandonedAt           DateTime?
+  completedStepsCount   Int                @default(0)
+  totalStepsCount       Int                @default(0)
+  lastStepIndexReached  Int                @default(0)
+  stepResults           Json               @default("[]") // [{ stepId, completed, timestamp }]
+  durationSeconds       Int?
+  actorUserId           String
+  actorRole             String             // "patient" | "caregiver"
+  startedFrom           String             @default("home") // home | reminder | caregiver_panel
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  template ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
+  patient  User              @relation("PatientRuns", fields: [patientUserId], references: [id])
+  actor    User              @relation("ActorRuns", fields: [actorUserId], references: [id])
+
+  @@index([checklistTemplateId])
+  @@index([patientUserId])
+  @@index([status])
+  @@map("checklist_runs")
+}
+
+model GameSession {
+  id              String   @id @default(uuid())
+  patientUserId   String
+  gameType        String
+  difficultyLevel String   @default("easy")
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  durationSeconds Int?
+  score           Int?
+  completed       Boolean  @default(false)
+  quitEarly       Boolean  @default(false)
+  actorUserId     String
+  actorRole       String   // "patient" | "caregiver"
+  source          String   @default("home")
+  createdAt       DateTime @default(now())
+
+  patient User @relation("PatientGames", fields: [patientUserId], references: [id])
+  actor   User @relation("ActorGames", fields: [actorUserId], references: [id])
+
+  @@index([patientUserId])
+  @@index([gameType])
+  @@index([startedAt])
+  @@map("game_sessions")
+}
+
+model AnalyticsEvent {
+  id            String   @id @default(uuid())
+  eventName     String
+  occurredAt    DateTime @default(now())
+  patientUserId String?
+  actorUserId   String?
+  actorRole     String?
+  sessionId     String?
+  screenName    String?
+  source        String?
+  appVersion    String?
+  platform      String?
+  language      String?
+  payload       Json?
+  createdAt     DateTime @default(now())
+
+  patient User? @relation("PatientAnalytics", fields: [patientUserId], references: [id])
+  actor   User? @relation("ActorAnalytics", fields: [actorUserId], references: [id])
+
+  @@index([eventName])
+  @@index([patientUserId])
+  @@index([occurredAt])
+  @@map("analytics_events")
+}
