@@ -154,7 +154,7 @@ export default function PatientHomeScreen() {
           title="Reminders"
           color={colors.primary[500]}
           bgColor={colors.primary[50]}
-          onPress={() => router.push('/(patient)/reminders')}
+          onPress={() => router.push('/(patient)/my-reminders')}
         />
         <QuickCard
           icon="checkbox-outline"

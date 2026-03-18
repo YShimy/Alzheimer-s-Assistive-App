@@ -39,7 +39,7 @@ export default function PatientLayout() {
         }}
       />
       <Tabs.Screen
-        name="reminders"
+        name="my-reminders"
         options={{
           title: 'Reminders',
           headerTitle: 'My Reminders',

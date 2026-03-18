@@ -49,7 +49,7 @@ export default function CaregiverLayout() {
         }}
       />
       <Tabs.Screen
-        name="reminders"
+        name="manage-reminders"
         options={{
           title: 'Reminders',
           headerTitle: 'Manage Reminders',

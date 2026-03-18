@@ -40,7 +40,12 @@ export function validateQuery<T extends z.ZodType>(schema: T) {
       );
     }
 
-    (req as any).query = result.data;
+    Object.defineProperty(req, 'query', {
+      value: result.data,
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
     next();
   };
 }
@@ -61,7 +66,12 @@ export function validateParams<T extends z.ZodType>(schema: T) {
       );
     }
 
-    (req as any).params = result.data;
+    Object.defineProperty(req, 'params', {
+      value: result.data,
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
     next();
   };
 }
