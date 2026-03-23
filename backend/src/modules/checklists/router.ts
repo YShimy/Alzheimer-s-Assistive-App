@@ -1,26 +1,21 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { checklistsController } from './controller/checklists.controller.js';
 
 export const checklistsRouter = Router();
 
 checklistsRouter.use(authMiddleware);
 
-// GET /api/checklists/templates
-checklistsRouter.get('/templates', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Checklist templates endpoint not yet implemented' } });
-});
+// ─── Templates ────────────────────────────────────────────────────────────
 
-// POST /api/checklists/templates
-checklistsRouter.post('/templates', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Create checklist template not yet implemented' } });
-});
+checklistsRouter.get('/templates', checklistsController.listTemplates);
+checklistsRouter.post('/templates', checklistsController.createTemplate);
+checklistsRouter.patch('/templates/:id', checklistsController.updateTemplate);
+checklistsRouter.patch('/templates/:id/archive', checklistsController.archiveTemplate);
 
-// POST /api/checklists/runs
-checklistsRouter.post('/runs', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Start checklist run not yet implemented' } });
-});
+// ─── Runs ────────────────────────────────────────────────────────────────
 
-// PATCH /api/checklists/runs/:id
-checklistsRouter.patch('/runs/:id', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Update checklist run not yet implemented' } });
-});
+checklistsRouter.get('/runs', checklistsController.getActiveRuns);
+checklistsRouter.post('/runs', checklistsController.startRun);
+checklistsRouter.patch('/runs/:id', checklistsController.updateRun);
+

@@ -59,6 +59,16 @@ export default function CaregiverLayout() {
         }}
       />
       <Tabs.Screen
+        name="manage-checklists"
+        options={{
+          title: 'Checklists',
+          headerTitle: 'Checklist Templates',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="clipboard-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="progress"
         options={{
           title: 'Progress',

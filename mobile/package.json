@@ -8,6 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "dev:android": "npx expo run:android",
+    "dev:ios": "npx expo run:ios",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "expo lint"

@@ -1,53 +1,69 @@
-import { View, Text, StyleSheet, Pressable, SafeAreaView, Alert, Platform } from 'react-native';
-import { useState, useEffect } from 'react';
-import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  Platform,
+} from 'react-native';
+import { useState } from 'react';
+import { ScreenContainer, AppButton, Icon } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 
 /**
- * Login screen — professional, accessible, low cognitive load.
- * Supports Google Sign-In (future) and test token login for development.
+ * Configure Google Sign-In once at module level.
+ * webClientId must be the Web OAuth 2.0 Client ID from Google Cloud Console.
+ */
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '',
+  // iosClientId is required on iOS when NOT using GoogleService-Info.plist auto-config
+  // If EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set, pass it here:
+  ...(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
+    ? { iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }
+    : {}),
+});
+
+/**
+ * Login screen — single sign-in path via real Google OAuth.
+ * Requires a native dev build; will not work in Expo Go.
  */
 export default function LoginScreen() {
   const setSession = useSessionStore((s) => s.setSession);
   const [loading, setLoading] = useState(false);
-  const [testEmail, setTestEmail] = useState('');
-  const [selectedRole, setSelectedRole] = useState<'PATIENT' | 'CAREGIVER'>('PATIENT');
   const [error, setError] = useState('');
 
-  // Configure Google Sign-in lazily just in case env vars change
-  useEffect(() => {
-    try {
-      GoogleSignin.configure({
-        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '',
-        // iOS requires iosClientId to be defined if using iOS, but we fallback
-      });
-    } catch (e) {
-      // Ignore config errors in Expo Go
-    }
-  }, []);
-
   const handleGoogleSignIn = async () => {
+    setError('');
+
+    // Guard: env var must be set
+    if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+      Alert.alert(
+        'Setup Required',
+        'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is not set.\n\nAdd it to mobile/.env and rebuild the dev client.',
+      );
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
-        Alert.alert('Configuration Required', 'Please set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID in your .env file to enable Google Sign-In.');
-        return;
+      if (Platform.OS === 'android') {
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       }
 
-      setLoading(true);
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo.data?.idToken;
 
       if (!idToken) {
-        throw new Error('Google Sign-In succeeded, but no ID token was returned.');
+        setError('Google Sign-In did not return an ID token. Please try again.');
+        return;
       }
 
-      // Send the real token to the backend
-      const result = await authApi.loginWithGoogle(idToken, selectedRole);
-      
+      // Exchange Google ID token for app JWT — backend verifies with Google
+      const result = await authApi.loginWithGoogle(idToken);
+
       setSession({
         token: result.accessToken,
         role: result.user.role.toUpperCase() as 'PATIENT' | 'CAREGIVER',
@@ -55,41 +71,41 @@ export default function LoginScreen() {
         displayName: result.user.displayName,
       });
 
-    } catch (error: any) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-         // User cancelled
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-         // Operation in progress
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-         Alert.alert('Error', 'Google Play Services are not available.');
-      } else if (error?.message?.includes('null is not an object (evaluating \'RNGoogleSignin.hasPlayServices\')') || error?.message?.includes('NativeModule')) {
-         Alert.alert(
-           'Dev Client Required', 
-           'Google Sign-In requires an Expo Development Client with native modules.\n\nRun `npx expo run:android` or use the Dev Login option below for now.'
-         );
+    } catch (err: any) {
+      if (err?.code === statusCodes.SIGN_IN_CANCELLED) {
+        // User cancelled — not an error, reset silently
+        return;
+      } else if (err?.code === statusCodes.IN_PROGRESS) {
+        // A sign-in is already in progress
+        return;
+      } else if (err?.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert(
+          'Google Play Services Required',
+          'Update Google Play Services on your device and try again.',
+        );
+      } else if (
+        err?.message?.includes('RNGoogleSignin') ||
+        err?.message?.includes('NativeModule')
+      ) {
+        Alert.alert(
+          'Native Build Required',
+          'Google Sign-In requires a development build.\n\nRun:\n  npx expo run:android\n  npx expo run:ios',
+        );
+      } else if (err?.status === 401) {
+        setError('Authentication failed. Please try again.');
       } else {
-         setError(error.message || 'Google Sign-In failed');
+        setError(err?.message ?? 'Sign-in failed. Please try again.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDevLogin = async () => {
-    if (!testEmail.trim()) {
-      setError('Enter an email or name for test login');
-      return;
-    }
-
-    setLoading(true);
+  const handleDevLogin = async (role: 'PATIENT' | 'CAREGIVER') => {
     setError('');
-
+    setLoading(true);
     try {
-      // Use the test token format the backend supports: test_<email>_<name>
-      const name = testEmail.split('@')[0] || 'TestUser';
-      const idToken = `test_${testEmail.trim()}_${name}`;
-      const result = await authApi.loginWithGoogle(idToken, selectedRole);
-
+      const result = await authApi.devLogin(role);
       setSession({
         token: result.accessToken,
         role: result.user.role.toUpperCase() as 'PATIENT' | 'CAREGIVER',
@@ -97,7 +113,7 @@ export default function LoginScreen() {
         displayName: result.user.displayName,
       });
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      setError(err?.message ?? 'Dev sign-in failed.');
     } finally {
       setLoading(false);
     }
@@ -117,71 +133,52 @@ export default function LoginScreen() {
 
         {/* Login card */}
         <View style={styles.card}>
-          {/* Google Sign-In */}
+          <Text style={styles.cardTitle}>Welcome</Text>
+          <Text style={styles.cardSubtitle}>Sign in to continue</Text>
+
           <AppButton
-            title="Sign in with Google"
+            title={loading ? 'Signing in…' : 'Continue with Google'}
             onPress={handleGoogleSignIn}
             variant="primary"
-            icon={<Icon name="logo-google" size={20} color="#fff" />}
-          />
-
-          {/* Divider */}
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or test with</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Dev login */}
-          
-          <View style={styles.roleToggle}>
-            <Pressable
-              style={[
-                styles.roleBtn,
-                styles.roleBtnLeft,
-                selectedRole === 'PATIENT' && styles.roleBtnActivePatient
-              ]}
-              onPress={() => setSelectedRole('PATIENT')}
-            >
-              <Text style={[
-                styles.roleText,
-                selectedRole === 'PATIENT' && styles.roleTextActive
-              ]}>Patient</Text>
-            </Pressable>
-            <Pressable
-              style={[
-                styles.roleBtn,
-                styles.roleBtnRight,
-                selectedRole === 'CAREGIVER' && styles.roleBtnActiveCaregiver
-              ]}
-              onPress={() => setSelectedRole('CAREGIVER')}
-            >
-              <Text style={[
-                styles.roleText,
-                selectedRole === 'CAREGIVER' && styles.roleTextActive
-              ]}>Caregiver</Text>
-            </Pressable>
-          </View>
-
-          <AppInput
-            label="Test Email"
-            placeholder="e.g. user@test.com"
-            value={testEmail}
-            onChangeText={setTestEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            error={error || undefined}
-          />
-
-          <AppButton
-            title="Dev Login"
-            onPress={handleDevLogin}
-            variant="outline"
+            disabled={loading}
             loading={loading}
+            icon={!loading ? <Icon name="logo-google" size={20} color="#fff" /> : undefined}
           />
+
+          {!!error && (
+            <View style={styles.errorBox}>
+              <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          {/* Dev Login options (only in development) */}
+          {__DEV__ && (
+            <View style={styles.devContainer}>
+              <Text style={styles.devTitle}>Developer Quick Login</Text>
+              <View style={styles.devButtons}>
+                <AppButton
+                  title="Patient"
+                  onPress={() => handleDevLogin('PATIENT')}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                  size="sm"
+                  disabled={loading}
+                />
+                <AppButton
+                  title="Caregiver"
+                  onPress={() => handleDevLogin('CAREGIVER')}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                  size="sm"
+                  disabled={loading}
+                />
+              </View>
+            </View>
+          )}
         </View>
 
-        {/* Reassurance */}
+        {/* Privacy note */}
         <Text style={styles.note}>
           <Icon name="lock-closed-outline" size={14} color={colors.neutral[400]} />
           {'  '}Your data is private and secure.
@@ -229,20 +226,30 @@ const styles = StyleSheet.create({
     padding: spacing['2xl'],
     ...shadows.lg,
   },
-  divider: {
+  cardTitle: {
+    fontSize: typography.size['2xl'],
+    fontWeight: '700',
+    color: colors.neutral[900],
+    marginBottom: spacing.xs,
+  },
+  cardSubtitle: {
+    fontSize: typography.size.base,
+    color: colors.neutral[500],
+    marginBottom: spacing['2xl'],
+  },
+  errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: spacing.xl,
+    gap: spacing.xs,
+    marginTop: spacing.lg,
+    padding: spacing.md,
+    backgroundColor: colors.error.light,
+    borderRadius: radius.md,
   },
-  dividerLine: {
+  errorText: {
     flex: 1,
-    height: 1,
-    backgroundColor: colors.neutral[200],
-  },
-  dividerText: {
-    marginHorizontal: spacing.md,
     fontSize: typography.size.sm,
-    color: colors.neutral[400],
+    color: colors.error.main,
   },
   note: {
     marginTop: spacing['2xl'],
@@ -250,39 +257,21 @@ const styles = StyleSheet.create({
     color: colors.neutral[400],
     textAlign: 'center',
   },
-  roleToggle: {
-    flexDirection: 'row',
-    marginBottom: spacing.lg,
-    borderRadius: radius.md,
-    backgroundColor: colors.neutral[100],
-    padding: spacing.xs,
+  devContainer: {
+    marginTop: spacing.xl,
+    paddingTop: spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[200],
   },
-  roleBtn: {
-    flex: 1,
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-    borderRadius: radius.sm,
-  },
-  roleBtnLeft: {
-    marginRight: 2,
-  },
-  roleBtnRight: {
-    marginLeft: 2,
-  },
-  roleBtnActivePatient: {
-    backgroundColor: colors.primary[500],
-    ...shadows.sm,
-  },
-  roleBtnActiveCaregiver: {
-    backgroundColor: colors.secondary[500],
-    ...shadows.sm,
-  },
-  roleText: {
+  devTitle: {
     fontSize: typography.size.sm,
     fontWeight: '600',
     color: colors.neutral[500],
+    textAlign: 'center',
+    marginBottom: spacing.md,
   },
-  roleTextActive: {
-    color: colors.surface,
+  devButtons: {
+    flexDirection: 'row',
+    gap: spacing.md,
   },
 });

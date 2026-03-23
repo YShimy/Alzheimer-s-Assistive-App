@@ -44,6 +44,7 @@ export const reminderIdParam = z.object({
 export const listRemindersQuery = z.object({
   active: z.string().optional(),
   category: z.enum(reminderCategories).optional(),
+  pendingOnly: z.string().optional(),
 });
 
 export type CreateReminderInput = z.infer<typeof createReminderSchema>;

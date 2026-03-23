@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ScreenContainer, AppCard, AppInput, AppButton, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
+import { useLogout } from '@/src/features/auth/useLogout';
 import { remindersApi } from '@/src/features/reminders/api';
 import { carelinksApi } from '@/src/features/carelinks/api';
 import type { Reminder } from '@/src/features/reminders/types';
@@ -15,7 +16,7 @@ import type { Reminder } from '@/src/features/reminders/types';
 export default function PatientHomeScreen() {
   const displayName = useSessionStore((s) => s.displayName);
   const userId = useSessionStore((s) => s.userId);
-  const clearSession = useSessionStore((s) => s.clearSession);
+  const logout = useLogout();
   const router = useRouter();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ export default function PatientHomeScreen() {
   }, [userId]);
 
   const handleLogout = () => {
-    clearSession();
+    logout().catch(console.warn);
   };
 
   const handleAcceptInvite = async () => {

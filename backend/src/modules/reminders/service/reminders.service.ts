@@ -4,6 +4,7 @@ import { toApiReminderCategory, toPrismaReminderCategory } from '../../../shared
 import { remindersRepo } from '../repo/reminders.repo.js';
 import type { ReminderResponse } from '../types/reminders.types.js';
 import type { CreateReminderInput, UpdateReminderInput } from '../validation/reminders.schemas.js';
+import { prisma } from '../../../shared/db/prisma.js';
 
 function toReminderResponse(r: any): ReminderResponse {
   return {
@@ -31,12 +32,35 @@ function toReminderResponse(r: any): ReminderResponse {
 }
 
 export const remindersService = {
-  async list(patientId: string, filters?: { active?: string; category?: string }): Promise<ReminderResponse[]> {
+  async list(patientId: string, filters?: { active?: string; category?: string; pendingOnly?: string }): Promise<ReminderResponse[]> {
     const isActive = filters?.active !== undefined ? filters.active === 'true' : undefined;
     const reminders = await remindersRepo.findByPatientId(patientId, {
       isActive,
       category: filters?.category,
     });
+
+    if (filters?.pendingOnly === 'true') {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const todayEvents = await prisma.reminderEvent.findMany({
+        where: {
+          patientUserId: patientId,
+          timestamp: { gte: startOfDay, lte: endOfDay },
+          eventType: { in: ['DONE', 'SKIPPED', 'SNOOZED'] }
+        },
+        select: { reminderId: true }
+      });
+
+      const handledReminderIds = new Set(todayEvents.map((e: any) => e.reminderId));
+
+      const pendingReminders = reminders.filter((r: any) => !handledReminderIds.has(r.id));
+      return pendingReminders.map(toReminderResponse);
+    }
+
     return reminders.map(toReminderResponse);
   },
 

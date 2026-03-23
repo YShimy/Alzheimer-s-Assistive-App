@@ -3,17 +3,32 @@ import { authService } from '../service/auth.service.js';
 
 export const authController = {
   /**
+   * POST /api/auth/dev-login — DEV ONLY
+   * body: { role: 'PATIENT' | 'CAREGIVER' }
+   */
+  async devLogin(req: Request, res: Response): Promise<void> {
+    const role = req.body.role;
+    if (role !== 'PATIENT' && role !== 'CAREGIVER') {
+      res.status(400).json({ message: 'role must be PATIENT or CAREGIVER' });
+      return;
+    }
+    const result = await authService.devLogin(role);
+    res.status(200).json(result);
+  },
+
+  /**
    * POST /api/auth/google/mobile
-   * Exchanges a Google ID token for a JWT.
+   * Verifies a Google ID token and exchanges it for an app JWT.
+   * Role is determined from the DB — never from the request body.
    */
   async googleMobileLogin(req: Request, res: Response): Promise<void> {
-    const result = await authService.loginWithGoogle(req.body.idToken, req.body.role);
+    const result = await authService.loginWithGoogle(req.body.idToken);
     res.status(200).json(result);
   },
 
   /**
    * GET /api/auth/me
-   * Returns the currently authenticated user.
+   * Returns the currently authenticated user's profile.
    */
   async me(req: Request, res: Response): Promise<void> {
     const result = await authService.getMe(req.user!.userId);
@@ -22,11 +37,10 @@ export const authController = {
 
   /**
    * POST /api/auth/logout
-   * Stateless JWT — logout is client-side for MVP.
+   * Stateless JWT — server-side is a no-op.
+   * Client must discard its token and clear SecureStore.
    */
   async logout(_req: Request, res: Response): Promise<void> {
-    // With stateless JWT, logout is handled client-side (discard token).
-    // Future: add token blacklisting or refresh token revocation.
     res.status(200).json({ message: 'Logged out successfully' });
   },
 };

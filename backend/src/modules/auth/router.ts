@@ -6,6 +6,11 @@ import { googleLoginSchema } from './validation/auth.schemas.js';
 
 export const authRouter = Router();
 
+// POST /api/auth/dev-login — DEV ONLY: create / find a seed user and issue JWT
+if (process.env.NODE_ENV !== 'production') {
+  authRouter.post('/dev-login', authController.devLogin);
+}
+
 // POST /api/auth/google/mobile — Exchange Google ID token for JWT
 authRouter.post('/google/mobile', validateBody(googleLoginSchema), authController.googleMobileLogin);
 

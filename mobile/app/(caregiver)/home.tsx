@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ScreenContainer, AppCard, AppButton, Icon, StatusChip } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
+import { useLogout } from '@/src/features/auth/useLogout';
 import { carelinksApi } from '@/src/features/carelinks/api';
 import type { CareLink } from '@/src/features/carelinks/types';
 
@@ -12,7 +13,7 @@ import type { CareLink } from '@/src/features/carelinks/types';
  */
 export default function CaregiverHomeScreen() {
   const displayName = useSessionStore((s) => s.displayName);
-  const clearSession = useSessionStore((s) => s.clearSession);
+  const logout = useLogout();
   const [links, setLinks] = useState<CareLink[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +51,7 @@ export default function CaregiverHomeScreen() {
           <Text style={styles.greeting}>Welcome back,</Text>
           <Text style={styles.name}>{displayName || 'Caregiver'}</Text>
         </View>
-        <Pressable onPress={clearSession} style={styles.logoutBtn} accessibilityLabel="Log out">
+        <Pressable onPress={() => logout().catch(console.warn)} style={styles.logoutBtn} accessibilityLabel="Log out">
           <Icon name="log-out-outline" size={22} color={colors.neutral[500]} />
         </Pressable>
       </View>

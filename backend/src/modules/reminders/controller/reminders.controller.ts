@@ -10,6 +10,7 @@ export const remindersController = {
     const reminders = await remindersService.list(patientId, {
       active: req.query.active as string | undefined,
       category: req.query.category as string | undefined,
+      pendingOnly: req.query.pendingOnly as string | undefined,
     });
     res.status(200).json({ reminders, count: reminders.length });
   },

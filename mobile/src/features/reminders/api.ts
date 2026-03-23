@@ -2,10 +2,11 @@ import { apiClient } from '../../infrastructure/api/client';
 import type { Reminder, CreateReminderInput, UpdateReminderInput, ReminderEvent, ReminderActionInput } from './types';
 
 export const remindersApi = {
-  async list(patientId: string, filters?: { active?: string; category?: string }): Promise<{ reminders: Reminder[]; count: number }> {
+  async list(patientId: string, filters?: { active?: string; category?: string; pendingOnly?: boolean }): Promise<{ reminders: Reminder[]; count: number }> {
     const params = new URLSearchParams();
     if (filters?.active) params.set('active', filters.active);
     if (filters?.category) params.set('category', filters.category);
+    if (filters?.pendingOnly) params.set('pendingOnly', 'true');
     const qs = params.toString();
     return apiClient.get(`/patients/${patientId}/reminders${qs ? `?${qs}` : ''}`);
   },
