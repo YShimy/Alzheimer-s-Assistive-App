@@ -6,7 +6,9 @@ import {
   Platform,
 } from 'react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppButton, Icon } from '@/src/shared/ui';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { useSessionStore } from '@/src/state/sessionStore';
@@ -30,6 +32,7 @@ GoogleSignin.configure({
  * Requires a native dev build; will not work in Expo Go.
  */
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const setSession = useSessionStore((s) => s.setSession);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -121,23 +124,26 @@ export default function LoginScreen() {
 
   return (
     <ScreenContainer scroll={false} backgroundColor={colors.primary[50]}>
+      <View style={{ position: 'absolute', top: 50, right: 10, zIndex: 10 }}>
+        <LanguageToggleButton />
+      </View>
       <View style={styles.content}>
         {/* Logo area */}
         <View style={styles.logoContainer}>
           <View style={styles.logoCircle}>
             <Icon name="heart-outline" size={40} color={colors.primary[500]} />
           </View>
-          <Text style={styles.title}>Cognitive Support</Text>
-          <Text style={styles.subtitle}>Your daily support companion</Text>
+          <Text style={styles.title}>{t('auth.appTitle')}</Text>
+          <Text style={styles.subtitle}>{t('auth.appSubtitle')}</Text>
         </View>
 
         {/* Login card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Welcome</Text>
-          <Text style={styles.cardSubtitle}>Sign in to continue</Text>
+          <Text style={styles.cardTitle}>{t('auth.cardTitle')}</Text>
+          <Text style={styles.cardSubtitle}>{t('auth.cardSubtitle')}</Text>
 
           <AppButton
-            title={loading ? 'Signing in…' : 'Continue with Google'}
+            title={loading ? t('auth.signingIn') : t('auth.continueGoogle')}
             onPress={handleGoogleSignIn}
             variant="primary"
             disabled={loading}
@@ -155,10 +161,10 @@ export default function LoginScreen() {
           {/* Dev Login options (only in development) */}
           {__DEV__ && (
             <View style={styles.devContainer}>
-              <Text style={styles.devTitle}>Developer Quick Login</Text>
+              <Text style={styles.devTitle}>{t('auth.devLoginTitle')}</Text>
               <View style={styles.devButtons}>
                 <AppButton
-                  title="Patient"
+                  title={t('auth.patient')}
                   onPress={() => handleDevLogin('PATIENT')}
                   variant="outline"
                   style={{ flex: 1 }}
@@ -166,7 +172,7 @@ export default function LoginScreen() {
                   disabled={loading}
                 />
                 <AppButton
-                  title="Caregiver"
+                  title={t('auth.caregiver')}
                   onPress={() => handleDevLogin('CAREGIVER')}
                   variant="outline"
                   style={{ flex: 1 }}
@@ -181,7 +187,7 @@ export default function LoginScreen() {
         {/* Privacy note */}
         <Text style={styles.note}>
           <Icon name="lock-closed-outline" size={14} color={colors.neutral[400]} />
-          {'  '}Your data is private and secure.
+          {'  '}{t('auth.privacyNote')}
         </Text>
       </View>
     </ScreenContainer>

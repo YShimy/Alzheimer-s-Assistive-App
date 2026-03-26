@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, AppButton, Icon, StatusChip } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
@@ -12,6 +13,7 @@ import type { CareLink } from '@/src/features/carelinks/types';
  * invite code generation, and quick actions.
  */
 export default function CaregiverHomeScreen() {
+  const { t } = useTranslation();
   const displayName = useSessionStore((s) => s.displayName);
   const logout = useLogout();
   const [links, setLinks] = useState<CareLink[]>([]);
@@ -29,8 +31,8 @@ export default function CaregiverHomeScreen() {
     try {
       const { careLink } = await carelinksApi.createInvite();
       Alert.alert(
-        'Invite Code Generated',
-        `Share this code with your patient:\n\n${careLink.inviteCode}\n\nThey can enter it in their app to connect with you.`,
+        t('caregiverHome.inviteCodeGenerated'),
+        t('caregiverHome.shareCodeMsg', { code: careLink.inviteCode }),
       );
       // Refresh links
       const { careLinks } = await carelinksApi.getMyLinks();
@@ -48,7 +50,7 @@ export default function CaregiverHomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Welcome back,</Text>
+          <Text style={styles.greeting}>{t('caregiverHome.welcomeBack')}</Text>
           <Text style={styles.name}>{displayName || 'Caregiver'}</Text>
         </View>
         <Pressable onPress={() => logout().catch(console.warn)} style={styles.logoutBtn} accessibilityLabel="Log out">
@@ -60,30 +62,30 @@ export default function CaregiverHomeScreen() {
       <View style={styles.statsRow}>
         <View style={[styles.statCard, { backgroundColor: colors.secondary[50] }]}>
           <Text style={[styles.statValue, { color: colors.secondary[600] }]}>{activeLinks.length}</Text>
-          <Text style={styles.statLabel}>Linked Patients</Text>
+          <Text style={styles.statLabel}>{t('caregiverHome.statsLinked')}</Text>
         </View>
         <View style={[styles.statCard, { backgroundColor: colors.warning.light }]}>
           <Text style={[styles.statValue, { color: colors.warning.dark }]}>{pendingLinks.length}</Text>
-          <Text style={styles.statLabel}>Pending Invites</Text>
+          <Text style={styles.statLabel}>{t('caregiverHome.statsPending')}</Text>
         </View>
       </View>
 
       {/* Invite button */}
       <AppButton
-        title="Generate Invite Code"
+        title={t('caregiverHome.generateInvite')}
         onPress={handleInvite}
         variant="secondary"
         icon={<Icon name="link-outline" size={20} color="#fff" />}
       />
 
       {/* Active patients */}
-      <Text style={styles.sectionTitle}>Linked Patients</Text>
+      <Text style={styles.sectionTitle}>{t('caregiverHome.statsLinked')}</Text>
       {activeLinks.length === 0 ? (
         <AppCard>
           <View style={styles.emptyRow}>
             <Icon name="people-outline" size={24} color={colors.neutral[300]} />
             <Text style={styles.emptyText}>
-              No linked patients yet. Generate an invite code and share it with your patient.
+              {t('caregiverHome.noLinkedPatients')}
             </Text>
           </View>
         </AppCard>
@@ -95,7 +97,7 @@ export default function CaregiverHomeScreen() {
             icon={<Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />}
             title={link.patient?.displayName || 'Patient'}
             subtitle={link.patient?.email || ''}
-            rightElement={<StatusChip label="Active" variant="success" />}
+            rightElement={<StatusChip label={t('caregiverHome.active')} variant="success" />}
           >
             <View />
           </AppCard>
@@ -105,15 +107,15 @@ export default function CaregiverHomeScreen() {
       {/* Pending */}
       {pendingLinks.length > 0 && (
         <>
-          <Text style={styles.sectionTitle}>Pending Invites</Text>
+          <Text style={styles.sectionTitle}>{t('caregiverHome.statsPending')}</Text>
           {pendingLinks.map((link) => (
             <AppCard
               key={link.id}
               style={styles.linkCard}
               icon={<Icon name="hourglass-outline" size={24} color={colors.warning.main} />}
               title={`Code: ${link.inviteCode}`}
-              subtitle="Waiting for patient to accept"
-              rightElement={<StatusChip label="Pending" variant="warning" />}
+              subtitle={t('caregiverHome.waitingForPatient')}
+              rightElement={<StatusChip label={t('caregiverHome.pending')} variant="warning" />}
             >
               <View />
             </AppCard>

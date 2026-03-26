@@ -9,6 +9,7 @@ import {
   Pressable,
   Switch,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback } from 'react';
 import {
   ScreenContainer,
@@ -80,6 +81,7 @@ function formFromReminder(r: Reminder): ReminderForm {
  * reminders for linked patients.
  */
 export default function CaregiverRemindersScreen() {
+  const { t } = useTranslation();
   const [links, setLinks] = useState<CareLink[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -231,8 +233,8 @@ export default function CaregiverRemindersScreen() {
       <ScreenContainer>
         <EmptyState
           icon="people-outline"
-          title="No linked patients"
-          message="Link with a patient first to manage their reminders. Go to your home screen and generate an invite code."
+          title={t('caregiverReminders.noLinkedPatients')}
+          message={t('caregiverReminders.linkFirstMsg')}
         />
       </ScreenContainer>
     );
@@ -255,7 +257,7 @@ export default function CaregiverRemindersScreen() {
             <View style={styles.patientCard}>
               <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.patientLabel}>Managing reminders for</Text>
+                <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
                 <Text style={styles.patientName}>
                   {selectedLink?.patient?.displayName ?? 'Patient'}
                 </Text>
@@ -267,7 +269,7 @@ export default function CaregiverRemindersScreen() {
 
             {/* Create button */}
             <AppButton
-              title="Add Reminder"
+              title={t('caregiverReminders.addReminder')}
               onPress={openCreate}
               variant="secondary"
               icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
@@ -276,7 +278,7 @@ export default function CaregiverRemindersScreen() {
 
             {/* Active section header */}
             <SectionHeader
-              title="Active Reminders"
+              title={t('caregiverReminders.activeReminders')}
               count={activeReminders.length}
               loading={remindersLoading}
             />
@@ -287,7 +289,7 @@ export default function CaregiverRemindersScreen() {
             <AppCard style={{ marginHorizontal: 0 }}>
               <View style={styles.emptyRow}>
                 <Icon name="alarm-outline" size={24} color={colors.neutral[300]} />
-                <Text style={styles.emptyText}>No active reminders for this patient.</Text>
+                <Text style={styles.emptyText}>{t('caregiverReminders.noActiveReminders')}</Text>
               </View>
             </AppCard>
           ) : null
@@ -302,7 +304,7 @@ export default function CaregiverRemindersScreen() {
         ListFooterComponent={
           archivedReminders.length > 0 ? (
             <View style={{ marginTop: spacing['2xl'] }}>
-              <SectionHeader title="Archived" count={archivedReminders.length} />
+              <SectionHeader title={t('caregiverReminders.archived')} count={archivedReminders.length} />
               {archivedReminders.map((r) => (
                 <CaregiverReminderCard
                   key={r.id}
@@ -321,7 +323,7 @@ export default function CaregiverRemindersScreen() {
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{formMode === 'create' ? 'New Reminder' : 'Edit Reminder'}</Text>
+            <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverReminders.newReminder') : t('caregiverReminders.editReminder')}</Text>
             <Pressable onPress={() => setModalVisible(false)} style={styles.modalClose}>
               <Icon name="close" size={22} color={colors.neutral[600]} />
             </Pressable>
@@ -329,16 +331,16 @@ export default function CaregiverRemindersScreen() {
           <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             {/* Title */}
             <AppInput
-              label="Title *"
+              label={t('caregiverReminders.titleLabel')}
               value={form.title}
               onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
-              placeholder="e.g. Take morning medication"
+              placeholder={t('caregiverReminders.titlePlaceholder')}
               error={formErrors.title}
             />
 
             {/* Category picker */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Category</Text>
+              <Text style={styles.fieldLabel}>{t('caregiverReminders.categoryLabel')}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
                 {CATEGORIES.map((cat) => (
                   <Pressable
@@ -359,7 +361,7 @@ export default function CaregiverRemindersScreen() {
             <View style={styles.rowFields}>
               <View style={{ flex: 1 }}>
                 <AppInput
-                  label="Time (HH:mm) *"
+                  label={t('caregiverReminders.timeLabel')}
                   value={form.scheduledTime}
                   onChangeText={(v) => setForm((f) => ({ ...f, scheduledTime: v }))}
                   placeholder="08:00"
@@ -369,7 +371,7 @@ export default function CaregiverRemindersScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <AppInput
-                  label="Start Date *"
+                  label={t('caregiverReminders.startDateLabel')}
                   value={form.startDate}
                   onChangeText={(v) => setForm((f) => ({ ...f, startDate: v }))}
                   placeholder="YYYY-MM-DD"
@@ -381,7 +383,7 @@ export default function CaregiverRemindersScreen() {
 
             {/* End date */}
             <AppInput
-              label="End Date (optional)"
+              label={t('caregiverReminders.endDateLabel')}
               value={form.endDate}
               onChangeText={(v) => setForm((f) => ({ ...f, endDate: v }))}
               placeholder="YYYY-MM-DD"
@@ -391,7 +393,7 @@ export default function CaregiverRemindersScreen() {
 
             {/* Days of week */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Repeat on days</Text>
+              <Text style={styles.fieldLabel}>{t('caregiverReminders.repeatLabel')}</Text>
               <View style={styles.dayRow}>
                 {DAY_LABELS.map((day, idx) => (
                   <Pressable
@@ -410,10 +412,10 @@ export default function CaregiverRemindersScreen() {
 
             {/* Description */}
             <AppInput
-              label="Notes (optional)"
+              label={t('caregiverReminders.notesLabel')}
               value={form.description}
               onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
-              placeholder="Any notes for the patient"
+              placeholder={t('caregiverReminders.notesPlaceholder')}
               multiline
               style={{ height: 80, paddingTop: spacing.md }}
             />
@@ -421,8 +423,8 @@ export default function CaregiverRemindersScreen() {
             {/* Snooze */}
             <View style={styles.switchRow}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.switchLabel}>Allow snooze</Text>
-                <Text style={styles.switchSub}>Patient can delay this reminder</Text>
+                <Text style={styles.switchLabel}>{t('caregiverReminders.allowSnooze')}</Text>
+                <Text style={styles.switchSub}>{t('caregiverReminders.snoozeSub')}</Text>
               </View>
               <Switch
                 value={form.snoozeEnabled}
@@ -433,7 +435,7 @@ export default function CaregiverRemindersScreen() {
             </View>
             {form.snoozeEnabled && (
               <AppInput
-                label="Snooze duration (minutes)"
+                label={t('caregiverReminders.snoozeDurationLabel')}
                 value={form.defaultSnoozeMinutes}
                 onChangeText={(v) => setForm((f) => ({ ...f, defaultSnoozeMinutes: v }))}
                 placeholder="10"
@@ -445,14 +447,14 @@ export default function CaregiverRemindersScreen() {
             {/* Submit */}
             <View style={{ gap: spacing.md, paddingBottom: spacing['4xl'] }}>
               <AppButton
-                title={submitting ? 'Saving…' : formMode === 'create' ? 'Create Reminder' : 'Save Changes'}
+                title={submitting ? t('common.loading') : formMode === 'create' ? t('caregiverReminders.createBtn') : t('caregiverReminders.saveChangesBtn')}
                 onPress={handleSubmit}
                 loading={submitting}
                 variant="secondary"
               />
               {formMode === 'edit' && editingReminder?.isActive && (
                 <AppButton
-                  title="Archive Reminder"
+                  title={t('caregiverReminders.archiveBtn')}
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => handleArchive(editingReminder!), 300);
@@ -492,13 +494,14 @@ function CaregiverReminderCard({
   onEdit: () => void;
   onArchive: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <AppCard style={styles.reminderCard}>
       <View style={styles.cardHeader}>
         <Icon name={getCategoryIcon(reminder.category) as any} size={22} color={colors.secondary[500]} />
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{reminder.title}</Text>
-          <Text style={styles.cardTime}>{reminder.scheduledTime} · {reminder.category}</Text>
+          <Text style={styles.cardTime}>{reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}</Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
             <Text style={styles.cardDays}>
               {reminder.daysOfWeek.map((d) => DAY_LABELS[d]).join(' · ')}
@@ -506,7 +509,7 @@ function CaregiverReminderCard({
           )}
         </View>
         <StatusChip
-          label={reminder.isActive ? 'Active' : 'Archived'}
+          label={reminder.isActive ? t('caregiverHome.active') : t('caregiverReminders.archived')}
           variant={reminder.isActive ? 'success' : 'default'}
         />
       </View>
@@ -515,8 +518,8 @@ function CaregiverReminderCard({
       ) : null}
       {reminder.isActive && (
         <View style={styles.cardActions}>
-          <AppButton title="Edit" onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
-          <AppButton title="Archive" onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
+          <AppButton title={t("caregiverPatients.editReminders").split(" ")[0]} onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
+          <AppButton title={t("caregiverReminders.archived")} onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
         </View>
       )}
     </AppCard>

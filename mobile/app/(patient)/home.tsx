@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, AppInput, AppButton, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
@@ -14,6 +15,7 @@ import type { Reminder } from '@/src/features/reminders/types';
  * Shows greeting, date, upcoming reminders, and quick-access cards.
  */
 export default function PatientHomeScreen() {
+  const { t, i18n } = useTranslation();
   const displayName = useSessionStore((s) => s.displayName);
   const userId = useSessionStore((s) => s.userId);
   const logout = useLogout();
@@ -25,8 +27,8 @@ export default function PatientHomeScreen() {
   const [accepting, setAccepting] = useState(false);
 
   const now = new Date();
-  const greeting = getGreeting(now);
-  const dateString = now.toLocaleDateString('en-US', {
+  const greeting = getGreeting(now, t);
+  const dateString = now.toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -84,14 +86,14 @@ export default function PatientHomeScreen() {
       </View>
 
       {/* Upcoming reminders */}
-      <Text style={styles.sectionTitle}>Upcoming Reminders</Text>
+      <Text style={styles.sectionTitle}>{t('patientHome.upcomingReminders')}</Text>
       {loading ? (
-        <LoadingState message="Loading reminders..." />
+        <LoadingState message={t('patientHome.loadingReminders')} />
       ) : reminders.length === 0 ? (
         <AppCard>
           <View style={styles.emptyRow}>
             <Icon name="checkmark-circle-outline" size={24} color={colors.success.main} />
-            <Text style={styles.emptyText}>No upcoming reminders. You're all caught up!</Text>
+            <Text style={styles.emptyText}>{t('patientHome.noReminders')}</Text>
           </View>
         </AppCard>
       ) : (
@@ -101,7 +103,7 @@ export default function PatientHomeScreen() {
             style={styles.reminderCard}
             icon={<Icon name={getCategoryIcon(r.category)} size={22} color={colors.primary[500]} />}
             title={r.title}
-            subtitle={`${r.scheduledTime} · ${r.category}`}
+            subtitle={`${r.scheduledTime} · ${t('categories.' + r.category) || r.category}`}
             onPress={() => {}}
           >
             <View />
@@ -110,26 +112,26 @@ export default function PatientHomeScreen() {
       )}
 
       {/* Connect Caregiver */}
-      <Text style={styles.sectionTitle}>Connect</Text>
+      <Text style={styles.sectionTitle}>{t('patientHome.connectTitle')}</Text>
       {showInviteInput ? (
         <AppCard style={styles.inviteCard}>
-          <Text style={styles.inviteTitle}>Link with Caregiver</Text>
-          <Text style={styles.inviteText}>Enter the code your caregiver gave you.</Text>
+          <Text style={styles.inviteTitle}>{t('patientHome.linkCaregiver')}</Text>
+          <Text style={styles.inviteText}>{t('patientHome.enterCodeGuide')}</Text>
           <AppInput
-            placeholder="e.g. A1B2C3"
+            placeholder={t('patientHome.codePlaceholder')}
             value={inviteCode}
             onChangeText={(text) => setInviteCode(text.toUpperCase())}
             autoCapitalize="characters"
           />
           <View style={styles.inviteActions}>
             <AppButton
-              title="Cancel"
+              title={t('patientHome.cancel')}
               onPress={() => setShowInviteInput(false)}
               variant="ghost"
               style={{ flex: 1 }}
             />
             <AppButton
-              title="Connect"
+              title={t('patientHome.connectBtn')}
               onPress={handleAcceptInvite}
               loading={accepting}
               style={{ flex: 1 }}
@@ -139,8 +141,8 @@ export default function PatientHomeScreen() {
       ) : (
         <AppCard
           icon={<Icon name="people-outline" size={24} color={colors.secondary[500]} />}
-          title="Connect with Caregiver"
-          subtitle="Enter a code to share your progress and reminders"
+          title={t('patientHome.connectCardTitle')}
+          subtitle={t('patientHome.connectCardSubtitle')}
           onPress={() => setShowInviteInput(true)}
         >
           <View />
@@ -148,32 +150,32 @@ export default function PatientHomeScreen() {
       )}
 
       {/* Quick actions */}
-      <Text style={styles.sectionTitle}>Quick Actions</Text>
+      <Text style={styles.sectionTitle}>{t('patientHome.quickActions')}</Text>
       <View style={styles.grid}>
         <QuickCard
           icon="alarm-outline"
-          title="Reminders"
+          title={t('patientHome.reminders')}
           color={colors.primary[500]}
           bgColor={colors.primary[50]}
           onPress={() => router.push('/(patient)/my-reminders')}
         />
         <QuickCard
           icon="checkbox-outline"
-          title="Checklists"
+          title={t('patientHome.checklists')}
           color={colors.secondary[500]}
           bgColor={colors.secondary[50]}
           onPress={() => router.push('/(patient)/checklist')}
         />
         <QuickCard
           icon="bar-chart-outline"
-          title="Progress"
+          title={t('patientHome.progress')}
           color={colors.info.main}
           bgColor={colors.info.light}
           onPress={() => router.push('/(patient)/progress')}
         />
         <QuickCard
           icon="help-circle-outline"
-          title="Help"
+          title={t('patientHome.help')}
           color={colors.warning.main}
           bgColor={colors.warning.light}
           onPress={() => {}}
@@ -206,11 +208,11 @@ function getCategoryIcon(category: string) {
   return map[category] || 'ellipse-outline';
 }
 
-function getGreeting(date: Date): string {
+function getGreeting(date: Date, t: any): string {
   const hour = date.getHours();
-  if (hour < 12) return 'Good morning,';
-  if (hour < 17) return 'Good afternoon,';
-  return 'Good evening,';
+  if (hour < 12) return t('patientHome.goodMorning');
+  if (hour < 17) return t('patientHome.goodAfternoon');
+  return t('patientHome.goodEvening');
 }
 
 const styles = StyleSheet.create({

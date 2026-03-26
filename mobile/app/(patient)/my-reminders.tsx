@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ScreenContainer,
   AppCard,
@@ -30,6 +31,7 @@ import type { Reminder } from '@/src/features/reminders/types';
  * Supports pull-to-refresh, per-action loading states, and error feedback.
  */
 export default function PatientRemindersScreen() {
+  const { t } = useTranslation();
   const userId = useSessionStore((s) => s.userId);
   const { reminders, loading, error, refreshing, refresh, reload } = useReminders(userId, { active: 'true', pendingOnly: true });
   const { actionLoading, actionError, submit } = useReminderAction(reload);
@@ -45,7 +47,7 @@ export default function PatientRemindersScreen() {
   if (loading) {
     return (
       <ScreenContainer scroll={false}>
-        <LoadingState message="Loading your reminders…" />
+        <LoadingState message={t('patientReminders.loading')} />
       </ScreenContainer>
     );
   }
@@ -69,8 +71,8 @@ export default function PatientRemindersScreen() {
         ListEmptyComponent={
           <EmptyState
             icon="alarm-outline"
-            title="No reminders yet"
-            message="Your reminders will appear here. Ask your caregiver to add some for you."
+            title={t('patientReminders.noReminders')}
+            message={t('patientReminders.noRemindersMsg')}
           />
         }
         renderItem={({ item }) => (
@@ -107,6 +109,7 @@ interface ReminderCardProps {
 }
 
 function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCardProps) {
+  const { t } = useTranslation();
   return (
     <View style={[styles.cardWrapper, styles.card]}>
       {/* Clickable Header & Body */}
@@ -144,21 +147,21 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
       ) : (
         <View style={styles.actionRow}>
           <ActionButton
-            label="Done"
+            label={t('patientReminders.done')}
             icon="checkmark-circle"
             color={colors.success.main}
             bg={colors.success.light}
             onPress={() => onAction(reminder.id, 'done')}
           />
           <ActionButton
-            label="Snooze"
+            label={t('patientReminders.snooze')}
             icon="time-outline"
             color={colors.warning.main}
             bg={colors.warning.light}
             onPress={() => onAction(reminder.id, 'snooze')}
           />
           <ActionButton
-            label="Skip"
+            label={t('patientReminders.skip')}
             icon="close-circle-outline"
             color={colors.neutral[500]}
             bg={colors.neutral[100]}
@@ -201,16 +204,20 @@ function ActionButton({
 // ─── Detail Modal ───────────────────────────────────────────────────────────
 
 function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null; onClose: () => void }) {
+  const { t } = useTranslation();
   if (!reminder) return null;
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const days = [
+    t('days.sun'), t('days.mon'), t('days.tue'), t('days.wed'),
+    t('days.thu'), t('days.fri'), t('days.sat')
+  ];
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={styles.modal}>
         <View style={styles.modalHandle} />
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Reminder Details</Text>
+          <Text style={styles.modalTitle}>{t('patientReminders.details')}</Text>
           <Pressable onPress={onClose} style={styles.modalClose} accessibilityLabel="Close">
             <Icon name="close" size={24} color={colors.neutral[600]} />
           </Pressable>
@@ -229,14 +236,14 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
 
           {/* Schedule */}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionLabel}>Schedule</Text>
-            <DetailRow icon="time-outline" label="Time" value={reminder.scheduledTime} />
-            <DetailRow icon="calendar-outline" label="Start Date" value={reminder.startDate} />
-            {reminder.endDate && <DetailRow icon="calendar-clear-outline" label="End Date" value={reminder.endDate} />}
+            <Text style={styles.detailSectionLabel}>{t('patientReminders.schedule')}</Text>
+            <DetailRow icon="time-outline" label={t('patientReminders.time')} value={reminder.scheduledTime} />
+            <DetailRow icon="calendar-outline" label={t('patientReminders.startDate')} value={reminder.startDate} />
+            {reminder.endDate && <DetailRow icon="calendar-clear-outline" label={t('patientReminders.endDate')} value={reminder.endDate} />}
             {reminder.daysOfWeek && reminder.daysOfWeek.length > 0 && (
               <DetailRow
                 icon="repeat-outline"
-                label="Repeats"
+                label={t('patientReminders.repeats')}
                 value={reminder.daysOfWeek.map((d) => days[d]).join(', ')}
               />
             )}
@@ -245,7 +252,7 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
           {/* Description */}
           {reminder.description && (
             <View style={styles.detailSection}>
-              <Text style={styles.detailSectionLabel}>Notes</Text>
+              <Text style={styles.detailSectionLabel}>{t('patientReminders.notes')}</Text>
               <Text style={styles.detailDescription}>{reminder.description}</Text>
             </View>
           )}
@@ -253,11 +260,11 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
           {/* Snooze */}
           {reminder.snoozeEnabled && (
             <View style={styles.detailSection}>
-              <Text style={styles.detailSectionLabel}>Snooze</Text>
+              <Text style={styles.detailSectionLabel}>{t('patientReminders.snoozeLabel')}</Text>
               <DetailRow
                 icon="notifications-outline"
-                label="Snooze duration"
-                value={`${reminder.defaultSnoozeMinutes} minutes`}
+                label={t('patientReminders.snoozeDuration')}
+                value={`${reminder.defaultSnoozeMinutes}`}
               />
             </View>
           )}
@@ -293,7 +300,7 @@ function getCategoryIcon(category: string): any {
 }
 
 function formatCategory(category: string): string {
-  return category.charAt(0).toUpperCase() + category.slice(1);
+  return category;
 }
 
 // ─── Styles ────────────────────────────────────────────────────────────────

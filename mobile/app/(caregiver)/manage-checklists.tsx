@@ -9,6 +9,7 @@ import {
   Pressable,
   TextInput,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import {
@@ -74,6 +75,7 @@ type FormMode = 'create' | 'edit';
  * Screen clearly notifies user of this and stays functional once backend is ready.
  */
 export default function CaregiverChecklistScreen() {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [backendReady, setBackendReady] = useState(true);
@@ -244,13 +246,13 @@ export default function CaregiverChecklistScreen() {
         <ScreenContainer>
           <View style={styles.backendNotice}>
             <Icon name="construct-outline" size={24} color={colors.warning.main} />
-            <Text style={styles.backendNoticeTitle}>Backend Not Yet Implemented</Text>
+            <Text style={styles.backendNoticeTitle}>{t('caregiverChecklists.backendNoticeTitle')}</Text>
             <Text style={styles.backendNoticeText}>
-              The checklist API returns HTTP 501. You can still build and validate templates here — they will submit to the real endpoint once it is ready.
+              {t('caregiverChecklists.backendNoticeText')}
             </Text>
           </View>
           <AppButton
-            title="Create Template Anyway"
+            title={t('caregiverChecklists.createAnywayBtn')}
             onPress={openCreate}
             variant="secondary"
             icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
@@ -264,7 +266,7 @@ export default function CaregiverChecklistScreen() {
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <AppButton
-              title="New Template"
+              title={t('caregiverChecklists.newTemplate')}
               onPress={openCreate}
               variant="secondary"
               icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
@@ -274,10 +276,10 @@ export default function CaregiverChecklistScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="clipboard-outline"
-              title="No templates yet"
-              message="Create step-by-step routine templates that patients can follow."
+              title={t('caregiverChecklists.noTemplates')}
+              message={t('caregiverChecklists.noTemplatesMsg')}
               action={
-                <AppButton title="Create First Template" onPress={openCreate} variant="secondary" fullWidth={false} />
+                <AppButton title={t('caregiverChecklists.createFirstBtn')} onPress={openCreate} variant="secondary" fullWidth={false} />
               }
             />
           }
@@ -292,7 +294,7 @@ export default function CaregiverChecklistScreen() {
             archivedTemplates.length > 0 ? (
               <View style={{ marginTop: spacing['2xl'] }}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Archived</Text>
+                  <Text style={styles.sectionTitle}>{t('caregiverChecklists.archived')}</Text>
                   <StatusChip label={String(archivedTemplates.length)} variant="default" />
                 </View>
                 {archivedTemplates.map((t) => (
@@ -314,7 +316,7 @@ export default function CaregiverChecklistScreen() {
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{formMode === 'create' ? 'New Template' : 'Edit Template'}</Text>
+            <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverChecklists.newTemplate') : t('caregiverChecklists.editTemplate')}</Text>
             <Pressable onPress={() => setModalVisible(false)} style={styles.modalClose} accessibilityLabel="Close">
               <Icon name="close" size={22} color={colors.neutral[600]} />
             </Pressable>
@@ -326,26 +328,26 @@ export default function CaregiverChecklistScreen() {
           >
             {/* Title */}
             <AppInput
-              label="Title *"
+              label={t('caregiverChecklists.titleLabel')}
               value={form.title}
               onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
-              placeholder="e.g. Morning Routine"
+              placeholder={t('caregiverChecklists.titlePlaceholder')}
               error={formErrors.title}
             />
 
             {/* Description */}
             <AppInput
-              label="Description (optional)"
+              label={t('caregiverChecklists.descLabel')}
               value={form.description}
               onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
-              placeholder="What is this routine for?"
+              placeholder={t('caregiverChecklists.descPlaceholder')}
               multiline
               style={{ height: 70, paddingTop: spacing.md }}
             />
 
             {/* Category picker */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>Category</Text>
+              <Text style={styles.fieldLabel}>{t('caregiverChecklists.categoryLabel')}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {CATEGORIES.map((cat) => (
                   <Pressable
@@ -368,7 +370,7 @@ export default function CaregiverChecklistScreen() {
 
             {/* Duration */}
             <AppInput
-              label="Estimated duration (minutes, optional)"
+              label={t('caregiverChecklists.durationLabel')}
               value={form.estimatedMinutes}
               onChangeText={(v) => setForm((f) => ({ ...f, estimatedMinutes: v }))}
               placeholder="e.g. 15"
@@ -379,17 +381,17 @@ export default function CaregiverChecklistScreen() {
             {/* Steps editor */}
             <View style={styles.stepsSection}>
               <View style={styles.stepsSectionHeader}>
-                <Text style={styles.fieldLabel}>Steps ({form.steps.length})</Text>
+                <Text style={styles.fieldLabel}>{t('caregiverChecklists.stepsCount', { count: form.steps.length })}</Text>
                 <Pressable style={styles.addStepBtn} onPress={addStep} accessibilityLabel="Add step">
                   <Icon name="add-circle" size={20} color={colors.secondary[500]} />
-                  <Text style={styles.addStepText}>Add step</Text>
+                  <Text style={styles.addStepText}>{t('caregiverChecklists.addStep')}</Text>
                 </Pressable>
               </View>
 
               {form.steps.length === 0 && (
                 <View style={styles.noSteps}>
                   <Icon name="list-outline" size={24} color={colors.neutral[300]} />
-                  <Text style={styles.noStepsText}>No steps yet. Tap "Add step" to begin.</Text>
+                  <Text style={styles.noStepsText}>{t('caregiverChecklists.noStepsMsg')}</Text>
                 </View>
               )}
 
@@ -417,7 +419,7 @@ export default function CaregiverChecklistScreen() {
                     style={[styles.stepInput, !!formErrors[`step_${idx}`] && styles.stepInputError]}
                     value={step.title}
                     onChangeText={(v) => updateStep(step.id, 'title', v)}
-                    placeholder={`Step ${idx + 1} title (required)`}
+                    placeholder={t('caregiverChecklists.stepTitlePlaceholder', { num: idx + 1 })}
                     placeholderTextColor={colors.neutral[400]}
                   />
                   {formErrors[`step_${idx}`] && (
@@ -427,7 +429,7 @@ export default function CaregiverChecklistScreen() {
                     style={styles.stepDescInput}
                     value={step.description}
                     onChangeText={(v) => updateStep(step.id, 'description', v)}
-                    placeholder="Notes or description (optional)"
+                    placeholder={t('caregiverChecklists.stepDescPlaceholder')}
                     placeholderTextColor={colors.neutral[400]}
                   />
                 </View>
@@ -437,14 +439,14 @@ export default function CaregiverChecklistScreen() {
             {/* Submit */}
             <View style={{ gap: spacing.md, paddingBottom: spacing['4xl'] }}>
               <AppButton
-                title={formMode === 'create' ? 'Create Template' : 'Save Changes'}
+                title={formMode === 'create' ? t('caregiverChecklists.createTplBtn') : t('caregiverChecklists.saveChangesBtn')}
                 onPress={handleSubmit}
                 loading={submitting}
                 variant="secondary"
               />
               {formMode === 'edit' && editingTemplate?.isActive && (
                 <AppButton
-                  title="Archive Template"
+                  title={t('caregiverChecklists.archiveTplBtn')}
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => handleArchive(editingTemplate!), 300);
@@ -471,6 +473,7 @@ function TemplateCard({
   onEdit: () => void;
   onArchive: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <AppCard style={styles.templateCard}>
       <View style={styles.cardHeader}>
@@ -492,7 +495,7 @@ function TemplateCard({
           </View>
         </View>
         <StatusChip
-          label={template.isActive ? 'Active' : 'Archived'}
+          label={template.isActive ? t('caregiverHome.active') : t('caregiverChecklists.archived')}
           variant={template.isActive ? 'success' : 'default'}
         />
       </View>
@@ -501,8 +504,8 @@ function TemplateCard({
       ) : null}
       {template.isActive && (
         <View style={styles.cardActions}>
-          <AppButton title="Edit" onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
-          <AppButton title="Archive" onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
+          <AppButton title={t("caregiverPatients.editReminders").split(" ")[0]} onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
+          <AppButton title={t("caregiverChecklists.archived")} onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
         </View>
       )}
     </AppCard>

@@ -1,6 +1,10 @@
+import { Platform } from 'react-native';
 import { sessionStore } from '../../state/sessionStore';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000/api';
+const ENV_API_URL = process.env.EXPO_PUBLIC_API_URL;
+const API_BASE_URL = (Platform.OS === 'web' && __DEV__) 
+  ? 'http://localhost:4000/api'
+  : (ENV_API_URL ?? 'http://localhost:4000/api');
 
 /**
  * Typed API client — automatically attaches JWT bearer token.

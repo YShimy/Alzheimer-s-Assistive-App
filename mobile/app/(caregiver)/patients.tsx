@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, AppButton, AppInput, StatusChip, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { carelinksApi } from '@/src/features/carelinks/api';
@@ -10,6 +11,7 @@ import type { CareLink } from '@/src/features/carelinks/types';
  * View, invite, and manage care links.
  */
 export default function CaregiverPatientsScreen() {
+  const { t } = useTranslation();
   const [links, setLinks] = useState<CareLink[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,8 +29,8 @@ export default function CaregiverPatientsScreen() {
   useEffect(() => { load(); }, [load]);
 
   const handleRevoke = async (id: string) => {
-    Alert.alert('Revoke Link', 'Are you sure you want to revoke this care link?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('caregiverPatients.revokeLink'), t('caregiverPatients.revokeConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
         text: 'Revoke',
         style: 'destructive',
@@ -45,7 +47,7 @@ export default function CaregiverPatientsScreen() {
     ]);
   };
 
-  if (loading) return <ScreenContainer><LoadingState message="Loading patients..." /></ScreenContainer>;
+  if (loading) return <ScreenContainer><LoadingState message={t('caregiverPatients.loading')} /></ScreenContainer>;
 
   return (
     <ScreenContainer scroll={false} padded={false}>
@@ -56,8 +58,8 @@ export default function CaregiverPatientsScreen() {
         ListEmptyComponent={
           <EmptyState
             icon="people-outline"
-            title="No linked patients"
-            message="Generate an invite code from the Dashboard to connect with a patient."
+            title={t('caregiverPatients.noLinkedPatients')}
+            message={t('caregiverPatients.generateInviteMsg')}
           />
         }
         renderItem={({ item }) => (
@@ -79,12 +81,12 @@ export default function CaregiverPatientsScreen() {
             {item.status === 'active' && (
               <>
                 <View style={styles.permsList}>
-                  <PermItem label="Create Reminders" enabled={item.permissions.canCreateReminders} />
-                  <PermItem label="Edit Reminders" enabled={item.permissions.canEditReminders} />
-                  <PermItem label="View Progress" enabled={item.permissions.canViewProgress} />
+                  <PermItem label={t('caregiverPatients.createReminders')} enabled={item.permissions.canCreateReminders} />
+                  <PermItem label={t('caregiverPatients.editReminders')} enabled={item.permissions.canEditReminders} />
+                  <PermItem label={t('caregiverPatients.viewProgress')} enabled={item.permissions.canViewProgress} />
                 </View>
                 <AppButton
-                  title="Revoke Link"
+                  title={t('caregiverPatients.revokeLink')}
                   onPress={() => handleRevoke(item.id)}
                   variant="ghost"
                   size="sm"

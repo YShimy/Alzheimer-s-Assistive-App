@@ -1,16 +1,13 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { progressController } from './controller/progress.controller.js';
 
-export const progressRouter = Router();
+export const progressRouter = Router({ mergeParams: true });
 
 progressRouter.use(authMiddleware);
 
-// GET /api/progress/weekly
-progressRouter.get('/weekly', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Weekly progress endpoint not yet implemented' } });
-});
+// GET /api/patients/:patientId/progress/weekly
+progressRouter.get('/weekly', progressController.getWeeklyProgress);
 
-// GET /api/progress/overview
-progressRouter.get('/overview', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Progress overview endpoint not yet implemented' } });
-});
+// GET /api/patients/:patientId/progress/overview
+progressRouter.get('/overview', progressController.getOverview);

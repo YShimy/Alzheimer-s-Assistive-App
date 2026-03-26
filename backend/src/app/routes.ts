@@ -36,8 +36,8 @@ export function registerRoutes(app: Router): void {
   // Events (stub)
   app.use('/api/events', eventsRouter);
 
-  // Progress (stub)
-  app.use('/api/progress', progressRouter);
+  // Progress
+  app.use('/api/patients/:patientId/progress', progressRouter);
 
   // Sync (stub)
   app.use('/api/sync', syncRouter);

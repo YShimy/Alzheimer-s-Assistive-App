@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from 'expo-router';
 import { ScreenContainer, AppCard, AppButton, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
@@ -24,6 +25,7 @@ import type { ChecklistTemplate, ChecklistRun, StepProgress } from '@/src/featur
  * instead of silently failing. Wire to real data once backend is complete.
  */
 export default function PatientChecklistScreen() {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [backendReady, setBackendReady] = useState(true);
@@ -106,7 +108,7 @@ export default function PatientChecklistScreen() {
   if (loading) {
     return (
       <ScreenContainer scroll={false}>
-        <LoadingState message="Loading checklists…" />
+        <LoadingState message={t('patientChecklists.loading')} />
       </ScreenContainer>
     );
   }
@@ -116,10 +118,10 @@ export default function PatientChecklistScreen() {
       <ScreenContainer scroll={false}>
         <EmptyState
           icon="construct-outline"
-          title="Checklists coming soon"
-          message="Step-by-step routines will appear here once your caregiver sets them up. The feature is being activated — check back soon."
+          title={t('patientChecklists.comingSoonTitle')}
+          message={t('patientChecklists.comingSoonMsg')}
           action={
-            <AppButton title="Check Again" onPress={load} variant="outline" fullWidth={false} />
+            <AppButton title={t('patientChecklists.checkAgainBtn')} onPress={load} variant="outline" fullWidth={false} />
           }
         />
       </ScreenContainer>
@@ -136,8 +138,8 @@ export default function PatientChecklistScreen() {
         ListEmptyComponent={
           <EmptyState
             icon="checkbox-outline"
-            title="No checklists yet"
-            message="Your caregiver will set up step-by-step routines here for you to follow."
+            title={t('patientChecklists.noChecklists')}
+            message={t('patientChecklists.noChecklistsMsg')}
           />
         }
         renderItem={({ item }) => (
@@ -178,6 +180,7 @@ function ChecklistTemplateCard({
   onStart: () => void;
   starting: boolean;
 }) {
+  const { t } = useTranslation();
   const stepCount = template.steps?.length ?? 0;
   return (
     <AppCard style={styles.templateCard}>
@@ -204,7 +207,7 @@ function ChecklistTemplateCard({
         <Text style={styles.cardDesc} numberOfLines={2}>{template.description}</Text>
       ) : null}
       <AppButton
-        title={starting ? 'Starting…' : 'Start Checklist'}
+        title={starting ? t('patientChecklists.starting') : t('patientChecklists.startBtn')}
         onPress={onStart}
         loading={starting}
         icon={<Icon name="play-circle-outline" size={20} color="#fff" />}
@@ -231,6 +234,7 @@ function RunModal({
   onAbandon: () => void;
   submitting: boolean;
 }) {
+  const { t } = useTranslation();
   const steps = run.template?.steps ?? [];
   const completedCount = steps.filter((s) =>
     run.stepProgress.find((sp) => sp.stepId === s.id && sp.completed),
@@ -252,7 +256,7 @@ function RunModal({
         {/* Progress bar */}
         <View style={styles.progressSection}>
           <View style={styles.progressLabelRow}>
-            <Text style={styles.progressLabel}>{completedCount} of {steps.length} steps done</Text>
+            <Text style={styles.progressLabel}>{t('patientChecklists.stepsDone', { done: completedCount, total: steps.length })}</Text>
             {allDone && (
               <Icon name="checkmark-circle" size={18} color={colors.success.main} />
             )}
@@ -291,14 +295,14 @@ function RunModal({
 
           <View style={{ gap: spacing.md, paddingBottom: spacing['4xl'], marginTop: spacing.xl }}>
             <AppButton
-              title={submitting ? 'Saving…' : allDone ? 'Complete Checklist' : 'Complete (partial)'}
+              title={submitting ? t('patientChecklists.starting') : allDone ? t('patientChecklists.completeBtn') : t('patientChecklists.completePartialBtn')}
               onPress={onComplete}
               loading={submitting}
               variant={allDone ? 'primary' : 'outline'}
               icon={<Icon name="checkmark-circle-outline" size={20} color={allDone ? '#fff' : colors.primary[500]} />}
             />
             <AppButton
-              title="Save & Exit"
+              title={t('patientChecklists.saveExitBtn')}
               onPress={onAbandon}
               variant="ghost"
             />

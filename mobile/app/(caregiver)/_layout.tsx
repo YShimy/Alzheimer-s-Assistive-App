@@ -1,18 +1,23 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, typography } from '@/src/infrastructure/theme/tokens';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 
 /**
  * Caregiver tab layout — bottom navigation with 4 tabs.
  * Uses sage green accent for caregiver experience.
  */
 export default function CaregiverLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
         headerStyle: { backgroundColor: colors.surface },
         headerTitleStyle: { fontWeight: '600', color: colors.neutral[800] },
         headerShadowVisible: false,
+        headerRight: () => <LanguageToggleButton />,
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.neutral[100],
@@ -31,8 +36,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Dashboard',
-          headerTitle: 'Caregiver Dashboard',
+          title: t('caregiverTabs.dashboardTitle'),
+          headerTitle: t('caregiverTabs.dashboardHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid-outline" size={size} color={color} />
           ),
@@ -41,8 +46,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen
         name="patients"
         options={{
-          title: 'Patients',
-          headerTitle: 'Linked Patients',
+          title: t('caregiverTabs.patientsTitle'),
+          headerTitle: t('caregiverTabs.patientsHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
           ),
@@ -51,8 +56,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen
         name="manage-reminders"
         options={{
-          title: 'Reminders',
-          headerTitle: 'Manage Reminders',
+          title: t('caregiverTabs.remindersTitle'),
+          headerTitle: t('caregiverTabs.remindersHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="alarm-outline" size={size} color={color} />
           ),
@@ -61,8 +66,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen
         name="manage-checklists"
         options={{
-          title: 'Checklists',
-          headerTitle: 'Checklist Templates',
+          title: t('caregiverTabs.checklistsTitle'),
+          headerTitle: t('caregiverTabs.checklistsHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="clipboard-outline" size={size} color={color} />
           ),
@@ -71,8 +76,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen
         name="progress"
         options={{
-          title: 'Progress',
-          headerTitle: 'Patient Progress',
+          title: t('caregiverTabs.progressTitle'),
+          headerTitle: t('caregiverTabs.progressHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="trending-up-outline" size={size} color={color} />
           ),

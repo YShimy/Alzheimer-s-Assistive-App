@@ -2,6 +2,8 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+// Initialize i18n
+import '@/src/shared/i18n';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { authApi } from '@/src/features/auth/api';
 import { colors } from '@/src/infrastructure/theme/tokens';

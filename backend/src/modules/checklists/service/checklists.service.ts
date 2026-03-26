@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { AppError } from '../../../shared/errors/AppError.js';
 import { prisma } from '../../../shared/db/prisma.js';
 import { z } from 'zod';
@@ -10,12 +11,19 @@ type UpdateRunDto = z.infer<typeof updateRunSchema>;
 
 // Mapper functions to align Prisma camelCase/enums with frontend types
 function mapTemplate(t: any) {
+  const rawSteps: any[] = Array.isArray(t.steps) ? t.steps : [];
+  const steps = rawSteps.map((s: any) => ({
+    id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
+    order: s.order,
+    title: s.label ?? s.title,
+    description: s.description ?? s.optionalHint ?? null,
+  }));
   return {
     id: t.id,
     title: t.title,
     description: t.description,
     category: t.category,
-    steps: t.steps,
+    steps,
     estimatedMinutes: t.estimatedDurationMinutes,
     isActive: t.isActive,
     archivedAt: t.archivedAt?.toISOString() || null,
@@ -26,6 +34,14 @@ function mapTemplate(t: any) {
 }
 
 function mapRun(r: any) {
+  const normalizeSteps = (rawSteps: any[]) =>
+    (rawSteps ?? []).map((s: any) => ({
+      id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
+      order: s.order,
+      title: s.label ?? s.title,
+      description: s.description ?? s.optionalHint ?? null,
+    }));
+
   return {
     id: r.id,
     templateId: r.checklistTemplateId,
@@ -37,7 +53,7 @@ function mapRun(r: any) {
     template: r.template ? {
       id: r.template.id,
       title: r.template.title,
-      steps: r.template.steps,
+      steps: normalizeSteps(r.template.steps),
     } : undefined,
   };
 }
@@ -62,7 +78,12 @@ export const checklistsService = {
         title: data.title,
         description: data.description ?? null,
         category: data.category ?? 'routine',
-        steps: data.steps as any,
+        steps: data.steps.map((s, i) => ({
+          stepId: randomUUID(),
+          title: s.title,
+          description: s.description ?? null,
+          order: s.order ?? i,
+        })) as any,
         estimatedDurationMinutes: data.estimatedMinutes ?? null,
         createdByUserId: creatorId,
         lastEditedByUserId: creatorId,

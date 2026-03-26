@@ -14,7 +14,7 @@ async function main() {
   const server = http.createServer(app);
 
   // Start server
-  server.listen(env.PORT, () => {
+  server.listen(env.PORT, '0.0.0.0', () => {
     logger.info(`🚀 Server running on http://localhost:${env.PORT}`);
     logger.info(`📋 Health check: http://localhost:${env.PORT}/api/health`);
   });
