@@ -34,7 +34,7 @@ const languageDetector = {
     }
     
     const locales = Localization.getLocales();
-    callback(locales && locales.length > 0 ? locales[0].languageCode : 'en');
+    callback(locales && locales.length > 0 && locales[0].languageCode ? locales[0].languageCode : 'en');
   },
   init: () => {},
   cacheUserLanguage: async (lang: string) => {
@@ -58,7 +58,7 @@ i18n
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
-  });
+  } as any);
 
 // Setup RTL dynamically based on selected language
 export const setAppLanguage = (language: string) => {

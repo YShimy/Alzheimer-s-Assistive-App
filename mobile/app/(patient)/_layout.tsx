@@ -3,6 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors, typography } from '@/src/infrastructure/theme/tokens';
 import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
+import { useEffect } from 'react';
+import { notifications } from '@/src/infrastructure/notifications/notifications';
 
 /**
  * Patient tab layout — bottom navigation with 4 tabs.
@@ -10,6 +12,12 @@ import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
  */
 export default function PatientLayout() {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    notifications.requestPermission().catch(() => {
+      // Silence permission request errors
+    });
+  }, []);
 
   return (
     <Tabs

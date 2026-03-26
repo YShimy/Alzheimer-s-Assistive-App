@@ -1,16 +1,18 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { validateBody } from '../../shared/validation/validator.js';
+import { eventsController } from './controller/events.controller.js';
+import { batchEventsSchema, clientErrorSchema } from './validation/events.schemas.js';
 
 export const eventsRouter = Router();
 
 eventsRouter.use(authMiddleware);
 
 // POST /api/events/batch
-eventsRouter.post('/batch', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Analytics events batch endpoint not yet implemented' } });
-});
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+eventsRouter.post('/batch', validateBody(batchEventsSchema), eventsController.batchEvents);
 
 // POST /api/events/errors/client
-eventsRouter.post('/errors/client', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Client error reporting not yet implemented' } });
-});
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+eventsRouter.post('/errors/client', validateBody(clientErrorSchema), eventsController.reportClientError);
+

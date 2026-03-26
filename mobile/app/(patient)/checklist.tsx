@@ -16,6 +16,8 @@ import { ScreenContainer, AppCard, AppButton, Icon, LoadingState, EmptyState } f
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, ChecklistRun, StepProgress } from '@/src/features/checklists/types';
+import { eventLogger } from '@/src/infrastructure/events/eventLogger';
+import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 /**
  * Patient checklist screen.
@@ -62,6 +64,12 @@ export default function PatientChecklistScreen() {
       // Attach template steps for the run view
       setActiveRun({ ...run, template: { id: template.id, title: template.title, steps: template.steps } });
       setRunModalVisible(true);
+
+      eventLogger.log({
+        eventName: EventNames.CHECKLIST_STARTED,
+        screenName: 'PatientChecklistScreen',
+        payload: { templateId: template.id, stepCount: template.steps.length },
+      });
     } catch (err: any) {
       if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
         Alert.alert('Not Available', 'Checklist runs are not yet enabled on the server. Check back soon.');
@@ -84,6 +92,12 @@ export default function PatientChecklistScreen() {
       setRunModalVisible(false);
       setActiveRun(null);
       Alert.alert('Done!', 'Great job completing the checklist.');
+
+      eventLogger.log({
+        eventName: EventNames.CHECKLIST_COMPLETED,
+        screenName: 'PatientChecklistScreen',
+        payload: { completedStepsCount: activeRun.stepProgress.filter((s) => s.completed).length, totalSteps: activeRun.template?.steps?.length },
+      });
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Failed to mark complete');
     } finally {

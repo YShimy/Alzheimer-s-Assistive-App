@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { remindersApi } from './api';
 import type { Reminder } from './types';
+import { reminderScheduler } from './reminderScheduler';
 
 /** Fetch and manage a patient's reminder list */
 export function useReminders(patientId: string | null, filters?: { active?: string; category?: string; pendingOnly?: boolean }) {
@@ -17,6 +18,9 @@ export function useReminders(patientId: string | null, filters?: { active?: stri
       try {
         const { reminders: r } = await remindersApi.list(patientId, filters);
         setReminders(r);
+        reminderScheduler.syncSchedule(r).catch((err) => {
+          console.warn('Failed to sync notification schedule', err);
+        });
       } catch (err: any) {
         setError(err.message || 'Failed to load reminders');
       } finally {

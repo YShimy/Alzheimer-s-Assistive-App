@@ -6,6 +6,10 @@ import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/
 import { carelinksApi } from '@/src/features/carelinks/api';
 import { useWeeklyProgress } from '@/src/features/progress/hooks';
 import type { CareLink } from '@/src/features/carelinks/types';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+import { eventLogger } from '@/src/infrastructure/events/eventLogger';
+import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 export default function CaregiverProgressScreen() {
   const { t } = useTranslation();
@@ -30,6 +34,16 @@ export default function CaregiverProgressScreen() {
 
   const { data: weeklyData, loading: weeklyLoading } = useWeeklyProgress(selectedPatient);
 
+  useFocusEffect(
+    useCallback(() => {
+      eventLogger.log({
+        eventName: EventNames.PROGRESS_VIEWED,
+        screenName: 'CaregiverProgressScreen',
+        payload: { viewType: 'caregiver' },
+      });
+    }, [])
+  );
+
   if (loadingLinks) return <LoadingState message={t('loading') || 'Loading...'} />;
 
   if (links.length === 0) {
@@ -52,6 +66,9 @@ export default function CaregiverProgressScreen() {
   const skippedCount = weeklyData?.summary?.remindersSkipped ?? 0;
   const totalFired = weeklyData?.summary?.remindersFired ?? 0;
   const completionRatio = totalFired > 0 ? Math.round((doneCount / totalFired) * 100) : 0;
+  
+  const checklistsStarted = weeklyData?.summary?.checklistsStarted ?? 0;
+  const checklistsCompleted = weeklyData?.summary?.checklistsCompleted ?? 0;
 
   return (
     <ScreenContainer>
@@ -92,6 +109,25 @@ export default function CaregiverProgressScreen() {
                 label={t('patientProgress.skipped')} 
                 value={skippedCount.toString()} 
                 color={colors.neutral[400]} 
+              />
+            </View>
+          </AppCard>
+
+          <Text style={styles.sectionTitle}>{t('patientProgress.checklists') || 'Checklists'}</Text>
+          
+          <AppCard style={styles.card}>
+            <View style={styles.statRow}>
+              <StatItem 
+                icon="checkbox-outline" 
+                label={t('patientProgress.started') || 'Started'} 
+                value={checklistsStarted.toString()} 
+                color={colors.primary[500]} 
+              />
+              <StatItem 
+                icon="checkmark-done-circle-outline" 
+                label={t('patientProgress.completedChecklists') || 'Completed'} 
+                value={checklistsCompleted.toString()} 
+                color={colors.success.main} 
               />
             </View>
           </AppCard>

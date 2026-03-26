@@ -25,6 +25,8 @@ import { colors, typography, spacing, radius, shadows } from '@/src/infrastructu
 import { useSessionStore } from '@/src/state/sessionStore';
 import { useReminders, useReminderAction } from '@/src/features/reminders/hooks';
 import type { Reminder } from '@/src/features/reminders/types';
+import { eventLogger } from '@/src/infrastructure/events/eventLogger';
+import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 /**
  * Patient reminders screen — browse active reminders, take actions.
@@ -40,8 +42,22 @@ export default function PatientRemindersScreen() {
   const handleAction = useCallback(
     async (id: string, action: 'done' | 'snooze' | 'skip') => {
       await submit(id, action);
+      const reminder = reminders.find((r) => r.id === id);
+      if (reminder) {
+        eventLogger.log({
+          eventName:
+            action === 'done'
+              ? EventNames.REMINDER_DONE
+              : action === 'snooze'
+              ? EventNames.REMINDER_SNOOZED
+              : EventNames.REMINDER_SKIPPED,
+          screenName: 'PatientRemindersScreen',
+          source: 'reminder_list',
+          payload: { reminderCategory: reminder.category },
+        });
+      }
     },
-    [submit],
+    [submit, reminders],
   );
 
   if (loading) {

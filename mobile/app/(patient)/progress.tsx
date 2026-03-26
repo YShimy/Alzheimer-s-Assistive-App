@@ -4,6 +4,10 @@ import { ScreenContainer, AppCard, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { useWeeklyProgress } from '@/src/features/progress/hooks';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+import { eventLogger } from '@/src/infrastructure/events/eventLogger';
+import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 /**
  * Patient progress preview — shows an aggregated overview.
@@ -14,6 +18,16 @@ export default function PatientProgressScreen() {
   const userId = useSessionStore((s) => s.userId);
   const { data, loading, error, reload } = useWeeklyProgress(userId);
 
+  useFocusEffect(
+    useCallback(() => {
+      eventLogger.log({
+        eventName: EventNames.PROGRESS_VIEWED,
+        screenName: 'PatientProgressScreen',
+        payload: { viewType: 'patient' },
+      });
+    }, [])
+  );
+
   if (loading) return <LoadingState message={t('loading') || 'Loading...'} />;
 
   const doneCount = data?.summary?.remindersDone ?? 0;
@@ -21,6 +35,9 @@ export default function PatientProgressScreen() {
   const skippedCount = data?.summary?.remindersSkipped ?? 0;
   const totalFired = data?.summary?.remindersFired ?? 0; 
   const completionRatio = totalFired > 0 ? Math.round((doneCount / totalFired) * 100) : 0;
+  
+  const checklistsStarted = data?.summary?.checklistsStarted ?? 0;
+  const checklistsCompleted = data?.summary?.checklistsCompleted ?? 0;
 
   return (
     <ScreenContainer>
@@ -31,6 +48,15 @@ export default function PatientProgressScreen() {
           <StatItem icon="checkmark-circle-outline" label={t('patientProgress.completed')} value={doneCount.toString()} color={colors.success.main} />
           <StatItem icon="time-outline" label={t('patientProgress.snoozed')} value={snoozedCount.toString()} color={colors.warning.main} />
           <StatItem icon="close-circle-outline" label={t('patientProgress.skipped')} value={skippedCount.toString()} color={colors.neutral[400]} />
+        </View>
+      </AppCard>
+
+      <Text style={styles.sectionTitle}>{t('patientProgress.checklists') || 'Checklists'}</Text>
+      
+      <AppCard style={styles.card}>
+        <View style={styles.statRow}>
+          <StatItem icon="checkbox-outline" label={t('patientProgress.started') || 'Started'} value={checklistsStarted.toString()} color={colors.primary[500]} />
+          <StatItem icon="checkmark-done-circle-outline" label={t('patientProgress.completedChecklists') || 'Completed'} value={checklistsCompleted.toString()} color={colors.success.main} />
         </View>
       </AppCard>
 

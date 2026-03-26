@@ -1,0 +1,7 @@
+﻿src/shared/i18n/index.ts(37,14): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+src/shared/i18n/index.ts(55,5): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(callback?: Callback | undefined): Promise<TFunction<"translation", undefined>>', gave the following error.
+    Object literal may only specify known properties, and 'compatibilityJSON' does not exist in type 'Callback'.
+  Overload 2 of 2, '(options: InitOptions<unknown>, callback?: Callback | undefined): Promise<TFunction<"translation", undefined>>', gave the following error.
+    Type '"v3"' is not assignable to type '"v4"'.
