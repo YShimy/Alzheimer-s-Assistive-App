@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { gamesController } from './controller/games.controller.js';
 
 export const gamesRouter = Router();
 
 gamesRouter.use(authMiddleware);
 
-// GET /api/games/sessions
-gamesRouter.get('/sessions', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Game sessions endpoint not yet implemented' } });
-});
+// GET /api/games/sessions — list recent sessions
+gamesRouter.get('/sessions', gamesController.getSessions);
 
-// POST /api/games/sessions
-gamesRouter.post('/sessions', (_req, res) => {
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Create game session not yet implemented' } });
-});
+// POST /api/games/sessions — save a completed game session
+gamesRouter.post('/sessions', gamesController.saveSession);
+
+// GET /api/games/progress?gameType=safe_path_memory — chart-ready progress data
+gamesRouter.get('/progress', gamesController.getProgress);

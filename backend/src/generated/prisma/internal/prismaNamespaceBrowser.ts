@@ -58,6 +58,7 @@ export const ModelName = {
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
+  GameLevelResult: 'GameLevelResult',
   AnalyticsEvent: 'AnalyticsEvent'
 } as const
 
@@ -208,15 +209,43 @@ export const GameSessionScalarFieldEnum = {
   completedAt: 'completedAt',
   durationSeconds: 'durationSeconds',
   score: 'score',
+  highestTierReached: 'highestTierReached',
+  levelsPlayed: 'levelsPlayed',
+  levelsSucceeded: 'levelsSucceeded',
+  levelsFailed: 'levelsFailed',
   completed: 'completed',
   quitEarly: 'quitEarly',
   actorUserId: 'actorUserId',
   actorRole: 'actorRole',
   source: 'source',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 
 export type GameSessionScalarFieldEnum = (typeof GameSessionScalarFieldEnum)[keyof typeof GameSessionScalarFieldEnum]
+
+
+export const GameLevelResultScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  levelIndex: 'levelIndex',
+  difficultyTier: 'difficultyTier',
+  gridRows: 'gridRows',
+  gridCols: 'gridCols',
+  bombCount: 'bombCount',
+  previewDurationMs: 'previewDurationMs',
+  solveTimeMs: 'solveTimeMs',
+  success: 'success',
+  scoreDelta: 'scoreDelta',
+  pathLength: 'pathLength',
+  retryCount: 'retryCount',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type GameLevelResultScalarFieldEnum = (typeof GameLevelResultScalarFieldEnum)[keyof typeof GameLevelResultScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {

@@ -4,19 +4,22 @@ import { ScreenContainer, AppCard, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { useWeeklyProgress } from '@/src/features/progress/hooks';
+import { useGameProgress } from '@/src/features/games/safePath/hooks';
+import { GameProgressCard } from '@/src/features/games/safePath/components/GameProgressCard';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 /**
- * Patient progress preview — shows an aggregated overview.
- * Data is dynamically pulled from backend events via the Progress API endpoints.
+ * Patient progress preview — shows an aggregated overview
+ * including reminder adherence, checklists, and game progress.
  */
 export default function PatientProgressScreen() {
   const { t } = useTranslation();
   const userId = useSessionStore((s) => s.userId);
   const { data, loading, error, reload } = useWeeklyProgress(userId);
+  const { data: gameProgress, loading: gameLoading } = useGameProgress(userId);
 
   useFocusEffect(
     useCallback(() => {
@@ -60,6 +63,26 @@ export default function PatientProgressScreen() {
         </View>
       </AppCard>
 
+      {/* ── Game Progress Section ───────────────────────────── */}
+      <Text style={styles.sectionTitle}>Cognitive Games</Text>
+
+      {gameLoading ? (
+        <AppCard style={styles.card}>
+          <View style={styles.loadingBox}>
+            <Text style={styles.loadingText}>Loading game progress...</Text>
+          </View>
+        </AppCard>
+      ) : gameProgress ? (
+        <GameProgressCard progress={gameProgress} />
+      ) : (
+        <AppCard style={styles.card}>
+          <View style={styles.loadingBox}>
+            <Icon name="game-controller-outline" size={24} color={colors.neutral[300]} />
+            <Text style={styles.loadingText}>Play a game to see your progress</Text>
+          </View>
+        </AppCard>
+      )}
+
       <Text style={styles.sectionTitle}>{t('patientProgress.categories')}</Text>
 
       <AppCard
@@ -83,13 +106,6 @@ export default function PatientProgressScreen() {
           <View style={[styles.progressFill, { width: `${completionRatio}%`, backgroundColor: colors.secondary[400] }]} />
         </View>
       </AppCard>
-
-      <View style={styles.comingSoon}>
-        <Icon name="construct-outline" size={24} color={colors.neutral[300]} />
-        <Text style={styles.comingSoonText}>
-          {t('patientProgress.comingSoon')}
-        </Text>
-      </View>
     </ScreenContainer>
   );
 }
@@ -132,15 +148,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary[400],
     borderRadius: 3,
   },
-  comingSoon: {
+  loadingBox: {
     alignItems: 'center',
-    padding: spacing['3xl'],
-    gap: spacing.md,
+    paddingVertical: spacing.xl,
+    gap: spacing.sm,
   },
-  comingSoonText: {
+  loadingText: {
     fontSize: typography.size.sm,
     color: colors.neutral[400],
-    textAlign: 'center',
-    lineHeight: 20,
   },
 });

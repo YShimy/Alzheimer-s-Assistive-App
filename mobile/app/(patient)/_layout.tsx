@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { notifications } from '@/src/infrastructure/notifications/notifications';
 
 /**
- * Patient tab layout — bottom navigation with 4 tabs.
+ * Patient tab layout — bottom navigation with 5 tabs.
  * Uses calming blue accent for patient experience.
  */
 export default function PatientLayout() {
@@ -62,6 +62,16 @@ export default function PatientLayout() {
         }}
       />
       <Tabs.Screen
+        name="games"
+        options={{
+          title: 'Games',
+          headerTitle: 'Cognitive Games',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="game-controller-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="progress"
         options={{
           title: t('patientTabs.progressTitle'),
@@ -79,6 +89,14 @@ export default function PatientLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="checkbox-outline" size={size} color={color} />
           ),
+        }}
+      />
+      {/* Hide the safe-path-game screen from the tab bar */}
+      <Tabs.Screen
+        name="safe-path-game"
+        options={{
+          href: null,
+          headerTitle: 'Safe Path Memory',
         }}
       />
     </Tabs>

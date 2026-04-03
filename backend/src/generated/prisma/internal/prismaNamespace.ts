@@ -391,6 +391,7 @@ export const ModelName = {
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
+  GameLevelResult: 'GameLevelResult',
   AnalyticsEvent: 'AnalyticsEvent'
 } as const
 
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "analyticsEvent"
+    modelProps: "user" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -929,6 +930,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GameLevelResult: {
+      payload: Prisma.$GameLevelResultPayload<ExtArgs>
+      fields: Prisma.GameLevelResultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GameLevelResultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GameLevelResultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        findFirst: {
+          args: Prisma.GameLevelResultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GameLevelResultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        findMany: {
+          args: Prisma.GameLevelResultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>[]
+        }
+        create: {
+          args: Prisma.GameLevelResultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        createMany: {
+          args: Prisma.GameLevelResultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GameLevelResultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>[]
+        }
+        delete: {
+          args: Prisma.GameLevelResultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        update: {
+          args: Prisma.GameLevelResultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        deleteMany: {
+          args: Prisma.GameLevelResultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GameLevelResultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GameLevelResultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>[]
+        }
+        upsert: {
+          args: Prisma.GameLevelResultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameLevelResultPayload>
+        }
+        aggregate: {
+          args: Prisma.GameLevelResultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGameLevelResult>
+        }
+        groupBy: {
+          args: Prisma.GameLevelResultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameLevelResultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GameLevelResultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameLevelResultCountAggregateOutputType> | number
+        }
+      }
+    }
     AnalyticsEvent: {
       payload: Prisma.$AnalyticsEventPayload<ExtArgs>
       fields: Prisma.AnalyticsEventFieldRefs
@@ -1173,15 +1248,43 @@ export const GameSessionScalarFieldEnum = {
   completedAt: 'completedAt',
   durationSeconds: 'durationSeconds',
   score: 'score',
+  highestTierReached: 'highestTierReached',
+  levelsPlayed: 'levelsPlayed',
+  levelsSucceeded: 'levelsSucceeded',
+  levelsFailed: 'levelsFailed',
   completed: 'completed',
   quitEarly: 'quitEarly',
   actorUserId: 'actorUserId',
   actorRole: 'actorRole',
   source: 'source',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 
 export type GameSessionScalarFieldEnum = (typeof GameSessionScalarFieldEnum)[keyof typeof GameSessionScalarFieldEnum]
+
+
+export const GameLevelResultScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  levelIndex: 'levelIndex',
+  difficultyTier: 'difficultyTier',
+  gridRows: 'gridRows',
+  gridCols: 'gridCols',
+  bombCount: 'bombCount',
+  previewDurationMs: 'previewDurationMs',
+  solveTimeMs: 'solveTimeMs',
+  success: 'success',
+  scoreDelta: 'scoreDelta',
+  pathLength: 'pathLength',
+  retryCount: 'retryCount',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type GameLevelResultScalarFieldEnum = (typeof GameLevelResultScalarFieldEnum)[keyof typeof GameLevelResultScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {
@@ -1506,6 +1609,7 @@ export type GlobalOmitConfig = {
   checklistTemplate?: Prisma.ChecklistTemplateOmit
   checklistRun?: Prisma.ChecklistRunOmit
   gameSession?: Prisma.GameSessionOmit
+  gameLevelResult?: Prisma.GameLevelResultOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
 }
 

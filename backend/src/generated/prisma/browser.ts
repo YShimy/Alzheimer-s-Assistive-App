@@ -53,6 +53,11 @@ export type ChecklistRun = Prisma.ChecklistRunModel
  */
 export type GameSession = Prisma.GameSessionModel
 /**
+ * Model GameLevelResult
+ * 
+ */
+export type GameLevelResult = Prisma.GameLevelResultModel
+/**
  * Model AnalyticsEvent
  * 
  */

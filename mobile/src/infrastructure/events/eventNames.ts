@@ -31,4 +31,20 @@ export const EventNames = {
   ERROR_OCCURRED: 'error_occurred',
   SYNC_FAILED: 'sync_failed',
   NOTIFICATION_SCHEDULE_FAILED: 'notification_schedule_failed',
+
+  // ─── Safe Path Memory Game Events ─────────────────────────
+  GAME_OPENED: 'game_opened',
+  GAME_INSTRUCTIONS_VIEWED: 'game_instructions_viewed',
+  GAME_SESSION_STARTED: 'game_session_started',
+  LEVEL_PREVIEW_STARTED: 'level_preview_started',
+  LEVEL_STARTED: 'level_started',
+  TILE_SELECTED: 'tile_selected',
+  INVALID_MOVE_ATTEMPTED: 'invalid_move_attempted',
+  LEVEL_FAILED: 'level_failed',
+  LEVEL_COMPLETED: 'level_completed',
+  SESSION_PAUSED: 'session_paused',
+  SESSION_RESUMED: 'session_resumed',
+  SESSION_COMPLETED: 'session_completed',
+  SESSION_ABANDONED: 'session_abandoned',
+  GAME_PROGRESS_CHART_VIEWED: 'game_progress_chart_viewed',
 } as const;

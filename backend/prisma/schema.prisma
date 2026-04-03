@@ -232,28 +232,60 @@ model ChecklistRun {
 }
 
 model GameSession {
-  id              String   @id @default(uuid())
-  patientUserId   String
-  gameType        String
-  difficultyLevel String   @default("easy")
-  startedAt       DateTime @default(now())
-  completedAt     DateTime?
-  durationSeconds Int?
-  score           Int?
-  completed       Boolean  @default(false)
-  quitEarly       Boolean  @default(false)
-  actorUserId     String
-  actorRole       String   // "patient" | "caregiver"
-  source          String   @default("home")
-  createdAt       DateTime @default(now())
+  id                String   @id @default(uuid())
+  patientUserId     String
+  gameType          String
+  difficultyLevel   String   @default("easy")
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
+  durationSeconds   Int?
+  score             Int?
+  highestTierReached Int?
+  levelsPlayed      Int      @default(0)
+  levelsSucceeded   Int      @default(0)
+  levelsFailed      Int      @default(0)
+  completed         Boolean  @default(false)
+  quitEarly         Boolean  @default(false)
+  actorUserId       String
+  actorRole         String   // "patient" | "caregiver"
+  source            String   @default("home")
+  metadata          Json?    // optional structured details
+  createdAt         DateTime @default(now())
 
-  patient User @relation("PatientGames", fields: [patientUserId], references: [id])
-  actor   User @relation("ActorGames", fields: [actorUserId], references: [id])
+  patient    User              @relation("PatientGames", fields: [patientUserId], references: [id])
+  actor      User              @relation("ActorGames", fields: [actorUserId], references: [id])
+  levelResults GameLevelResult[]
 
   @@index([patientUserId])
   @@index([gameType])
   @@index([startedAt])
   @@map("game_sessions")
+}
+
+model GameLevelResult {
+  id                String   @id @default(uuid())
+  sessionId         String
+  levelIndex        Int
+  difficultyTier    Int
+  gridRows          Int
+  gridCols          Int
+  bombCount         Int
+  previewDurationMs Int
+  solveTimeMs       Int?
+  success           Boolean
+  scoreDelta        Int      @default(0)
+  pathLength        Int      @default(0)
+  retryCount        Int      @default(0)
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
+  metadata          Json?
+  createdAt         DateTime @default(now())
+
+  session GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([difficultyTier])
+  @@map("game_level_results")
 }
 
 model AnalyticsEvent {

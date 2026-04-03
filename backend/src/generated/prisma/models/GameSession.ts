@@ -29,11 +29,19 @@ export type AggregateGameSession = {
 export type GameSessionAvgAggregateOutputType = {
   durationSeconds: number | null
   score: number | null
+  highestTierReached: number | null
+  levelsPlayed: number | null
+  levelsSucceeded: number | null
+  levelsFailed: number | null
 }
 
 export type GameSessionSumAggregateOutputType = {
   durationSeconds: number | null
   score: number | null
+  highestTierReached: number | null
+  levelsPlayed: number | null
+  levelsSucceeded: number | null
+  levelsFailed: number | null
 }
 
 export type GameSessionMinAggregateOutputType = {
@@ -45,6 +53,10 @@ export type GameSessionMinAggregateOutputType = {
   completedAt: Date | null
   durationSeconds: number | null
   score: number | null
+  highestTierReached: number | null
+  levelsPlayed: number | null
+  levelsSucceeded: number | null
+  levelsFailed: number | null
   completed: boolean | null
   quitEarly: boolean | null
   actorUserId: string | null
@@ -62,6 +74,10 @@ export type GameSessionMaxAggregateOutputType = {
   completedAt: Date | null
   durationSeconds: number | null
   score: number | null
+  highestTierReached: number | null
+  levelsPlayed: number | null
+  levelsSucceeded: number | null
+  levelsFailed: number | null
   completed: boolean | null
   quitEarly: boolean | null
   actorUserId: string | null
@@ -79,11 +95,16 @@ export type GameSessionCountAggregateOutputType = {
   completedAt: number
   durationSeconds: number
   score: number
+  highestTierReached: number
+  levelsPlayed: number
+  levelsSucceeded: number
+  levelsFailed: number
   completed: number
   quitEarly: number
   actorUserId: number
   actorRole: number
   source: number
+  metadata: number
   createdAt: number
   _all: number
 }
@@ -92,11 +113,19 @@ export type GameSessionCountAggregateOutputType = {
 export type GameSessionAvgAggregateInputType = {
   durationSeconds?: true
   score?: true
+  highestTierReached?: true
+  levelsPlayed?: true
+  levelsSucceeded?: true
+  levelsFailed?: true
 }
 
 export type GameSessionSumAggregateInputType = {
   durationSeconds?: true
   score?: true
+  highestTierReached?: true
+  levelsPlayed?: true
+  levelsSucceeded?: true
+  levelsFailed?: true
 }
 
 export type GameSessionMinAggregateInputType = {
@@ -108,6 +137,10 @@ export type GameSessionMinAggregateInputType = {
   completedAt?: true
   durationSeconds?: true
   score?: true
+  highestTierReached?: true
+  levelsPlayed?: true
+  levelsSucceeded?: true
+  levelsFailed?: true
   completed?: true
   quitEarly?: true
   actorUserId?: true
@@ -125,6 +158,10 @@ export type GameSessionMaxAggregateInputType = {
   completedAt?: true
   durationSeconds?: true
   score?: true
+  highestTierReached?: true
+  levelsPlayed?: true
+  levelsSucceeded?: true
+  levelsFailed?: true
   completed?: true
   quitEarly?: true
   actorUserId?: true
@@ -142,11 +179,16 @@ export type GameSessionCountAggregateInputType = {
   completedAt?: true
   durationSeconds?: true
   score?: true
+  highestTierReached?: true
+  levelsPlayed?: true
+  levelsSucceeded?: true
+  levelsFailed?: true
   completed?: true
   quitEarly?: true
   actorUserId?: true
   actorRole?: true
   source?: true
+  metadata?: true
   createdAt?: true
   _all?: true
 }
@@ -246,11 +288,16 @@ export type GameSessionGroupByOutputType = {
   completedAt: Date | null
   durationSeconds: number | null
   score: number | null
+  highestTierReached: number | null
+  levelsPlayed: number
+  levelsSucceeded: number
+  levelsFailed: number
   completed: boolean
   quitEarly: boolean
   actorUserId: string
   actorRole: string
   source: string
+  metadata: runtime.JsonValue | null
   createdAt: Date
   _count: GameSessionCountAggregateOutputType | null
   _avg: GameSessionAvgAggregateOutputType | null
@@ -286,14 +333,20 @@ export type GameSessionWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"GameSession"> | Date | string | null
   durationSeconds?: Prisma.IntNullableFilter<"GameSession"> | number | null
   score?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  highestTierReached?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  levelsPlayed?: Prisma.IntFilter<"GameSession"> | number
+  levelsSucceeded?: Prisma.IntFilter<"GameSession"> | number
+  levelsFailed?: Prisma.IntFilter<"GameSession"> | number
   completed?: Prisma.BoolFilter<"GameSession"> | boolean
   quitEarly?: Prisma.BoolFilter<"GameSession"> | boolean
   actorUserId?: Prisma.StringFilter<"GameSession"> | string
   actorRole?: Prisma.StringFilter<"GameSession"> | string
   source?: Prisma.StringFilter<"GameSession"> | string
+  metadata?: Prisma.JsonNullableFilter<"GameSession">
   createdAt?: Prisma.DateTimeFilter<"GameSession"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   actor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  levelResults?: Prisma.GameLevelResultListRelationFilter
 }
 
 export type GameSessionOrderByWithRelationInput = {
@@ -305,14 +358,20 @@ export type GameSessionOrderByWithRelationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   durationSeconds?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrderInput | Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   quitEarly?: Prisma.SortOrder
   actorUserId?: Prisma.SortOrder
   actorRole?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   patient?: Prisma.UserOrderByWithRelationInput
   actor?: Prisma.UserOrderByWithRelationInput
+  levelResults?: Prisma.GameLevelResultOrderByRelationAggregateInput
 }
 
 export type GameSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -327,14 +386,20 @@ export type GameSessionWhereUniqueInput = Prisma.AtLeast<{
   completedAt?: Prisma.DateTimeNullableFilter<"GameSession"> | Date | string | null
   durationSeconds?: Prisma.IntNullableFilter<"GameSession"> | number | null
   score?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  highestTierReached?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  levelsPlayed?: Prisma.IntFilter<"GameSession"> | number
+  levelsSucceeded?: Prisma.IntFilter<"GameSession"> | number
+  levelsFailed?: Prisma.IntFilter<"GameSession"> | number
   completed?: Prisma.BoolFilter<"GameSession"> | boolean
   quitEarly?: Prisma.BoolFilter<"GameSession"> | boolean
   actorUserId?: Prisma.StringFilter<"GameSession"> | string
   actorRole?: Prisma.StringFilter<"GameSession"> | string
   source?: Prisma.StringFilter<"GameSession"> | string
+  metadata?: Prisma.JsonNullableFilter<"GameSession">
   createdAt?: Prisma.DateTimeFilter<"GameSession"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   actor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  levelResults?: Prisma.GameLevelResultListRelationFilter
 }, "id">
 
 export type GameSessionOrderByWithAggregationInput = {
@@ -346,11 +411,16 @@ export type GameSessionOrderByWithAggregationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   durationSeconds?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrderInput | Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   quitEarly?: Prisma.SortOrder
   actorUserId?: Prisma.SortOrder
   actorRole?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.GameSessionCountOrderByAggregateInput
   _avg?: Prisma.GameSessionAvgOrderByAggregateInput
@@ -371,11 +441,16 @@ export type GameSessionScalarWhereWithAggregatesInput = {
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GameSession"> | Date | string | null
   durationSeconds?: Prisma.IntNullableWithAggregatesFilter<"GameSession"> | number | null
   score?: Prisma.IntNullableWithAggregatesFilter<"GameSession"> | number | null
+  highestTierReached?: Prisma.IntNullableWithAggregatesFilter<"GameSession"> | number | null
+  levelsPlayed?: Prisma.IntWithAggregatesFilter<"GameSession"> | number
+  levelsSucceeded?: Prisma.IntWithAggregatesFilter<"GameSession"> | number
+  levelsFailed?: Prisma.IntWithAggregatesFilter<"GameSession"> | number
   completed?: Prisma.BoolWithAggregatesFilter<"GameSession"> | boolean
   quitEarly?: Prisma.BoolWithAggregatesFilter<"GameSession"> | boolean
   actorUserId?: Prisma.StringWithAggregatesFilter<"GameSession"> | string
   actorRole?: Prisma.StringWithAggregatesFilter<"GameSession"> | string
   source?: Prisma.StringWithAggregatesFilter<"GameSession"> | string
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"GameSession">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GameSession"> | Date | string
 }
 
@@ -387,13 +462,19 @@ export type GameSessionCreateInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutGameSessionsInput
   actor: Prisma.UserCreateNestedOneWithoutActorGameSessionsInput
+  levelResults?: Prisma.GameLevelResultCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionUncheckedCreateInput = {
@@ -405,12 +486,18 @@ export type GameSessionUncheckedCreateInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorUserId: string
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionUpdateInput = {
@@ -421,13 +508,19 @@ export type GameSessionUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutGameSessionsNestedInput
   actor?: Prisma.UserUpdateOneRequiredWithoutActorGameSessionsNestedInput
+  levelResults?: Prisma.GameLevelResultUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionUncheckedUpdateInput = {
@@ -439,12 +532,18 @@ export type GameSessionUncheckedUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorUserId?: Prisma.StringFieldUpdateOperationsInput | string
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionCreateManyInput = {
@@ -456,11 +555,16 @@ export type GameSessionCreateManyInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorUserId: string
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -472,10 +576,15 @@ export type GameSessionUpdateManyMutationInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -488,11 +597,16 @@ export type GameSessionUncheckedUpdateManyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorUserId?: Prisma.StringFieldUpdateOperationsInput | string
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -515,17 +629,26 @@ export type GameSessionCountOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   durationSeconds?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   quitEarly?: Prisma.SortOrder
   actorUserId?: Prisma.SortOrder
   actorRole?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type GameSessionAvgOrderByAggregateInput = {
   durationSeconds?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
 }
 
 export type GameSessionMaxOrderByAggregateInput = {
@@ -537,6 +660,10 @@ export type GameSessionMaxOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   durationSeconds?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   quitEarly?: Prisma.SortOrder
   actorUserId?: Prisma.SortOrder
@@ -554,6 +681,10 @@ export type GameSessionMinOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   durationSeconds?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   quitEarly?: Prisma.SortOrder
   actorUserId?: Prisma.SortOrder
@@ -565,6 +696,15 @@ export type GameSessionMinOrderByAggregateInput = {
 export type GameSessionSumOrderByAggregateInput = {
   durationSeconds?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  highestTierReached?: Prisma.SortOrder
+  levelsPlayed?: Prisma.SortOrder
+  levelsSucceeded?: Prisma.SortOrder
+  levelsFailed?: Prisma.SortOrder
+}
+
+export type GameSessionScalarRelationFilter = {
+  is?: Prisma.GameSessionWhereInput
+  isNot?: Prisma.GameSessionWhereInput
 }
 
 export type GameSessionCreateNestedManyWithoutPatientInput = {
@@ -651,6 +791,20 @@ export type GameSessionUncheckedUpdateManyWithoutActorNestedInput = {
   deleteMany?: Prisma.GameSessionScalarWhereInput | Prisma.GameSessionScalarWhereInput[]
 }
 
+export type GameSessionCreateNestedOneWithoutLevelResultsInput = {
+  create?: Prisma.XOR<Prisma.GameSessionCreateWithoutLevelResultsInput, Prisma.GameSessionUncheckedCreateWithoutLevelResultsInput>
+  connectOrCreate?: Prisma.GameSessionCreateOrConnectWithoutLevelResultsInput
+  connect?: Prisma.GameSessionWhereUniqueInput
+}
+
+export type GameSessionUpdateOneRequiredWithoutLevelResultsNestedInput = {
+  create?: Prisma.XOR<Prisma.GameSessionCreateWithoutLevelResultsInput, Prisma.GameSessionUncheckedCreateWithoutLevelResultsInput>
+  connectOrCreate?: Prisma.GameSessionCreateOrConnectWithoutLevelResultsInput
+  upsert?: Prisma.GameSessionUpsertWithoutLevelResultsInput
+  connect?: Prisma.GameSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GameSessionUpdateToOneWithWhereWithoutLevelResultsInput, Prisma.GameSessionUpdateWithoutLevelResultsInput>, Prisma.GameSessionUncheckedUpdateWithoutLevelResultsInput>
+}
+
 export type GameSessionCreateWithoutPatientInput = {
   id?: string
   gameType: string
@@ -659,12 +813,18 @@ export type GameSessionCreateWithoutPatientInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   actor: Prisma.UserCreateNestedOneWithoutActorGameSessionsInput
+  levelResults?: Prisma.GameLevelResultCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionUncheckedCreateWithoutPatientInput = {
@@ -675,12 +835,18 @@ export type GameSessionUncheckedCreateWithoutPatientInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorUserId: string
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionCreateOrConnectWithoutPatientInput = {
@@ -701,12 +867,18 @@ export type GameSessionCreateWithoutActorInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutGameSessionsInput
+  levelResults?: Prisma.GameLevelResultCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionUncheckedCreateWithoutActorInput = {
@@ -718,11 +890,17 @@ export type GameSessionUncheckedCreateWithoutActorInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type GameSessionCreateOrConnectWithoutActorInput = {
@@ -763,11 +941,16 @@ export type GameSessionScalarWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"GameSession"> | Date | string | null
   durationSeconds?: Prisma.IntNullableFilter<"GameSession"> | number | null
   score?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  highestTierReached?: Prisma.IntNullableFilter<"GameSession"> | number | null
+  levelsPlayed?: Prisma.IntFilter<"GameSession"> | number
+  levelsSucceeded?: Prisma.IntFilter<"GameSession"> | number
+  levelsFailed?: Prisma.IntFilter<"GameSession"> | number
   completed?: Prisma.BoolFilter<"GameSession"> | boolean
   quitEarly?: Prisma.BoolFilter<"GameSession"> | boolean
   actorUserId?: Prisma.StringFilter<"GameSession"> | string
   actorRole?: Prisma.StringFilter<"GameSession"> | string
   source?: Prisma.StringFilter<"GameSession"> | string
+  metadata?: Prisma.JsonNullableFilter<"GameSession">
   createdAt?: Prisma.DateTimeFilter<"GameSession"> | Date | string
 }
 
@@ -787,6 +970,110 @@ export type GameSessionUpdateManyWithWhereWithoutActorInput = {
   data: Prisma.XOR<Prisma.GameSessionUpdateManyMutationInput, Prisma.GameSessionUncheckedUpdateManyWithoutActorInput>
 }
 
+export type GameSessionCreateWithoutLevelResultsInput = {
+  id?: string
+  gameType: string
+  difficultyLevel?: string
+  startedAt?: Date | string
+  completedAt?: Date | string | null
+  durationSeconds?: number | null
+  score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
+  completed?: boolean
+  quitEarly?: boolean
+  actorRole: string
+  source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  patient: Prisma.UserCreateNestedOneWithoutGameSessionsInput
+  actor: Prisma.UserCreateNestedOneWithoutActorGameSessionsInput
+}
+
+export type GameSessionUncheckedCreateWithoutLevelResultsInput = {
+  id?: string
+  patientUserId: string
+  gameType: string
+  difficultyLevel?: string
+  startedAt?: Date | string
+  completedAt?: Date | string | null
+  durationSeconds?: number | null
+  score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
+  completed?: boolean
+  quitEarly?: boolean
+  actorUserId: string
+  actorRole: string
+  source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+}
+
+export type GameSessionCreateOrConnectWithoutLevelResultsInput = {
+  where: Prisma.GameSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.GameSessionCreateWithoutLevelResultsInput, Prisma.GameSessionUncheckedCreateWithoutLevelResultsInput>
+}
+
+export type GameSessionUpsertWithoutLevelResultsInput = {
+  update: Prisma.XOR<Prisma.GameSessionUpdateWithoutLevelResultsInput, Prisma.GameSessionUncheckedUpdateWithoutLevelResultsInput>
+  create: Prisma.XOR<Prisma.GameSessionCreateWithoutLevelResultsInput, Prisma.GameSessionUncheckedCreateWithoutLevelResultsInput>
+  where?: Prisma.GameSessionWhereInput
+}
+
+export type GameSessionUpdateToOneWithWhereWithoutLevelResultsInput = {
+  where?: Prisma.GameSessionWhereInput
+  data: Prisma.XOR<Prisma.GameSessionUpdateWithoutLevelResultsInput, Prisma.GameSessionUncheckedUpdateWithoutLevelResultsInput>
+}
+
+export type GameSessionUpdateWithoutLevelResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  gameType?: Prisma.StringFieldUpdateOperationsInput | string
+  difficultyLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
+  completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  actorRole?: Prisma.StringFieldUpdateOperationsInput | string
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  patient?: Prisma.UserUpdateOneRequiredWithoutGameSessionsNestedInput
+  actor?: Prisma.UserUpdateOneRequiredWithoutActorGameSessionsNestedInput
+}
+
+export type GameSessionUncheckedUpdateWithoutLevelResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  gameType?: Prisma.StringFieldUpdateOperationsInput | string
+  difficultyLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
+  completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  actorUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorRole?: Prisma.StringFieldUpdateOperationsInput | string
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type GameSessionCreateManyPatientInput = {
   id?: string
   gameType: string
@@ -795,11 +1082,16 @@ export type GameSessionCreateManyPatientInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorUserId: string
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -812,10 +1104,15 @@ export type GameSessionCreateManyActorInput = {
   completedAt?: Date | string | null
   durationSeconds?: number | null
   score?: number | null
+  highestTierReached?: number | null
+  levelsPlayed?: number
+  levelsSucceeded?: number
+  levelsFailed?: number
   completed?: boolean
   quitEarly?: boolean
   actorRole: string
   source?: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -827,12 +1124,18 @@ export type GameSessionUpdateWithoutPatientInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actor?: Prisma.UserUpdateOneRequiredWithoutActorGameSessionsNestedInput
+  levelResults?: Prisma.GameLevelResultUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionUncheckedUpdateWithoutPatientInput = {
@@ -843,12 +1146,18 @@ export type GameSessionUncheckedUpdateWithoutPatientInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorUserId?: Prisma.StringFieldUpdateOperationsInput | string
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionUncheckedUpdateManyWithoutPatientInput = {
@@ -859,11 +1168,16 @@ export type GameSessionUncheckedUpdateManyWithoutPatientInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorUserId?: Prisma.StringFieldUpdateOperationsInput | string
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -875,12 +1189,18 @@ export type GameSessionUpdateWithoutActorInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutGameSessionsNestedInput
+  levelResults?: Prisma.GameLevelResultUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionUncheckedUpdateWithoutActorInput = {
@@ -892,11 +1212,17 @@ export type GameSessionUncheckedUpdateWithoutActorInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  levelResults?: Prisma.GameLevelResultUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type GameSessionUncheckedUpdateManyWithoutActorInput = {
@@ -908,13 +1234,47 @@ export type GameSessionUncheckedUpdateManyWithoutActorInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestTierReached?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  levelsPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsSucceeded?: Prisma.IntFieldUpdateOperationsInput | number
+  levelsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   quitEarly?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actorRole?: Prisma.StringFieldUpdateOperationsInput | string
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type GameSessionCountOutputType
+ */
+
+export type GameSessionCountOutputType = {
+  levelResults: number
+}
+
+export type GameSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  levelResults?: boolean | GameSessionCountOutputTypeCountLevelResultsArgs
+}
+
+/**
+ * GameSessionCountOutputType without action
+ */
+export type GameSessionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GameSessionCountOutputType
+   */
+  select?: Prisma.GameSessionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * GameSessionCountOutputType without action
+ */
+export type GameSessionCountOutputTypeCountLevelResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GameLevelResultWhereInput
+}
 
 
 export type GameSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -926,14 +1286,21 @@ export type GameSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   completedAt?: boolean
   durationSeconds?: boolean
   score?: boolean
+  highestTierReached?: boolean
+  levelsPlayed?: boolean
+  levelsSucceeded?: boolean
+  levelsFailed?: boolean
   completed?: boolean
   quitEarly?: boolean
   actorUserId?: boolean
   actorRole?: boolean
   source?: boolean
+  metadata?: boolean
   createdAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  levelResults?: boolean | Prisma.GameSession$levelResultsArgs<ExtArgs>
+  _count?: boolean | Prisma.GameSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gameSession"]>
 
 export type GameSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -945,11 +1312,16 @@ export type GameSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   completedAt?: boolean
   durationSeconds?: boolean
   score?: boolean
+  highestTierReached?: boolean
+  levelsPlayed?: boolean
+  levelsSucceeded?: boolean
+  levelsFailed?: boolean
   completed?: boolean
   quitEarly?: boolean
   actorUserId?: boolean
   actorRole?: boolean
   source?: boolean
+  metadata?: boolean
   createdAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -964,11 +1336,16 @@ export type GameSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   completedAt?: boolean
   durationSeconds?: boolean
   score?: boolean
+  highestTierReached?: boolean
+  levelsPlayed?: boolean
+  levelsSucceeded?: boolean
+  levelsFailed?: boolean
   completed?: boolean
   quitEarly?: boolean
   actorUserId?: boolean
   actorRole?: boolean
   source?: boolean
+  metadata?: boolean
   createdAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -983,18 +1360,25 @@ export type GameSessionSelectScalar = {
   completedAt?: boolean
   durationSeconds?: boolean
   score?: boolean
+  highestTierReached?: boolean
+  levelsPlayed?: boolean
+  levelsSucceeded?: boolean
+  levelsFailed?: boolean
   completed?: boolean
   quitEarly?: boolean
   actorUserId?: boolean
   actorRole?: boolean
   source?: boolean
+  metadata?: boolean
   createdAt?: boolean
 }
 
-export type GameSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "gameType" | "difficultyLevel" | "startedAt" | "completedAt" | "durationSeconds" | "score" | "completed" | "quitEarly" | "actorUserId" | "actorRole" | "source" | "createdAt", ExtArgs["result"]["gameSession"]>
+export type GameSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "gameType" | "difficultyLevel" | "startedAt" | "completedAt" | "durationSeconds" | "score" | "highestTierReached" | "levelsPlayed" | "levelsSucceeded" | "levelsFailed" | "completed" | "quitEarly" | "actorUserId" | "actorRole" | "source" | "metadata" | "createdAt", ExtArgs["result"]["gameSession"]>
 export type GameSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  levelResults?: boolean | Prisma.GameSession$levelResultsArgs<ExtArgs>
+  _count?: boolean | Prisma.GameSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GameSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1010,6 +1394,7 @@ export type $GameSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     patient: Prisma.$UserPayload<ExtArgs>
     actor: Prisma.$UserPayload<ExtArgs>
+    levelResults: Prisma.$GameLevelResultPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1020,11 +1405,16 @@ export type $GameSessionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     completedAt: Date | null
     durationSeconds: number | null
     score: number | null
+    highestTierReached: number | null
+    levelsPlayed: number
+    levelsSucceeded: number
+    levelsFailed: number
     completed: boolean
     quitEarly: boolean
     actorUserId: string
     actorRole: string
     source: string
+    metadata: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["gameSession"]>
   composites: {}
@@ -1422,6 +1812,7 @@ export interface Prisma__GameSessionClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   patient<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   actor<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  levelResults<T extends Prisma.GameSession$levelResultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GameSession$levelResultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameLevelResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1459,11 +1850,16 @@ export interface GameSessionFieldRefs {
   readonly completedAt: Prisma.FieldRef<"GameSession", 'DateTime'>
   readonly durationSeconds: Prisma.FieldRef<"GameSession", 'Int'>
   readonly score: Prisma.FieldRef<"GameSession", 'Int'>
+  readonly highestTierReached: Prisma.FieldRef<"GameSession", 'Int'>
+  readonly levelsPlayed: Prisma.FieldRef<"GameSession", 'Int'>
+  readonly levelsSucceeded: Prisma.FieldRef<"GameSession", 'Int'>
+  readonly levelsFailed: Prisma.FieldRef<"GameSession", 'Int'>
   readonly completed: Prisma.FieldRef<"GameSession", 'Boolean'>
   readonly quitEarly: Prisma.FieldRef<"GameSession", 'Boolean'>
   readonly actorUserId: Prisma.FieldRef<"GameSession", 'String'>
   readonly actorRole: Prisma.FieldRef<"GameSession", 'String'>
   readonly source: Prisma.FieldRef<"GameSession", 'String'>
+  readonly metadata: Prisma.FieldRef<"GameSession", 'Json'>
   readonly createdAt: Prisma.FieldRef<"GameSession", 'DateTime'>
 }
     
@@ -1863,6 +2259,30 @@ export type GameSessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many GameSessions to delete.
    */
   limit?: number
+}
+
+/**
+ * GameSession.levelResults
+ */
+export type GameSession$levelResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GameLevelResult
+   */
+  select?: Prisma.GameLevelResultSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GameLevelResult
+   */
+  omit?: Prisma.GameLevelResultOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GameLevelResultInclude<ExtArgs> | null
+  where?: Prisma.GameLevelResultWhereInput
+  orderBy?: Prisma.GameLevelResultOrderByWithRelationInput | Prisma.GameLevelResultOrderByWithRelationInput[]
+  cursor?: Prisma.GameLevelResultWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GameLevelResultScalarFieldEnum | Prisma.GameLevelResultScalarFieldEnum[]
 }
 
 /**
