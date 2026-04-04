@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     borderColor: colors.neutral[300],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.neutral[0],
+    backgroundColor: colors.neutral[50],
     flexShrink: 0,
     marginTop: 2,
   },

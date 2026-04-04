@@ -9,14 +9,15 @@
  * - Current position: pulsing blue
  * - Unvisited: neutral
  */
-import { View, Pressable, StyleSheet, Dimensions } from 'react-native';
+import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, spacing } from '../../../../infrastructure/theme/tokens';
-import type { BoardDefinition, TileCoord, TileState } from '../engine/types';
+import type { BoardDefinition, TileCoord } from '../engine/types';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_PADDING = spacing['2xl'] * 2;
-const TILE_GAP = 3;
+const BOARD_PADDING_HORIZONTAL = spacing['2xl'] * 2;
+const BOARD_PADDING_VERTICAL = 280; // Estimated HUD + Banner + Safe Area + Spacing
+const TILE_GAP = 4;
+const MAX_TILE_SIZE = 80;
 
 interface GameBoardProps {
   board: BoardDefinition;
@@ -31,8 +32,21 @@ function coordKey(c: TileCoord): string {
 }
 
 export function GameBoard({ board, path, onTilePress, disabled = false, showPreview = false }: GameBoardProps) {
-  const availableWidth = SCREEN_WIDTH - BOARD_PADDING;
-  const tileSize = Math.floor((availableWidth - TILE_GAP * (board.cols - 1)) / board.cols);
+  const { width, height } = useWindowDimensions();
+
+  // Calculate sizing based on available area to ensure it fits the screen
+  const availableWidth = width - BOARD_PADDING_HORIZONTAL;
+  const availableHeight = height - BOARD_PADDING_VERTICAL;
+
+  const widthBasedTileSize = Math.floor((availableWidth - TILE_GAP * (board.cols - 1)) / board.cols);
+  const heightBasedTileSize = Math.floor((availableHeight - TILE_GAP * (board.rows - 1)) / board.rows);
+
+  const tileSize = Math.min(
+    Math.max(widthBasedTileSize, 20),
+    Math.max(heightBasedTileSize, 20),
+    MAX_TILE_SIZE
+  );
+
   const boardWidth = tileSize * board.cols + TILE_GAP * (board.cols - 1);
 
   const currentPos = path.length > 0 ? path[path.length - 1] : null;
@@ -51,7 +65,7 @@ export function GameBoard({ board, path, onTilePress, disabled = false, showPrev
             const isRevealed = tile.revealed;
             const isExploded = tile.exploded;
 
-            let tileStyle = styles.tileSafe;
+            let tileStyle: any = styles.tileSafe;
             let iconName: any = null;
             let iconColor = '#fff';
 
@@ -119,42 +133,48 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1, // Base border for all tiles
   },
   tileSafe: {
     backgroundColor: colors.neutral[100],
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
+    borderColor: colors.neutral[400], // More distinct contrast (was 300)
+    borderWidth: 1.5,
   },
   tileStart: {
     backgroundColor: colors.primary[500],
+    borderColor: colors.primary[700],
   },
   tileVisitedStart: {
     backgroundColor: colors.primary[400],
+    borderColor: colors.primary[600],
   },
   tileEnd: {
     backgroundColor: colors.success.main,
+    borderColor: colors.success.dark,
   },
   tileBombPreview: {
     backgroundColor: colors.error.main,
+    borderColor: colors.error.dark,
     opacity: 0.85,
   },
   tileBombRevealed: {
     backgroundColor: colors.error.light,
-    borderWidth: 1,
     borderColor: colors.error.main,
+    borderWidth: 1.5,
   },
   tileExploded: {
     backgroundColor: colors.error.main,
+    borderColor: colors.error.dark,
   },
   tileVisited: {
     backgroundColor: colors.primary[100],
-    borderWidth: 1,
-    borderColor: colors.primary[300],
+    borderColor: colors.primary[400], // Increased contrast (was 300)
+    borderWidth: 1.5,
   },
   tileCurrent: {
     backgroundColor: colors.primary[400],
-    borderWidth: 2,
-    borderColor: colors.primary[600],
+    borderColor: colors.primary[700], // Increased contrast (was 600)
+    borderWidth: 2.5,
   },
   tilePressed: {
     opacity: 0.8,

@@ -48,9 +48,9 @@ export default function PatientProgressScreen() {
 
       <AppCard style={styles.card}>
         <View style={styles.statRow}>
-          <StatItem icon="checkmark-circle-outline" label={t('patientProgress.completed')} value={doneCount.toString()} color={colors.success.main} />
-          <StatItem icon="time-outline" label={t('patientProgress.snoozed')} value={snoozedCount.toString()} color={colors.warning.main} />
-          <StatItem icon="close-circle-outline" label={t('patientProgress.skipped')} value={skippedCount.toString()} color={colors.neutral[400]} />
+          <StatItem icon="checkmark-circle-outline" label={t('patientProgress.completed')} value={doneCount.toString()} color={colors.secondary.main} />
+          <StatItem icon="time-outline" label={t('patientProgress.snoozed')} value={snoozedCount.toString()} color={colors.tertiary.main} />
+          <StatItem icon="close-circle-outline" label={t('patientProgress.skipped')} value={skippedCount.toString()} color={colors.on_surface_variant} />
         </View>
       </AppCard>
 
@@ -58,8 +58,8 @@ export default function PatientProgressScreen() {
       
       <AppCard style={styles.card}>
         <View style={styles.statRow}>
-          <StatItem icon="checkbox-outline" label={t('patientProgress.started') || 'Started'} value={checklistsStarted.toString()} color={colors.primary[500]} />
-          <StatItem icon="checkmark-done-circle-outline" label={t('patientProgress.completedChecklists') || 'Completed'} value={checklistsCompleted.toString()} color={colors.success.main} />
+          <StatItem icon="checkbox-outline" label={t('patientProgress.started') || 'Started'} value={checklistsStarted.toString()} color={colors.primary.main} />
+          <StatItem icon="checkmark-done-circle-outline" label={t('patientProgress.completedChecklists') || 'Completed'} value={checklistsCompleted.toString()} color={colors.secondary.main} />
         </View>
       </AppCard>
 
@@ -77,7 +77,7 @@ export default function PatientProgressScreen() {
       ) : (
         <AppCard style={styles.card}>
           <View style={styles.loadingBox}>
-            <Icon name="game-controller-outline" size={24} color={colors.neutral[300]} />
+            <Icon name="game-controller-outline" size={24} color={colors.on_surface_variant} />
             <Text style={styles.loadingText}>Play a game to see your progress</Text>
           </View>
         </AppCard>
@@ -87,7 +87,7 @@ export default function PatientProgressScreen() {
 
       <AppCard
         style={styles.card}
-        icon={<Icon name="medkit-outline" size={22} color={colors.primary[500]} />}
+        icon={<Icon name="medkit-outline" size={22} color={colors.primary.main} />}
         title={t('patientProgress.medication')}
         subtitle={t('patientProgress.medicationSub')}
       >
@@ -98,12 +98,12 @@ export default function PatientProgressScreen() {
 
       <AppCard
         style={styles.card}
-        icon={<Icon name="restaurant-outline" size={22} color={colors.secondary[500]} />}
+        icon={<Icon name="restaurant-outline" size={22} color={colors.secondary.main} />}
         title={t('patientProgress.meals')}
         subtitle={t('patientProgress.mealsSub')}
       >
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${completionRatio}%`, backgroundColor: colors.secondary[400] }]} />
+          <View style={[styles.progressFill, { width: `${completionRatio}%`, backgroundColor: colors.secondary.main }]} />
         </View>
       </AppCard>
     </ScreenContainer>
@@ -122,9 +122,9 @@ function StatItem({ icon, label, value, color }: { icon: any; label: string; val
 
 const styles = StyleSheet.create({
   sectionTitle: {
+    fontFamily: typography.family.headline,
     fontSize: typography.size.lg,
-    fontWeight: '600',
-    color: colors.neutral[800],
+    color: colors.on_surface,
     marginBottom: spacing.md,
     marginTop: spacing.sm,
   },
@@ -134,18 +134,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   stat: { alignItems: 'center', gap: spacing.xs },
-  statValue: { fontSize: typography.size['2xl'], fontWeight: '700' },
-  statLabel: { fontSize: typography.size.xs, color: colors.neutral[500] },
+  statValue: { 
+    fontFamily: typography.family.display,
+    fontSize: typography.size['2xl'], 
+  },
+  statLabel: { 
+    fontFamily: typography.family.label,
+    fontSize: typography.size.xs, 
+    color: colors.on_surface_variant,
+  },
   progressBar: {
     height: 6,
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.surface_dim,
     borderRadius: 3,
     marginTop: spacing.sm,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: colors.primary[400],
+    backgroundColor: colors.primary.main,
     borderRadius: 3,
   },
   loadingBox: {
@@ -154,7 +161,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   loadingText: {
+    fontFamily: typography.family.label,
     fontSize: typography.size.sm,
-    color: colors.neutral[400],
+    color: colors.on_surface_variant,
   },
 });

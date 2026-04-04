@@ -75,13 +75,13 @@ export default function PatientHomeScreen() {
           <Text style={styles.name}>{displayName || 'there'}</Text>
         </View>
         <Pressable onPress={handleLogout} style={styles.logoutBtn} accessibilityLabel="Log out">
-          <Icon name="log-out-outline" size={22} color={colors.neutral[500]} />
+          <Icon name="log-out-outline" size={22} color={colors.on_surface_variant} />
         </Pressable>
       </View>
 
       {/* Date orientation card */}
       <View style={styles.dateCard}>
-        <Icon name="calendar-outline" size={24} color={colors.primary[500]} />
+        <Icon name="calendar-outline" size={24} color={colors.primary.main} />
         <Text style={styles.dateText}>{dateString}</Text>
       </View>
 
@@ -92,7 +92,7 @@ export default function PatientHomeScreen() {
       ) : reminders.length === 0 ? (
         <AppCard>
           <View style={styles.emptyRow}>
-            <Icon name="checkmark-circle-outline" size={24} color={colors.success.main} />
+            <Icon name="checkmark-circle-outline" size={24} color={colors.secondary.main} />
             <Text style={styles.emptyText}>{t('patientHome.noReminders')}</Text>
           </View>
         </AppCard>
@@ -101,10 +101,10 @@ export default function PatientHomeScreen() {
           <AppCard
             key={r.id}
             style={styles.reminderCard}
-            icon={<Icon name={getCategoryIcon(r.category)} size={22} color={colors.primary[500]} />}
+            icon={<Icon name={getCategoryIcon(r.category)} size={22} color={colors.primary_dim} />}
             title={r.title}
             subtitle={`${r.scheduledTime} · ${t('categories.' + r.category) || r.category}`}
-            onPress={() => {}}
+            onPress={() => router.push(`/(patient)/my-reminders`)}
           >
             <View />
         </AppCard>
@@ -140,7 +140,7 @@ export default function PatientHomeScreen() {
         </AppCard>
       ) : (
         <AppCard
-          icon={<Icon name="people-outline" size={24} color={colors.secondary[500]} />}
+          icon={<Icon name="people-outline" size={24} color={colors.secondary.main} />}
           title={t('patientHome.connectCardTitle')}
           subtitle={t('patientHome.connectCardSubtitle')}
           onPress={() => setShowInviteInput(true)}
@@ -155,29 +155,29 @@ export default function PatientHomeScreen() {
         <QuickCard
           icon="alarm-outline"
           title={t('patientHome.reminders')}
-          color={colors.primary[500]}
-          bgColor={colors.primary[50]}
+          color={colors.primary.main}
+          bgColor={colors.primary_container}
           onPress={() => router.push('/(patient)/my-reminders')}
         />
         <QuickCard
           icon="checkbox-outline"
           title={t('patientHome.checklists')}
-          color={colors.secondary[500]}
-          bgColor={colors.secondary[50]}
+          color={colors.secondary.main}
+          bgColor={colors.secondary_container}
           onPress={() => router.push('/(patient)/checklist')}
         />
         <QuickCard
           icon="bar-chart-outline"
           title={t('patientHome.progress')}
-          color={colors.info.main}
-          bgColor={colors.info.light}
+          color={colors.tertiary.main}
+          bgColor={colors.tertiary_container}
           onPress={() => router.push('/(patient)/progress')}
         />
         <QuickCard
           icon="help-circle-outline"
           title={t('patientHome.help')}
-          color={colors.warning.main}
-          bgColor={colors.warning.light}
+          color={colors.on_surface}
+          bgColor={colors.surface_container_highest}
           onPress={() => {}}
         />
       </View>
@@ -223,39 +223,41 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   greeting: {
+    fontFamily: typography.family.title,
     fontSize: typography.size.lg,
-    color: colors.neutral[500],
+    color: colors.on_surface_variant,
   },
   name: {
+    fontFamily: typography.family.display,
     fontSize: typography.size['3xl'],
-    fontWeight: '700',
-    color: colors.neutral[900],
+    color: colors.on_surface,
+    marginTop: spacing.xs,
   },
   logoutBtn: {
-    padding: spacing.sm,
+    padding: spacing.md,
     borderRadius: radius.full,
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.surface_container_low,
   },
   dateCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.primary[50],
-    borderRadius: radius.lg,
-    padding: spacing.lg,
+    backgroundColor: colors.primary_container,
+    borderRadius: radius.xl,
+    padding: spacing.xl, // Breathing room
     marginBottom: spacing['2xl'],
     gap: spacing.md,
   },
   dateText: {
+    fontFamily: typography.family.title,
     fontSize: typography.size.base,
-    fontWeight: '500',
-    color: colors.primary[700],
+    color: colors.on_primary_container,
   },
   sectionTitle: {
+    fontFamily: typography.family.headline,
     fontSize: typography.size.lg,
-    fontWeight: '600',
-    color: colors.neutral[800],
-    marginBottom: spacing.md,
-    marginTop: spacing.sm,
+    color: colors.on_surface,
+    marginBottom: spacing.lg,
+    marginTop: spacing.lg,
   },
   reminderCard: { marginBottom: spacing.md },
   emptyRow: {
@@ -264,20 +266,22 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   emptyText: {
+    fontFamily: typography.family.body,
     fontSize: typography.size.sm,
-    color: colors.neutral[500],
+    color: colors.on_surface_variant,
     flex: 1,
   },
   inviteCard: { marginBottom: spacing.md },
   inviteTitle: {
+    fontFamily: typography.family.title,
     fontSize: typography.size.base,
-    fontWeight: '600',
-    color: colors.neutral[800],
+    color: colors.on_surface,
     marginBottom: spacing.xs,
   },
   inviteText: {
+    fontFamily: typography.family.body,
     fontSize: typography.size.sm,
-    color: colors.neutral[500],
+    color: colors.on_surface_variant,
     marginBottom: spacing.lg,
   },
   inviteActions: {
@@ -291,13 +295,13 @@ const styles = StyleSheet.create({
   },
   quickCard: {
     width: '47%',
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     padding: spacing.xl,
     alignItems: 'center',
     gap: spacing.sm,
   },
   quickCardText: {
+    fontFamily: typography.family.label,
     fontSize: typography.size.sm,
-    fontWeight: '600',
   },
 });
