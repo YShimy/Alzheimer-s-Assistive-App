@@ -81,10 +81,11 @@ export default function RootLayout() {
     if (!isReady) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const onCaregiverLink = segments[1] === 'caregiver-link';
 
     if (!token && !inAuthGroup) {
       router.replace('/(auth)/login');
-    } else if (token && role && inAuthGroup) {
+    } else if (token && role && inAuthGroup && !onCaregiverLink) {
       if (role === 'CAREGIVER') {
         router.replace('/(caregiver)/home');
       } else {

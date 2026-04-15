@@ -20,19 +20,32 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  age: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  age: number | null
 }
 
 export type UserMinAggregateOutputType = {
   id: string | null
   googleId: string | null
   email: string | null
+  passwordHash: string | null
   displayName: string | null
+  age: number | null
   role: $Enums.UserRole | null
   language: string | null
   timezone: string | null
   isActive: boolean | null
+  emailVerifiedAt: Date | null
   preferredNotificationMode: string | null
   lastSeenAt: Date | null
   createdAt: Date | null
@@ -43,11 +56,14 @@ export type UserMaxAggregateOutputType = {
   id: string | null
   googleId: string | null
   email: string | null
+  passwordHash: string | null
   displayName: string | null
+  age: number | null
   role: $Enums.UserRole | null
   language: string | null
   timezone: string | null
   isActive: boolean | null
+  emailVerifiedAt: Date | null
   preferredNotificationMode: string | null
   lastSeenAt: Date | null
   createdAt: Date | null
@@ -58,11 +74,14 @@ export type UserCountAggregateOutputType = {
   id: number
   googleId: number
   email: number
+  passwordHash: number
   displayName: number
+  age: number
   role: number
   language: number
   timezone: number
   isActive: number
+  emailVerifiedAt: number
   accessibilitySettings: number
   preferredNotificationMode: number
   lastSeenAt: number
@@ -72,15 +91,26 @@ export type UserCountAggregateOutputType = {
 }
 
 
+export type UserAvgAggregateInputType = {
+  age?: true
+}
+
+export type UserSumAggregateInputType = {
+  age?: true
+}
+
 export type UserMinAggregateInputType = {
   id?: true
   googleId?: true
   email?: true
+  passwordHash?: true
   displayName?: true
+  age?: true
   role?: true
   language?: true
   timezone?: true
   isActive?: true
+  emailVerifiedAt?: true
   preferredNotificationMode?: true
   lastSeenAt?: true
   createdAt?: true
@@ -91,11 +121,14 @@ export type UserMaxAggregateInputType = {
   id?: true
   googleId?: true
   email?: true
+  passwordHash?: true
   displayName?: true
+  age?: true
   role?: true
   language?: true
   timezone?: true
   isActive?: true
+  emailVerifiedAt?: true
   preferredNotificationMode?: true
   lastSeenAt?: true
   createdAt?: true
@@ -106,11 +139,14 @@ export type UserCountAggregateInputType = {
   id?: true
   googleId?: true
   email?: true
+  passwordHash?: true
   displayName?: true
+  age?: true
   role?: true
   language?: true
   timezone?: true
   isActive?: true
+  emailVerifiedAt?: true
   accessibilitySettings?: true
   preferredNotificationMode?: true
   lastSeenAt?: true
@@ -157,6 +193,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -187,25 +235,32 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
 
 export type UserGroupByOutputType = {
   id: string
-  googleId: string
+  googleId: string | null
   email: string
+  passwordHash: string | null
   displayName: string
+  age: number | null
   role: $Enums.UserRole
   language: string
   timezone: string
   isActive: boolean
+  emailVerifiedAt: Date | null
   accessibilitySettings: runtime.JsonValue
   preferredNotificationMode: string
   lastSeenAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -230,13 +285,16 @@ export type UserWhereInput = {
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.StringFilter<"User"> | string
-  googleId?: Prisma.StringFilter<"User"> | string
+  googleId?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringFilter<"User"> | string
+  passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   displayName?: Prisma.StringFilter<"User"> | string
+  age?: Prisma.IntNullableFilter<"User"> | number | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   language?: Prisma.StringFilter<"User"> | string
   timezone?: Prisma.StringFilter<"User"> | string
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonFilter<"User">
   preferredNotificationMode?: Prisma.StringFilter<"User"> | string
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -263,13 +321,16 @@ export type UserWhereInput = {
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  googleId?: Prisma.SortOrder
+  googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   language?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -301,11 +362,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
+  passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   displayName?: Prisma.StringFilter<"User"> | string
+  age?: Prisma.IntNullableFilter<"User"> | number | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   language?: Prisma.StringFilter<"User"> | string
   timezone?: Prisma.StringFilter<"User"> | string
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonFilter<"User">
   preferredNotificationMode?: Prisma.StringFilter<"User"> | string
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -332,21 +396,26 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  googleId?: Prisma.SortOrder
+  googleId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   language?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -354,13 +423,16 @@ export type UserScalarWhereWithAggregatesInput = {
   OR?: Prisma.UserScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
-  googleId?: Prisma.StringWithAggregatesFilter<"User"> | string
+  googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
+  passwordHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   displayName?: Prisma.StringWithAggregatesFilter<"User"> | string
+  age?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   language?: Prisma.StringWithAggregatesFilter<"User"> | string
   timezone?: Prisma.StringWithAggregatesFilter<"User"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonWithAggregatesFilter<"User">
   preferredNotificationMode?: Prisma.StringWithAggregatesFilter<"User"> | string
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -370,13 +442,16 @@ export type UserScalarWhereWithAggregatesInput = {
 
 export type UserCreateInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -403,13 +478,16 @@ export type UserCreateInput = {
 
 export type UserUncheckedCreateInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -436,13 +514,16 @@ export type UserUncheckedCreateInput = {
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -469,13 +550,16 @@ export type UserUpdateInput = {
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -502,13 +586,16 @@ export type UserUncheckedUpdateInput = {
 
 export type UserCreateManyInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -518,13 +605,16 @@ export type UserCreateManyInput = {
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -534,13 +624,16 @@ export type UserUpdateManyMutationInput = {
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -552,11 +645,14 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   role?: Prisma.SortOrder
   language?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
@@ -564,15 +660,22 @@ export type UserCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type UserAvgOrderByAggregateInput = {
+  age?: Prisma.SortOrder
+}
+
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   role?: Prisma.SortOrder
   language?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -583,15 +686,22 @@ export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   googleId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   role?: Prisma.SortOrder
   language?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  age?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -606,6 +716,18 @@ export type UserNullableScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -870,13 +992,16 @@ export type UserUpdateOneWithoutActorAnalyticsNestedInput = {
 
 export type UserCreateWithoutCaregiverLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -902,13 +1027,16 @@ export type UserCreateWithoutCaregiverLinksInput = {
 
 export type UserUncheckedCreateWithoutCaregiverLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -939,13 +1067,16 @@ export type UserCreateOrConnectWithoutCaregiverLinksInput = {
 
 export type UserCreateWithoutPatientLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -971,13 +1102,16 @@ export type UserCreateWithoutPatientLinksInput = {
 
 export type UserUncheckedCreateWithoutPatientLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1008,13 +1142,16 @@ export type UserCreateOrConnectWithoutPatientLinksInput = {
 
 export type UserCreateWithoutInvitedCareLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1040,13 +1177,16 @@ export type UserCreateWithoutInvitedCareLinksInput = {
 
 export type UserUncheckedCreateWithoutInvitedCareLinksInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1088,13 +1228,16 @@ export type UserUpdateToOneWithWhereWithoutCaregiverLinksInput = {
 
 export type UserUpdateWithoutCaregiverLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1120,13 +1263,16 @@ export type UserUpdateWithoutCaregiverLinksInput = {
 
 export type UserUncheckedUpdateWithoutCaregiverLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1163,13 +1309,16 @@ export type UserUpdateToOneWithWhereWithoutPatientLinksInput = {
 
 export type UserUpdateWithoutPatientLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1195,13 +1344,16 @@ export type UserUpdateWithoutPatientLinksInput = {
 
 export type UserUncheckedUpdateWithoutPatientLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1238,13 +1390,16 @@ export type UserUpdateToOneWithWhereWithoutInvitedCareLinksInput = {
 
 export type UserUpdateWithoutInvitedCareLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1270,13 +1425,16 @@ export type UserUpdateWithoutInvitedCareLinksInput = {
 
 export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1302,13 +1460,16 @@ export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
 
 export type UserCreateWithoutPatientRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1334,13 +1495,16 @@ export type UserCreateWithoutPatientRemindersInput = {
 
 export type UserUncheckedCreateWithoutPatientRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1371,13 +1535,16 @@ export type UserCreateOrConnectWithoutPatientRemindersInput = {
 
 export type UserCreateWithoutCreatedRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1403,13 +1570,16 @@ export type UserCreateWithoutCreatedRemindersInput = {
 
 export type UserUncheckedCreateWithoutCreatedRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1440,13 +1610,16 @@ export type UserCreateOrConnectWithoutCreatedRemindersInput = {
 
 export type UserCreateWithoutEditedRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1472,13 +1645,16 @@ export type UserCreateWithoutEditedRemindersInput = {
 
 export type UserUncheckedCreateWithoutEditedRemindersInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1520,13 +1696,16 @@ export type UserUpdateToOneWithWhereWithoutPatientRemindersInput = {
 
 export type UserUpdateWithoutPatientRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1552,13 +1731,16 @@ export type UserUpdateWithoutPatientRemindersInput = {
 
 export type UserUncheckedUpdateWithoutPatientRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1595,13 +1777,16 @@ export type UserUpdateToOneWithWhereWithoutCreatedRemindersInput = {
 
 export type UserUpdateWithoutCreatedRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1627,13 +1812,16 @@ export type UserUpdateWithoutCreatedRemindersInput = {
 
 export type UserUncheckedUpdateWithoutCreatedRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1670,13 +1858,16 @@ export type UserUpdateToOneWithWhereWithoutEditedRemindersInput = {
 
 export type UserUpdateWithoutEditedRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1702,13 +1893,16 @@ export type UserUpdateWithoutEditedRemindersInput = {
 
 export type UserUncheckedUpdateWithoutEditedRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1734,13 +1928,16 @@ export type UserUncheckedUpdateWithoutEditedRemindersInput = {
 
 export type UserCreateWithoutReminderEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1766,13 +1963,16 @@ export type UserCreateWithoutReminderEventsInput = {
 
 export type UserUncheckedCreateWithoutReminderEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1803,13 +2003,16 @@ export type UserCreateOrConnectWithoutReminderEventsInput = {
 
 export type UserCreateWithoutActorEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1835,13 +2038,16 @@ export type UserCreateWithoutActorEventsInput = {
 
 export type UserUncheckedCreateWithoutActorEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -1883,13 +2089,16 @@ export type UserUpdateToOneWithWhereWithoutReminderEventsInput = {
 
 export type UserUpdateWithoutReminderEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1915,13 +2124,16 @@ export type UserUpdateWithoutReminderEventsInput = {
 
 export type UserUncheckedUpdateWithoutReminderEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1958,13 +2170,16 @@ export type UserUpdateToOneWithWhereWithoutActorEventsInput = {
 
 export type UserUpdateWithoutActorEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1990,13 +2205,16 @@ export type UserUpdateWithoutActorEventsInput = {
 
 export type UserUncheckedUpdateWithoutActorEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2022,13 +2240,16 @@ export type UserUncheckedUpdateWithoutActorEventsInput = {
 
 export type UserCreateWithoutChecklistTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2054,13 +2275,16 @@ export type UserCreateWithoutChecklistTemplatesInput = {
 
 export type UserUncheckedCreateWithoutChecklistTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2091,13 +2315,16 @@ export type UserCreateOrConnectWithoutChecklistTemplatesInput = {
 
 export type UserCreateWithoutCreatedTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2123,13 +2350,16 @@ export type UserCreateWithoutCreatedTemplatesInput = {
 
 export type UserUncheckedCreateWithoutCreatedTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2160,13 +2390,16 @@ export type UserCreateOrConnectWithoutCreatedTemplatesInput = {
 
 export type UserCreateWithoutEditedTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2192,13 +2425,16 @@ export type UserCreateWithoutEditedTemplatesInput = {
 
 export type UserUncheckedCreateWithoutEditedTemplatesInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2240,13 +2476,16 @@ export type UserUpdateToOneWithWhereWithoutChecklistTemplatesInput = {
 
 export type UserUpdateWithoutChecklistTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2272,13 +2511,16 @@ export type UserUpdateWithoutChecklistTemplatesInput = {
 
 export type UserUncheckedUpdateWithoutChecklistTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2315,13 +2557,16 @@ export type UserUpdateToOneWithWhereWithoutCreatedTemplatesInput = {
 
 export type UserUpdateWithoutCreatedTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2347,13 +2592,16 @@ export type UserUpdateWithoutCreatedTemplatesInput = {
 
 export type UserUncheckedUpdateWithoutCreatedTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2390,13 +2638,16 @@ export type UserUpdateToOneWithWhereWithoutEditedTemplatesInput = {
 
 export type UserUpdateWithoutEditedTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2422,13 +2673,16 @@ export type UserUpdateWithoutEditedTemplatesInput = {
 
 export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2454,13 +2708,16 @@ export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
 
 export type UserCreateWithoutChecklistRunsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2486,13 +2743,16 @@ export type UserCreateWithoutChecklistRunsInput = {
 
 export type UserUncheckedCreateWithoutChecklistRunsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2523,13 +2783,16 @@ export type UserCreateOrConnectWithoutChecklistRunsInput = {
 
 export type UserCreateWithoutActorRunsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2555,13 +2818,16 @@ export type UserCreateWithoutActorRunsInput = {
 
 export type UserUncheckedCreateWithoutActorRunsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2603,13 +2869,16 @@ export type UserUpdateToOneWithWhereWithoutChecklistRunsInput = {
 
 export type UserUpdateWithoutChecklistRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2635,13 +2904,16 @@ export type UserUpdateWithoutChecklistRunsInput = {
 
 export type UserUncheckedUpdateWithoutChecklistRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2678,13 +2950,16 @@ export type UserUpdateToOneWithWhereWithoutActorRunsInput = {
 
 export type UserUpdateWithoutActorRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2710,13 +2985,16 @@ export type UserUpdateWithoutActorRunsInput = {
 
 export type UserUncheckedUpdateWithoutActorRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2742,13 +3020,16 @@ export type UserUncheckedUpdateWithoutActorRunsInput = {
 
 export type UserCreateWithoutGameSessionsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2774,13 +3055,16 @@ export type UserCreateWithoutGameSessionsInput = {
 
 export type UserUncheckedCreateWithoutGameSessionsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2811,13 +3095,16 @@ export type UserCreateOrConnectWithoutGameSessionsInput = {
 
 export type UserCreateWithoutActorGameSessionsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2843,13 +3130,16 @@ export type UserCreateWithoutActorGameSessionsInput = {
 
 export type UserUncheckedCreateWithoutActorGameSessionsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -2891,13 +3181,16 @@ export type UserUpdateToOneWithWhereWithoutGameSessionsInput = {
 
 export type UserUpdateWithoutGameSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2923,13 +3216,16 @@ export type UserUpdateWithoutGameSessionsInput = {
 
 export type UserUncheckedUpdateWithoutGameSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2966,13 +3262,16 @@ export type UserUpdateToOneWithWhereWithoutActorGameSessionsInput = {
 
 export type UserUpdateWithoutActorGameSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2998,13 +3297,16 @@ export type UserUpdateWithoutActorGameSessionsInput = {
 
 export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3030,13 +3332,16 @@ export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
 
 export type UserCreateWithoutAnalyticsEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -3062,13 +3367,16 @@ export type UserCreateWithoutAnalyticsEventsInput = {
 
 export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -3099,13 +3407,16 @@ export type UserCreateOrConnectWithoutAnalyticsEventsInput = {
 
 export type UserCreateWithoutActorAnalyticsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -3131,13 +3442,16 @@ export type UserCreateWithoutActorAnalyticsInput = {
 
 export type UserUncheckedCreateWithoutActorAnalyticsInput = {
   id?: string
-  googleId: string
+  googleId?: string | null
   email: string
+  passwordHash?: string | null
   displayName: string
+  age?: number | null
   role?: $Enums.UserRole
   language?: string
   timezone?: string
   isActive?: boolean
+  emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
   lastSeenAt?: Date | string | null
@@ -3179,13 +3493,16 @@ export type UserUpdateToOneWithWhereWithoutAnalyticsEventsInput = {
 
 export type UserUpdateWithoutAnalyticsEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3211,13 +3528,16 @@ export type UserUpdateWithoutAnalyticsEventsInput = {
 
 export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3254,13 +3574,16 @@ export type UserUpdateToOneWithWhereWithoutActorAnalyticsInput = {
 
 export type UserUpdateWithoutActorAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3286,13 +3609,16 @@ export type UserUpdateWithoutActorAnalyticsInput = {
 
 export type UserUncheckedUpdateWithoutActorAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   language?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3495,11 +3821,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   googleId?: boolean
   email?: boolean
+  passwordHash?: boolean
   displayName?: boolean
+  age?: boolean
   role?: boolean
   language?: boolean
   timezone?: boolean
   isActive?: boolean
+  emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
   lastSeenAt?: boolean
@@ -3529,11 +3858,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   googleId?: boolean
   email?: boolean
+  passwordHash?: boolean
   displayName?: boolean
+  age?: boolean
   role?: boolean
   language?: boolean
   timezone?: boolean
   isActive?: boolean
+  emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
   lastSeenAt?: boolean
@@ -3545,11 +3877,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   googleId?: boolean
   email?: boolean
+  passwordHash?: boolean
   displayName?: boolean
+  age?: boolean
   role?: boolean
   language?: boolean
   timezone?: boolean
   isActive?: boolean
+  emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
   lastSeenAt?: boolean
@@ -3561,11 +3896,14 @@ export type UserSelectScalar = {
   id?: boolean
   googleId?: boolean
   email?: boolean
+  passwordHash?: boolean
   displayName?: boolean
+  age?: boolean
   role?: boolean
   language?: boolean
   timezone?: boolean
   isActive?: boolean
+  emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
   lastSeenAt?: boolean
@@ -3573,7 +3911,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "displayName" | "role" | "language" | "timezone" | "isActive" | "accessibilitySettings" | "preferredNotificationMode" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "passwordHash" | "displayName" | "age" | "role" | "language" | "timezone" | "isActive" | "emailVerifiedAt" | "accessibilitySettings" | "preferredNotificationMode" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   caregiverLinks?: boolean | Prisma.User$caregiverLinksArgs<ExtArgs>
   patientLinks?: boolean | Prisma.User$patientLinksArgs<ExtArgs>
@@ -3620,13 +3958,16 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    googleId: string
+    googleId: string | null
     email: string
+    passwordHash: string | null
     displayName: string
+    age: number | null
     role: $Enums.UserRole
     language: string
     timezone: string
     isActive: boolean
+    emailVerifiedAt: Date | null
     accessibilitySettings: runtime.JsonValue
     preferredNotificationMode: string
     lastSeenAt: Date | null
@@ -4075,11 +4416,14 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly googleId: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
+  readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly displayName: Prisma.FieldRef<"User", 'String'>
+  readonly age: Prisma.FieldRef<"User", 'Int'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly language: Prisma.FieldRef<"User", 'String'>
   readonly timezone: Prisma.FieldRef<"User", 'String'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly accessibilitySettings: Prisma.FieldRef<"User", 'Json'>
   readonly preferredNotificationMode: Prisma.FieldRef<"User", 'String'>
   readonly lastSeenAt: Prisma.FieldRef<"User", 'DateTime'>

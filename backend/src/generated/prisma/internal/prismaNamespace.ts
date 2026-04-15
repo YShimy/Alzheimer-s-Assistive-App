@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  EmailVerification: 'EmailVerification',
   CareLink: 'CareLink',
   Reminder: 'Reminder',
   ReminderEvent: 'ReminderEvent',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent"
+    modelProps: "user" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -483,6 +484,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmailVerification: {
+      payload: Prisma.$EmailVerificationPayload<ExtArgs>
+      fields: Prisma.EmailVerificationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmailVerificationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmailVerificationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        findFirst: {
+          args: Prisma.EmailVerificationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmailVerificationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        findMany: {
+          args: Prisma.EmailVerificationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>[]
+        }
+        create: {
+          args: Prisma.EmailVerificationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        createMany: {
+          args: Prisma.EmailVerificationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmailVerificationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>[]
+        }
+        delete: {
+          args: Prisma.EmailVerificationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        update: {
+          args: Prisma.EmailVerificationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmailVerificationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmailVerificationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmailVerificationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmailVerificationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmailVerificationPayload>
+        }
+        aggregate: {
+          args: Prisma.EmailVerificationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmailVerification>
+        }
+        groupBy: {
+          args: Prisma.EmailVerificationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmailVerificationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmailVerificationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmailVerificationCountAggregateOutputType> | number
         }
       }
     }
@@ -1121,11 +1196,14 @@ export const UserScalarFieldEnum = {
   id: 'id',
   googleId: 'googleId',
   email: 'email',
+  passwordHash: 'passwordHash',
   displayName: 'displayName',
+  age: 'age',
   role: 'role',
   language: 'language',
   timezone: 'timezone',
   isActive: 'isActive',
+  emailVerifiedAt: 'emailVerifiedAt',
   accessibilitySettings: 'accessibilitySettings',
   preferredNotificationMode: 'preferredNotificationMode',
   lastSeenAt: 'lastSeenAt',
@@ -1134,6 +1212,24 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const EmailVerificationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  codeHash: 'codeHash',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  lastSentAt: 'lastSentAt',
+  purpose: 'purpose',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailVerificationScalarFieldEnum = (typeof EmailVerificationScalarFieldEnum)[keyof typeof EmailVerificationScalarFieldEnum]
 
 
 export const CareLinkScalarFieldEnum = {
@@ -1376,6 +1472,20 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'UserRole'
  */
 export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
@@ -1397,6 +1507,20 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -1411,16 +1535,16 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
- * Reference to a field of type 'DateTime'
+ * Reference to a field of type 'VerificationPurpose'
  */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+export type EnumVerificationPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationPurpose'>
     
 
 
 /**
- * Reference to a field of type 'DateTime[]'
+ * Reference to a field of type 'VerificationPurpose[]'
  */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+export type ListEnumVerificationPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationPurpose[]'>
     
 
 
@@ -1453,20 +1577,6 @@ export type ListEnumReminderCategoryFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
  * Reference to a field of type 'ReminderEventType'
  */
 export type EnumReminderEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderEventType'>
@@ -1477,6 +1587,20 @@ export type EnumReminderEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ReminderEventType[]'
  */
 export type ListEnumReminderEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderEventType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChecklistCategory'
+ */
+export type EnumChecklistCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChecklistCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'ChecklistCategory[]'
+ */
+export type ListEnumChecklistCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChecklistCategory[]'>
     
 
 
@@ -1603,6 +1727,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  emailVerification?: Prisma.EmailVerificationOmit
   careLink?: Prisma.CareLinkOmit
   reminder?: Prisma.ReminderOmit
   reminderEvent?: Prisma.ReminderEventOmit

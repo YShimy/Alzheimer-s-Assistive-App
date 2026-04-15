@@ -4,50 +4,102 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  Pressable,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ScreenContainer, AppButton, Icon } from '@/src/shared/ui';
+import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
 import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { useSessionStore } from '@/src/state/sessionStore';
+import { ApiError } from '@/src/infrastructure/api/client';
+
+import Constants, { ExecutionEnvironment } from 'expo-constants';
+
 let GoogleSignin: any = null;
 let statusCodes: any = null;
 
-try {
-  const RNGoogleSignin = require('@react-native-google-signin/google-signin');
-  GoogleSignin = RNGoogleSignin.GoogleSignin;
-  statusCodes = RNGoogleSignin.statusCodes;
+const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
-  /**
-   * Configure Google Sign-In once at module level.
-   * webClientId must be the Web OAuth 2.0 Client ID from Google Cloud Console.
-   */
-  if (GoogleSignin) {
-    GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '',
-      // iosClientId is required on iOS when NOT using GoogleService-Info.plist auto-config
-      // If EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set, pass it here:
-      ...(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
-        ? { iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }
-        : {}),
-    });
+if (!isExpoGo) {
+  try {
+    const RNGoogleSignin = require('@react-native-google-signin/google-signin');
+    GoogleSignin = RNGoogleSignin.GoogleSignin;
+    statusCodes = RNGoogleSignin.statusCodes;
+
+    if (GoogleSignin && process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        ...(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
+          ? { iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }
+          : {}),
+      });
+    }
+  } catch (e) {
+    console.warn('GoogleSignin initialization failed:', e);
   }
-} catch (e) {
-  // Ignored in Expo Go
-  console.warn('GoogleSignin is not available (running in Expo Go). Please use Dev Login instead.');
+} else {
+  console.log('Skipping GoogleSignin setup in Expo Go.');
 }
 
 /**
- * Login screen — single sign-in path via real Google OAuth.
- * Requires a native dev build; will not work in Expo Go.
+ * Login screen — main auth entry point.
+ * Supports email/password sign-in, Google sign-in, and signup navigation.
  */
 export default function LoginScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const setSession = useSessionStore((s) => s.setSession);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // ─── Email/Password Sign In ─────────────────────────────
+
+  const handleSignIn = async () => {
+    setError('');
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail) {
+      setError('Please enter your email address.');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your password.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await authApi.signin(trimmedEmail, password);
+      setSession({
+        token: result.accessToken,
+        role: result.user.role.toUpperCase() as 'PATIENT' | 'CAREGIVER',
+        userId: result.user.id,
+        displayName: result.user.displayName,
+      });
+    } catch (err: any) {
+      if (err instanceof ApiError) {
+        if (err.code === 'INVALID_CREDENTIALS') {
+          setError(t('auth.invalidCredentials'));
+        } else if (err.code === 'EMAIL_NOT_VERIFIED') {
+          setError('Email not verified. Please complete signup first.');
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError(err?.message ?? 'Sign-in failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ─── Google Sign In ─────────────────────────────────────
 
   const handleGoogleSignIn = async () => {
     setError('');
@@ -55,22 +107,17 @@ export default function LoginScreen() {
     if (!GoogleSignin) {
       Alert.alert(
         'Native Build Required',
-        'Google Sign-In is not supported in Expo Go.\n\nPlease use the Dev Login options below for testing.',
+        t('auth.googleNotAvailable'),
       );
       return;
     }
 
-    // Guard: env var must be set
     if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
-      Alert.alert(
-        'Setup Required',
-        'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is not set.\n\nAdd it to mobile/.env and rebuild the dev client.',
-      );
+      Alert.alert('Setup Required', t('auth.googleSetupRequired'));
       return;
     }
 
     setLoading(true);
-
     try {
       if (Platform.OS === 'android') {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -84,36 +131,20 @@ export default function LoginScreen() {
         return;
       }
 
-      // Exchange Google ID token for app JWT — backend verifies with Google
       const result = await authApi.loginWithGoogle(idToken);
-
       setSession({
         token: result.accessToken,
         role: result.user.role.toUpperCase() as 'PATIENT' | 'CAREGIVER',
         userId: result.user.id,
         displayName: result.user.displayName,
       });
-
     } catch (err: any) {
-      if (err?.code === statusCodes.SIGN_IN_CANCELLED) {
-        // User cancelled — not an error, reset silently
-        return;
-      } else if (err?.code === statusCodes.IN_PROGRESS) {
-        // A sign-in is already in progress
-        return;
-      } else if (err?.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        Alert.alert(
-          'Google Play Services Required',
-          'Update Google Play Services on your device and try again.',
-        );
-      } else if (
-        err?.message?.includes('RNGoogleSignin') ||
-        err?.message?.includes('NativeModule')
-      ) {
-        Alert.alert(
-          'Native Build Required',
-          'Google Sign-In requires a development build.\n\nRun:\n  npx expo run:android\n  npx expo run:ios',
-        );
+      if (err?.code === statusCodes?.SIGN_IN_CANCELLED) return;
+      if (err?.code === statusCodes?.IN_PROGRESS) return;
+      if (err?.code === statusCodes?.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert('Google Play Services Required', 'Update Google Play Services and try again.');
+      } else if (err?.message?.includes('RNGoogleSignin') || err?.message?.includes('NativeModule')) {
+        Alert.alert('Native Build Required', t('auth.googleNotAvailable'));
       } else if (err?.status === 401) {
         setError('Authentication failed. Please try again.');
       } else {
@@ -123,6 +154,8 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
+
+  // ─── Dev Login ──────────────────────────────────────────
 
   const handleDevLogin = async (role: 'PATIENT' | 'CAREGIVER') => {
     setError('');
@@ -143,73 +176,126 @@ export default function LoginScreen() {
   };
 
   return (
-    <ScreenContainer scroll={false} backgroundColor={colors.primary[50]}>
-      <View style={{ position: 'absolute', top: 50, right: 10, zIndex: 10 }}>
-        <LanguageToggleButton />
-      </View>
-      <View style={styles.content}>
-        {/* Logo area */}
-        <View style={styles.logoContainer}>
-          <View style={styles.logoCircle}>
-            <Icon name="heart-outline" size={40} color={colors.primary[500]} />
+    <ScreenContainer scroll backgroundColor={colors.primary[50]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
+        <View style={{ position: 'absolute', top: 10, right: -8, zIndex: 10 }}>
+          <LanguageToggleButton />
+        </View>
+
+        <View style={styles.content}>
+          {/* Logo */}
+          <View style={styles.logoContainer}>
+            <View style={styles.logoCircle}>
+              <Icon name="heart-outline" size={40} color={colors.primary[500]} />
+            </View>
+            <Text style={styles.title}>{t('auth.appTitle')}</Text>
+            <Text style={styles.subtitle}>{t('auth.appSubtitle')}</Text>
           </View>
-          <Text style={styles.title}>{t('auth.appTitle')}</Text>
-          <Text style={styles.subtitle}>{t('auth.appSubtitle')}</Text>
-        </View>
 
-        {/* Login card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('auth.cardTitle')}</Text>
-          <Text style={styles.cardSubtitle}>{t('auth.cardSubtitle')}</Text>
+          {/* Sign In Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('auth.signInTitle')}</Text>
+            <Text style={styles.cardSubtitle}>{t('auth.signInSubtitle')}</Text>
 
-          <AppButton
-            title={loading ? t('auth.signingIn') : t('auth.continueGoogle')}
-            onPress={handleGoogleSignIn}
-            variant="primary"
-            disabled={loading}
-            loading={loading}
-            icon={!loading ? <Icon name="logo-google" size={20} color="#fff" /> : undefined}
-          />
+            <AppInput
+              label={t('auth.email')}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={t('auth.emailPlaceholder')}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              editable={!loading}
+            />
 
-          {!!error && (
-            <View style={styles.errorBox}>
-              <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
+            <AppInput
+              label={t('auth.password')}
+              value={password}
+              onChangeText={setPassword}
+              placeholder={t('auth.passwordPlaceholder')}
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="password"
+              editable={!loading}
+            />
 
-          {/* Dev Login options (only in development) */}
-          {__DEV__ && (
-            <View style={styles.devContainer}>
-              <Text style={styles.devTitle}>{t('auth.devLoginTitle')}</Text>
-              <View style={styles.devButtons}>
-                <AppButton
-                  title={t('auth.patient')}
-                  onPress={() => handleDevLogin('PATIENT')}
-                  variant="outline"
-                  style={{ flex: 1 }}
-                  size="sm"
-                  disabled={loading}
-                />
-                <AppButton
-                  title={t('auth.caregiver')}
-                  onPress={() => handleDevLogin('CAREGIVER')}
-                  variant="outline"
-                  style={{ flex: 1 }}
-                  size="sm"
-                  disabled={loading}
-                />
+            <AppButton
+              title={loading ? t('auth.signingInAction') : t('auth.signInAction')}
+              onPress={handleSignIn}
+              variant="primary"
+              disabled={loading}
+              loading={loading}
+            />
+
+            {/* Error message */}
+            {!!error && (
+              <View style={styles.errorBox}>
+                <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
+                <Text style={styles.errorText}>{error}</Text>
               </View>
-            </View>
-          )}
-        </View>
+            )}
 
-        {/* Privacy note */}
-        <Text style={styles.note}>
-          <Icon name="lock-closed-outline" size={14} color={colors.neutral[400]} />
-          {'  '}{t('auth.privacyNote')}
-        </Text>
-      </View>
+            {/* Divider */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t('auth.or')}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Google Sign-In */}
+            <AppButton
+              title={t('auth.continueGoogle')}
+              onPress={handleGoogleSignIn}
+              variant="outline"
+              disabled={loading}
+              icon={<Icon name="logo-google" size={18} color={colors.on_surface} />}
+            />
+
+            {/* Sign Up Link */}
+            <View style={styles.switchRow}>
+              <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
+              <Pressable onPress={() => router.push('/(auth)/signup-email')}>
+                <Text style={styles.switchLink}>{t('auth.signUp')}</Text>
+              </Pressable>
+            </View>
+
+            {/* Dev Login (development only) */}
+            {__DEV__ && (
+              <View style={styles.devContainer}>
+                <Text style={styles.devTitle}>{t('auth.devLoginTitle')}</Text>
+                <View style={styles.devButtons}>
+                  <AppButton
+                    title={t('auth.patient')}
+                    onPress={() => handleDevLogin('PATIENT')}
+                    variant="outline"
+                    style={{ flex: 1 }}
+                    size="sm"
+                    disabled={loading}
+                  />
+                  <AppButton
+                    title={t('auth.caregiver')}
+                    onPress={() => handleDevLogin('CAREGIVER')}
+                    variant="outline"
+                    style={{ flex: 1 }}
+                    size="sm"
+                    disabled={loading}
+                  />
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* Privacy note */}
+          <Text style={styles.note}>
+            <Icon name="lock-closed-outline" size={14} color={colors.neutral[400]} />
+            {'  '}{t('auth.privacyNote')}
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
@@ -218,12 +304,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: spacing['2xl'],
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing['4xl'],
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: spacing['4xl'],
+    marginBottom: spacing['3xl'],
   },
   logoCircle: {
     width: 80,
@@ -277,11 +363,43 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.error.main,
   },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: spacing.xl,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.neutral[200],
+  },
+  dividerText: {
+    marginHorizontal: spacing.md,
+    fontSize: typography.size.sm,
+    color: colors.neutral[400],
+  },
+  switchRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: spacing.xl,
+    gap: spacing.xs,
+  },
+  switchText: {
+    fontSize: typography.size.sm,
+    color: colors.neutral[500],
+  },
+  switchLink: {
+    fontSize: typography.size.sm,
+    fontWeight: '600',
+    color: colors.primary.main,
+  },
   note: {
     marginTop: spacing['2xl'],
     fontSize: typography.size.sm,
     color: colors.neutral[400],
     textAlign: 'center',
+    marginBottom: spacing['2xl'],
   },
   devContainer: {
     marginTop: spacing.xl,

@@ -856,14 +856,6 @@ export type ReminderUpdatedaysOfWeekInput = {
   push?: number | number[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ReminderCreateNestedOneWithoutEventsInput = {
   create?: Prisma.XOR<Prisma.ReminderCreateWithoutEventsInput, Prisma.ReminderUncheckedCreateWithoutEventsInput>
   connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutEventsInput

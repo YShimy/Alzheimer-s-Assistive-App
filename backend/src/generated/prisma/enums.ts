@@ -34,10 +34,26 @@ export const ReminderCategory = {
   HYDRATION: 'HYDRATION',
   MEAL: 'MEAL',
   CALL: 'CALL',
-  CUSTOM: 'CUSTOM'
+  CUSTOM: 'CUSTOM',
+  GENERAL: 'GENERAL'
 } as const
 
 export type ReminderCategory = (typeof ReminderCategory)[keyof typeof ReminderCategory]
+
+
+export const ChecklistCategory = {
+  HYGIENE: 'HYGIENE',
+  MEALS: 'MEALS',
+  MEDICATION: 'MEDICATION',
+  EXERCISE: 'EXERCISE',
+  HOUSEHOLD: 'HOUSEHOLD',
+  APPOINTMENTS: 'APPOINTMENTS',
+  SOCIAL: 'SOCIAL',
+  CUSTOM: 'CUSTOM',
+  GENERAL: 'GENERAL'
+} as const
+
+export type ChecklistCategory = (typeof ChecklistCategory)[keyof typeof ChecklistCategory]
 
 
 export const ReminderEventType = {
@@ -63,3 +79,11 @@ export const ChecklistRunStatus = {
 } as const
 
 export type ChecklistRunStatus = (typeof ChecklistRunStatus)[keyof typeof ChecklistRunStatus]
+
+
+export const VerificationPurpose = {
+  SIGNUP: 'SIGNUP',
+  PASSWORD_RESET: 'PASSWORD_RESET'
+} as const
+
+export type VerificationPurpose = (typeof VerificationPurpose)[keyof typeof VerificationPurpose]

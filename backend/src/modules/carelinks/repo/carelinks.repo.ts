@@ -13,7 +13,7 @@ export const carelinksRepo = {
     caregiverUserId: string;
     invitedByUserId: string;
   }): Promise<CareLink> {
-    const inviteCode = crypto.randomBytes(6).toString('hex').toUpperCase();
+    const inviteCode = crypto.randomInt(100000, 999999).toString();
 
     return prisma.careLink.create({
       data: {

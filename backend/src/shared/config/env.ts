@@ -9,8 +9,15 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   JWT_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string().default('7d'),
-  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_ID: z.string().default(''),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+
+  // SMTP / Mail
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.string().default('587').transform(Number),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASS: z.string().default(''),
+  MAIL_FROM: z.string().default('youssef.elshimyy@gmail.com'),
 });
 
 const parsed = envSchema.safeParse(process.env);

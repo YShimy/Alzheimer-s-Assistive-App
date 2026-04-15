@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  EmailVerification: 'EmailVerification',
   CareLink: 'CareLink',
   Reminder: 'Reminder',
   ReminderEvent: 'ReminderEvent',
@@ -82,11 +83,14 @@ export const UserScalarFieldEnum = {
   id: 'id',
   googleId: 'googleId',
   email: 'email',
+  passwordHash: 'passwordHash',
   displayName: 'displayName',
+  age: 'age',
   role: 'role',
   language: 'language',
   timezone: 'timezone',
   isActive: 'isActive',
+  emailVerifiedAt: 'emailVerifiedAt',
   accessibilitySettings: 'accessibilitySettings',
   preferredNotificationMode: 'preferredNotificationMode',
   lastSeenAt: 'lastSeenAt',
@@ -95,6 +99,24 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const EmailVerificationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  codeHash: 'codeHash',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  lastSentAt: 'lastSentAt',
+  purpose: 'purpose',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailVerificationScalarFieldEnum = (typeof EmailVerificationScalarFieldEnum)[keyof typeof EmailVerificationScalarFieldEnum]
 
 
 export const CareLinkScalarFieldEnum = {

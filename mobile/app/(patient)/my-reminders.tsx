@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import {
   ScreenContainer,
@@ -34,6 +35,7 @@ import { EventNames } from '@/src/infrastructure/events/eventNames';
  */
 export default function PatientRemindersScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const userId = useSessionStore((s) => s.userId);
   const { reminders, loading, error, refreshing, refresh, reload } = useReminders(userId, { active: 'true', pendingOnly: true });
   const { actionLoading, actionError, submit } = useReminderAction(reload);
@@ -108,6 +110,16 @@ export default function PatientRemindersScreen() {
           <Text style={styles.errorBannerText}>{actionError}</Text>
         </View>
       )}
+
+      {/* FAB to Manage Reminders */}
+      <Pressable
+        style={styles.fab}
+        onPress={() => router.push('/(patient)/manage-reminders')}
+        accessibilityRole="button"
+        accessibilityLabel="Manage Reminders"
+      >
+        <Icon name="settings-outline" size={24} color="#fff" />
+      </Pressable>
 
       {/* Reminder detail sheet */}
       <ReminderDetailModal reminder={selected} onClose={() => setSelected(null)} />
@@ -499,5 +511,17 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.neutral[600],
     lineHeight: 22,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: spacing['3xl'],
+    right: spacing['2xl'],
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primary[500],
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.lg,
   },
 });

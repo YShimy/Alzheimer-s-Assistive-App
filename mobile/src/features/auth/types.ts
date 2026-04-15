@@ -6,8 +6,10 @@ export interface LoginResponse {
     id: string;
     role: string;
     displayName: string;
+    email: string;
     language: string;
   };
+  nextStep?: string;
 }
 
 export interface AuthUser {
@@ -19,4 +21,14 @@ export interface AuthUser {
   timezone: string;
   isActive: boolean;
   lastSeenAt: string | null;
+}
+
+export interface SignupRequestCodeResponse {
+  ok: boolean;
+  cooldownSeconds: number;
+}
+
+export interface SignupVerifyCodeResponse {
+  ok: boolean;
+  verificationToken: string;
 }

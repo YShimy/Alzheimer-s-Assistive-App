@@ -577,10 +577,6 @@ export type EnumCareLinkStatusFieldUpdateOperationsInput = {
   set?: $Enums.CareLinkStatus
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type CareLinkCreateWithoutCaregiverInput = {
   id?: string
   inviteCode: string

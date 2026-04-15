@@ -91,12 +91,26 @@ export default function PatientLayout() {
           ),
         }}
       />
-      {/* Hide the safe-path-game screen from the tab bar */}
+      {/* Hidden screens from the tab bar */}
       <Tabs.Screen
         name="safe-path-game"
         options={{
           href: null,
           headerTitle: 'Safe Path Memory',
+        }}
+      />
+      <Tabs.Screen
+        name="manage-reminders"
+        options={{
+          href: null,
+          headerTitle: t('caregiverReminders.manageReminders', 'Manage Reminders'), // Fallback to english string
+        }}
+      />
+      <Tabs.Screen
+        name="manage-checklists"
+        options={{
+          href: null,
+          headerTitle: t('caregiverChecklists.manageChecklists', 'Manage Checklists'),
         }}
       />
     </Tabs>

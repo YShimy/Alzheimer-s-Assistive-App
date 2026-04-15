@@ -39,7 +39,7 @@ export type ChecklistTemplateMinAggregateOutputType = {
   patientUserId: string | null
   title: string | null
   description: string | null
-  category: string | null
+  category: $Enums.ChecklistCategory | null
   estimatedDurationMinutes: number | null
   isActive: boolean | null
   archivedAt: Date | null
@@ -54,7 +54,7 @@ export type ChecklistTemplateMaxAggregateOutputType = {
   patientUserId: string | null
   title: string | null
   description: string | null
-  category: string | null
+  category: $Enums.ChecklistCategory | null
   estimatedDurationMinutes: number | null
   isActive: boolean | null
   archivedAt: Date | null
@@ -228,7 +228,7 @@ export type ChecklistTemplateGroupByOutputType = {
   patientUserId: string
   title: string
   description: string | null
-  category: string
+  category: $Enums.ChecklistCategory
   steps: runtime.JsonValue
   estimatedDurationMinutes: number | null
   isActive: boolean
@@ -267,7 +267,7 @@ export type ChecklistTemplateWhereInput = {
   patientUserId?: Prisma.StringFilter<"ChecklistTemplate"> | string
   title?: Prisma.StringFilter<"ChecklistTemplate"> | string
   description?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
-  category?: Prisma.StringFilter<"ChecklistTemplate"> | string
+  category?: Prisma.EnumChecklistCategoryFilter<"ChecklistTemplate"> | $Enums.ChecklistCategory
   steps?: Prisma.JsonFilter<"ChecklistTemplate">
   estimatedDurationMinutes?: Prisma.IntNullableFilter<"ChecklistTemplate"> | number | null
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
@@ -312,7 +312,7 @@ export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
   patientUserId?: Prisma.StringFilter<"ChecklistTemplate"> | string
   title?: Prisma.StringFilter<"ChecklistTemplate"> | string
   description?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
-  category?: Prisma.StringFilter<"ChecklistTemplate"> | string
+  category?: Prisma.EnumChecklistCategoryFilter<"ChecklistTemplate"> | $Enums.ChecklistCategory
   steps?: Prisma.JsonFilter<"ChecklistTemplate">
   estimatedDurationMinutes?: Prisma.IntNullableFilter<"ChecklistTemplate"> | number | null
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
@@ -357,7 +357,7 @@ export type ChecklistTemplateScalarWhereWithAggregatesInput = {
   patientUserId?: Prisma.StringWithAggregatesFilter<"ChecklistTemplate"> | string
   title?: Prisma.StringWithAggregatesFilter<"ChecklistTemplate"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
-  category?: Prisma.StringWithAggregatesFilter<"ChecklistTemplate"> | string
+  category?: Prisma.EnumChecklistCategoryWithAggregatesFilter<"ChecklistTemplate"> | $Enums.ChecklistCategory
   steps?: Prisma.JsonWithAggregatesFilter<"ChecklistTemplate">
   estimatedDurationMinutes?: Prisma.IntNullableWithAggregatesFilter<"ChecklistTemplate"> | number | null
   isActive?: Prisma.BoolWithAggregatesFilter<"ChecklistTemplate"> | boolean
@@ -372,7 +372,7 @@ export type ChecklistTemplateCreateInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -391,7 +391,7 @@ export type ChecklistTemplateUncheckedCreateInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -408,7 +408,7 @@ export type ChecklistTemplateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -427,7 +427,7 @@ export type ChecklistTemplateUncheckedUpdateInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -445,7 +445,7 @@ export type ChecklistTemplateCreateManyInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -460,7 +460,7 @@ export type ChecklistTemplateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -474,7 +474,7 @@ export type ChecklistTemplateUncheckedUpdateManyInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -701,12 +701,8 @@ export type ChecklistTemplateUpdateOneWithoutRemindersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChecklistTemplateUpdateToOneWithWhereWithoutRemindersInput, Prisma.ChecklistTemplateUpdateWithoutRemindersInput>, Prisma.ChecklistTemplateUncheckedUpdateWithoutRemindersInput>
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type EnumChecklistCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ChecklistCategory
 }
 
 export type ChecklistTemplateCreateNestedOneWithoutRunsInput = {
@@ -727,7 +723,7 @@ export type ChecklistTemplateCreateWithoutPatientInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -744,7 +740,7 @@ export type ChecklistTemplateUncheckedCreateWithoutPatientInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -771,7 +767,7 @@ export type ChecklistTemplateCreateWithoutCreatedByInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -789,7 +785,7 @@ export type ChecklistTemplateUncheckedCreateWithoutCreatedByInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -815,7 +811,7 @@ export type ChecklistTemplateCreateWithoutEditedByInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -833,7 +829,7 @@ export type ChecklistTemplateUncheckedCreateWithoutEditedByInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -879,7 +875,7 @@ export type ChecklistTemplateScalarWhereInput = {
   patientUserId?: Prisma.StringFilter<"ChecklistTemplate"> | string
   title?: Prisma.StringFilter<"ChecklistTemplate"> | string
   description?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
-  category?: Prisma.StringFilter<"ChecklistTemplate"> | string
+  category?: Prisma.EnumChecklistCategoryFilter<"ChecklistTemplate"> | $Enums.ChecklistCategory
   steps?: Prisma.JsonFilter<"ChecklistTemplate">
   estimatedDurationMinutes?: Prisma.IntNullableFilter<"ChecklistTemplate"> | number | null
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
@@ -926,7 +922,7 @@ export type ChecklistTemplateCreateWithoutRemindersInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -944,7 +940,7 @@ export type ChecklistTemplateUncheckedCreateWithoutRemindersInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -976,7 +972,7 @@ export type ChecklistTemplateUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -994,7 +990,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutRemindersInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1010,7 +1006,7 @@ export type ChecklistTemplateCreateWithoutRunsInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -1028,7 +1024,7 @@ export type ChecklistTemplateUncheckedCreateWithoutRunsInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -1060,7 +1056,7 @@ export type ChecklistTemplateUpdateWithoutRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1078,7 +1074,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutRunsInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1094,7 +1090,7 @@ export type ChecklistTemplateCreateManyPatientInput = {
   id?: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -1110,7 +1106,7 @@ export type ChecklistTemplateCreateManyCreatedByInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -1125,7 +1121,7 @@ export type ChecklistTemplateCreateManyEditedByInput = {
   patientUserId: string
   title: string
   description?: string | null
-  category?: string
+  category?: $Enums.ChecklistCategory
   steps: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: number | null
   isActive?: boolean
@@ -1139,7 +1135,7 @@ export type ChecklistTemplateUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1156,7 +1152,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1173,7 +1169,7 @@ export type ChecklistTemplateUncheckedUpdateManyWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1188,7 +1184,7 @@ export type ChecklistTemplateUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1206,7 +1202,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutCreatedByInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1223,7 +1219,7 @@ export type ChecklistTemplateUncheckedUpdateManyWithoutCreatedByInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1237,7 +1233,7 @@ export type ChecklistTemplateUpdateWithoutEditedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1255,7 +1251,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutEditedByInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1272,7 +1268,7 @@ export type ChecklistTemplateUncheckedUpdateManyWithoutEditedByInput = {
   patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumChecklistCategoryFieldUpdateOperationsInput | $Enums.ChecklistCategory
   steps?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   estimatedDurationMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1432,7 +1428,7 @@ export type $ChecklistTemplatePayload<ExtArgs extends runtime.Types.Extensions.I
     patientUserId: string
     title: string
     description: string | null
-    category: string
+    category: $Enums.ChecklistCategory
     steps: runtime.JsonValue
     estimatedDurationMinutes: number | null
     isActive: boolean
@@ -1873,7 +1869,7 @@ export interface ChecklistTemplateFieldRefs {
   readonly patientUserId: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly title: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly description: Prisma.FieldRef<"ChecklistTemplate", 'String'>
-  readonly category: Prisma.FieldRef<"ChecklistTemplate", 'String'>
+  readonly category: Prisma.FieldRef<"ChecklistTemplate", 'ChecklistCategory'>
   readonly steps: Prisma.FieldRef<"ChecklistTemplate", 'Json'>
   readonly estimatedDurationMinutes: Prisma.FieldRef<"ChecklistTemplate", 'Int'>
   readonly isActive: Prisma.FieldRef<"ChecklistTemplate", 'Boolean'>

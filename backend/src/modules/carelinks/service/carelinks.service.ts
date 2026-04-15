@@ -38,10 +38,12 @@ export const carelinksService = {
    * Patient accepts an invite code.
    */
   async acceptInvite(patientUserId: string, inviteCode: string): Promise<CareLinkResponse> {
+    console.log(`[CareLinks] acceptInvite - PATIENT: ${patientUserId} - raw invite code: "${inviteCode}" length: ${inviteCode?.length}`);
     const link = await carelinksRepo.findByInviteCode(inviteCode);
+    console.log(`[CareLinks] acceptInvite - found link?`, !!link);
 
     if (!link) {
-      throw new AppError('Invalid invite code', 404, ErrorCode.CARELINK_INVALID_CODE);
+      throw new AppError(`Invalid invite code: "${inviteCode}"`, 404, ErrorCode.CARELINK_INVALID_CODE);
     }
 
     if (link.status === 'ACTIVE') {

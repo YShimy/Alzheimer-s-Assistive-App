@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ScreenContainer, AppCard, AppButton, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
@@ -28,6 +28,7 @@ import { EventNames } from '@/src/infrastructure/events/eventNames';
  */
 export default function PatientChecklistScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [backendReady, setBackendReady] = useState(true);
@@ -164,6 +165,16 @@ export default function PatientChecklistScreen() {
           />
         )}
       />
+
+      {/* FAB to Manage Checklists */}
+      <Pressable
+        style={styles.fab}
+        onPress={() => router.push('/(patient)/manage-checklists')}
+        accessibilityRole="button"
+        accessibilityLabel="Manage Checklists"
+      >
+        <Icon name="settings-outline" size={24} color="#fff" />
+      </Pressable>
 
       {/* Active Run Modal */}
       {activeRun && (
@@ -452,4 +463,16 @@ const styles = StyleSheet.create({
   },
   stepTitleDone: { color: colors.success.dark, textDecorationLine: 'line-through' },
   stepDesc: { fontSize: typography.size.sm, color: colors.neutral[500], marginTop: 4, lineHeight: 18 },
+  fab: {
+    position: 'absolute',
+    bottom: spacing['3xl'],
+    right: spacing['2xl'],
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primary[500],
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.lg,
+  },
 });

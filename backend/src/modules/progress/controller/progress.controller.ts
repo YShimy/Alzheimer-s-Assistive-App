@@ -1,51 +1,28 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { progressService } from '../service/progress.service.js';
-import { AppError } from '../../../shared/errors/AppError.js';
-import { prisma } from '../../../shared/db/prisma.js';
 
-export class ProgressController {
-  getWeeklyProgress = async (req: Request, res: Response) => {
-    const patientId = req.params.patientId as string;
-    const user = req.user!;
-    
-    // Auth guard
-    if (user.role === 'PATIENT' && user.userId !== patientId) {
-      throw AppError.forbidden('Cannot view other patient progress');
-    }
-    if (user.role === 'CAREGIVER') {
-      const link = await prisma.careLink.findFirst({
-        where: { caregiverUserId: user.userId, patientUserId: patientId, status: 'ACTIVE' }
-      });
-      if (!link) {
-        throw AppError.forbidden('Not linked to this patient');
-      }
-    }
+export const progressController = {
+  // GET /api/patients/:patientId/progress/overview
+  async getOverview(req: Request, res: Response): Promise<void> {
+    const data = await progressService.getOverview(req.params.patientId);
+    res.status(200).json(data);
+  },
 
-    const role = user.role === 'PATIENT' ? 'patient' : 'caregiver';
-    const data = await progressService.getWeeklyProgress(patientId, role);
-    res.json(data);
-  };
+  // GET /api/patients/:patientId/progress/streaks
+  async getStreaks(req: Request, res: Response): Promise<void> {
+    const data = await progressService.getStreaks(req.params.patientId);
+    res.status(200).json(data);
+  },
 
-  getOverview = async (req: Request, res: Response) => {
-    const patientId = req.params.patientId as string;
-    const user = req.user!;
-    
-    // Auth guard
-    if (user.role === 'PATIENT' && user.userId !== patientId) {
-      throw AppError.forbidden('Cannot view other patient progress');
-    }
-    if (user.role === 'CAREGIVER') {
-      const link = await prisma.careLink.findFirst({
-        where: { caregiverUserId: user.userId, patientUserId: patientId, status: 'ACTIVE' }
-      });
-      if (!link) {
-        throw AppError.forbidden('Not linked to this patient');
-      }
-    }
+  // GET /api/patients/:patientId/progress/categories
+  async getCategories(req: Request, res: Response): Promise<void> {
+    const data = await progressService.getCategories(req.params.patientId);
+    res.status(200).json(data);
+  },
 
-    const data = await progressService.getProgressOverview(patientId);
-    res.json(data);
-  };
-}
-
-export const progressController = new ProgressController();
+  // GET /api/patients/:patientId/progress/charts
+  async getCharts(req: Request, res: Response): Promise<void> {
+    const data = await progressService.getCharts(req.params.patientId);
+    res.status(200).json(data);
+  }
+};
