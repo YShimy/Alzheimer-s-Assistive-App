@@ -12,20 +12,32 @@ import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { useSessionStore } from '@/src/state/sessionStore';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+let GoogleSignin: any = null;
+let statusCodes: any = null;
 
-/**
- * Configure Google Sign-In once at module level.
- * webClientId must be the Web OAuth 2.0 Client ID from Google Cloud Console.
- */
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '',
-  // iosClientId is required on iOS when NOT using GoogleService-Info.plist auto-config
-  // If EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set, pass it here:
-  ...(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
-    ? { iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }
-    : {}),
-});
+try {
+  const RNGoogleSignin = require('@react-native-google-signin/google-signin');
+  GoogleSignin = RNGoogleSignin.GoogleSignin;
+  statusCodes = RNGoogleSignin.statusCodes;
+
+  /**
+   * Configure Google Sign-In once at module level.
+   * webClientId must be the Web OAuth 2.0 Client ID from Google Cloud Console.
+   */
+  if (GoogleSignin) {
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '',
+      // iosClientId is required on iOS when NOT using GoogleService-Info.plist auto-config
+      // If EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set, pass it here:
+      ...(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
+        ? { iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID }
+        : {}),
+    });
+  }
+} catch (e) {
+  // Ignored in Expo Go
+  console.warn('GoogleSignin is not available (running in Expo Go). Please use Dev Login instead.');
+}
 
 /**
  * Login screen — single sign-in path via real Google OAuth.
@@ -39,6 +51,14 @@ export default function LoginScreen() {
 
   const handleGoogleSignIn = async () => {
     setError('');
+
+    if (!GoogleSignin) {
+      Alert.alert(
+        'Native Build Required',
+        'Google Sign-In is not supported in Expo Go.\n\nPlease use the Dev Login options below for testing.',
+      );
+      return;
+    }
 
     // Guard: env var must be set
     if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {

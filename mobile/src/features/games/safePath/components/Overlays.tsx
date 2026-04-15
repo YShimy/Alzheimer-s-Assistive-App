@@ -5,6 +5,7 @@
  */
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing, radius, shadows } from '../../../../infrastructure/theme/tokens';
 import { AppButton } from '../../../../shared/ui';
 import type { LevelResult, SessionResult } from '../engine/types';
@@ -19,24 +20,26 @@ interface LevelSuccessProps {
 }
 
 export function LevelSuccessFeedback({ levelResult, totalScore, streak, onContinue }: LevelSuccessProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.card}>
         <View style={[styles.iconCircle, { backgroundColor: colors.success.light }]}>
           <Ionicons name="checkmark-circle" size={48} color={colors.success.main} />
         </View>
-        <Text style={styles.title}>Level Complete</Text>
-        <Text style={styles.subtitle}>Great memory! You found the safe path.</Text>
+        <Text style={styles.title}>{t('games.safePath.levelCompleteTitle')}</Text>
+        <Text style={styles.subtitle}>{t('games.safePath.levelCompleteSub')}</Text>
 
         <View style={styles.statsRow}>
-          <StatChip label="Score" value={`+${levelResult.scoreDelta}`} color={colors.primary[500]} />
-          <StatChip label="Time" value={`${(levelResult.solveTimeMs / 1000).toFixed(1)}s`} color={colors.neutral[600]} />
-          {streak > 1 && <StatChip label="Streak" value={`${streak}`} color={colors.warning.main} />}
+          <StatChip label={t('games.safePath.scoreLabel')} value={`+${levelResult.scoreDelta}`} color={colors.primary[500]} />
+          <StatChip label={t('games.safePath.timeLabel')} value={`${(levelResult.solveTimeMs / 1000).toFixed(1)}s`} color={colors.neutral[600]} />
+          {streak > 1 && <StatChip label={t('games.safePath.streakLabel')} value={`${streak}`} color={colors.warning.main} />}
         </View>
 
-        <Text style={styles.totalScore}>Total: {totalScore}</Text>
+        <Text style={styles.totalScore}>{t('games.safePath.totalScoreLabel', { score: totalScore })}</Text>
 
-        <AppButton title="Next Level" onPress={onContinue} variant="primary" size="lg" />
+        <AppButton title={t('games.safePath.nextLevelBtn')} onPress={onContinue} variant="primary" size="lg" />
       </View>
     </View>
   );
@@ -51,6 +54,7 @@ interface LevelFailProps {
 }
 
 export function LevelFailFeedback({ lives, onContinue, onEndSession }: LevelFailProps) {
+  const { t } = useTranslation();
   const isGameOver = lives <= 0;
 
   return (
@@ -59,11 +63,11 @@ export function LevelFailFeedback({ lives, onContinue, onEndSession }: LevelFail
         <View style={[styles.iconCircle, { backgroundColor: colors.error.light }]}>
           <Ionicons name="alert-circle" size={48} color={colors.error.main} />
         </View>
-        <Text style={styles.title}>{isGameOver ? 'Session Over' : 'Oops!'}</Text>
+        <Text style={styles.title}>{isGameOver ? t('games.safePath.sessionOverTitle') : t('games.safePath.oopsTitle')}</Text>
         <Text style={styles.subtitle}>
           {isGameOver
-            ? 'No lives remaining. Good effort!'
-            : 'You stepped on a danger tile. Be more careful next time.'}
+            ? t('games.safePath.noLivesRemainingSub')
+            : t('games.safePath.steppedBombSub')}
         </Text>
 
         {!isGameOver && (
@@ -76,16 +80,16 @@ export function LevelFailFeedback({ lives, onContinue, onEndSession }: LevelFail
                 color={i < lives ? colors.error.main : colors.neutral[300]}
               />
             ))}
-            <Text style={styles.livesText}>{lives} {lives === 1 ? 'life' : 'lives'} left</Text>
+            <Text style={styles.livesText}>{t('games.safePath.livesLeftCount', { count: lives })}</Text>
           </View>
         )}
 
         <View style={styles.buttonGroup}>
           {!isGameOver && (
-            <AppButton title="Try Next Level" onPress={onContinue} variant="primary" size="lg" />
+            <AppButton title={t('games.safePath.tryNextLevelBtn')} onPress={onContinue} variant="primary" size="lg" />
           )}
           <AppButton
-            title={isGameOver ? 'View Summary' : 'End Session'}
+            title={isGameOver ? t('games.safePath.viewSummaryBtn') : t('games.safePath.endSessionBtn')}
             onPress={onEndSession}
             variant={isGameOver ? 'primary' : 'outline'}
             size="md"
@@ -105,35 +109,37 @@ interface SessionSummaryProps {
 }
 
 export function SessionSummaryView({ result, onPlayAgain, onExit }: SessionSummaryProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.card}>
         <View style={[styles.iconCircle, { backgroundColor: colors.primary[50] }]}>
           <Ionicons name="trophy" size={48} color={colors.primary[500]} />
         </View>
-        <Text style={styles.title}>Session Summary</Text>
+        <Text style={styles.title}>{t('games.safePath.sessionSummaryTitle')}</Text>
 
         <View style={styles.summaryGrid}>
-          <SummaryItem icon="star-outline" label="Total Score" value={result.totalScore.toString()} />
-          <SummaryItem icon="layers-outline" label="Highest Tier" value={`T${result.highestTierReached}`} />
-          <SummaryItem icon="checkmark-circle-outline" label="Levels Passed" value={result.levelsSucceeded.toString()} />
-          <SummaryItem icon="close-circle-outline" label="Levels Failed" value={result.levelsFailed.toString()} />
-          <SummaryItem icon="time-outline" label="Duration" value={formatDuration(result.durationSeconds)} />
-          <SummaryItem icon="flame-outline" label="Best Streak" value={result.longestStreak.toString()} />
+          <SummaryItem icon="star-outline" label={t('games.safePath.totalScore')} value={result.totalScore.toString()} />
+          <SummaryItem icon="layers-outline" label={t('games.safePath.highestTier')} value={`T${result.highestTierReached}`} />
+          <SummaryItem icon="checkmark-circle-outline" label={t('games.safePath.levelsPassed')} value={result.levelsSucceeded.toString()} />
+          <SummaryItem icon="close-circle-outline" label={t('games.safePath.levelsFailed')} value={result.levelsFailed.toString()} />
+          <SummaryItem icon="time-outline" label={t('games.safePath.duration')} value={formatDuration(result.durationSeconds)} />
+          <SummaryItem icon="flame-outline" label={t('games.safePath.bestStreak')} value={result.longestStreak.toString()} />
         </View>
 
         {result.bestLevelScore > 0 && (
           <View style={styles.highlightBox}>
             <Ionicons name="ribbon-outline" size={18} color={colors.primary[500]} />
             <Text style={styles.highlightText}>
-              Best level score: {result.bestLevelScore}
+              {t('games.safePath.bestLevelScore', { score: result.bestLevelScore })}
             </Text>
           </View>
         )}
 
         <View style={styles.buttonGroup}>
-          <AppButton title="Play Again" onPress={onPlayAgain} variant="primary" size="lg" />
-          <AppButton title="Exit" onPress={onExit} variant="outline" size="md" />
+          <AppButton title={t('games.safePath.playAgainBtn')} onPress={onPlayAgain} variant="primary" size="lg" />
+          <AppButton title={t('games.safePath.exitBtn')} onPress={onExit} variant="outline" size="md" />
         </View>
       </View>
     </View>
@@ -149,18 +155,20 @@ interface PauseOverlayProps {
 }
 
 export function PauseOverlay({ onResume, onHelp, onQuit }: PauseOverlayProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.card}>
         <View style={[styles.iconCircle, { backgroundColor: colors.neutral[100] }]}>
           <Ionicons name="pause-circle" size={48} color={colors.neutral[500]} />
         </View>
-        <Text style={styles.title}>Paused</Text>
+        <Text style={styles.title}>{t('games.safePath.pausedTitle')}</Text>
 
         <View style={styles.buttonGroup}>
-          <AppButton title="Resume" onPress={onResume} variant="primary" size="lg" />
-          <AppButton title="How to Play" onPress={onHelp} variant="outline" size="md" />
-          <AppButton title="Quit Session" onPress={onQuit} variant="ghost" size="md" />
+          <AppButton title={t('games.safePath.resumeBtn')} onPress={onResume} variant="primary" size="lg" />
+          <AppButton title={t('games.safePath.howToPlayBtn')} onPress={onHelp} variant="outline" size="md" />
+          <AppButton title={t('games.safePath.quitSessionBtn')} onPress={onQuit} variant="ghost" size="md" />
         </View>
       </View>
     </View>

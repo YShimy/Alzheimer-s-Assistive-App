@@ -6,6 +6,7 @@
  */
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing, radius, shadows } from '../../../../infrastructure/theme/tokens';
 import { AppButton } from '../../../../shared/ui';
 
@@ -16,6 +17,8 @@ interface InstructionsOverlayProps {
 }
 
 export function InstructionsOverlay({ onStart, onClose, isReopen = false }: InstructionsOverlayProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -29,27 +32,27 @@ export function InstructionsOverlay({ onStart, onClose, isReopen = false }: Inst
           <Ionicons name="map-outline" size={48} color={colors.primary[500]} />
         </View>
 
-        <Text style={styles.title}>Safe Path Memory</Text>
-        <Text style={styles.subtitle}>Train your memory by finding the safe path</Text>
+        <Text style={styles.title}>{t('games.safePath.title')}</Text>
+        <Text style={styles.subtitle}>{t('games.safePath.instructionsSubtitle')}</Text>
 
         <View style={styles.stepsContainer}>
           <StepItem
             step={1}
             icon="eye-outline"
-            title="Memorize"
-            description="Danger tiles are shown briefly. Remember where they are."
+            title={t('games.safePath.step1Title')}
+            description={t('games.safePath.step1Desc')}
           />
           <StepItem
             step={2}
             icon="navigate-outline"
-            title="Navigate"
-            description="Trace a path from start to end, avoiding the danger tiles."
+            title={t('games.safePath.step2Title')}
+            description={t('games.safePath.step2Desc')}
           />
           <StepItem
             step={3}
             icon="trending-up-outline"
-            title="Progress"
-            description="Each level gets harder. Score higher by being fast and accurate."
+            title={t('games.safePath.step3Title')}
+            description={t('games.safePath.step3Desc')}
           />
         </View>
 
@@ -83,12 +86,12 @@ export function InstructionsOverlay({ onStart, onClose, isReopen = false }: Inst
         <View style={styles.tipBox}>
           <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
           <Text style={styles.tipText}>
-            You have 3 lives per session. Take your time during the preview phase.
+            {t('games.safePath.tipText')}
           </Text>
         </View>
 
         <AppButton
-          title={isReopen ? 'Back to Game' : 'Start Playing'}
+          title={isReopen ? t('games.safePath.backBtn') : t('games.safePath.startBtn')}
           onPress={onStart}
           variant="primary"
           size="lg"

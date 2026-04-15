@@ -4,6 +4,7 @@
  */
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { ScreenContainer, AppCard, Icon } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
@@ -12,6 +13,7 @@ import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 export default function GamesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleOpenSafePath = () => {
     eventLogger.log({
@@ -24,9 +26,9 @@ export default function GamesScreen() {
 
   return (
     <ScreenContainer>
-      <Text style={styles.sectionTitle}>Cognitive Games</Text>
+      <Text style={styles.sectionTitle}>{t('games.title')}</Text>
       <Text style={styles.sectionSubtitle}>
-        Light exercises to keep your mind active. Play at your own pace.
+        {t('games.subtitle')}
       </Text>
 
       <Pressable onPress={handleOpenSafePath} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
@@ -36,25 +38,25 @@ export default function GamesScreen() {
               <Ionicons name="map-outline" size={32} color={colors.primary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>Safe Path Memory</Text>
+              <Text style={styles.gameTitle}>{t('games.safePath.title')}</Text>
               <Text style={styles.gameDescription}>
-                Memorize danger spots and trace a safe path to the goal. Levels get progressively harder.
+                {t('games.safePath.description')}
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label="Memory" color={colors.primary[500]} />
-            <Tag label="Spatial" color={colors.secondary[500]} />
-            <Tag label="Adaptive" color={colors.warning.main} />
+            <Tag label={t('games.tags.memory')} color={colors.primary[500]} />
+            <Tag label={t('games.tags.spatial')} color={colors.secondary[500]} />
+            <Tag label={t('games.tags.adaptive')} color={colors.warning.main} />
           </View>
         </AppCard>
       </Pressable>
 
       <View style={styles.comingSoon}>
         <Ionicons name="add-circle-outline" size={24} color={colors.neutral[300]} />
-        <Text style={styles.comingSoonText}>More games coming soon</Text>
+        <Text style={styles.comingSoonText}>{t('games.moreComingSoon')}</Text>
       </View>
     </ScreenContainer>
   );

@@ -1,4 +1,10 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+let GoogleSignin: any;
+try {
+  GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
+} catch (e) {
+  // Ignored in Expo Go
+}
+
 import { useSessionStore } from '@/src/state/sessionStore';
 import { authApi } from './api';
 
@@ -18,15 +24,17 @@ export function useLogout(): () => Promise<void> {
     clearSession();
 
     // 2. Silently revoke and sign out from Google native layer
-    try {
-      await GoogleSignin.revokeAccess();
-    } catch {
-      // revokeAccess fails silently if user was never signed in
-    }
-    try {
-      await GoogleSignin.signOut();
-    } catch {
-      // signOut fails silently if user was never signed in
+    if (GoogleSignin) {
+      try {
+        await GoogleSignin.revokeAccess();
+      } catch {
+        // revokeAccess fails silently if user was never signed in
+      }
+      try {
+        await GoogleSignin.signOut();
+      } catch {
+        // signOut fails silently if user was never signed in
+      }
     }
 
     // 3. Call backend logout endpoint (stateless JWT — no-op but keeps contract clean)

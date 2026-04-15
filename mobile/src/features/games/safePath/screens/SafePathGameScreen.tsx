@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing } from '../../../../infrastructure/theme/tokens';
 import { eventLogger } from '../../../../infrastructure/events/eventLogger';
 import { EventNames } from '../../../../infrastructure/events/eventNames';
@@ -30,6 +31,7 @@ import {
 
 export default function SafePathGameScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const store = useSafePathStore();
   const previewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -255,14 +257,14 @@ export default function SafePathGameScreen() {
   // ─── Preview Phase Label ────────────────────────────────
   const renderPreviewBanner = () => (
     <View style={styles.previewBanner}>
-      <Text style={styles.previewText}>Memorize the danger tiles...</Text>
+      <Text style={styles.previewText}>{t('games.safePath.previewBanner')}</Text>
     </View>
   );
 
   // ─── Active Phase Label ─────────────────────────────────
   const renderActiveBanner = () => (
     <View style={styles.activeBanner}>
-      <Text style={styles.activeText}>Find the safe path to the goal</Text>
+      <Text style={styles.activeText}>{t('games.safePath.activeBanner')}</Text>
     </View>
   );
 

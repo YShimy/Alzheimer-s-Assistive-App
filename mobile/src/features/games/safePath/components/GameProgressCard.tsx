@@ -7,6 +7,7 @@
  */
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing, radius, shadows } from '../../../../infrastructure/theme/tokens';
 import { AppCard } from '../../../../shared/ui';
 import type { GameProgressResponse } from '../api';
@@ -16,6 +17,7 @@ interface GameProgressCardProps {
 }
 
 export function GameProgressCard({ progress }: GameProgressCardProps) {
+  const { t } = useTranslation();
   const { summary, scoreSeries, comparison } = progress;
 
   if (summary.sessionsPlayed === 0) {
@@ -23,8 +25,8 @@ export function GameProgressCard({ progress }: GameProgressCardProps) {
       <AppCard style={styles.card}>
         <View style={styles.emptyState}>
           <Ionicons name="game-controller-outline" size={32} color={colors.neutral[300]} />
-          <Text style={styles.emptyTitle}>No game sessions yet</Text>
-          <Text style={styles.emptyText}>Play Safe Path Memory to see your cognitive training progress here.</Text>
+          <Text style={styles.emptyTitle}>{t('games.safePath.noSessionsTitle')}</Text>
+          <Text style={styles.emptyText}>{t('games.safePath.noSessionsSub')}</Text>
         </View>
       </AppCard>
     );
@@ -41,7 +43,7 @@ export function GameProgressCard({ progress }: GameProgressCardProps) {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Ionicons name="game-controller-outline" size={20} color={colors.primary[500]} />
-          <Text style={styles.headerTitle}>Safe Path Memory</Text>
+          <Text style={styles.headerTitle}>{t('games.safePath.title')}</Text>
         </View>
         {hasEnoughData && (
           <View style={[styles.trendBadge, { backgroundColor: delta > 0 ? colors.success.light : delta < 0 ? colors.error.light : colors.neutral[100] }]}>
@@ -60,16 +62,16 @@ export function GameProgressCard({ progress }: GameProgressCardProps) {
         </View>
       ) : (
         <View style={styles.singleSession}>
-          <Text style={styles.singleSessionText}>Play more sessions to see your trend chart</Text>
+          <Text style={styles.singleSessionText}>{t('games.safePath.playMoreForTrend')}</Text>
         </View>
       )}
 
       {/* Summary chips */}
       <View style={styles.chipsRow}>
-        <Chip icon="star-outline" label="Best" value={summary.bestScore.toString()} color={colors.primary[500]} />
-        <Chip icon="analytics-outline" label="Average" value={summary.averageScore.toString()} color={colors.neutral[600]} />
-        <Chip icon="layers-outline" label="Top Tier" value={`T${summary.highestTierEver}`} color={colors.warning.main} />
-        <Chip icon="repeat-outline" label="Sessions" value={summary.sessionsPlayed.toString()} color={colors.neutral[500]} />
+        <Chip icon="star-outline" label={t('games.safePath.bestLabel')} value={summary.bestScore.toString()} color={colors.primary[500]} />
+        <Chip icon="analytics-outline" label={t('games.safePath.averageLabel')} value={summary.averageScore.toString()} color={colors.neutral[600]} />
+        <Chip icon="layers-outline" label={t('games.safePath.topTierLabel')} value={`T${summary.highestTierEver}`} color={colors.warning.main} />
+        <Chip icon="repeat-outline" label={t('games.safePath.sessionsLabel')} value={summary.sessionsPlayed.toString()} color={colors.neutral[500]} />
       </View>
     </AppCard>
   );
