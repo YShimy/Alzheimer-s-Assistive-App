@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, typography, spacing, radius, shadows } from '../../../infrastructure/theme/tokens';
-import { Icon } from '../icons/Icon';
+import { Icon } from '../Icon';
 import type { StreakData } from '../../../features/progress/types';
 
 interface StreakCardProps {
