@@ -4,7 +4,7 @@ import { sessionStore } from '../../state/sessionStore';
 const ENV_API_URL = process.env.EXPO_PUBLIC_API_URL;
 const API_BASE_URL = (Platform.OS === 'web' && __DEV__) 
   ? 'http://localhost:4000/api'
-  : (ENV_API_URL ?? 'http://localhost:4000/api');
+  : (ENV_API_URL ?? 'http://192.168.1.5:4000/api');
 
 /**
  * Typed API client — automatically attaches JWT bearer token.

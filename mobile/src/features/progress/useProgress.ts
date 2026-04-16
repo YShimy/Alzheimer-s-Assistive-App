@@ -6,7 +6,11 @@ import type {
   ProgressCategoriesResponse, 
   ProgressChartsResponse 
 } from './types';
+<<<<<<< HEAD
+import { useSessionStore } from '@/src/state/sessionStore';
+=======
 import { useSessionStore } from '../../state/sessionStore';
+>>>>>>> 66b23f0f78b47087f26e09e7dc320d5b320ea44d
 
 export function useProgress() {
   const userId = useSessionStore(s => s.userId);
