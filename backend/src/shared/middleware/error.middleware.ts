@@ -21,6 +21,16 @@ export function errorMiddleware(
     });
     return;
   }
+  if (err.name === 'ZodError') {
+    res.status(400).json({
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Invalid request data',
+        details: (err as any).errors,
+      },
+    });
+    return;
+  }
 
   // Unexpected error
   logger.error({ err }, 'Unhandled error');

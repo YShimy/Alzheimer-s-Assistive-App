@@ -42,10 +42,13 @@ export type ReminderCategory = (typeof ReminderCategory)[keyof typeof ReminderCa
 
 
 export const ChecklistCategory = {
+  MORNING: 'MORNING',
+  EVENING: 'EVENING',
   HYGIENE: 'HYGIENE',
   MEALS: 'MEALS',
   MEDICATION: 'MEDICATION',
   EXERCISE: 'EXERCISE',
+  ACTIVITY: 'ACTIVITY',
   HOUSEHOLD: 'HOUSEHOLD',
   APPOINTMENTS: 'APPOINTMENTS',
   SOCIAL: 'SOCIAL',

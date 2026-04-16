@@ -157,6 +157,12 @@ export default function CaregiverChecklistScreen() {
   const validate = (): boolean => {
     const errs: typeof formErrors = {};
     if (!form.title.trim()) errs.title = 'Title is required';
+    
+    if (form.steps.length === 0) {
+       Alert.alert('Validation Error', 'At least one step is required to create a checklist.');
+       return false;
+    }
+
     form.steps.forEach((s, i) => {
       if (!s.title.trim()) errs[`step_${i}`] = 'Step title required';
     });

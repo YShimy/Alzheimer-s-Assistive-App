@@ -77,7 +77,7 @@ export const checklistsService = {
         patientUserId,
         title: data.title,
         description: data.description ?? null,
-        category: data.category ?? 'routine',
+        category: (data.category || 'general').toUpperCase() as any,
         steps: data.steps.map((s, i) => ({
           stepId: randomUUID(),
           title: s.title,

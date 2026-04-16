@@ -33,10 +33,13 @@ enum ReminderCategory {
 }
 
 enum ChecklistCategory {
+  MORNING
+  EVENING
   HYGIENE
   MEALS
   MEDICATION
   EXERCISE
+  ACTIVITY
   HOUSEHOLD
   APPOINTMENTS
   SOCIAL
