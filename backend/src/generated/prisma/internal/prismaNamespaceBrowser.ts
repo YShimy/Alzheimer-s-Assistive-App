@@ -60,7 +60,11 @@ export const ModelName = {
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
   GameLevelResult: 'GameLevelResult',
-  AnalyticsEvent: 'AnalyticsEvent'
+  AnalyticsEvent: 'AnalyticsEvent',
+  ContactSupportConsent: 'ContactSupportConsent',
+  PatientContact: 'PatientContact',
+  ContactMemo: 'ContactMemo',
+  MediaAsset: 'MediaAsset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -288,6 +292,78 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const ContactSupportConsentScalarFieldEnum = {
+  id: 'id',
+  patientUserId: 'patientUserId',
+  status: 'status',
+  grantedAt: 'grantedAt',
+  revokedAt: 'revokedAt',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactSupportConsentScalarFieldEnum = (typeof ContactSupportConsentScalarFieldEnum)[keyof typeof ContactSupportConsentScalarFieldEnum]
+
+
+export const PatientContactScalarFieldEnum = {
+  id: 'id',
+  patientUserId: 'patientUserId',
+  sourceType: 'sourceType',
+  sourceContactId: 'sourceContactId',
+  displayName: 'displayName',
+  normalizedPhones: 'normalizedPhones',
+  normalizedEmails: 'normalizedEmails',
+  importedAt: 'importedAt',
+  lastSyncedAt: 'lastSyncedAt',
+  isArchived: 'isArchived',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PatientContactScalarFieldEnum = (typeof PatientContactScalarFieldEnum)[keyof typeof PatientContactScalarFieldEnum]
+
+
+export const ContactMemoScalarFieldEnum = {
+  id: 'id',
+  patientContactId: 'patientContactId',
+  patientUserId: 'patientUserId',
+  createdByUserId: 'createdByUserId',
+  relationLabel: 'relationLabel',
+  shortMemo: 'shortMemo',
+  photoAssetId: 'photoAssetId',
+  isArchived: 'isArchived',
+  patientFavorite: 'patientFavorite',
+  caregiverFavorite: 'caregiverFavorite',
+  patientPriorityRank: 'patientPriorityRank',
+  caregiverPriorityRank: 'caregiverPriorityRank',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactMemoScalarFieldEnum = (typeof ContactMemoScalarFieldEnum)[keyof typeof ContactMemoScalarFieldEnum]
+
+
+export const MediaAssetScalarFieldEnum = {
+  id: 'id',
+  ownerUserId: 'ownerUserId',
+  uploadedByUserId: 'uploadedByUserId',
+  assetType: 'assetType',
+  storageProvider: 'storageProvider',
+  storageKey: 'storageKey',
+  publicUrl: 'publicUrl',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  durationSeconds: 'durationSeconds',
+  thumbnailUrl: 'thumbnailUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
 
 
 export const SortOrder = {

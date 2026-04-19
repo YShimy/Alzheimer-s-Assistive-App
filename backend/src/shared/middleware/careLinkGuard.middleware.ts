@@ -21,18 +21,22 @@ type CareLinkPermission =
 export function careLinkGuard(requiredPermission: CareLinkPermission) {
   return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     if (!req.user) {
+      console.log(`[careLinkGuard] No user in request`);
       throw AppError.unauthorized();
     }
 
     const patientId = (req.params.patientId ?? req.params.id) as string;
+    console.log(`[careLinkGuard] Checking - userId: ${req.user.userId}, patientId: ${patientId}, requiredPermission: ${requiredPermission}, role: ${req.user.role}`);
 
     // Patients can always access their own data
     if (req.user.userId === patientId) {
+      console.log(`[careLinkGuard] Patient accessing own data - ALLOWED`);
       next();
       return;
     }
 
     // For caregivers: verify active CareLink exists with the required permission
+    console.log(`[careLinkGuard] Looking for careLink - caregiver: ${req.user.userId}, patient: ${patientId}`);
     const careLink = await prisma.careLink.findFirst({
       where: {
         caregiverUserId: req.user.userId,
@@ -42,16 +46,31 @@ export function careLinkGuard(requiredPermission: CareLinkPermission) {
     });
 
     if (!careLink) {
+      console.log(`[careLinkGuard] No active care link found - DENIED`);
       throw new AppError(
         'No active care link found with this patient',
         403,
         ErrorCode.CARELINK_PERMISSION_DENIED,
       );
     }
+    console.log(`[careLinkGuard] Found careLink: ${careLink.id}, status: ${careLink.status}`);
 
-    const permissions = careLink.permissions as Record<string, boolean>;
+    // Provide default permissions for legacy care links that may have null permissions
+    const defaultPermissions: Record<CareLinkPermission, boolean> = {
+      canCreateReminders: true,
+      canEditReminders: true,
+      canViewProgress: true,
+      canCreateChecklists: true,
+      canEditChecklists: true,
+      canMarkTasksOnBehalf: false,
+    };
 
-    if (!permissions[requiredPermission]) {
+    const permissions = careLink.permissions as Record<string, boolean> | null;
+    const effectivePermissions = permissions ? { ...defaultPermissions, ...permissions } : defaultPermissions;
+    console.log(`[careLinkGuard] Permissions check - required: ${requiredPermission}, hasPermission: ${effectivePermissions[requiredPermission]}`);
+
+    if (!effectivePermissions[requiredPermission]) {
+      console.log(`[careLinkGuard] Missing permission - DENIED`);
       throw new AppError(
         `Missing permission: ${requiredPermission}`,
         403,
@@ -59,6 +78,7 @@ export function careLinkGuard(requiredPermission: CareLinkPermission) {
       );
     }
 
+    console.log(`[careLinkGuard] All checks passed - ALLOWED`);
     next();
   };
 }

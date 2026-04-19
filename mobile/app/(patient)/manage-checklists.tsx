@@ -25,6 +25,7 @@ import {
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, CreateChecklistTemplateInput } from '@/src/features/checklists/types';
+import { useSessionStore } from '@/src/state/sessionStore';
 
 const CATEGORIES = ['morning', 'evening', 'medication', 'hygiene', 'activity', 'custom'] as const;
 
@@ -70,15 +71,12 @@ type FormMode = 'create' | 'edit';
 
 /**
  * Patient checklist template management.
- *
- * Backend status: Returns HTTP 501 (Not Implemented) on all calls.
- * Screen clearly notifies user of this and stays functional once backend is ready.
  */
 export default function PatientManageChecklistsScreen() {
   const { t } = useTranslation();
+  const { userId } = useSessionStore();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [backendReady, setBackendReady] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>('create');
@@ -90,12 +88,12 @@ export default function PatientManageChecklistsScreen() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const { templates: t } = await checklistsApi.listTemplates();
+      if (!userId) return;
+      const { templates: t } = await checklistsApi.listTemplates(userId);
       setTemplates(t);
-      setBackendReady(true);
     } catch (err: any) {
       if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-        setBackendReady(false);
+        console.warn('Patient checklists management backend returned 501');
       }
     } finally {
       setLoading(false);
@@ -183,8 +181,9 @@ export default function PatientManageChecklistsScreen() {
     if (!validate()) return;
     setSubmitting(true);
     try {
+      if (!userId) throw new Error('Not logged in');
       if (formMode === 'create') {
-        const { template } = await checklistsApi.createTemplate(buildPayload());
+        const { template } = await checklistsApi.createTemplate(userId, buildPayload());
         setTemplates((prev) => [template, ...prev]);
         Alert.alert('Created', `"${template.title}" template added.`);
       } else if (editingTemplate) {
@@ -218,6 +217,7 @@ export default function PatientManageChecklistsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
+              if (!userId) throw new Error('Not logged in');
               await checklistsApi.archiveTemplate(t.id);
               setTemplates((prev) => prev.filter((tpl) => tpl.id !== t.id));
             } catch (err: any) {
@@ -242,69 +242,51 @@ export default function PatientManageChecklistsScreen() {
 
   return (
     <>
-      {!backendReady ? (
-        <ScreenContainer>
-          <View style={styles.backendNotice}>
-            <Icon name="construct-outline" size={24} color={colors.warning.main} />
-            <Text style={styles.backendNoticeTitle}>{t('caregiverChecklists.backendNoticeTitle')}</Text>
-            <Text style={styles.backendNoticeText}>
-              {t('caregiverChecklists.backendNoticeText')}
-            </Text>
-          </View>
+      <FlatList
+        data={activeTemplates}
+        keyExtractor={(t) => t.id}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
           <AppButton
-            title={t('caregiverChecklists.createAnywayBtn')}
+            title={t('caregiverChecklists.newTemplate')}
             onPress={openCreate}
             variant="secondary"
             icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
+            style={{ marginBottom: spacing.xl }}
           />
-        </ScreenContainer>
-      ) : (
-        <FlatList
-          data={activeTemplates}
-          keyExtractor={(t) => t.id}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <AppButton
-              title={t('caregiverChecklists.newTemplate')}
-              onPress={openCreate}
-              variant="secondary"
-              icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
-              style={{ marginBottom: spacing.xl }}
-            />
-          }
-          ListEmptyComponent={
-            <EmptyState
-              icon="clipboard-outline"
-              title={t('caregiverChecklists.noTemplates')}
-              message={t('caregiverChecklists.noTemplatesMsg')}
-              action={
-                <AppButton title={t('caregiverChecklists.createFirstBtn')} onPress={openCreate} variant="secondary" fullWidth={false} />
-              }
-            />
-          }
-          renderItem={({ item }) => (
-            <TemplateCard
-              template={item}
-              onEdit={() => openEdit(item)}
-              onArchive={() => handleArchive(item)}
-            />
-          )}
-          ListFooterComponent={
-            archivedTemplates.length > 0 ? (
-              <View style={{ marginTop: spacing['2xl'] }}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>{t('caregiverChecklists.archived')}</Text>
-                  <StatusChip label={String(archivedTemplates.length)} variant="default" />
-                </View>
-                {archivedTemplates.map((t) => (
-                  <TemplateCard key={t.id} template={t} onEdit={() => {}} onArchive={() => {}} />
-                ))}
+        }
+        ListEmptyComponent={
+          <EmptyState
+            icon="clipboard-outline"
+            title={t('caregiverChecklists.noTemplates')}
+            message={t('caregiverChecklists.noTemplatesMsg')}
+            action={
+              <AppButton title={t('caregiverChecklists.createFirstBtn')} onPress={openCreate} variant="secondary" fullWidth={false} />
+            }
+          />
+        }
+        renderItem={({ item }) => (
+          <TemplateCard
+            template={item}
+            onEdit={() => openEdit(item)}
+            onArchive={() => handleArchive(item)}
+          />
+        )}
+        ListFooterComponent={
+          archivedTemplates.length > 0 ? (
+            <View style={{ marginTop: spacing['2xl'] }}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>{t('caregiverChecklists.archived')}</Text>
+                <StatusChip label={String(archivedTemplates.length)} variant="default" />
               </View>
-            ) : null
-          }
-        />
-      )}
+              {archivedTemplates.map((t) => (
+                <TemplateCard key={t.id} template={t} onEdit={() => {}} onArchive={() => {}} />
+              ))}
+            </View>
+          ) : null
+        }
+      />
 
       {/* Edit / Create Modal */}
       <Modal

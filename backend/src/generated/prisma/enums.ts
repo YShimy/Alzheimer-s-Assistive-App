@@ -90,3 +90,28 @@ export const VerificationPurpose = {
 } as const
 
 export type VerificationPurpose = (typeof VerificationPurpose)[keyof typeof VerificationPurpose]
+
+
+export const ConsentStatus = {
+  PENDING: 'PENDING',
+  GRANTED: 'GRANTED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type ConsentStatus = (typeof ConsentStatus)[keyof typeof ConsentStatus]
+
+
+export const ContactSourceType = {
+  DEVICE_CONTACTS: 'DEVICE_CONTACTS',
+  MANUAL: 'MANUAL'
+} as const
+
+export type ContactSourceType = (typeof ContactSourceType)[keyof typeof ContactSourceType]
+
+
+export const AssetType = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO'
+} as const
+
+export type AssetType = (typeof AssetType)[keyof typeof AssetType]

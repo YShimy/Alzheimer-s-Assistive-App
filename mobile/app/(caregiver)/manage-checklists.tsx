@@ -10,8 +10,8 @@ import {
   TextInput,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useState, useCallback } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useState, useCallback, useEffect } from 'react';
+import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 import {
   ScreenContainer,
   AppCard,
@@ -25,6 +25,12 @@ import {
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, CreateChecklistTemplateInput } from '@/src/features/checklists/types';
+import { carelinksApi } from '@/src/features/carelinks/api';
+import type { CareLink } from '@/src/features/carelinks/types';
+
+import * as ImagePicker from 'expo-image-picker';
+import { mediaApi } from '@/src/features/media/api';
+import { Image } from 'expo-image';
 
 const CATEGORIES = ['morning', 'evening', 'medication', 'hygiene', 'activity', 'custom'] as const;
 
@@ -32,6 +38,9 @@ interface DraftStep {
   id: string; // local draft ID
   title: string;
   description: string;
+  imageAssetId?: string | null;
+  videoAssetId?: string | null;
+  imagePreviewUrl?: string | null;
 }
 
 interface TemplateForm {
@@ -62,6 +71,8 @@ function formFromTemplate(t: ChecklistTemplate): TemplateForm {
       id: s.id,
       title: s.title,
       description: s.description ?? '',
+      imageAssetId: s.imageAssetId,
+      videoAssetId: s.videoAssetId,
     })),
   };
 }
@@ -70,15 +81,15 @@ type FormMode = 'create' | 'edit';
 
 /**
  * Caregiver checklist template management.
- *
- * Backend status: Returns HTTP 501 (Not Implemented) on all calls.
- * Screen clearly notifies user of this and stays functional once backend is ready.
  */
 export default function CaregiverChecklistScreen() {
+  const { patientId: paramPatientId, patientName } = useLocalSearchParams<{ patientId: string; patientName: string }>();
   const { t } = useTranslation();
+  const [links, setLinks] = useState<CareLink[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(paramPatientId || null);
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [backendReady, setBackendReady] = useState(true);
+  const [error, setError] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>('create');
@@ -87,20 +98,41 @@ export default function CaregiverChecklistScreen() {
   const [formErrors, setFormErrors] = useState<Partial<Record<string, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
+  // Load linked patients
+  useEffect(() => {
+    carelinksApi
+      .getMyLinks()
+      .then(({ careLinks }) => {
+        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
+        setLinks(active);
+        if (!selectedPatient && active.length > 0 && active[0]!.patientUserId) {
+          setSelectedPatient(active[0]!.patientUserId);
+        }
+      })
+      .catch(() => setError('Failed to load linked patients'))
+      .finally(() => setLoading(false));
+  }, []);
+
   const load = useCallback(async () => {
+    if (!selectedPatient) {
+      console.log('[CaregiverChecklists] No selectedPatient, skipping load');
+      return;
+    }
+    console.log(`[CaregiverChecklists] Loading templates for patientId: ${selectedPatient}`);
     setLoading(true);
     try {
-      const { templates: t } = await checklistsApi.listTemplates();
+      const { templates: t } = await checklistsApi.listTemplates(selectedPatient);
+      console.log(`[CaregiverChecklists] Loaded ${t.length} templates:`, t.map(tpl => ({ id: tpl.id, title: tpl.title, isActive: tpl.isActive })));
       setTemplates(t);
-      setBackendReady(true);
     } catch (err: any) {
+      console.error('[CaregiverChecklists] Error loading templates:', err);
       if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-        setBackendReady(false);
+        console.warn('Caregiver checklists backend returned 501');
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedPatient]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -127,13 +159,51 @@ export default function CaregiverChecklistScreen() {
   const moveStep = (id: string, direction: 'up' | 'down') => {
     setForm((f) => {
       const idx = f.steps.findIndex((s) => s.id === id);
-      if (idx < 0) return f;
-      const next = direction === 'up' ? idx - 1 : idx + 1;
-      if (next < 0 || next >= f.steps.length) return f;
-      const steps = [...f.steps];
-      [steps[idx], steps[next]] = [steps[next]!, steps[idx]!];
-      return { ...f, steps };
+      if (idx === -1) return f;
+      if (direction === 'up' && idx === 0) return f;
+      if (direction === 'down' && idx === f.steps.length - 1) return f;
+
+      const newSteps = [...f.steps];
+      const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+      [newSteps[idx], newSteps[swapIdx]] = [newSteps[swapIdx], newSteps[idx]];
+      return { ...f, steps: newSteps };
     });
+  };
+
+  const handlePickMediaForStep = async (stepId: string, type: 'image' | 'video') => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: type === 'image' ? ['images'] : ['videos'],
+      allowsEditing: type === 'image',
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      try {
+        const { asset: mediaAsset } = await mediaApi.upload(asset.uri, asset.mimeType || (type === 'image' ? 'image/jpeg' : 'video/mp4'));
+        setForm((f) => ({
+          ...f,
+          steps: f.steps.map((s) => s.id === stepId ? { 
+            ...s, 
+            [type === 'image' ? 'imageAssetId' : 'videoAssetId']: mediaAsset.id,
+            imagePreviewUrl: type === 'image' ? mediaAsset.publicUrl : s.imagePreviewUrl
+          } : s),
+        }));
+      } catch (error) {
+        Alert.alert('Upload Failed', 'Could not upload media.');
+      }
+    }
+  };
+
+  const removeMediaFromStep = (stepId: string, type: 'image' | 'video') => {
+    setForm((f) => ({
+      ...f,
+      steps: f.steps.map((s) => s.id === stepId ? { 
+        ...s, 
+        [type === 'image' ? 'imageAssetId' : 'videoAssetId']: null,
+        imagePreviewUrl: type === 'image' ? null : s.imagePreviewUrl
+      } : s),
+    }));
   };
 
   // ─── Form logic ────────────────────────────────────────────────────────
@@ -182,15 +252,24 @@ export default function CaregiverChecklistScreen() {
       title: s.title.trim(),
       description: s.description.trim() || undefined,
       order: idx,
+      imageAssetId: s.imageAssetId,
+      videoAssetId: s.videoAssetId,
     })),
   });
 
   const handleSubmit = async () => {
     if (!validate()) return;
+    if (!selectedPatient) {
+      console.log('[CaregiverChecklists] No selectedPatient, cannot submit');
+      return;
+    }
+    console.log(`[CaregiverChecklists] Creating checklist for patientId: ${selectedPatient}`);
     setSubmitting(true);
     try {
       if (formMode === 'create') {
-        const { template } = await checklistsApi.createTemplate(buildPayload());
+        console.log('[CaregiverChecklists] Calling createTemplate with payload:', buildPayload());
+        const { template } = await checklistsApi.createTemplate(selectedPatient, buildPayload());
+        console.log(`[CaregiverChecklists] Template created successfully: ${template.id}`);
         setTemplates((prev) => [template, ...prev]);
         Alert.alert('Created', `"${template.title}" template added.`);
       } else if (editingTemplate) {
@@ -200,6 +279,7 @@ export default function CaregiverChecklistScreen() {
       }
       setModalVisible(false);
     } catch (err: any) {
+      console.error('[CaregiverChecklists] Error creating/updating template:', err);
       if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
         Alert.alert(
           'Not yet available',
@@ -241,30 +321,50 @@ export default function CaregiverChecklistScreen() {
 
   // ─── Render ────────────────────────────────────────────────────────────
 
-  if (loading) return <ScreenContainer><LoadingState /></ScreenContainer>;
+  if (loading) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
+  if (error) return <ScreenContainer scroll={false}><EmptyState icon="alert-circle-outline" title="Error" message={error} /></ScreenContainer>;
+
+  if (links.length === 0) {
+    return (
+      <ScreenContainer>
+        <EmptyState
+          icon="people-outline"
+          title={t('caregiverReminders.noLinkedPatients')}
+          message={t('caregiverReminders.linkFirstMsg')}
+        />
+      </ScreenContainer>
+    );
+  }
 
   const activeTemplates = templates.filter((t) => t.isActive);
   const archivedTemplates = templates.filter((t) => !t.isActive);
+  const selectedLink = links.find((l) => l.patientUserId === selectedPatient);
 
   return (
     <>
-      {!backendReady ? (
-        <ScreenContainer>
-          <View style={styles.backendNotice}>
-            <Icon name="construct-outline" size={24} color={colors.warning.main} />
-            <Text style={styles.backendNoticeTitle}>{t('caregiverChecklists.backendNoticeTitle')}</Text>
-            <Text style={styles.backendNoticeText}>
-              {t('caregiverChecklists.backendNoticeText')}
+      <ScreenContainer scroll={false} padded={false}>
+        {!paramPatientId && selectedLink && (
+          <View style={styles.patientCard}>
+            <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.patientLabel}>Managing checklists for</Text>
+              <Text style={styles.patientName}>
+                {selectedLink?.patient?.displayName ?? 'Patient'}
+              </Text>
+            </View>
+            {links.length > 1 && (
+              <StatusChip label={`${links.length} patients`} variant="info" />
+            )}
+          </View>
+        )}
+
+        {patientName && (
+          <View style={{ paddingHorizontal: spacing['2xl'], paddingTop: spacing.md }}>
+            <Text style={{ fontSize: typography.size.sm, color: colors.neutral[500] }}>
+              Managing checklists for <Text style={{ fontWeight: '700', color: colors.secondary[600] }}>{patientName}</Text>
             </Text>
           </View>
-          <AppButton
-            title={t('caregiverChecklists.createAnywayBtn')}
-            onPress={openCreate}
-            variant="secondary"
-            icon={<Icon name="add-circle-outline" size={20} color="#fff" />}
-          />
-        </ScreenContainer>
-      ) : (
+        )}
         <FlatList
           data={activeTemplates}
           keyExtractor={(t) => t.id}
@@ -310,7 +410,7 @@ export default function CaregiverChecklistScreen() {
             ) : null
           }
         />
-      )}
+      </ScreenContainer>
 
       {/* Edit / Create Modal */}
       <Modal
@@ -438,6 +538,42 @@ export default function CaregiverChecklistScreen() {
                     placeholder={t('caregiverChecklists.stepDescPlaceholder')}
                     placeholderTextColor={colors.neutral[400]}
                   />
+
+                  <View style={styles.stepMediaRow}>
+                     {!step.imageAssetId && !step.videoAssetId ? (
+                       <>
+                        <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'image')}>
+                          <Icon name="image-outline" size={16} color={colors.primary.main} />
+                          <Text style={styles.mediaBtnText}>Add Image</Text>
+                        </Pressable>
+                        <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'video')}>
+                          <Icon name="videocam-outline" size={16} color={colors.secondary.main} />
+                          <Text style={styles.mediaBtnText}>Add Video</Text>
+                        </Pressable>
+                       </>
+                     ) : (
+                       <View style={styles.mediaPreview}>
+                          {step.imageAssetId && (
+                            <View style={styles.previewContainer}>
+                               <Icon name="image" size={16} color={colors.primary.main} />
+                               <Text style={styles.previewText}>Image attached</Text>
+                               <Pressable onPress={() => removeMediaFromStep(step.id, 'image')}>
+                                 <Icon name="close-circle" size={18} color={colors.error.main} />
+                               </Pressable>
+                            </View>
+                          )}
+                          {step.videoAssetId && (
+                            <View style={styles.previewContainer}>
+                               <Icon name="videocam" size={16} color={colors.secondary.main} />
+                               <Text style={styles.previewText}>Video attached</Text>
+                               <Pressable onPress={() => removeMediaFromStep(step.id, 'video')}>
+                                 <Icon name="close-circle" size={18} color={colors.error.main} />
+                               </Pressable>
+                            </View>
+                          )}
+                       </View>
+                     )}
+                  </View>
                 </View>
               ))}
             </View>
@@ -715,4 +851,55 @@ const styles = StyleSheet.create({
     color: colors.neutral[600],
     minHeight: 40,
   },
+  stepMediaRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[100],
+  },
+  mediaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surface_container_low,
+  },
+  mediaBtnText: {
+    fontSize: typography.size.xs,
+    fontFamily: typography.family.label,
+    color: colors.on_surface,
+  },
+  mediaPreview: {
+    flex: 1,
+  },
+  previewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.surface_container_highest,
+    padding: spacing.xs,
+    borderRadius: radius.sm,
+  },
+  previewText: {
+    flex: 1,
+    fontSize: typography.size.xs,
+    color: colors.on_surface,
+  },
+  patientCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.secondary[50],
+    padding: spacing.lg,
+    borderRadius: radius.xl,
+    marginHorizontal: spacing['2xl'],
+    marginTop: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  patientLabel: { fontSize: typography.size.xs, color: colors.neutral[500] },
+  patientName: { fontSize: typography.size.base, fontWeight: '700', color: colors.secondary[700] },
 });

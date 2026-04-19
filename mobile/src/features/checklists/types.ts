@@ -7,6 +7,10 @@ export interface ChecklistStep {
   order: number;
   title: string;
   description?: string | null;
+  imageAssetId?: string | null;
+  videoAssetId?: string | null;
+  imageUrl?: string | null;
+  videoUrl?: string | null;
 }
 
 export interface ChecklistTemplate {
@@ -28,7 +32,13 @@ export interface CreateChecklistTemplateInput {
   description?: string;
   category?: string;
   estimatedMinutes?: number;
-  steps: { title: string; description?: string; order: number }[];
+  steps: { 
+    title: string; 
+    description?: string; 
+    order: number;
+    imageAssetId?: string | null;
+    videoAssetId?: string | null;
+  }[];
 }
 
 export interface UpdateChecklistTemplateInput extends Partial<CreateChecklistTemplateInput> {}

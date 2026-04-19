@@ -83,6 +83,20 @@ export default function CaregiverLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="contacts"
+        options={{
+          title: t('caregiverTabs.contactsTitle', 'Contacts'),
+          headerTitle: t('caregiverTabs.contactsHeader', 'Patient Contacts'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people-circle-outline" size={size} color={color} />
+          ),
+          href: {
+            pathname: '/(caregiver)/contacts',
+            params: {},
+          },
+        }}
+      />
     </Tabs>
   );
 }

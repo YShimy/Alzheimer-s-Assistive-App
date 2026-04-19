@@ -7,10 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
+    "newArchEnabled": false,
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -43,11 +40,23 @@
       "expo-secure-store",
       "expo-web-browser",
       "@react-native-google-signin/google-signin",
-      "expo-localization"
+      "expo-localization",
+      "expo-video",
+      "expo-contacts",
+      "expo-image-picker",
+      "expo-notifications"
     ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSContactsUsageDescription": "We need access to your contacts to help you import them for memory support.",
+        "NSCameraUsageDescription": "We need access to your camera to take photos for your memory support profiles.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to personalize profiles and checklist steps."
+      }
+    },
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     }
   }
 }

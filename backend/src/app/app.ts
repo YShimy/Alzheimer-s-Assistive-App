@@ -9,9 +9,12 @@ export function createApp() {
   const app = express();
 
   // ─── Global Middleware ──────────────────────────────
-  app.use(helmet());
+  app.use(helmet({ crossOriginResourcePolicy: false })); // allow images to load across origins
   app.use(cors());
   app.use(express.json());
+  
+  // ─── Static files for media storage ─────────────────
+  app.use('/uploads', express.static('uploads'));
 
   // ─── Request Logging ────────────────────────────────
   app.use((req, _res, next) => {

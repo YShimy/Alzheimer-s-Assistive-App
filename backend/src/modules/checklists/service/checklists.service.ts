@@ -3,21 +3,48 @@ import { AppError } from '../../../shared/errors/AppError.js';
 import { prisma } from '../../../shared/db/prisma.js';
 import { z } from 'zod';
 import type { createTemplateSchema, updateTemplateSchema, createRunSchema, updateRunSchema } from '../validation/checklists.schemas.js';
+import type { ChecklistTemplate, ChecklistRun } from '../../../generated/prisma/index.js';
 
 type CreateTemplateDto = z.infer<typeof createTemplateSchema>;
 type UpdateTemplateDto = z.infer<typeof updateTemplateSchema>;
 type CreateRunDto = z.infer<typeof createRunSchema>;
 type UpdateRunDto = z.infer<typeof updateRunSchema>;
 
-// Mapper functions to align Prisma camelCase/enums with frontend types
-function mapTemplate(t: any) {
-  const rawSteps: any[] = Array.isArray(t.steps) ? t.steps : [];
-  const steps = rawSteps.map((s: any) => ({
+async function resolveMediaUrls(steps: any[]) {
+  const assetIds = new Set<string>();
+  steps.forEach((s) => {
+    if (s.imageAssetId) assetIds.add(s.imageAssetId);
+    if (s.videoAssetId) assetIds.add(s.videoAssetId);
+  });
+
+  if (assetIds.size === 0) return steps;
+
+  const assets = await prisma.mediaAsset.findMany({
+    where: { id: { in: Array.from(assetIds) } }
+  });
+
+  const assetMap = new Map(assets.map(a => [a.id, a.publicUrl]));
+
+  return steps.map(s => ({
+    ...s,
+    imageUrl: s.imageAssetId ? assetMap.get(s.imageAssetId) : null,
+    videoUrl: s.videoAssetId ? assetMap.get(s.videoAssetId) : null,
+  }));
+}
+
+async function mapTemplate(t: ChecklistTemplate) {
+  const rawSteps = (t.steps as any[]) || [];
+  let steps = rawSteps.map((s: any) => ({
     id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
     order: s.order,
     title: s.label ?? s.title,
     description: s.description ?? s.optionalHint ?? null,
+    imageAssetId: s.imageAssetId ?? null,
+    videoAssetId: s.videoAssetId ?? null,
   }));
+
+  steps = await resolveMediaUrls(steps);
+
   return {
     id: t.id,
     title: t.title,
@@ -33,14 +60,19 @@ function mapTemplate(t: any) {
   };
 }
 
-function mapRun(r: any) {
+async function mapRun(r: ChecklistRun & { template?: any }) {
   const normalizeSteps = (rawSteps: any[]) =>
     (rawSteps ?? []).map((s: any) => ({
       id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
       order: s.order,
       title: s.label ?? s.title,
       description: s.description ?? s.optionalHint ?? null,
+      imageAssetId: s.imageAssetId ?? null,
+      videoAssetId: s.videoAssetId ?? null,
     }));
+
+  let steps = normalizeSteps(r.template?.steps ?? []);
+  steps = await resolveMediaUrls(steps);
 
   return {
     id: r.id,
@@ -53,25 +85,35 @@ function mapRun(r: any) {
     template: r.template ? {
       id: r.template.id,
       title: r.template.title,
-      steps: normalizeSteps(r.template.steps),
+      steps,
     } : undefined,
   };
 }
 
 export const checklistsService = {
   async listTemplates(patientUserId: string, includeArchived = false) {
+    console.log(`[ChecklistsService] listTemplates - patientUserId: ${patientUserId}, includeArchived: ${includeArchived}`);
     const where: any = { patientUserId };
     if (!includeArchived) {
       where.isActive = true;
     }
+    console.log(`[ChecklistsService] listTemplates - query where:`, JSON.stringify(where));
     const templates = await prisma.checklistTemplate.findMany({
       where,
       orderBy: { createdAt: 'desc' },
     });
-    return templates.map(mapTemplate);
+    console.log(`[ChecklistsService] listTemplates - found ${templates.length} templates`);
+    templates.forEach(t => {
+      console.log(`[ChecklistsService] listTemplates - template: ${t.id}, title: "${t.title}", isActive: ${t.isActive}, patientUserId: ${t.patientUserId}`);
+    });
+    // mapTemplate is async, need to await all
+    const mappedTemplates = await Promise.all(templates.map(mapTemplate));
+    console.log(`[ChecklistsService] listTemplates - mapped ${mappedTemplates.length} templates`);
+    return mappedTemplates;
   },
 
   async createTemplate(patientUserId: string, creatorId: string, data: CreateTemplateDto) {
+    console.log(`[ChecklistsService] createTemplate - patientUserId: ${patientUserId}, creatorId: ${creatorId}, title: "${data.title}"`);
     const template = await prisma.checklistTemplate.create({
       data: {
         patientUserId,
@@ -83,12 +125,15 @@ export const checklistsService = {
           title: s.title,
           description: s.description ?? null,
           order: s.order ?? i,
+          imageAssetId: s.imageAssetId ?? null,
+          videoAssetId: s.videoAssetId ?? null,
         })) as any,
         estimatedDurationMinutes: data.estimatedMinutes ?? null,
         createdByUserId: creatorId,
         lastEditedByUserId: creatorId,
       },
     });
+    console.log(`[ChecklistsService] createTemplate - SUCCESS - templateId: ${template.id}, patientUserId: ${template.patientUserId}`);
     return mapTemplate(template);
   },
 

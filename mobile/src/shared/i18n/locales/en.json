@@ -146,6 +146,7 @@
     "createReminders": "Create Reminders",
     "editReminders": "Edit Reminders",
     "viewProgress": "View Progress",
+    "manageContacts": "Manage Contacts",
     "revokeLink": "Revoke Link",
     "revokeConfirm": "Are you sure you want to revoke this care link?"
   },
@@ -276,5 +277,52 @@
     "thu": "Thu",
     "fri": "Fri",
     "sat": "Sat"
+  },
+  "contacts": {
+    "title": "Important People",
+    "priorityTitle": "Priority Contacts",
+    "allTitle": "All Contacts",
+    "searchPlaceholder": "Search contacts...",
+    "noContacts": "No contacts yet",
+    "noContactsMsg": "Import contacts to help you remember important people.",
+    "importBtn": "Manage Contacts",
+    "relation": "Relation",
+    "memo": "Role",
+    "favorites": "Favorites",
+    "bothPriority": "Chosen by both",
+    "myPriority": "My favorites",
+    "caregiverPriority": "Added by caregiver",
+    "otherContacts": "Other contacts",
+    "detailTitle": "Contact Detail",
+    "call": "Call",
+    "email": "Email",
+    "editContact": "Edit Contact",
+    "importTitle": "Import Contacts",
+    "importSearch": "Search device...",
+    "selectedCount": "{{count}} selected",
+    "confirmImport": "Import Selected"
+  },
+  "contactConsent": {
+    "title": "People & Memory Aids",
+    "description": "Sharing your contacts allows your caregiver to help you identify important people with photos, relations, and helpful notes.",
+    "points": [
+      "View names, photos, and roles of people you know.",
+      "Your caregiver can add helpful reminders (e.g., 'Your grandaughter').",
+      "We only sync the contacts you choose to import.",
+      "You remain in control and can stop anytime."
+    ],
+    "grantBtn": "I Agree",
+    "denyBtn": "Not Now",
+    "revokedTitle": "Sharing Paused",
+    "revokedMsg": "Contact sharing is disabled."
+  },
+  "media": {
+    "uploading": "Uploading...",
+    "failed": "Upload failed",
+    "retry": "Retry",
+    "selectPhoto": "Select Photo",
+    "takePhoto": "Take Photo",
+    "selectVideo": "Select Video",
+    "maxDurationNote": "Videos should be short (under 30s)"
   }
 }

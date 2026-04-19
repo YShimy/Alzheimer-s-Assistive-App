@@ -393,7 +393,11 @@ export const ModelName = {
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
   GameLevelResult: 'GameLevelResult',
-  AnalyticsEvent: 'AnalyticsEvent'
+  AnalyticsEvent: 'AnalyticsEvent',
+  ContactSupportConsent: 'ContactSupportConsent',
+  PatientContact: 'PatientContact',
+  ContactMemo: 'ContactMemo',
+  MediaAsset: 'MediaAsset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent"
+    modelProps: "user" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1157,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ContactSupportConsent: {
+      payload: Prisma.$ContactSupportConsentPayload<ExtArgs>
+      fields: Prisma.ContactSupportConsentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactSupportConsentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactSupportConsentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactSupportConsentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactSupportConsentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        findMany: {
+          args: Prisma.ContactSupportConsentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>[]
+        }
+        create: {
+          args: Prisma.ContactSupportConsentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        createMany: {
+          args: Prisma.ContactSupportConsentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactSupportConsentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactSupportConsentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        update: {
+          args: Prisma.ContactSupportConsentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactSupportConsentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactSupportConsentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactSupportConsentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactSupportConsentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSupportConsentPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactSupportConsentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactSupportConsent>
+        }
+        groupBy: {
+          args: Prisma.ContactSupportConsentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSupportConsentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactSupportConsentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSupportConsentCountAggregateOutputType> | number
+        }
+      }
+    }
+    PatientContact: {
+      payload: Prisma.$PatientContactPayload<ExtArgs>
+      fields: Prisma.PatientContactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PatientContactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PatientContactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        findFirst: {
+          args: Prisma.PatientContactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PatientContactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        findMany: {
+          args: Prisma.PatientContactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>[]
+        }
+        create: {
+          args: Prisma.PatientContactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        createMany: {
+          args: Prisma.PatientContactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PatientContactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>[]
+        }
+        delete: {
+          args: Prisma.PatientContactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        update: {
+          args: Prisma.PatientContactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        deleteMany: {
+          args: Prisma.PatientContactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PatientContactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PatientContactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>[]
+        }
+        upsert: {
+          args: Prisma.PatientContactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientContactPayload>
+        }
+        aggregate: {
+          args: Prisma.PatientContactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePatientContact>
+        }
+        groupBy: {
+          args: Prisma.PatientContactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientContactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PatientContactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientContactCountAggregateOutputType> | number
+        }
+      }
+    }
+    ContactMemo: {
+      payload: Prisma.$ContactMemoPayload<ExtArgs>
+      fields: Prisma.ContactMemoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactMemoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactMemoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactMemoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactMemoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        findMany: {
+          args: Prisma.ContactMemoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>[]
+        }
+        create: {
+          args: Prisma.ContactMemoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        createMany: {
+          args: Prisma.ContactMemoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactMemoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactMemoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        update: {
+          args: Prisma.ContactMemoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactMemoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactMemoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactMemoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactMemoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMemoPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactMemoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactMemo>
+        }
+        groupBy: {
+          args: Prisma.ContactMemoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactMemoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactMemoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactMemoCountAggregateOutputType> | number
+        }
+      }
+    }
+    MediaAsset: {
+      payload: Prisma.$MediaAssetPayload<ExtArgs>
+      fields: Prisma.MediaAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MediaAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MediaAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.MediaAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MediaAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        findMany: {
+          args: Prisma.MediaAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        create: {
+          args: Prisma.MediaAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        createMany: {
+          args: Prisma.MediaAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MediaAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.MediaAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        update: {
+          args: Prisma.MediaAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.MediaAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MediaAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MediaAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.MediaAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MediaAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.MediaAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMediaAsset>
+        }
+        groupBy: {
+          args: Prisma.MediaAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MediaAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MediaAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MediaAssetCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1403,6 +1703,78 @@ export const AnalyticsEventScalarFieldEnum = {
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
 
 
+export const ContactSupportConsentScalarFieldEnum = {
+  id: 'id',
+  patientUserId: 'patientUserId',
+  status: 'status',
+  grantedAt: 'grantedAt',
+  revokedAt: 'revokedAt',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactSupportConsentScalarFieldEnum = (typeof ContactSupportConsentScalarFieldEnum)[keyof typeof ContactSupportConsentScalarFieldEnum]
+
+
+export const PatientContactScalarFieldEnum = {
+  id: 'id',
+  patientUserId: 'patientUserId',
+  sourceType: 'sourceType',
+  sourceContactId: 'sourceContactId',
+  displayName: 'displayName',
+  normalizedPhones: 'normalizedPhones',
+  normalizedEmails: 'normalizedEmails',
+  importedAt: 'importedAt',
+  lastSyncedAt: 'lastSyncedAt',
+  isArchived: 'isArchived',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PatientContactScalarFieldEnum = (typeof PatientContactScalarFieldEnum)[keyof typeof PatientContactScalarFieldEnum]
+
+
+export const ContactMemoScalarFieldEnum = {
+  id: 'id',
+  patientContactId: 'patientContactId',
+  patientUserId: 'patientUserId',
+  createdByUserId: 'createdByUserId',
+  relationLabel: 'relationLabel',
+  shortMemo: 'shortMemo',
+  photoAssetId: 'photoAssetId',
+  isArchived: 'isArchived',
+  patientFavorite: 'patientFavorite',
+  caregiverFavorite: 'caregiverFavorite',
+  patientPriorityRank: 'patientPriorityRank',
+  caregiverPriorityRank: 'caregiverPriorityRank',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactMemoScalarFieldEnum = (typeof ContactMemoScalarFieldEnum)[keyof typeof ContactMemoScalarFieldEnum]
+
+
+export const MediaAssetScalarFieldEnum = {
+  id: 'id',
+  ownerUserId: 'ownerUserId',
+  uploadedByUserId: 'uploadedByUserId',
+  assetType: 'assetType',
+  storageProvider: 'storageProvider',
+  storageKey: 'storageKey',
+  publicUrl: 'publicUrl',
+  mimeType: 'mimeType',
+  width: 'width',
+  height: 'height',
+  durationSeconds: 'durationSeconds',
+  thumbnailUrl: 'thumbnailUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1619,6 +1991,48 @@ export type ListEnumChecklistRunStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
+ * Reference to a field of type 'ConsentStatus'
+ */
+export type EnumConsentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConsentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ConsentStatus[]'
+ */
+export type ListEnumConsentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConsentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactSourceType'
+ */
+export type EnumContactSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactSourceType'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactSourceType[]'
+ */
+export type ListEnumContactSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactSourceType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetType'
+ */
+export type EnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetType[]'
+ */
+export type ListEnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1736,6 +2150,10 @@ export type GlobalOmitConfig = {
   gameSession?: Prisma.GameSessionOmit
   gameLevelResult?: Prisma.GameLevelResultOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
+  contactSupportConsent?: Prisma.ContactSupportConsentOmit
+  patientContact?: Prisma.PatientContactOmit
+  contactMemo?: Prisma.ContactMemoOmit
+  mediaAsset?: Prisma.MediaAssetOmit
 }
 
 /* Types for Logging */

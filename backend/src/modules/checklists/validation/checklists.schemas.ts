@@ -4,6 +4,8 @@ const checklistStepSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   order: z.number().int().min(0),
+  imageAssetId: z.string().optional().nullable(),
+  videoAssetId: z.string().optional().nullable(),
 });
 
 export const createTemplateSchema = z.object({
@@ -29,4 +31,16 @@ const stepProgressSchema = z.object({
 export const updateRunSchema = z.object({
   status: z.enum(['IN_PROGRESS', 'COMPLETED', 'ABANDONED', 'in_progress', 'completed', 'abandoned']).optional(),
   stepProgress: z.array(stepProgressSchema).optional(),
+});
+
+export const patientIdParam = z.object({
+  patientId: z.string().uuid('Invalid patient ID'),
+});
+
+export const templateIdParam = z.object({
+  id: z.string().uuid('Invalid template ID'),
+});
+
+export const runIdParam = z.object({
+  id: z.string().uuid('Invalid run ID'),
 });

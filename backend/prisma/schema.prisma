@@ -110,6 +110,12 @@ model User {
   analyticsEvents    AnalyticsEvent[]    @relation("PatientAnalytics")
   actorAnalytics     AnalyticsEvent[]    @relation("ActorAnalytics")
 
+  contactConsents    ContactSupportConsent[] @relation("PatientConsents")
+  patientContacts    PatientContact[]        @relation("PatientContacts")
+  createdMemos       ContactMemo[]           @relation("CreatedMemos")
+  uploadedAssets     MediaAsset[]            @relation("UploadedAssets")
+  ownedAssets        MediaAsset[]            @relation("OwnedAssets")
+
   @@index([email])
   @@index([googleId])
   @@index([role])
@@ -355,4 +361,110 @@ model AnalyticsEvent {
   @@index([patientUserId])
   @@index([occurredAt])
   @@map("analytics_events")
+}
+
+// ─── Contacts & Media ──────────────────────────────────
+
+enum ConsentStatus {
+  PENDING
+  GRANTED
+  REVOKED
+}
+
+enum ContactSourceType {
+  DEVICE_CONTACTS
+  MANUAL
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
+
+model ContactSupportConsent {
+  id            String        @id @default(uuid())
+  patientUserId String        @unique
+  status        ConsentStatus @default(PENDING)
+  grantedAt     DateTime?
+  revokedAt     DateTime?
+  source        String?       // "device_prompt", "settings"
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  patient User @relation("PatientConsents", fields: [patientUserId], references: [id])
+
+  @@map("contact_support_consents")
+}
+
+model PatientContact {
+  id              String            @id @default(uuid())
+  patientUserId   String
+  sourceType      ContactSourceType @default(DEVICE_CONTACTS)
+  sourceContactId String?
+  displayName     String
+  normalizedPhones Json?
+  normalizedEmails Json?
+  importedAt      DateTime          @default(now())
+  lastSyncedAt    DateTime?
+  isArchived      Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  patient User          @relation("PatientContacts", fields: [patientUserId], references: [id])
+  memos   ContactMemo[]
+
+  @@index([patientUserId])
+  @@index([sourceContactId])
+  @@map("patient_contacts")
+}
+
+model ContactMemo {
+  id                    String   @id @default(uuid())
+  patientContactId      String
+  patientUserId         String
+  createdByUserId       String
+  relationLabel         String?
+  shortMemo             String?
+  photoAssetId          String?
+  isArchived            Boolean  @default(false)
+  
+  patientFavorite       Boolean  @default(false)
+  caregiverFavorite     Boolean  @default(false)
+  patientPriorityRank   Int?
+  caregiverPriorityRank Int?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  contact      PatientContact @relation(fields: [patientContactId], references: [id], onDelete: Cascade)
+  createdBy    User           @relation("CreatedMemos", fields: [createdByUserId], references: [id])
+  photoAsset   MediaAsset?    @relation(fields: [photoAssetId], references: [id])
+
+  @@index([patientContactId])
+  @@index([patientUserId])
+  @@map("contact_memos")
+}
+
+model MediaAsset {
+  id               String    @id @default(uuid())
+  ownerUserId      String?
+  uploadedByUserId String
+  assetType        AssetType @default(IMAGE)
+  storageProvider  String    @default("local")
+  storageKey       String
+  publicUrl        String?
+  mimeType         String?
+  width            Int?
+  height           Int?
+  durationSeconds  Int?
+  thumbnailUrl     String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  owner      User? @relation("OwnedAssets", fields: [ownerUserId], references: [id])
+  uploadedBy User  @relation("UploadedAssets", fields: [uploadedByUserId], references: [id])
+  memos      ContactMemo[]
+
+  @@index([ownerUserId])
+  @@map("media_assets")
 }

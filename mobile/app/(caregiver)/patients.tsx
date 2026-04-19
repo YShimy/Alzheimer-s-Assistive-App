@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, AppButton, AppInput, StatusChip, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
@@ -12,6 +13,7 @@ import type { CareLink } from '@/src/features/carelinks/types';
  */
 export default function CaregiverPatientsScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [links, setLinks] = useState<CareLink[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +22,10 @@ export default function CaregiverPatientsScreen() {
     try {
       const { careLinks } = await carelinksApi.getMyLinks();
       setLinks(careLinks);
-    } catch {
+    } catch (err: any) {
+      if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
+        console.warn('Backend returned 501 for checklists');
+      }
     } finally {
       setLoading(false);
     }
@@ -84,13 +89,37 @@ export default function CaregiverPatientsScreen() {
                   <PermItem label={t('caregiverPatients.createReminders')} enabled={item.permissions.canCreateReminders} />
                   <PermItem label={t('caregiverPatients.editReminders')} enabled={item.permissions.canEditReminders} />
                   <PermItem label={t('caregiverPatients.viewProgress')} enabled={item.permissions.canViewProgress} />
+                  <PermItem label={t('caregiverPatients.createChecklists')} enabled={item.permissions.canCreateChecklists} />
                 </View>
-                <AppButton
-                  title={t('caregiverPatients.revokeLink')}
-                  onPress={() => handleRevoke(item.id)}
-                  variant="ghost"
-                  size="sm"
-                />
+                <View style={styles.cardActions}>
+                    <AppButton
+                      title={t('caregiverPatients.manageContacts')}
+                      onPress={() => router.push({
+                         pathname: '/(caregiver)/contacts',
+                         params: { patientId: item.patientUserId, patientName: item.patient?.displayName }
+                      })}
+                      variant="secondary"
+                      size="sm"
+                      style={styles.actionBtn}
+                    />
+                    <AppButton
+                      title={t('patientHome.checklists')}
+                      onPress={() => router.push({
+                         pathname: '/(caregiver)/manage-checklists',
+                         params: { patientId: item.patientUserId, patientName: item.patient?.displayName }
+                      })}
+                      variant="outline"
+                      size="sm"
+                      style={styles.actionBtn}
+                    />
+                  <AppButton
+                    title={t('caregiverPatients.revokeLink')}
+                    onPress={() => handleRevoke(item.id)}
+                    variant="ghost"
+                    size="sm"
+                    style={styles.actionBtn}
+                  />
+                </View>
               </>
             )}
           </AppCard>
@@ -128,4 +157,12 @@ const styles = StyleSheet.create({
   permsList: { marginBottom: spacing.md, gap: spacing.xs },
   permRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   permLabel: { fontSize: typography.size.sm, color: colors.neutral[600] },
+  cardActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  actionBtn: {
+    flex: 1,
+  },
 });

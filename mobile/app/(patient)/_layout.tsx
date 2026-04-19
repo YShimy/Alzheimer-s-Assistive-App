@@ -91,7 +91,29 @@ export default function PatientLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="contacts/index"
+        options={{
+          title: t('contacts.title', 'Contacts'),
+          headerTitle: t('contacts.title', 'Important People'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people-outline" size={size} color={color} />
+          ),
+        }}
+      />
       {/* Hidden screens from the tab bar */}
+      <Tabs.Screen
+        name="contacts/import"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="contacts/consent"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="contacts/[id]"
+        options={{ href: null }}
+      />
       <Tabs.Screen
         name="safe-path-game"
         options={{

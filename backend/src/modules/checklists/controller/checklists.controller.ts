@@ -10,41 +10,28 @@ import { createTemplateSchema, updateTemplateSchema, createRunSchema, updateRunS
  * If CAREGIVER, we fetch their active care links and default to the first one.
  * (If the app later supports multiple patients per caregiver natively in the UI, we would read a ?patientId= query param here).
  */
-async function getTargetPatientId(req: Request): Promise<string> {
-  const user = req.user!;
-  if (user.role === 'PATIENT') {
-    return user.userId;
-  }
-  
-  if (user.role === 'CAREGIVER') {
-    const links = await carelinksService.getMyLinks(user.userId);
-    const activeLinks = links.filter((l) => l.status === 'active' && l.patientUserId);
-    
-    if (activeLinks.length === 0 || !activeLinks[0].patientUserId) {
-      throw new AppError('No linked patient found. Please link with a patient first.', 400);
-    }
-    
-    return activeLinks[0].patientUserId; // Default to first available patient for MVP
-  }
-  
-  throw new AppError('Unauthorized role', 403);
-}
-
 export const checklistsController = {
   // ─── Templates ────────────────────────────────────────────────────────────
 
   async listTemplates(req: Request, res: Response) {
-    const patientId = await getTargetPatientId(req);
+    const patientId = req.params.patientId as string;
+    console.log(`[Checklists] listTemplates - PatientId: ${patientId}, User: ${req.user?.userId}, Role: ${req.user?.role}`);
     // Caregivers can see archived ones in their UI, patients only see active ones.
     const includeArchived = req.user?.role === 'CAREGIVER';
     const templates = await checklistsService.listTemplates(patientId, includeArchived);
+    console.log(`[Checklists] listTemplates - Returning ${templates.length} templates`);
+    if (templates.length > 0) {
+      console.log(`[Checklists] listTemplates - First template:`, JSON.stringify(templates[0]));
+    }
     res.json({ templates });
   },
 
   async createTemplate(req: Request, res: Response) {
-    const patientId = await getTargetPatientId(req);
+    const patientId = req.params.patientId as string;
+    console.log(`[Checklists] createTemplate - Target PatientId: ${patientId} - Creator: ${req.user!.userId}`);
     const data = createTemplateSchema.parse(req.body);
     const template = await checklistsService.createTemplate(patientId, req.user!.userId, data);
+    console.log(`[Checklists] createTemplate - SUCCESS - TemplateId: ${template.id}`);
     res.status(201).json({ template });
   },
 
@@ -64,7 +51,7 @@ export const checklistsController = {
   // ─── Runs ────────────────────────────────────────────────────────────────
 
   async startRun(req: Request, res: Response) {
-    const patientId = await getTargetPatientId(req);
+    const patientId = req.params.patientId as string;
     const data = createRunSchema.parse(req.body);
     const run = await checklistsService.startRun(patientId, req.user!.userId, req.user!.role, data);
     res.status(201).json({ run });
@@ -78,7 +65,7 @@ export const checklistsController = {
   },
 
   async getActiveRuns(req: Request, res: Response) {
-    const patientId = await getTargetPatientId(req);
+    const patientId = req.params.patientId as string;
     const runs = await checklistsService.getActiveRuns(patientId);
     res.json({ runs });
   },

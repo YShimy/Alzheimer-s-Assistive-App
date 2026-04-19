@@ -12,26 +12,25 @@ import {
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { Image } from 'expo-image';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { ScreenContainer, AppCard, AppButton, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, ChecklistRun, StepProgress } from '@/src/features/checklists/types';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
+import { useSessionStore } from '@/src/state/sessionStore';
 
 /**
  * Patient checklist screen.
- *
- * Backend status: Checklist endpoints return HTTP 501 (Not Implemented).
- * The screen detects this and shows a clear "Not yet available" state
- * instead of silently failing. Wire to real data once backend is complete.
  */
 export default function PatientChecklistScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { userId } = useSessionStore();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [backendReady, setBackendReady] = useState(true);
   const [activeRun, setActiveRun] = useState<ChecklistRun | null>(null);
   const [runModalVisible, setRunModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -39,18 +38,25 @@ export default function PatientChecklistScreen() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const { templates: t } = await checklistsApi.listTemplates();
-      setTemplates(t.filter((tpl) => tpl.isActive));
-      setBackendReady(true);
-    } catch (err: any) {
-      if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-        setBackendReady(false);
+      if (!userId) {
+        console.log('[PatientChecklist] No userId, skipping load');
+        return;
       }
-      // For other errors (network etc.) just leave empty, user can refresh
+      console.log(`[PatientChecklist] Loading templates for userId: ${userId}`);
+      const { templates: t } = await checklistsApi.listTemplates(userId);
+      console.log(`[PatientChecklist] Received ${t.length} templates:`, t.map(tpl => ({ id: tpl.id, title: tpl.title, isActive: tpl.isActive })));
+      const activeTemplates = t.filter((tpl) => tpl.isActive);
+      console.log(`[PatientChecklist] Filtered to ${activeTemplates.length} active templates`);
+      setTemplates(activeTemplates);
+    } catch (err: any) {
+      console.error('[PatientChecklist] Error loading templates:', err);
+      if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
+        console.warn('Patient checklists backend returned 501');
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userId]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -61,7 +67,8 @@ export default function PatientChecklistScreen() {
     }
     setSubmitting(true);
     try {
-      const { run } = await checklistsApi.startRun({ templateId: template.id });
+      if (!userId) throw new Error('Not logged in');
+      const { run } = await checklistsApi.startRun(userId, { templateId: template.id });
       // Attach template steps for the run view
       setActiveRun({ ...run, template: { id: template.id, title: template.title, steps: template.steps } });
       setRunModalVisible(true);
@@ -86,6 +93,7 @@ export default function PatientChecklistScreen() {
     if (!activeRun) return;
     setSubmitting(true);
     try {
+      if (!userId) throw new Error('Not logged in');
       await checklistsApi.updateRun(activeRun.id, {
         status: 'completed',
         stepProgress: activeRun.stepProgress,
@@ -128,69 +136,54 @@ export default function PatientChecklistScreen() {
     );
   }
 
-  if (!backendReady) {
-    return (
-      <ScreenContainer scroll={false}>
-        <EmptyState
-          icon="construct-outline"
-          title={t('patientChecklists.comingSoonTitle')}
-          message={t('patientChecklists.comingSoonMsg')}
-          action={
-            <AppButton title={t('patientChecklists.checkAgainBtn')} onPress={load} variant="outline" fullWidth={false} />
-          }
-        />
-      </ScreenContainer>
-    );
-  }
-
   return (
-    <>
-      <FlatList
-        data={templates}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <EmptyState
-            icon="checkbox-outline"
-            title={t('patientChecklists.noChecklists')}
-            message={t('patientChecklists.noChecklistsMsg')}
-          />
-        }
-        renderItem={({ item }) => (
-          <ChecklistTemplateCard
-            template={item}
-            onStart={() => handleStart(item)}
-            starting={submitting}
+      <ScreenContainer scroll={false} padded={false}>
+        <FlatList
+          data={templates}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyState
+              icon="checkbox-outline"
+              title={t('patientChecklists.noChecklists')}
+              message={t('patientChecklists.noChecklistsMsg')}
+            />
+          }
+          renderItem={({ item }) => (
+            <ChecklistTemplateCard
+              template={item}
+              onStart={() => handleStart(item)}
+              starting={submitting}
+            />
+          )}
+        />
+
+        {/* FAB to Manage Checklists */}
+        <Pressable
+          style={styles.fab}
+          onPress={() => router.push('/(patient)/manage-checklists')}
+          accessibilityRole="button"
+          accessibilityLabel="Manage Checklists"
+        >
+          <Icon name="settings-outline" size={24} color="#fff" />
+        </Pressable>
+
+        {/* Active Run Modal */}
+        {activeRun && (
+          <RunModal
+            run={activeRun}
+            visible={runModalVisible}
+            onToggleStep={toggleStep}
+            onComplete={handleComplete}
+            onAbandon={() => {
+              setRunModalVisible(false);
+              setActiveRun(null);
+            }}
+            submitting={submitting}
           />
         )}
-      />
-
-      {/* FAB to Manage Checklists */}
-      <Pressable
-        style={styles.fab}
-        onPress={() => router.push('/(patient)/manage-checklists')}
-        accessibilityRole="button"
-        accessibilityLabel="Manage Checklists"
-      >
-        <Icon name="settings-outline" size={24} color="#fff" />
-      </Pressable>
-
-      {/* Active Run Modal */}
-      {activeRun && (
-        <RunModal
-          run={activeRun}
-          visible={runModalVisible}
-          onToggleStep={toggleStep}
-          onComplete={handleComplete}
-          onAbandon={() => {
-            setRunModalVisible(false);
-            setActiveRun(null);
-          }}
-          submitting={submitting}
-        />
-      )}
-    </>
+      </ScreenContainer>
   );
 }
 
@@ -313,6 +306,7 @@ function RunModal({
                   {step.description ? (
                     <Text style={styles.stepDesc}>{step.description}</Text>
                   ) : null}
+                  <MediaSection step={step} />
                 </View>
               </Pressable>
             );
@@ -335,6 +329,39 @@ function RunModal({
         </ScrollView>
       </View>
     </Modal>
+  );
+}
+
+function MediaSection({ step }: { step: any }) {
+  const videoSource = step.videoUrl;
+  const imageSource = step.imageUrl;
+
+  if (!videoSource && !imageSource) return null;
+
+  return (
+     <View style={styles.mediaContainer}>
+        {imageSource && (
+          <Image source={{ uri: imageSource }} style={styles.stepImage} contentFit="cover" />
+        )}
+        {videoSource && (
+          <VideoPlayer url={videoSource} />
+        )}
+     </View>
+  );
+}
+
+function VideoPlayer({ url }: { url: string }) {
+  const player = useVideoPlayer(url, (player) => {
+    player.loop = true;
+  });
+
+  return (
+    <VideoView 
+      style={styles.stepVideo} 
+      player={player} 
+      allowsFullscreen 
+      allowsPictureInPicture 
+    />
   );
 }
 
@@ -474,5 +501,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     ...shadows.lg,
+  },
+  mediaContainer: {
+    marginTop: spacing.md,
+    gap: spacing.sm,
+  },
+  stepImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface_container_low,
+  },
+  stepVideo: {
+    width: '100%',
+    height: 180,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface_container_low,
   },
 });

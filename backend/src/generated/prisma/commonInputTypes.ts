@@ -423,6 +423,57 @@ export type EnumChecklistRunStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
 }
 
+export type EnumConsentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel> | $Enums.ConsentStatus
+}
+
+export type EnumConsentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConsentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ConsentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel>
+}
+
+export type EnumContactSourceTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactSourceType | Prisma.EnumContactSourceTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel> | $Enums.ContactSourceType
+}
+
+export type EnumContactSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactSourceType | Prisma.EnumContactSourceTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContactSourceType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel>
+}
+
+export type EnumAssetTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssetType | Prisma.EnumAssetTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+}
+
+export type EnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssetType | Prisma.EnumAssetTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -789,6 +840,57 @@ export type NestedEnumChecklistRunStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumConsentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel> | $Enums.ConsentStatus
+}
+
+export type NestedEnumConsentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConsentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ConsentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumConsentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumContactSourceTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactSourceType | Prisma.EnumContactSourceTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel> | $Enums.ContactSourceType
+}
+
+export type NestedEnumContactSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactSourceType | Prisma.EnumContactSourceTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactSourceType[] | Prisma.ListEnumContactSourceTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContactSourceType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactSourceTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumAssetTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssetType | Prisma.EnumAssetTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+}
+
+export type NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssetType | Prisma.EnumAssetTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AssetType[] | Prisma.ListEnumAssetTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
 }
 
 

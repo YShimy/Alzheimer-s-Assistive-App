@@ -1,0 +1,218 @@
+import { View, Text, StyleSheet, FlatList, Pressable, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import * as Contacts from 'expo-contacts';
+import { ScreenContainer, AppButton, AppInput, Icon, LoadingState } from '@/src/shared/ui';
+import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
+import { contactsApi } from '@/src/features/contacts/api';
+import { useSessionStore } from '@/src/state/sessionStore';
+
+export default function ContactImportScreen() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const userId = useSessionStore((s) => s.userId);
+  
+  const [deviceContacts, setDeviceContacts] = useState<Contacts.Contact[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<Contacts.Contact[]>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [importing, setImporting] = useState(false);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+        });
+
+        if (data.length > 0) {
+          const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
+          setDeviceContacts(sorted);
+          setFilteredContacts(sorted);
+        }
+      } else {
+        Alert.alert('Permission Denied', 'We need access to your contacts to help you import them.');
+        router.back();
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  useEffect(() => {
+    const term = search.toLowerCase();
+    setFilteredContacts(
+      deviceContacts.filter(c => 
+        c.name.toLowerCase().includes(term) || 
+        c.phoneNumbers?.some(p => p.number?.includes(term))
+      )
+    );
+  }, [search, deviceContacts]);
+
+  const toggleSelect = (id: string) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelectedIds(next);
+  };
+
+  const handleImport = async () => {
+    if (!userId) return;
+    if (selectedIds.size === 0) {
+      Alert.alert('No contacts selected', 'Please select at least one contact to import.');
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const toImport = deviceContacts
+        .filter(c => selectedIds.has(c.id!))
+        .map(c => ({
+          id: c.id,
+          name: c.name,
+          phoneNumbers: c.phoneNumbers?.map(p => p.number!).filter(Boolean),
+          emails: c.emails?.map(e => e.email!).filter(Boolean),
+        }));
+
+      await contactsApi.importSelected(userId, toImport);
+      Alert.alert('Success', `Imported ${selectedIds.size} contacts successfully.`);
+      router.replace('/(patient)/contacts');
+    } catch (error) {
+      console.error('Import failed', error);
+      Alert.alert('Error', 'Failed to import contacts. Please try again.');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  if (loading) return <LoadingState message="Reading your contacts..." />;
+
+  return (
+    <ScreenContainer scroll={false}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{t('contacts.importTitle')}</Text>
+        <AppInput
+          placeholder={t('contacts.importSearch')}
+          value={search}
+          onChangeText={setSearch}
+          leftIcon={<Icon name="search-outline" size={20} color={colors.on_surface_variant} />}
+        />
+      </View>
+
+      <FlatList
+        data={filteredContacts}
+        keyExtractor={(item) => item.id!}
+        renderItem={({ item }) => {
+          const isSelected = selectedIds.has(item.id!);
+          return (
+            <Pressable 
+              style={[styles.contactRow, isSelected && styles.selectedRow]} 
+              onPress={() => toggleSelect(item.id!)}
+            >
+              <View style={[styles.avatar, { backgroundColor: isSelected ? colors.primary.main : colors.surface_container_high }]}>
+                <Text style={[styles.avatarText, { color: isSelected ? colors.on_primary : colors.on_surface_variant }]}>
+                  {item.name.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+              <View style={styles.info}>
+                <Text style={styles.name}>{item.name}</Text>
+                {item.phoneNumbers && item.phoneNumbers.length > 0 && (
+                  <Text style={styles.subtext}>{item.phoneNumbers[0].number}</Text>
+                )}
+              </View>
+              <Icon 
+                name={isSelected ? "checkbox" : "square-outline"} 
+                size={24} 
+                color={isSelected ? colors.primary.main : colors.outline_variant} 
+              />
+            </Pressable>
+          );
+        }}
+        contentContainerStyle={styles.list}
+      />
+
+      <View style={styles.footer}>
+        <Text style={styles.countText}>
+          {t('contacts.selectedCount', { count: selectedIds.size })}
+        </Text>
+        <AppButton
+          title={t('contacts.confirmImport')}
+          onPress={handleImport}
+          loading={importing}
+          disabled={selectedIds.size === 0}
+        />
+      </View>
+    </ScreenContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    paddingBottom: spacing.lg,
+  },
+  title: {
+    fontFamily: typography.family.display,
+    fontSize: typography.size.xl,
+    color: colors.on_surface,
+    marginBottom: spacing.md,
+  },
+  list: {
+    paddingBottom: 100,
+  },
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    marginBottom: spacing.xs,
+  },
+  selectedRow: {
+    backgroundColor: colors.primary_container + '40', // 25% opacity
+  },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  avatarText: {
+    fontFamily: typography.family.title,
+    fontSize: typography.size.base,
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontFamily: typography.family.title,
+    fontSize: typography.size.base,
+    color: colors.on_surface,
+  },
+  subtext: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.sm,
+    color: colors.on_surface_variant,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.surface,
+    padding: spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: colors.outline_variant,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  countText: {
+    fontFamily: typography.family.label,
+    fontSize: typography.size.sm,
+    color: colors.on_surface_variant,
+  },
+});

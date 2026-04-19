@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import {
   ScreenContainer,
   AppCard,
@@ -81,9 +82,10 @@ function formFromReminder(r: Reminder): ReminderForm {
  * reminders for linked patients.
  */
 export default function CaregiverRemindersScreen() {
+  const { patientId: paramPatientId, patientName } = useLocalSearchParams<{ patientId: string; patientName: string }>();
   const { t } = useTranslation();
   const [links, setLinks] = useState<CareLink[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(paramPatientId || null);
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [remindersLoading, setRemindersLoading] = useState(false);
@@ -104,7 +106,7 @@ export default function CaregiverRemindersScreen() {
       .then(({ careLinks }) => {
         const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
         setLinks(active);
-        if (active.length > 0 && active[0]!.patientUserId) {
+        if (!selectedPatient && active.length > 0 && active[0]!.patientUserId) {
           setSelectedPatient(active[0]!.patientUserId);
         }
       })
@@ -225,8 +227,8 @@ export default function CaregiverRemindersScreen() {
 
   // ─── Render ────────────────────────────────────────────────────────────
 
-  if (loading) return <ScreenContainer><LoadingState /></ScreenContainer>;
-  if (error) return <ScreenContainer><ErrorState message={error} onRetry={() => {}} /></ScreenContainer>;
+  if (loading) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
+  if (error) return <ScreenContainer scroll={false}><ErrorState message={error} onRetry={() => {}} /></ScreenContainer>;
 
   if (links.length === 0) {
     return (
@@ -245,7 +247,7 @@ export default function CaregiverRemindersScreen() {
   const selectedLink = links.find((l) => l.patientUserId === selectedPatient);
 
   return (
-    <>
+    <ScreenContainer scroll={false} padded={false}>
       <FlatList
         data={activeReminders}
         keyExtractor={(item) => item.id}
@@ -254,18 +256,28 @@ export default function CaregiverRemindersScreen() {
         ListHeaderComponent={
           <View>
             {/* Patient selector */}
-            <View style={styles.patientCard}>
-              <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
-                <Text style={styles.patientName}>
-                  {selectedLink?.patient?.displayName ?? 'Patient'}
+            {!paramPatientId && (
+              <View style={styles.patientCard}>
+                <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
+                  <Text style={styles.patientName}>
+                    {selectedLink?.patient?.displayName ?? 'Patient'}
+                  </Text>
+                </View>
+                {links.length > 1 && (
+                  <StatusChip label={`${links.length} patients`} variant="info" />
+                )}
+              </View>
+            )}
+
+            {patientName && (
+              <View style={{ marginBottom: spacing.md }}>
+                <Text style={{ fontSize: typography.size.sm, color: colors.neutral[500] }}>
+                  Managing reminders for <Text style={{ fontWeight: '700', color: colors.secondary[600] }}>{patientName}</Text>
                 </Text>
               </View>
-              {links.length > 1 && (
-                <StatusChip label={`${links.length} patients`} variant="info" />
-              )}
-            </View>
+            )}
 
             {/* Create button */}
             <AppButton
@@ -466,7 +478,7 @@ export default function CaregiverRemindersScreen() {
           </ScrollView>
         </View>
       </Modal>
-    </>
+    </ScreenContainer>
   );
 }
 

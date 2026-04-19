@@ -8,49 +8,45 @@ import type {
   UpdateRunInput,
 } from './types';
 
-/**
- * Checklist API client.
- *
- * NOTE: The backend checklist endpoints currently return HTTP 501 (Not Implemented).
- * All calls will throw an ApiError with code NOT_IMPLEMENTED.
- * The frontend handles this gracefully and shows an appropriate state.
- * Wire the real implementation here once the backend is ready.
- */
 export const checklistsApi = {
   // ─── Templates ────────────────────────────────────────────────────────────
-
-  async listTemplates(): Promise<{ templates: ChecklistTemplate[] }> {
-    return apiClient.get('/checklists/templates');
+  
+  /**
+   * List templates. 
+   * @param patientId ID of the patient.
+   */
+  async listTemplates(patientId: string): Promise<{ templates: ChecklistTemplate[] }> {
+    return apiClient.get(`/patients/${patientId}/checklists/templates`);
   },
 
-  async createTemplate(
-    data: CreateChecklistTemplateInput,
-  ): Promise<{ template: ChecklistTemplate }> {
-    return apiClient.post('/checklists/templates', data);
+  /**
+   * Create a new template.
+   * @param patientId Target patient ID.
+   * @param data Template data.
+   */
+  async createTemplate(patientId: string, data: CreateChecklistTemplateInput): Promise<{ template: ChecklistTemplate }> {
+    return apiClient.post(`/patients/${patientId}/checklists/templates`, data);
   },
 
-  async updateTemplate(
-    id: string,
-    data: UpdateChecklistTemplateInput,
-  ): Promise<{ template: ChecklistTemplate }> {
+  async updateTemplate(id: string, data: Partial<CreateChecklistTemplateInput>): Promise<{ template: ChecklistTemplate }> {
     return apiClient.patch(`/checklists/templates/${id}`, data);
   },
 
-  async archiveTemplate(id: string): Promise<{ template: ChecklistTemplate }> {
+  async archiveTemplate(id: string): Promise<void> {
     return apiClient.patch(`/checklists/templates/${id}/archive`);
   },
 
   // ─── Runs ────────────────────────────────────────────────────────────────
 
-  async startRun(data: CreateRunInput): Promise<{ run: ChecklistRun }> {
-    return apiClient.post('/checklists/runs', data);
+  async startRun(patientId: string, data: CreateRunInput): Promise<{ run: ChecklistRun }> {
+    return apiClient.post(`/patients/${patientId}/checklists/runs`, data);
   },
 
   async updateRun(id: string, data: UpdateRunInput): Promise<{ run: ChecklistRun }> {
     return apiClient.patch(`/checklists/runs/${id}`, data);
   },
 
-  async getActiveRuns(): Promise<{ runs: ChecklistRun[] }> {
-    return apiClient.get('/checklists/runs?status=in_progress');
+  async getActiveRuns(patientId: string): Promise<{ runs: ChecklistRun[] }> {
+    return apiClient.get(`/patients/${patientId}/checklists/runs`);
   },
 };

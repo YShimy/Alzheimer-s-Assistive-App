@@ -67,3 +67,23 @@ export type GameLevelResult = Prisma.GameLevelResultModel
  * 
  */
 export type AnalyticsEvent = Prisma.AnalyticsEventModel
+/**
+ * Model ContactSupportConsent
+ * 
+ */
+export type ContactSupportConsent = Prisma.ContactSupportConsentModel
+/**
+ * Model PatientContact
+ * 
+ */
+export type PatientContact = Prisma.PatientContactModel
+/**
+ * Model ContactMemo
+ * 
+ */
+export type ContactMemo = Prisma.ContactMemoModel
+/**
+ * Model MediaAsset
+ * 
+ */
+export type MediaAsset = Prisma.MediaAssetModel

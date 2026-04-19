@@ -17,10 +17,12 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private getHeaders(): HeadersInit {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+  private getHeaders(contentType: string | null = 'application/json'): HeadersInit {
+    const headers: Record<string, string> = {};
+    
+    if (contentType) {
+      headers['Content-Type'] = contentType;
+    }
 
     const token = sessionStore.getState().token;
     if (token) {
@@ -60,6 +62,15 @@ class ApiClient {
     const res = await fetch(`${this.baseUrl}${path}`, {
       method: 'DELETE',
       headers: this.getHeaders(),
+    });
+    return this.handleResponse<T>(res);
+  }
+
+  async upload<T>(path: string, formData: FormData): Promise<T> {
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      method: 'POST',
+      headers: this.getHeaders(null), // fetch will set proper multipart headers
+      body: formData as any,
     });
     return this.handleResponse<T>(res);
   }

@@ -174,11 +174,11 @@ export default function PatientHomeScreen() {
           onPress={() => router.push('/(patient)/progress')}
         />
         <QuickCard
-          icon="help-circle-outline"
-          title={t('patientHome.help')}
-          color={colors.on_surface}
-          bgColor={colors.surface_container_highest}
-          onPress={() => {}}
+          icon="people-outline"
+          title={t('contacts.title')}
+          color={colors.error.main}
+          bgColor={colors.error_container}
+          onPress={() => router.push('/(patient)/contacts')}
         />
       </View>
     </ScreenContainer>
