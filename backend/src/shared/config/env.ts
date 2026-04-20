@@ -11,6 +11,7 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('7d'),
   GOOGLE_CLIENT_ID: z.string().default(''),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  API_BASE_URL: z.string().default('http://localhost:4000'),
 
   // SMTP / Mail
   SMTP_HOST: z.string().default('smtp.gmail.com'),

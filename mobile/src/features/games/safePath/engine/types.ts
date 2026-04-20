@@ -36,6 +36,8 @@ export interface BoardDefinition {
 
 // ─── Difficulty ────────────────────────────────────────────
 
+export type BranchingLevel = 'none' | 'low' | 'moderate' | 'moderate-high';
+
 export interface DifficultyTier {
   tier: number;
   gridRows: number;
@@ -43,6 +45,8 @@ export interface DifficultyTier {
   bombCount: number;
   previewDurationMs: number;
   targetSolveTimeMs: number;
+  pathMinLength?: number;
+  branching?: BranchingLevel;
 }
 
 // ─── Game Phase State Machine ──────────────────────────────
@@ -66,6 +70,8 @@ export type MoveResult =
 
 // ─── Level Result ──────────────────────────────────────────
 
+export type LevelOutcome = 'strong_clear' | 'supported_clear' | 'fail';
+
 export interface LevelResult {
   levelIndex: number;
   difficultyTier: number;
@@ -75,9 +81,11 @@ export interface LevelResult {
   previewDurationMs: number;
   solveTimeMs: number;
   success: boolean;
+  outcome: LevelOutcome;
   scoreDelta: number;
   pathLength: number;
   retryCount: number;
+  supportMode: boolean;
   startedAt: string;
   completedAt: string;
 }
@@ -103,6 +111,12 @@ export interface SessionResult {
 
 // ─── Game State ────────────────────────────────────────────
 
+export interface LevelRecord {
+  tier: number;
+  outcome: LevelOutcome;
+  timestamp: number;
+}
+
 export interface GameState {
   phase: GamePhase;
   currentTier: DifficultyTier;
@@ -118,5 +132,8 @@ export interface GameState {
   levelStartTime: number | null;
   sessionStartTime: number;
   levelResults: LevelResult[];
+  levelHistory: LevelRecord[]; // Track last 3 for progression
   retryCountThisLevel: number;
+  supportMode: boolean; // Current level in support mode
+  supportConfigApplied: boolean; // Whether support adjustments are active
 }

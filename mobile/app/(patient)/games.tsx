@@ -24,6 +24,15 @@ export default function GamesScreen() {
     router.push('/(patient)/safe-path-game' as any);
   };
 
+  const handleOpenRoutineSequence = () => {
+    eventLogger.log({
+      eventName: EventNames.GAME_OPENED,
+      screenName: 'GamesScreen',
+      payload: { gameType: 'routine_sequence' },
+    });
+    router.push('/(patient)/routine-sequence-game' as any);
+  };
+
   return (
     <ScreenContainer>
       <Text style={styles.sectionTitle}>{t('games.title')}</Text>
@@ -34,7 +43,7 @@ export default function GamesScreen() {
       <Pressable onPress={handleOpenSafePath} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
         <AppCard style={styles.gameCard}>
           <View style={styles.gameCardContent}>
-            <View style={styles.gameIconContainer}>
+            <View style={[styles.gameIconContainer, { backgroundColor: colors.primary[50] }]}>
               <Ionicons name="map-outline" size={32} color={colors.primary[500]} />
             </View>
             <View style={styles.gameCardText}>
@@ -54,10 +63,28 @@ export default function GamesScreen() {
         </AppCard>
       </Pressable>
 
-      <View style={styles.comingSoon}>
-        <Ionicons name="add-circle-outline" size={24} color={colors.neutral[300]} />
-        <Text style={styles.comingSoonText}>{t('games.moreComingSoon')}</Text>
-      </View>
+      <Pressable onPress={handleOpenRoutineSequence} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
+        <AppCard style={styles.gameCard}>
+          <View style={styles.gameCardContent}>
+            <View style={[styles.gameIconContainer, { backgroundColor: colors.secondary[50] }]}>
+              <Ionicons name="list-outline" size={32} color={colors.secondary[500]} />
+            </View>
+            <View style={styles.gameCardText}>
+              <Text style={styles.gameTitle}>Routine Sequence</Text>
+              <Text style={styles.gameDescription}>
+                Practice daily routines and remember step order
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
+          </View>
+
+          <View style={styles.gameTags}>
+            <Tag label={t('games.tags.sequencing')} color={colors.secondary[500]} />
+            <Tag label={t('games.tags.daily')} color={colors.success.main} />
+            <Tag label={t('games.tags.supportive')} color={colors.primary[500]} />
+          </View>
+        </AppCard>
+      </Pressable>
     </ScreenContainer>
   );
 }

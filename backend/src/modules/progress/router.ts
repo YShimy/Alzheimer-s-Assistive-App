@@ -17,3 +17,12 @@ progressRouter.get('/categories', progressController.getCategories);
 
 // GET /api/patients/:patientId/progress/charts
 progressRouter.get('/charts', progressController.getCharts);
+
+// GET /api/patients/:patientId/progress/checklists
+progressRouter.get('/checklists', progressController.getChecklistTracking);
+
+// GET /api/patients/:patientId/progress/game?gameType=xxx
+progressRouter.get('/game', progressController.getGameProgress);
+
+// GET /api/patients/:patientId/progress/weekly
+progressRouter.get('/weekly', progressController.getWeekly);

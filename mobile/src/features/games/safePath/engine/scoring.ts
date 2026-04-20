@@ -1,40 +1,72 @@
 /**
- * Safe Path Memory — Scoring System
+ * Safe Path Memory — Exact Scoring System
  *
- * Pure functions for calculating level and session scores.
- * No side effects, fully testable.
+ * Strong clear: 100 + tier bonus
+ * Supported clear: 60 + tier bonus
+ * Fail: small participation points (10)
+ *
+ * Pure functions for calculating scores and building session results.
  */
-import type { DifficultyTier, LevelResult, SessionResult } from './types';
+import type { DifficultyTier, LevelResult, SessionResult, LevelOutcome } from './types';
+import { getSupportConfig } from './difficulty';
 
-// ─── Level Score ────────────────────────────────────────────
+// ─── Level Scoring ─────────────────────────────────────────
+
+const BASE_STRONG_CLEAR = 100;
+const BASE_SUPPORTED_CLEAR = 60;
+const BASE_FAIL_SCORE = 10; // Small participation points
 
 /**
- * Calculate score for a single level.
- *
- * Formula:
- *   baseScore = 100 + (tier * 20) + (bombCount * 10) + ((gridSize - 16) * 5)
- *   timeBonus = max(0, floor((targetSolveTime - actualSolveTime) / 100))
- *   cleanBonus = 25 if no retries, else 0
- *   total = baseScore + timeBonus + cleanBonus
- *
- * On failure: score = 0
+ * Calculate level score based on exact specification.
+ * Strong clear (first try, no support): 100 + tier bonus
+ * Supported clear (after retry/support): 60 + tier bonus
+ * Fail: 10 points participation
  */
 export function calculateLevelScore(
   tier: DifficultyTier,
   solveTimeMs: number,
-  success: boolean,
+  outcome: LevelOutcome,
   retryCount: number,
+  supportMode: boolean,
 ): number {
-  if (!success) return 0;
+  // Fail: small participation points
+  if (outcome === 'fail') {
+    return BASE_FAIL_SCORE;
+  }
 
-  const gridSize = tier.gridRows * tier.gridCols;
-  const baseScore = 100 + tier.tier * 20 + tier.bombCount * 10 + Math.max(0, (gridSize - 16) * 5);
+  // Determine if this is a supported clear
+  const isSupported = outcome === 'supported_clear' || supportMode || retryCount > 0;
+  
+  // Base score based on outcome type
+  let score = isSupported ? BASE_SUPPORTED_CLEAR : BASE_STRONG_CLEAR;
+  
+  // Tier bonus (10 points per tier)
+  score += tier.tier * 10;
+  
+  // Small efficiency bonus for no retries (Strong clear only)
+  if (!isSupported && retryCount === 0) {
+    score += 10;
+  }
+  
+  // Mild speed bonus (capped to avoid pressure)
+  const timeRatio = solveTimeMs / tier.targetSolveTimeMs;
+  if (timeRatio <= 0.5) score += 10;
+  else if (timeRatio <= 0.75) score += 5;
 
-  const timeBonus = Math.max(0, Math.floor((tier.targetSolveTimeMs - solveTimeMs) / 100));
+  return Math.max(0, score);
+}
 
-  const cleanBonus = retryCount === 0 ? 25 : 0;
-
-  return baseScore + timeBonus + cleanBonus;
+/**
+ * Determine level outcome based on performance.
+ */
+export function determineLevelOutcome(
+  success: boolean,
+  isFirstTry: boolean,
+  supportMode: boolean
+): LevelOutcome {
+  if (!success) return 'fail';
+  if (isFirstTry && !supportMode) return 'strong_clear';
+  return 'supported_clear';
 }
 
 // ─── Session Summary ────────────────────────────────────────

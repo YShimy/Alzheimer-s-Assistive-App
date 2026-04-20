@@ -47,4 +47,14 @@ export const EventNames = {
   SESSION_COMPLETED: 'session_completed',
   SESSION_ABANDONED: 'session_abandoned',
   GAME_PROGRESS_CHART_VIEWED: 'game_progress_chart_viewed',
+
+  // ─── Routine Sequence Builder Game Events ───────────────────
+  ROUTINE_SEQUENCE_INSTRUCTIONS_VIEWED: 'routine_sequence_instructions_viewed',
+  ROUTINE_SEQUENCE_SESSION_STARTED: 'routine_sequence_session_started',
+  ROUTINE_SEQUENCE_STUDY_VIEWED: 'routine_sequence_study_viewed',
+  ROUTINE_SEQUENCE_STEP_ANSWERED: 'routine_sequence_step_answered',
+  ROUTINE_SEQUENCE_PROMPT_SHOWN: 'routine_sequence_prompt_shown',
+  ROUTINE_SEQUENCE_LEVEL_COMPLETED: 'routine_sequence_level_completed',
+  ROUTINE_SEQUENCE_SESSION_COMPLETED: 'routine_sequence_session_completed',
+  ROUTINE_SEQUENCE_SESSION_ABANDONED: 'routine_sequence_session_abandoned',
 } as const;

@@ -6,6 +6,7 @@ import { ScreenContainer, AppCard, Icon, LoadingState, StatusChip, EmptyState } 
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { carelinksApi } from '@/src/features/carelinks/api';
 import { usePatientProgress } from '@/src/features/progress/usePatientProgress';
+import { useChecklistTracking } from '@/src/features/progress/hooks';
 import type { CareLink } from '@/src/features/carelinks/types';
 import { useFocusEffect } from 'expo-router';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
@@ -37,6 +38,7 @@ export default function CaregiverProgressScreen() {
   }, []);
 
   const { loading: progressLoading, refreshing, error, overview, streaks, categories, charts, reload, refresh } = usePatientProgress(selectedPatient);
+  const { data: checklistTracking } = useChecklistTracking(selectedPatient);
 
   useFocusEffect(
     useCallback(() => {
@@ -72,7 +74,7 @@ export default function CaregiverProgressScreen() {
 
     if (delta > 0) {
       text = context === 'score' ? "Scoring higher than last week. Great work!" : "More consistent than last week. Keep it up!";
-      color = colors.success.dark;
+      color = colors.success.main as any;
     } else if (delta < 0 && Math.abs(delta) < 0.2) {
       text = "Maintaining a steady pace.";
     } else if (delta < 0) {
@@ -162,6 +164,58 @@ export default function CaregiverProgressScreen() {
         {categories && categories.reminderCategories.length > 0 && (
           <View style={styles.section}>
             <CategoryProgressCard title="Reminders by Category (Last 30 Days)" categories={categories.reminderCategories} />
+          </View>
+        )}
+
+        {/* CHECKLIST CATEGORIES */}
+        {categories && categories.checklistCategories.length > 0 && (
+          <View style={styles.section}>
+            <CategoryProgressCard title="Checklists by Category (Last 30 Days)" categories={categories.checklistCategories} />
+          </View>
+        )}
+
+        {/* CHECKLIST TRACKING */}
+        {checklistTracking && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Checklist Activity</Text>
+            <AppCard style={styles.chartContainer}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: spacing.md }}>
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontFamily: typography.family.display, fontSize: typography.size['2xl'], color: colors.primary.main }}>
+                    {checklistTracking.thisWeek.completedRuns}
+                  </Text>
+                  <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[600] }}>
+                    Completed This Week
+                  </Text>
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontFamily: typography.family.display, fontSize: typography.size['2xl'], color: colors.primary.main }}>
+                    {checklistTracking.thisMonth.completedRuns}
+                  </Text>
+                  <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[600] }}>
+                    Completed This Month
+                  </Text>
+                </View>
+              </View>
+              {checklistTracking.thisWeek.runs.length > 0 && (
+                <View style={{ borderTopWidth: 1, borderTopColor: colors.neutral[200], paddingTop: spacing.md }}>
+                  <Text style={{ fontFamily: typography.family.headline, fontSize: typography.size.sm, color: colors.neutral[700], marginBottom: spacing.sm }}>
+                    Recent Checklists
+                  </Text>
+                  {checklistTracking.thisWeek.runs.slice(0, 3).map((run) => (
+                    <View key={run.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.xs }}>
+                      <Icon name="checkbox-outline" size={16} color={run.status === 'completed' ? colors.success.main : colors.neutral[400]} />
+                      <Text style={{ flex: 1, fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.neutral[800] }} numberOfLines={1}>
+                        {run.templateTitle}
+                      </Text>
+                      <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[500] }}>
+                        {new Date(run.startedAt).toLocaleDateString()}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </AppCard>
           </View>
         )}
         

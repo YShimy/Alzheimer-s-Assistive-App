@@ -38,6 +38,11 @@ export interface ProgressChartsResponse {
   checklistSeries: ChartSeriesData[];
   gameScoreSeries: ChartSeriesData[];
   gameTierSeries: ChartSeriesData[];
+  // Game-specific series
+  safePathScoreSeries: ChartSeriesData[];
+  safePathTierSeries: ChartSeriesData[];
+  routineSequenceScoreSeries: ChartSeriesData[];
+  routineSequenceAccuracySeries: ChartSeriesData[];
 }
 
 export interface CategoryMetric {
@@ -59,4 +64,62 @@ export interface ProgressStreaksResponse {
   checklists: StreakData;
   games: StreakData;
   general: StreakData;
+}
+
+export interface ChecklistRunDetail {
+  id: string;
+  templateId: string;
+  templateTitle: string;
+  category: string;
+  status: string;
+  startedAt: string;
+  completedAt: string | null;
+  completedSteps: number;
+  totalSteps: number;
+}
+
+export interface ChecklistPeriodStats {
+  period: string;
+  startDate: string;
+  endDate: string;
+  totalRuns: number;
+  completedRuns: number;
+  completionRate: number;
+  runs: ChecklistRunDetail[];
+}
+
+export interface ProgressChecklistTrackingResponse {
+  thisWeek: ChecklistPeriodStats;
+  lastWeek: ChecklistPeriodStats;
+  thisMonth: ChecklistPeriodStats;
+  lastMonth: ChecklistPeriodStats;
+}
+
+export interface WeeklyProgressResponse {
+  weekStart: string;
+  weekEnd: string;
+  remindersCompleted: number;
+  remindersScheduled: number;
+  checklistsCompleted: number;
+  checklistsStarted: number;
+  gamesPlayed: number;
+  averageGameScore: number;
+}
+
+// ─── Game Progress Types ───────────────────────────────────
+
+export interface GameProgressSummary {
+  gameType: string;
+  sessionsPlayed: number;
+  bestScore: number;
+  latestScore: number;
+  averageScore: number;
+  highestTierEver: number;
+  lastPlayedAt: string | null;
+  scoreSeries: Array<{ date: string; score: number }>;
+  tierSeries?: Array<{ date: string; highestTier: number }>;
+  comparison: {
+    deltaVsPreviousSession: number;
+    deltaVsBest: number;
+  };
 }

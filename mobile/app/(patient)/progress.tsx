@@ -5,6 +5,7 @@ import { useFocusEffect } from 'expo-router';
 import { ScreenContainer, AppCard, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useProgress } from '@/src/features/progress/useProgress';
+import { useChecklistTracking } from '@/src/features/progress/hooks';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
 
@@ -15,6 +16,7 @@ import { TrendLineChart, StackedConsistencyChart } from '@/src/shared/ui/charts/
 export default function PatientProgressScreen() {
   const { t } = useTranslation();
   const { loading, refreshing, error, overview, streaks, categories, charts, reload, refresh } = useProgress();
+  const { data: checklistTracking, loading: checklistLoading } = useChecklistTracking(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,7 +48,7 @@ export default function PatientProgressScreen() {
 
     if (delta > 0) {
       text = context === 'score' ? "You're scoring higher than last week. Great work!" : "You're more consistent than last week. Keep it up!";
-      color = colors.success.dark;
+      color = colors.success.main as any;
     } else if (delta < 0 && Math.abs(delta) < 0.2) {
       text = "Maintaining a steady pace. You've got this.";
     } else if (delta < 0) {
@@ -105,6 +107,44 @@ export default function PatientProgressScreen() {
       {categories && categories.reminderCategories.length > 0 && (
         <View style={styles.section}>
           <CategoryProgressCard title="Reminders by Category (Last 30 Days)" categories={categories.reminderCategories} />
+        </View>
+      )}
+
+      {/* CHECKLIST CATEGORIES */}
+      {categories && categories.checklistCategories.length > 0 && (
+        <View style={styles.section}>
+          <CategoryProgressCard title="Checklists by Category (Last 30 Days)" categories={categories.checklistCategories} />
+        </View>
+      )}
+
+      {/* CHECKLIST TRACKING */}
+      {checklistTracking && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Checklist Activity</Text>
+          <AppCard style={styles.trackingCard}>
+            <View style={styles.trackingRow}>
+              <View style={styles.trackingItem}>
+                <Text style={styles.trackingValue}>{checklistTracking.thisWeek.completedRuns}</Text>
+                <Text style={styles.trackingLabel}>Completed This Week</Text>
+              </View>
+              <View style={styles.trackingItem}>
+                <Text style={styles.trackingValue}>{checklistTracking.thisMonth.completedRuns}</Text>
+                <Text style={styles.trackingLabel}>Completed This Month</Text>
+              </View>
+            </View>
+            {checklistTracking.thisWeek.runs.length > 0 && (
+              <View style={styles.recentRuns}>
+                <Text style={styles.recentRunsTitle}>Recent Checklists</Text>
+                {checklistTracking.thisWeek.runs.slice(0, 3).map((run) => (
+                  <View key={run.id} style={styles.runItem}>
+                    <Icon name="checkbox-outline" size={16} color={run.status === 'completed' ? colors.success.main : colors.neutral[400]} />
+                    <Text style={styles.runTitle} numberOfLines={1}>{run.templateTitle}</Text>
+                    <Text style={styles.runDate}>{new Date(run.startedAt).toLocaleDateString()}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </AppCard>
         </View>
       )}
       
@@ -168,6 +208,55 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     padding: spacing.md,
+  },
+  trackingCard: {
+    padding: spacing.md,
+  },
+  trackingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: spacing.md,
+  },
+  trackingItem: {
+    alignItems: 'center',
+  },
+  trackingValue: {
+    fontFamily: typography.family.display,
+    fontSize: typography.size['2xl'],
+    color: colors.primary.main,
+  },
+  trackingLabel: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.xs,
+    color: colors.neutral[600],
+  },
+  recentRuns: {
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[200],
+    paddingTop: spacing.md,
+  },
+  recentRunsTitle: {
+    fontFamily: typography.family.headline,
+    fontSize: typography.size.sm,
+    color: colors.neutral[700],
+    marginBottom: spacing.sm,
+  },
+  runItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  runTitle: {
+    flex: 1,
+    fontFamily: typography.family.body,
+    fontSize: typography.size.sm,
+    color: colors.neutral[800],
+  },
+  runDate: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.xs,
+    color: colors.neutral[500],
   },
   bottomGap: {
     height: spacing['3xl'] * 2,

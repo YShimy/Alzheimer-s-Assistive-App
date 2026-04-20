@@ -7,8 +7,15 @@
 import { create } from 'zustand';
 import type { GameState, GamePhase, TileCoord, LevelResult, SessionResult } from './engine/types';
 import { generateBoard, coordKey, validateMove } from './engine';
-import { getTier, getNextTierOnSuccess, getNextTierOnFail, INITIAL_LIVES } from './engine/difficulty';
-import { calculateLevelScore, buildSessionResult } from './engine/scoring';
+import { 
+  getTier, 
+  INITIAL_LIVES, 
+  decideNextTier, 
+  getSupportConfig,
+  type LevelRecord,
+  type LevelOutcome 
+} from './engine/difficulty';
+import { calculateLevelScore, buildSessionResult, determineLevelOutcome } from './engine/scoring';
 
 interface SafePathStore extends GameState {
   // Actions
@@ -33,12 +40,12 @@ type MoveOutcome =
 function createInitialState(): GameState {
   return {
     phase: 'intro',
-    currentTier: getTier(1),
+    currentTier: getTier(0), // Start at Tutorial 0
     board: null,
     path: [],
     levelIndex: 0,
     totalScore: 0,
-    highestTierReached: 1,
+    highestTierReached: 0,
     lives: INITIAL_LIVES,
     maxLives: INITIAL_LIVES,
     currentStreak: 0,
@@ -46,7 +53,10 @@ function createInitialState(): GameState {
     levelStartTime: null,
     sessionStartTime: Date.now(),
     levelResults: [],
+    levelHistory: [], // Track last 3 for progression
     retryCountThisLevel: 0,
+    supportMode: false,
+    supportConfigApplied: false,
   };
 }
 
@@ -63,10 +73,16 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
 
   startPreview: () => {
     const state = get();
+    const supportConfig = state.supportMode ? getSupportConfig() : null;
+    const previewDuration = state.currentTier.previewDurationMs + (supportConfig?.previewBonusMs || 0);
+    
     const board = generateBoard(state.currentTier);
-    // Mark bombs as revealed during preview
-    for (const bc of board.bombCoords) {
-      board.tiles[bc.row][bc.col].revealed = true;
+    
+    // Mark bombs as revealed during preview (except Tutorial 0 which has no preview phase)
+    if (state.currentTier.tier > 0) {
+      for (const bc of board.bombCoords) {
+        board.tiles[bc.row][bc.col].revealed = true;
+      }
     }
     // Mark start as visited
     board.tiles[board.start.row][board.start.col].visited = true;
@@ -76,6 +92,7 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
       board,
       path: [board.start],
       levelStartTime: null,
+      supportConfigApplied: state.supportMode,
     });
   },
 
@@ -132,7 +149,9 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
       }
 
       const solveTimeMs = state.levelStartTime ? Date.now() - state.levelStartTime : 0;
-      const scoreDelta = calculateLevelScore(state.currentTier, solveTimeMs, false, state.retryCountThisLevel);
+      const outcome: LevelOutcome = 'fail';
+      const scoreDelta = calculateLevelScore(state.currentTier, solveTimeMs, outcome, state.retryCountThisLevel, state.supportMode);
+      
       const levelResult: LevelResult = {
         levelIndex: state.levelIndex,
         difficultyTier: state.currentTier.tier,
@@ -142,12 +161,21 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
         previewDurationMs: state.currentTier.previewDurationMs,
         solveTimeMs,
         success: false,
+        outcome,
         scoreDelta,
         pathLength: newPath.length,
         retryCount: state.retryCountThisLevel,
+        supportMode: state.supportMode,
         startedAt: state.levelStartTime ? new Date(state.levelStartTime).toISOString() : new Date().toISOString(),
         completedAt: new Date().toISOString(),
       };
+      
+      // Update history for progression
+      const newHistory: LevelRecord[] = [...state.levelHistory, { 
+        tier: state.currentTier.tier, 
+        outcome, 
+        timestamp: Date.now() 
+      }].slice(-3);
 
       set({
         board,
@@ -155,6 +183,8 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
         phase: 'level_fail',
         lives: state.lives - 1,
         levelResults: [...state.levelResults, levelResult],
+        levelHistory: newHistory,
+        currentStreak: 0, // Reset streak on fail
       });
 
       return { type: 'bomb', levelResult };
@@ -163,7 +193,10 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
     if (result.type === 'end') {
       // Won the level
       const solveTimeMs = state.levelStartTime ? Date.now() - state.levelStartTime : 0;
-      const scoreDelta = calculateLevelScore(state.currentTier, solveTimeMs, true, state.retryCountThisLevel);
+      const isFirstTry = state.retryCountThisLevel === 0;
+      const outcome = determineLevelOutcome(true, isFirstTry, state.supportMode);
+      const scoreDelta = calculateLevelScore(state.currentTier, solveTimeMs, outcome, state.retryCountThisLevel, state.supportMode);
+      
       const newStreak = state.currentStreak + 1;
       const levelResult: LevelResult = {
         levelIndex: state.levelIndex,
@@ -174,12 +207,21 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
         previewDurationMs: state.currentTier.previewDurationMs,
         solveTimeMs,
         success: true,
+        outcome,
         scoreDelta,
         pathLength: newPath.length,
         retryCount: state.retryCountThisLevel,
+        supportMode: state.supportMode,
         startedAt: state.levelStartTime ? new Date(state.levelStartTime).toISOString() : new Date().toISOString(),
         completedAt: new Date().toISOString(),
       };
+      
+      // Update history for progression
+      const newHistory: LevelRecord[] = [...state.levelHistory, { 
+        tier: state.currentTier.tier, 
+        outcome, 
+        timestamp: Date.now() 
+      }].slice(-3);
 
       set({
         board,
@@ -190,6 +232,7 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
         longestStreak: Math.max(state.longestStreak, newStreak),
         highestTierReached: Math.max(state.highestTierReached, state.currentTier.tier),
         levelResults: [...state.levelResults, levelResult],
+        levelHistory: newHistory,
       });
 
       return { type: 'end', levelResult };
@@ -214,11 +257,21 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
 
   proceedAfterSuccess: () => {
     const state = get();
-    const nextTierNum = getNextTierOnSuccess(state.currentTier.tier);
+    const lastResult = state.levelResults[state.levelResults.length - 1];
+    const outcome: LevelOutcome = lastResult?.supportMode ? 'supported_clear' : 'strong_clear';
+    
+    const decision = decideNextTier(
+      state.currentTier.tier,
+      outcome,
+      state.levelHistory.slice(0, -1), // Exclude current since already added
+      state.retryCountThisLevel > 0
+    );
+    
     set({
-      currentTier: getTier(nextTierNum),
+      currentTier: getTier(decision.nextTier),
       levelIndex: state.levelIndex + 1,
       retryCountThisLevel: 0,
+      supportMode: decision.supportMode,
     });
   },
 
@@ -229,12 +282,20 @@ export const useSafePathStore = create<SafePathStore>((set, get) => ({
       set({ phase: 'session_summary' });
       return;
     }
-    const nextTierNum = getNextTierOnFail(state.currentTier.tier);
+    
+    const decision = decideNextTier(
+      state.currentTier.tier,
+      'fail',
+      state.levelHistory.slice(0, -1),
+      state.retryCountThisLevel > 0
+    );
+    
     set({
-      currentTier: getTier(nextTierNum),
+      currentTier: getTier(decision.nextTier),
       levelIndex: state.levelIndex + 1,
       retryCountThisLevel: state.retryCountThisLevel + 1,
       currentStreak: 0,
+      supportMode: decision.supportMode,
     });
   },
 
