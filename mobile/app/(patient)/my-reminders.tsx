@@ -30,6 +30,7 @@ import { useSessionStore } from '@/src/state/sessionStore';
 import { useReminders, useReminderAction } from '@/src/features/reminders/hooks';
 import type { Reminder, PriorityLevel, ReminderType } from '@/src/features/reminders/types';
 import { checklistsApi } from '@/src/features/checklists/api';
+import { remindersApi } from '@/src/features/reminders/api';
 import type { ChecklistRun, StepProgress } from '@/src/features/checklists/types';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
@@ -46,6 +47,7 @@ export default function PatientRemindersScreen() {
   const { actionLoading, actionError, submit } = useReminderAction(reload);
   const [selected, setSelected] = useState<Reminder | null>(null);
   const [activeRun, setActiveRun] = useState<ChecklistRun | null>(null);
+  const [activeReminderId, setActiveReminderId] = useState<string | null>(null);
   const [runModalVisible, setRunModalVisible] = useState(false);
   const [runLoading, setRunLoading] = useState(false);
 
@@ -84,6 +86,7 @@ export default function PatientRemindersScreen() {
               steps: template.steps,
             },
           });
+          setActiveReminderId(id);
           setRunModalVisible(true);
           eventLogger.log({
             eventName: EventNames.CHECKLIST_STARTED,
@@ -187,15 +190,34 @@ export default function PatientRemindersScreen() {
       <ChecklistExecutionModal
         run={activeRun}
         visible={runModalVisible}
-        onClose={() => setRunModalVisible(false)}
-        onComplete={() => {
+        onClose={() => {
           setRunModalVisible(false);
-          // Mark the associated reminder as done
-          if (selected && selected.reminderType === 'guided') {
-            handleAction(selected.id, 'done');
+          setActiveRun(null);
+          setActiveReminderId(null);
+        }}
+        onComplete={async () => {
+          setRunModalVisible(false);
+          // Mark the associated reminder as complete using 'start_now' with checklistRunId
+          if (activeReminderId && activeRun) {
+            try {
+              await remindersApi.recordAction(activeReminderId, {
+                action: 'start_now',
+                actionValue: { checklistRunId: activeRun.id },
+              });
+              eventLogger.log({
+                eventName: EventNames.REMINDER_DONE,
+                screenName: 'PatientRemindersScreen',
+                source: 'guided_checklist_complete',
+                payload: { checklistRunId: activeRun.id, reminderId: activeReminderId },
+              });
+              // Refresh reminders list
+              await refresh();
+            } catch (err: any) {
+              Alert.alert(t('common.error'), err.message || 'Failed to complete reminder');
+            }
           }
           setActiveRun(null);
-          setSelected(null);
+          setActiveReminderId(null);
         }}
       />
     </>
@@ -436,7 +458,7 @@ interface ChecklistExecutionModalProps {
   run: ChecklistRun | null;
   visible: boolean;
   onClose: () => void;
-  onComplete: () => void;
+  onComplete: () => void | Promise<void>;
 }
 
 function ChecklistExecutionModal({ run, visible, onClose, onComplete }: ChecklistExecutionModalProps) {
@@ -475,7 +497,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
     setCompleting(true);
     try {
       await checklistsApi.updateRun(run.id, { status: 'completed', stepProgress });
-      onComplete();
+      await onComplete();
     } catch (err: any) {
       Alert.alert(t('common.error'), err.message || 'Failed to complete checklist');
     } finally {
