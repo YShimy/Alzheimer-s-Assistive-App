@@ -41,6 +41,23 @@ export const ReminderCategory = {
 export type ReminderCategory = (typeof ReminderCategory)[keyof typeof ReminderCategory]
 
 
+export const ReminderType = {
+  SIMPLE: 'SIMPLE',
+  GUIDED: 'GUIDED'
+} as const
+
+export type ReminderType = (typeof ReminderType)[keyof typeof ReminderType]
+
+
+export const PriorityLevel = {
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type PriorityLevel = (typeof PriorityLevel)[keyof typeof PriorityLevel]
+
+
 export const ChecklistCategory = {
   MORNING: 'MORNING',
   EVENING: 'EVENING',
@@ -63,12 +80,21 @@ export const ReminderEventType = {
   CREATED: 'CREATED',
   EDITED: 'EDITED',
   FIRED: 'FIRED',
+  DISMISSED: 'DISMISSED',
+  DEACTIVATED: 'DEACTIVATED',
+  REACTIVATED: 'REACTIVATED',
   DONE: 'DONE',
   SNOOZED: 'SNOOZED',
   SKIPPED: 'SKIPPED',
-  DISMISSED: 'DISMISSED',
-  DEACTIVATED: 'DEACTIVATED',
-  REACTIVATED: 'REACTIVATED'
+  START_NOW: 'START_NOW',
+  GUIDED_REMINDER_STARTED: 'GUIDED_REMINDER_STARTED',
+  LINKED_CHECKLIST_OPENED: 'LINKED_CHECKLIST_OPENED',
+  LINKED_CHECKLIST_COMPLETED: 'LINKED_CHECKLIST_COMPLETED',
+  LINKED_CHECKLIST_ABANDONED: 'LINKED_CHECKLIST_ABANDONED',
+  ESCALATION_TRIGGERED: 'ESCALATION_TRIGGERED',
+  HIGH_PRIORITY_SKIPPED: 'HIGH_PRIORITY_SKIPPED',
+  CRITICAL_SKIPPED: 'CRITICAL_SKIPPED',
+  REPEATED_SKIP_DETECTED: 'REPEATED_SKIP_DETECTED'
 } as const
 
 export type ReminderEventType = (typeof ReminderEventType)[keyof typeof ReminderEventType]

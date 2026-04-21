@@ -1,6 +1,8 @@
 import { z } from 'zod/v4';
 
 const reminderCategories = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
+const priorityLevels = ['normal', 'high', 'critical'] as const;
+const reminderTypes = ['simple', 'guided'] as const;
 
 export const createReminderSchema = z.object({
   title: z.string().min(1).max(200),
@@ -11,7 +13,12 @@ export const createReminderSchema = z.object({
   endDate: z.string().date().optional(),
   daysOfWeek: z.array(z.number().int().min(0).max(6)).default([]),
   description: z.string().max(1000).optional(),
-  priority: z.number().int().min(1).max(3).default(1),
+  // Redesigned: proper priority enum
+  priority: z.enum(priorityLevels).default('normal'),
+  // Redesigned: reminder type (simple vs guided)
+  reminderType: z.enum(reminderTypes).default('simple'),
+  // Redesigned: optional visual cue asset
+  visualCueAssetId: z.string().uuid().optional(),
   linkedChecklistTemplateId: z.string().uuid().optional(),
   snoozeEnabled: z.boolean().default(true),
   defaultSnoozeMinutes: z.number().int().min(1).max(120).default(10),
@@ -26,7 +33,12 @@ export const updateReminderSchema = z.object({
   endDate: z.string().date().nullable().optional(),
   daysOfWeek: z.array(z.number().int().min(0).max(6)).optional(),
   description: z.string().max(1000).nullable().optional(),
-  priority: z.number().int().min(1).max(3).optional(),
+  // Redesigned: proper priority enum
+  priority: z.enum(priorityLevels).optional(),
+  // Redesigned: reminder type
+  reminderType: z.enum(reminderTypes).optional(),
+  // Redesigned: optional visual cue asset
+  visualCueAssetId: z.string().uuid().nullable().optional(),
   linkedChecklistTemplateId: z.string().uuid().nullable().optional(),
   snoozeEnabled: z.boolean().optional(),
   defaultSnoozeMinutes: z.number().int().min(1).max(120).optional(),

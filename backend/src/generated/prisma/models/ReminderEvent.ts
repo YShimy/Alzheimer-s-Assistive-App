@@ -35,6 +35,9 @@ export type ReminderEventMinAggregateOutputType = {
   actorRole: string | null
   source: string | null
   optionalReasonCode: string | null
+  linkedChecklistRunId: string | null
+  escalationTriggered: boolean | null
+  escalationReason: string | null
   createdAt: Date | null
 }
 
@@ -49,6 +52,9 @@ export type ReminderEventMaxAggregateOutputType = {
   actorRole: string | null
   source: string | null
   optionalReasonCode: string | null
+  linkedChecklistRunId: string | null
+  escalationTriggered: boolean | null
+  escalationReason: string | null
   createdAt: Date | null
 }
 
@@ -64,6 +70,9 @@ export type ReminderEventCountAggregateOutputType = {
   source: number
   actionValue: number
   optionalReasonCode: number
+  linkedChecklistRunId: number
+  escalationTriggered: number
+  escalationReason: number
   createdAt: number
   _all: number
 }
@@ -80,6 +89,9 @@ export type ReminderEventMinAggregateInputType = {
   actorRole?: true
   source?: true
   optionalReasonCode?: true
+  linkedChecklistRunId?: true
+  escalationTriggered?: true
+  escalationReason?: true
   createdAt?: true
 }
 
@@ -94,6 +106,9 @@ export type ReminderEventMaxAggregateInputType = {
   actorRole?: true
   source?: true
   optionalReasonCode?: true
+  linkedChecklistRunId?: true
+  escalationTriggered?: true
+  escalationReason?: true
   createdAt?: true
 }
 
@@ -109,6 +124,9 @@ export type ReminderEventCountAggregateInputType = {
   source?: true
   actionValue?: true
   optionalReasonCode?: true
+  linkedChecklistRunId?: true
+  escalationTriggered?: true
+  escalationReason?: true
   createdAt?: true
   _all?: true
 }
@@ -197,6 +215,9 @@ export type ReminderEventGroupByOutputType = {
   source: string
   actionValue: runtime.JsonValue | null
   optionalReasonCode: string | null
+  linkedChecklistRunId: string | null
+  escalationTriggered: boolean
+  escalationReason: string | null
   createdAt: Date
   _count: ReminderEventCountAggregateOutputType | null
   _min: ReminderEventMinAggregateOutputType | null
@@ -233,6 +254,9 @@ export type ReminderEventWhereInput = {
   source?: Prisma.StringFilter<"ReminderEvent"> | string
   actionValue?: Prisma.JsonNullableFilter<"ReminderEvent">
   optionalReasonCode?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  linkedChecklistRunId?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  escalationTriggered?: Prisma.BoolFilter<"ReminderEvent"> | boolean
+  escalationReason?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReminderEvent"> | Date | string
   reminder?: Prisma.XOR<Prisma.ReminderScalarRelationFilter, Prisma.ReminderWhereInput>
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -251,6 +275,9 @@ export type ReminderEventOrderByWithRelationInput = {
   source?: Prisma.SortOrder
   actionValue?: Prisma.SortOrderInput | Prisma.SortOrder
   optionalReasonCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkedChecklistRunId?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalationTriggered?: Prisma.SortOrder
+  escalationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reminder?: Prisma.ReminderOrderByWithRelationInput
   patient?: Prisma.UserOrderByWithRelationInput
@@ -272,6 +299,9 @@ export type ReminderEventWhereUniqueInput = Prisma.AtLeast<{
   source?: Prisma.StringFilter<"ReminderEvent"> | string
   actionValue?: Prisma.JsonNullableFilter<"ReminderEvent">
   optionalReasonCode?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  linkedChecklistRunId?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  escalationTriggered?: Prisma.BoolFilter<"ReminderEvent"> | boolean
+  escalationReason?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReminderEvent"> | Date | string
   reminder?: Prisma.XOR<Prisma.ReminderScalarRelationFilter, Prisma.ReminderWhereInput>
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -290,6 +320,9 @@ export type ReminderEventOrderByWithAggregationInput = {
   source?: Prisma.SortOrder
   actionValue?: Prisma.SortOrderInput | Prisma.SortOrder
   optionalReasonCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  linkedChecklistRunId?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalationTriggered?: Prisma.SortOrder
+  escalationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ReminderEventCountOrderByAggregateInput
   _max?: Prisma.ReminderEventMaxOrderByAggregateInput
@@ -311,6 +344,9 @@ export type ReminderEventScalarWhereWithAggregatesInput = {
   source?: Prisma.StringWithAggregatesFilter<"ReminderEvent"> | string
   actionValue?: Prisma.JsonNullableWithAggregatesFilter<"ReminderEvent">
   optionalReasonCode?: Prisma.StringNullableWithAggregatesFilter<"ReminderEvent"> | string | null
+  linkedChecklistRunId?: Prisma.StringNullableWithAggregatesFilter<"ReminderEvent"> | string | null
+  escalationTriggered?: Prisma.BoolWithAggregatesFilter<"ReminderEvent"> | boolean
+  escalationReason?: Prisma.StringNullableWithAggregatesFilter<"ReminderEvent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReminderEvent"> | Date | string
 }
 
@@ -323,6 +359,9 @@ export type ReminderEventCreateInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
   reminder: Prisma.ReminderCreateNestedOneWithoutEventsInput
   patient: Prisma.UserCreateNestedOneWithoutReminderEventsInput
@@ -341,6 +380,9 @@ export type ReminderEventUncheckedCreateInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -353,6 +395,9 @@ export type ReminderEventUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminder?: Prisma.ReminderUpdateOneRequiredWithoutEventsNestedInput
   patient?: Prisma.UserUpdateOneRequiredWithoutReminderEventsNestedInput
@@ -371,6 +416,9 @@ export type ReminderEventUncheckedUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -386,6 +434,9 @@ export type ReminderEventCreateManyInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -398,6 +449,9 @@ export type ReminderEventUpdateManyMutationInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -413,6 +467,9 @@ export type ReminderEventUncheckedUpdateManyInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -438,6 +495,9 @@ export type ReminderEventCountOrderByAggregateInput = {
   source?: Prisma.SortOrder
   actionValue?: Prisma.SortOrder
   optionalReasonCode?: Prisma.SortOrder
+  linkedChecklistRunId?: Prisma.SortOrder
+  escalationTriggered?: Prisma.SortOrder
+  escalationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -452,6 +512,9 @@ export type ReminderEventMaxOrderByAggregateInput = {
   actorRole?: Prisma.SortOrder
   source?: Prisma.SortOrder
   optionalReasonCode?: Prisma.SortOrder
+  linkedChecklistRunId?: Prisma.SortOrder
+  escalationTriggered?: Prisma.SortOrder
+  escalationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -466,6 +529,9 @@ export type ReminderEventMinOrderByAggregateInput = {
   actorRole?: Prisma.SortOrder
   source?: Prisma.SortOrder
   optionalReasonCode?: Prisma.SortOrder
+  linkedChecklistRunId?: Prisma.SortOrder
+  escalationTriggered?: Prisma.SortOrder
+  escalationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -608,6 +674,9 @@ export type ReminderEventCreateWithoutPatientInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
   reminder: Prisma.ReminderCreateNestedOneWithoutEventsInput
   actor: Prisma.UserCreateNestedOneWithoutActorEventsInput
@@ -624,6 +693,9 @@ export type ReminderEventUncheckedCreateWithoutPatientInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -646,6 +718,9 @@ export type ReminderEventCreateWithoutActorInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
   reminder: Prisma.ReminderCreateNestedOneWithoutEventsInput
   patient: Prisma.UserCreateNestedOneWithoutReminderEventsInput
@@ -662,6 +737,9 @@ export type ReminderEventUncheckedCreateWithoutActorInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -706,6 +784,9 @@ export type ReminderEventScalarWhereInput = {
   source?: Prisma.StringFilter<"ReminderEvent"> | string
   actionValue?: Prisma.JsonNullableFilter<"ReminderEvent">
   optionalReasonCode?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  linkedChecklistRunId?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
+  escalationTriggered?: Prisma.BoolFilter<"ReminderEvent"> | boolean
+  escalationReason?: Prisma.StringNullableFilter<"ReminderEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReminderEvent"> | Date | string
 }
 
@@ -734,6 +815,9 @@ export type ReminderEventCreateWithoutReminderInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutReminderEventsInput
   actor: Prisma.UserCreateNestedOneWithoutActorEventsInput
@@ -750,6 +834,9 @@ export type ReminderEventUncheckedCreateWithoutReminderInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -790,6 +877,9 @@ export type ReminderEventCreateManyPatientInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -804,6 +894,9 @@ export type ReminderEventCreateManyActorInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -816,6 +909,9 @@ export type ReminderEventUpdateWithoutPatientInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminder?: Prisma.ReminderUpdateOneRequiredWithoutEventsNestedInput
   actor?: Prisma.UserUpdateOneRequiredWithoutActorEventsNestedInput
@@ -832,6 +928,9 @@ export type ReminderEventUncheckedUpdateWithoutPatientInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -846,6 +945,9 @@ export type ReminderEventUncheckedUpdateManyWithoutPatientInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -858,6 +960,9 @@ export type ReminderEventUpdateWithoutActorInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminder?: Prisma.ReminderUpdateOneRequiredWithoutEventsNestedInput
   patient?: Prisma.UserUpdateOneRequiredWithoutReminderEventsNestedInput
@@ -874,6 +979,9 @@ export type ReminderEventUncheckedUpdateWithoutActorInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -888,6 +996,9 @@ export type ReminderEventUncheckedUpdateManyWithoutActorInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -902,6 +1013,9 @@ export type ReminderEventCreateManyReminderInput = {
   source?: string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: string | null
+  linkedChecklistRunId?: string | null
+  escalationTriggered?: boolean
+  escalationReason?: string | null
   createdAt?: Date | string
 }
 
@@ -914,6 +1028,9 @@ export type ReminderEventUpdateWithoutReminderInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutReminderEventsNestedInput
   actor?: Prisma.UserUpdateOneRequiredWithoutActorEventsNestedInput
@@ -930,6 +1047,9 @@ export type ReminderEventUncheckedUpdateWithoutReminderInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -944,6 +1064,9 @@ export type ReminderEventUncheckedUpdateManyWithoutReminderInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   actionValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   optionalReasonCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedChecklistRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalationTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  escalationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -961,6 +1084,9 @@ export type ReminderEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
   source?: boolean
   actionValue?: boolean
   optionalReasonCode?: boolean
+  linkedChecklistRunId?: boolean
+  escalationTriggered?: boolean
+  escalationReason?: boolean
   createdAt?: boolean
   reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -979,6 +1105,9 @@ export type ReminderEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   source?: boolean
   actionValue?: boolean
   optionalReasonCode?: boolean
+  linkedChecklistRunId?: boolean
+  escalationTriggered?: boolean
+  escalationReason?: boolean
   createdAt?: boolean
   reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -997,6 +1126,9 @@ export type ReminderEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   source?: boolean
   actionValue?: boolean
   optionalReasonCode?: boolean
+  linkedChecklistRunId?: boolean
+  escalationTriggered?: boolean
+  escalationReason?: boolean
   createdAt?: boolean
   reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1015,10 +1147,13 @@ export type ReminderEventSelectScalar = {
   source?: boolean
   actionValue?: boolean
   optionalReasonCode?: boolean
+  linkedChecklistRunId?: boolean
+  escalationTriggered?: boolean
+  escalationReason?: boolean
   createdAt?: boolean
 }
 
-export type ReminderEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reminderId" | "patientUserId" | "eventType" | "scheduledFor" | "timestamp" | "actorUserId" | "actorRole" | "source" | "actionValue" | "optionalReasonCode" | "createdAt", ExtArgs["result"]["reminderEvent"]>
+export type ReminderEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reminderId" | "patientUserId" | "eventType" | "scheduledFor" | "timestamp" | "actorUserId" | "actorRole" | "source" | "actionValue" | "optionalReasonCode" | "linkedChecklistRunId" | "escalationTriggered" | "escalationReason" | "createdAt", ExtArgs["result"]["reminderEvent"]>
 export type ReminderEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1054,6 +1189,9 @@ export type $ReminderEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     source: string
     actionValue: runtime.JsonValue | null
     optionalReasonCode: string | null
+    linkedChecklistRunId: string | null
+    escalationTriggered: boolean
+    escalationReason: string | null
     createdAt: Date
   }, ExtArgs["result"]["reminderEvent"]>
   composites: {}
@@ -1492,6 +1630,9 @@ export interface ReminderEventFieldRefs {
   readonly source: Prisma.FieldRef<"ReminderEvent", 'String'>
   readonly actionValue: Prisma.FieldRef<"ReminderEvent", 'Json'>
   readonly optionalReasonCode: Prisma.FieldRef<"ReminderEvent", 'String'>
+  readonly linkedChecklistRunId: Prisma.FieldRef<"ReminderEvent", 'String'>
+  readonly escalationTriggered: Prisma.FieldRef<"ReminderEvent", 'Boolean'>
+  readonly escalationReason: Prisma.FieldRef<"ReminderEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"ReminderEvent", 'DateTime'>
 }
     

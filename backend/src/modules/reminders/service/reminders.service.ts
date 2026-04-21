@@ -1,10 +1,37 @@
 import { AppError } from '../../../shared/errors/AppError.js';
 import { ErrorCode } from '../../../shared/errors/errorCodes.js';
-import { toApiReminderCategory, toPrismaReminderCategory } from '../../../shared/types/roles.js';
+import { 
+  toApiReminderCategory, 
+  toPrismaReminderCategory,
+  toApiPriorityLevel,
+  toPrismaPriorityLevel,
+  toApiReminderType,
+  toPrismaReminderType,
+} from '../../../shared/types/roles.js';
 import { remindersRepo } from '../repo/reminders.repo.js';
-import type { ReminderResponse } from '../types/reminders.types.js';
+import type { ReminderResponse, LinkedChecklistSummary } from '../types/reminders.types.js';
 import type { CreateReminderInput, UpdateReminderInput } from '../validation/reminders.schemas.js';
 import { prisma } from '../../../shared/db/prisma.js';
+
+function buildLinkedChecklistSummary(r: any): LinkedChecklistSummary | null {
+  if (!r.linkedChecklist) return null;
+  const steps = r.linkedChecklist.steps as any[] || [];
+  return {
+    id: r.linkedChecklist.id,
+    title: r.linkedChecklist.title,
+    stepCount: steps.length,
+    category: r.linkedChecklist.category?.toLowerCase() || 'general',
+  };
+}
+
+function buildVisualCueSummary(r: any): { assetId: string; url: string; thumbnailUrl?: string } | null {
+  if (!r.visualCueAsset) return null;
+  return {
+    assetId: r.visualCueAsset.id,
+    url: r.visualCueAsset.publicUrl || '',
+    thumbnailUrl: r.visualCueAsset.thumbnailUrl || undefined,
+  };
+}
 
 function toReminderResponse(r: any): ReminderResponse {
   return {
@@ -18,8 +45,16 @@ function toReminderResponse(r: any): ReminderResponse {
     endDate: r.endDate?.toISOString().split('T')[0] ?? null,
     daysOfWeek: r.daysOfWeek,
     description: r.description ?? null,
-    priority: r.priority,
+    // Redesigned: priority as enum
+    priority: toApiPriorityLevel(r.priority),
+    // Redesigned: reminder type
+    reminderType: toApiReminderType(r.reminderType),
+    // Redesigned: linked checklist summary
     linkedChecklistTemplateId: r.linkedChecklistTemplateId ?? null,
+    linkedChecklist: buildLinkedChecklistSummary(r),
+    // Redesigned: visual cue
+    visualCueAssetId: r.visualCueAssetId ?? null,
+    visualCue: buildVisualCueSummary(r),
     snoozeEnabled: r.snoozeEnabled,
     defaultSnoozeMinutes: r.defaultSnoozeMinutes,
     isActive: r.isActive,
@@ -46,11 +81,13 @@ export const remindersService = {
       const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 999);
 
+      // Redesigned: include all action types including guided reminder actions
       const todayEvents = await prisma.reminderEvent.findMany({
         where: {
           patientUserId: patientId,
           timestamp: { gte: startOfDay, lte: endOfDay },
-          eventType: { in: ['DONE', 'SKIPPED', 'SNOOZED'] }
+          // Cast as any until Prisma migration adds new event types
+          eventType: { in: ['DONE', 'SKIPPED', 'SNOOZED', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'] as any }
         },
         select: { reminderId: true }
       });
@@ -87,7 +124,12 @@ export const remindersService = {
       endDate: input.endDate ? new Date(input.endDate) : undefined,
       daysOfWeek: input.daysOfWeek ?? [],
       description: input.description,
-      priority: input.priority ?? 1,
+      // Redesigned: priority as enum
+      priority: toPrismaPriorityLevel(input.priority ?? 'normal') as any,
+      // Redesigned: reminder type
+      reminderType: toPrismaReminderType(input.reminderType ?? 'simple') as any,
+      // Redesigned: visual cue
+      visualCueAssetId: input.visualCueAssetId,
       linkedChecklistTemplateId: input.linkedChecklistTemplateId,
       snoozeEnabled: input.snoozeEnabled ?? true,
       defaultSnoozeMinutes: input.defaultSnoozeMinutes ?? 10,
@@ -122,7 +164,12 @@ export const remindersService = {
     if (input.endDate !== undefined) updateData.endDate = input.endDate ? new Date(input.endDate) : null;
     if (input.daysOfWeek !== undefined) updateData.daysOfWeek = input.daysOfWeek;
     if (input.description !== undefined) updateData.description = input.description;
-    if (input.priority !== undefined) updateData.priority = input.priority;
+    // Redesigned: priority as enum
+    if (input.priority !== undefined) updateData.priority = toPrismaPriorityLevel(input.priority) as any;
+    // Redesigned: reminder type
+    if (input.reminderType !== undefined) updateData.reminderType = toPrismaReminderType(input.reminderType) as any;
+    // Redesigned: visual cue
+    if (input.visualCueAssetId !== undefined) updateData.visualCueAssetId = input.visualCueAssetId;
     if (input.linkedChecklistTemplateId !== undefined) updateData.linkedChecklistTemplateId = input.linkedChecklistTemplateId;
     if (input.snoozeEnabled !== undefined) updateData.snoozeEnabled = input.snoozeEnabled;
     if (input.defaultSnoozeMinutes !== undefined) updateData.defaultSnoozeMinutes = input.defaultSnoozeMinutes;

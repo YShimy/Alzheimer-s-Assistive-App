@@ -13,6 +13,10 @@ export const reminderEventsRepo = {
     source: string;
     actionValue?: any;
     optionalReasonCode?: string;
+    // Redesigned: escalation fields
+    escalationTriggered?: boolean;
+    escalationReason?: string | null;
+    linkedChecklistRunId?: string;
   }): Promise<ReminderEvent> {
     return prisma.reminderEvent.create({
       data: {
@@ -25,7 +29,11 @@ export const reminderEventsRepo = {
         source: data.source,
         actionValue: data.actionValue ?? undefined,
         optionalReasonCode: data.optionalReasonCode ?? undefined,
-      },
+        // Redesigned: escalation fields (cast as any until migration runs)
+        escalationTriggered: data.escalationTriggered as any,
+        escalationReason: data.escalationReason as any,
+        linkedChecklistRunId: data.linkedChecklistRunId as any,
+      } as any,
     });
   },
 

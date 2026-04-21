@@ -3,14 +3,15 @@ import { AppError } from '../../../shared/errors/AppError.js';
 import { prisma } from '../../../shared/db/prisma.js';
 import { z } from 'zod';
 import type { createTemplateSchema, updateTemplateSchema, createRunSchema, updateRunSchema } from '../validation/checklists.schemas.js';
-import type { ChecklistTemplate, ChecklistRun } from '../../../generated/prisma/index.js';
+import { mediaService } from '../../media/service/media.service.js';
 
 type CreateTemplateDto = z.infer<typeof createTemplateSchema>;
 type UpdateTemplateDto = z.infer<typeof updateTemplateSchema>;
 type CreateRunDto = z.infer<typeof createRunSchema>;
 type UpdateRunDto = z.infer<typeof updateRunSchema>;
 
-async function resolveMediaUrls(steps: any[]) {
+// Redesigned: Resolve media URLs with device-reachable URLs for Expo Go
+async function resolveMediaUrls(steps: any[], forDevice: boolean = true) {
   const assetIds = new Set<string>();
   steps.forEach((s) => {
     if (s.imageAssetId) assetIds.add(s.imageAssetId);
@@ -23,7 +24,9 @@ async function resolveMediaUrls(steps: any[]) {
     where: { id: { in: Array.from(assetIds) } }
   });
 
-  const assetMap = new Map(assets.map(a => [a.id, a.publicUrl]));
+  // Redesigned: Transform assets to use device-reachable URLs
+  const transformedAssets = assets.map(a => mediaService.transformAssetForDevice(a));
+  const assetMap = new Map(transformedAssets.map(a => [a.id, a.publicUrl]));
 
   return steps.map(s => ({
     ...s,
@@ -32,7 +35,7 @@ async function resolveMediaUrls(steps: any[]) {
   }));
 }
 
-async function mapTemplate(t: ChecklistTemplate) {
+async function mapTemplate(t: any) {
   const rawSteps = (t.steps as any[]) || [];
   let steps = rawSteps.map((s: any) => ({
     id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
@@ -60,7 +63,7 @@ async function mapTemplate(t: ChecklistTemplate) {
   };
 }
 
-async function mapRun(r: ChecklistRun & { template?: any }) {
+async function mapRun(r: any & { template?: any }) {
   const normalizeSteps = (rawSteps: any[]) =>
     (rawSteps ?? []).map((s: any) => ({
       id: s.stepId ?? s.id ?? s.order?.toString() ?? randomUUID(),
@@ -146,7 +149,7 @@ export const checklistsService = {
       data: {
         title: data.title,
         description: data.description !== undefined ? data.description : undefined,
-        category: data.category,
+        category: data.category?.toUpperCase() as any,
         steps: data.steps ? (data.steps as any) : undefined,
         estimatedDurationMinutes: data.estimatedMinutes,
         lastEditedByUserId: editorId,

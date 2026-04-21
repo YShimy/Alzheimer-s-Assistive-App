@@ -32,6 +32,17 @@ enum ReminderCategory {
   GENERAL
 }
 
+enum ReminderType {
+  SIMPLE
+  GUIDED
+}
+
+enum PriorityLevel {
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
 enum ChecklistCategory {
   MORNING
   EVENING
@@ -48,15 +59,31 @@ enum ChecklistCategory {
 }
 
 enum ReminderEventType {
+  // Lifecycle
   CREATED
   EDITED
   FIRED
-  DONE
-  SNOOZED
-  SKIPPED
   DISMISSED
   DEACTIVATED
   REACTIVATED
+  
+  // Simple reminder actions
+  DONE
+  SNOOZED
+  SKIPPED
+  
+  // Guided reminder actions
+  START_NOW
+  GUIDED_REMINDER_STARTED
+  LINKED_CHECKLIST_OPENED
+  LINKED_CHECKLIST_COMPLETED
+  LINKED_CHECKLIST_ABANDONED
+  
+  // Escalation
+  ESCALATION_TRIGGERED
+  HIGH_PRIORITY_SKIPPED
+  CRITICAL_SKIPPED
+  REPEATED_SKIP_DETECTED
 }
 
 enum ChecklistRunStatus {
@@ -87,6 +114,7 @@ model User {
   emailVerifiedAt           DateTime?
   accessibilitySettings     Json      @default("{\"textSize\": \"medium\", \"highContrast\": false, \"audioCuesEnabled\": false}")
   preferredNotificationMode String    @default("push") // push | local | silent
+  pushToken                 String? // Expo push notification token
   lastSeenAt                DateTime?
   createdAt                 DateTime  @default(now())
   updatedAt                 DateTime  @updatedAt
@@ -177,7 +205,16 @@ model Reminder {
   endDate                     DateTime?
   daysOfWeek                  Int[]            @default([]) // 0=Sun..6=Sat
   description                 String?
-  priority                    Int              @default(1) // 1=low, 2=medium, 3=high
+  
+  // Redesigned: proper priority enum instead of numeric
+  priority                    PriorityLevel    @default(NORMAL)
+  
+  // Redesigned: reminder type (simple vs guided)
+  reminderType                ReminderType     @default(SIMPLE)
+  
+  // Redesigned: optional visual cue for reminder
+  visualCueAssetId            String?
+  
   linkedChecklistTemplateId   String?
   snoozeEnabled               Boolean          @default(true)
   defaultSnoozeMinutes        Int              @default(10)
@@ -192,12 +229,15 @@ model Reminder {
   createdBy        User              @relation("CreatedReminders", fields: [createdByUserId], references: [id])
   lastEditedBy     User              @relation("EditedReminders", fields: [lastEditedByUserId], references: [id])
   linkedChecklist  ChecklistTemplate? @relation(fields: [linkedChecklistTemplateId], references: [id])
+  visualCueAsset   MediaAsset?       @relation("ReminderVisualCue", fields: [visualCueAssetId], references: [id])
   events           ReminderEvent[]
 
   @@index([patientUserId])
   @@index([patientUserId, isActive])
   @@index([category])
   @@index([createdByUserId])
+  @@index([priority])
+  @@index([reminderType])
   @@map("reminders")
 }
 
@@ -211,8 +251,16 @@ model ReminderEvent {
   actorUserId        String
   actorRole          String            // "patient" | "caregiver" | "system"
   source             String            @default("system_scheduler") // notification | home | reminder_list | caregiver_panel | system_scheduler
-  actionValue        Json?             // e.g. { snoozeDurationMinutes: 10 }
-  optionalReasonCode String?
+  actionValue        Json?             // e.g. { snoozeDurationMinutes: 10, checklistRunId: "..." }
+  optionalReasonCode String?           // e.g. "escalation_skip_count", "high_priority"
+  
+  // Redesigned: link to related checklist run for guided reminders
+  linkedChecklistRunId String?
+  
+  // Redesigned: escalation tracking
+  escalationTriggered Boolean         @default(false)
+  escalationReason    String?
+  
   createdAt          DateTime          @default(now())
 
   reminder Reminder @relation(fields: [reminderId], references: [id])
@@ -223,6 +271,7 @@ model ReminderEvent {
   @@index([patientUserId])
   @@index([eventType])
   @@index([timestamp])
+  @@index([escalationTriggered])
   @@map("reminder_events")
 }
 
@@ -464,6 +513,7 @@ model MediaAsset {
   owner      User? @relation("OwnedAssets", fields: [ownerUserId], references: [id])
   uploadedBy User  @relation("UploadedAssets", fields: [uploadedByUserId], references: [id])
   memos      ContactMemo[]
+  reminders  Reminder[]    @relation("ReminderVisualCue")
 
   @@index([ownerUserId])
   @@map("media_assets")

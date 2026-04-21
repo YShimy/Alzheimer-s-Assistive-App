@@ -1506,6 +1506,7 @@ export const UserScalarFieldEnum = {
   emailVerifiedAt: 'emailVerifiedAt',
   accessibilitySettings: 'accessibilitySettings',
   preferredNotificationMode: 'preferredNotificationMode',
+  pushToken: 'pushToken',
   lastSeenAt: 'lastSeenAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1561,6 +1562,8 @@ export const ReminderScalarFieldEnum = {
   daysOfWeek: 'daysOfWeek',
   description: 'description',
   priority: 'priority',
+  reminderType: 'reminderType',
+  visualCueAssetId: 'visualCueAssetId',
   linkedChecklistTemplateId: 'linkedChecklistTemplateId',
   snoozeEnabled: 'snoozeEnabled',
   defaultSnoozeMinutes: 'defaultSnoozeMinutes',
@@ -1587,6 +1590,9 @@ export const ReminderEventScalarFieldEnum = {
   source: 'source',
   actionValue: 'actionValue',
   optionalReasonCode: 'optionalReasonCode',
+  linkedChecklistRunId: 'linkedChecklistRunId',
+  escalationTriggered: 'escalationTriggered',
+  escalationReason: 'escalationReason',
   createdAt: 'createdAt'
 } as const
 
@@ -1945,6 +1951,34 @@ export type EnumReminderCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'ReminderCategory[]'
  */
 export type ListEnumReminderCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PriorityLevel'
+ */
+export type EnumPriorityLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorityLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'PriorityLevel[]'
+ */
+export type ListEnumPriorityLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorityLevel[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderType'
+ */
+export type EnumReminderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderType'>
+    
+
+
+/**
+ * Reference to a field of type 'ReminderType[]'
+ */
+export type ListEnumReminderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReminderType[]'>
     
 
 

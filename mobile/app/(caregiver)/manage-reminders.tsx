@@ -7,7 +7,10 @@ import {
   Modal,
   ScrollView,
   Pressable,
+  TouchableOpacity,
   Switch,
+  ActivityIndicator,
+  Button,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback } from 'react';
@@ -26,11 +29,15 @@ import {
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { carelinksApi } from '@/src/features/carelinks/api';
 import { remindersApi } from '@/src/features/reminders/api';
-import type { Reminder, CreateReminderInput, UpdateReminderInput } from '@/src/features/reminders/types';
+import { useChecklistTemplates } from '@/src/features/checklists/hooks';
+import type { Reminder, CreateReminderInput, UpdateReminderInput, PriorityLevel, ReminderType } from '@/src/features/reminders/types';
 import type { CareLink } from '@/src/features/carelinks/types';
+import type { ChecklistTemplate } from '@/src/features/checklists/types';
 
 const CATEGORIES = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const PRIORITIES: PriorityLevel[] = ['normal', 'high', 'critical'];
+const REMINDER_TYPES: ReminderType[] = ['simple', 'guided'];
 
 type FormMode = 'create' | 'edit';
 
@@ -44,7 +51,9 @@ interface ReminderForm {
   daysOfWeek: number[];
   snoozeEnabled: boolean;
   defaultSnoozeMinutes: string;
-  priority: string;
+  priority: PriorityLevel;
+  reminderType: ReminderType;
+  linkedChecklistTemplateId: string;
 }
 
 function emptyForm(): ReminderForm {
@@ -58,7 +67,9 @@ function emptyForm(): ReminderForm {
     daysOfWeek: [],
     snoozeEnabled: true,
     defaultSnoozeMinutes: '10',
-    priority: '1',
+    priority: 'normal',
+    reminderType: 'simple',
+    linkedChecklistTemplateId: '',
   };
 }
 
@@ -73,7 +84,9 @@ function formFromReminder(r: Reminder): ReminderForm {
     daysOfWeek: r.daysOfWeek ?? [],
     snoozeEnabled: r.snoozeEnabled,
     defaultSnoozeMinutes: String(r.defaultSnoozeMinutes),
-    priority: String(r.priority),
+    priority: r.priority ?? 'normal',
+    reminderType: r.reminderType ?? 'simple',
+    linkedChecklistTemplateId: r.linkedChecklistTemplateId ?? '',
   };
 }
 
@@ -98,6 +111,10 @@ export default function CaregiverRemindersScreen() {
   const [form, setForm] = useState<ReminderForm>(emptyForm());
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ReminderForm, string>>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  // Checklist picker
+  const [checklistPickerVisible, setChecklistPickerVisible] = useState(false);
+  const { templates: checklists, loading: checklistsLoading } = useChecklistTemplates(selectedPatient ?? undefined);
 
   // Load linked patients
   useEffect(() => {
@@ -171,7 +188,9 @@ export default function CaregiverRemindersScreen() {
     daysOfWeek: form.daysOfWeek,
     snoozeEnabled: form.snoozeEnabled,
     defaultSnoozeMinutes: parseInt(form.defaultSnoozeMinutes, 10) || 10,
-    priority: (parseInt(form.priority, 10) || 1) as 1 | 2 | 3,
+    priority: form.priority,
+    reminderType: form.reminderType,
+    linkedChecklistTemplateId: form.linkedChecklistTemplateId || undefined,
   });
 
   const handleSubmit = async () => {
@@ -369,6 +388,82 @@ export default function CaregiverRemindersScreen() {
               </ScrollView>
             </View>
 
+            {/* Redesigned: Priority selector */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>{t('patientReminders.priority')}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+                {PRIORITIES.map((prio) => (
+                  <Pressable
+                    key={prio}
+                    style={[
+                      styles.categoryChip,
+                      form.priority === prio && styles.priorityChipActive,
+                      prio === 'high' && styles.highPriorityChip,
+                      prio === 'critical' && styles.criticalPriorityChip,
+                    ]}
+                    onPress={() => setForm((f) => ({ ...f, priority: prio }))}
+                  >
+                    <Text style={[styles.categoryChipText, form.priority === prio && styles.categoryChipTextActive]}>
+                      {t(`patientReminders.priority${prio.charAt(0).toUpperCase() + prio.slice(1)}`)}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Redesigned: Reminder Type selector */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.fieldLabel}>{t('patientReminders.reminderType')}</Text>
+              <View style={styles.typeRow}>
+                {REMINDER_TYPES.map((type) => (
+                  <Pressable
+                    key={type}
+                    style={[styles.typeChip, form.reminderType === type && styles.typeChipActive]}
+                    onPress={() => setForm((f) => ({ ...f, reminderType: type }))}
+                  >
+                    <Icon 
+                      name={type === 'guided' ? 'list-outline' : 'checkmark-circle-outline'} 
+                      size={18} 
+                      color={form.reminderType === type ? '#fff' : colors.neutral[600]} 
+                    />
+                    <Text style={[styles.typeChipText, form.reminderType === type && styles.typeChipTextActive]}>
+                      {t(`patientReminders.${type}`)}
+                    </Text>
+                    <Text style={styles.typeChipDesc}>
+                      {type === 'guided' ? t('patientReminders.guidedDesc') : t('patientReminders.simpleDesc')}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            {/* Redesigned: Checklist linking for guided reminders */}
+            {form.reminderType === 'guided' && (
+              <View style={[styles.fieldGroup, styles.guidedSection]}>
+                <Text style={styles.fieldLabel}>{t('patientReminders.linkedChecklist')}</Text>
+                <TouchableOpacity
+                  style={styles.checklistSelector}
+                  onPress={() => {
+                    console.log('[ManageReminders] Opening checklist picker');
+                    Alert.alert('Debug', 'Checklist selector tapped');
+                    setChecklistPickerVisible(true);
+                  }}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('caregiverReminders.selectChecklist')}
+                >
+                  <Icon name="list-outline" size={24} color={colors.primary[500]} />
+                  <Text style={styles.checklistPlaceholder}>
+                    {form.linkedChecklistTemplateId
+                      ? checklists.find((c) => c.id === form.linkedChecklistTemplateId)?.title || t('caregiverReminders.checklistLinked')
+                      : t('caregiverReminders.selectChecklist')}
+                  </Text>
+                  <Icon name="chevron-forward" size={20} color={colors.neutral[400]} />
+                </TouchableOpacity>
+                <Text style={styles.checklistHelp}>{t('caregiverReminders.checklistHelp')}</Text>
+              </View>
+            )}
+
             {/* Time + Date row */}
             <View style={styles.rowFields}>
               <View style={{ flex: 1 }}>
@@ -476,6 +571,75 @@ export default function CaregiverRemindersScreen() {
               )}
             </View>
           </ScrollView>
+
+          {/* Checklist Picker Overlay - inside the same Modal */}
+          {checklistPickerVisible && (
+            <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.background, zIndex: 100 }}>
+              <View style={styles.modalHandle} />
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('caregiverReminders.selectChecklist')}</Text>
+                <TouchableOpacity onPress={() => setChecklistPickerVisible(false)} style={styles.modalClose} activeOpacity={0.7}>
+                  <Icon name="close" size={22} color={colors.neutral[600]} />
+                </TouchableOpacity>
+              </View>
+
+              {checklistsLoading ? (
+                <View style={styles.pickerLoading}>
+                  <ActivityIndicator size="large" color={colors.primary[500]} />
+                  <Text style={styles.pickerLoadingText}>{t('common.loading')}</Text>
+                </View>
+              ) : checklists.length === 0 ? (
+                <View style={styles.pickerEmpty}>
+                  <Icon name="list-outline" size={48} color={colors.neutral[300]} />
+                  <Text style={styles.pickerEmptyText}>{t('caregiverReminders.noChecklists')}</Text>
+                  <Text style={styles.pickerEmptySubtext}>{t('caregiverReminders.createChecklistFirst')}</Text>
+                </View>
+              ) : (
+                <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
+                  <Button
+                    title="TEST BUTTON - TAP ME"
+                    onPress={() => console.log('[ChecklistPickerModal] TEST BUTTON PRESSED')}
+                  />
+                  {checklists.map((checklist, index) => {
+                    console.log('[ChecklistPickerModal] Rendering item', index, ':', checklist.id, checklist.title);
+                    const isSelected = form.linkedChecklistTemplateId === checklist.id;
+                    return (
+                      <TouchableOpacity
+                        key={checklist.id}
+                        activeOpacity={0.6}
+                        style={[
+                          styles.checklistItem,
+                          isSelected && styles.checklistItemSelected,
+                          { backgroundColor: isSelected ? colors.primary[50] : colors.neutral[50] }
+                        ]}
+                        onPressIn={() => {
+                          console.log('[ChecklistPickerModal] PRESSED:', checklist.id, checklist.title);
+                          setForm((f) => ({ ...f, linkedChecklistTemplateId: checklist.id }));
+                          setChecklistPickerVisible(false);
+                        }}
+                      >
+                        <View style={styles.checklistIcon}>
+                          <Icon name="list-outline" size={24} color={isSelected ? colors.primary[500] : colors.neutral[400]} />
+                        </View>
+                        <View style={styles.checklistContent}>
+                          <Text style={[styles.checklistTitle, isSelected && styles.checklistTitleSelected]}>
+                            {checklist.title}
+                          </Text>
+                          <Text style={styles.checklistMeta}>
+                            {checklist.category || 'General'}
+                          </Text>
+                        </View>
+                        {isSelected && (
+                          <Icon name="checkmark-circle" size={24} color={colors.success.main} />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <View style={{ height: spacing['4xl'] }} />
+                </ScrollView>
+              )}
+            </View>
+          )}
         </View>
       </Modal>
     </ScreenContainer>
@@ -497,6 +661,105 @@ function SectionHeader({ title, count, loading }: { title: string; count: number
   );
 }
 
+interface ChecklistPickerModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (checklistId: string) => void;
+  checklists: ChecklistTemplate[];
+  loading: boolean;
+  selectedId?: string;
+}
+
+function ChecklistPickerModal({
+  visible,
+  onClose,
+  onSelect,
+  checklists,
+  loading,
+  selectedId,
+}: ChecklistPickerModalProps) {
+  const { t } = useTranslation();
+  console.log('[ChecklistPickerModal] Render - visible:', visible, 'checklists:', checklists.length, 'loading:', loading);
+  if (!visible) return null;
+
+  return (
+    <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.background, zIndex: 1000 }}>
+        <View style={styles.modalHandle} />
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>{t('caregiverReminders.selectChecklist')}</Text>
+          <TouchableOpacity onPress={onClose} style={styles.modalClose} activeOpacity={0.7}>
+            <Icon name="close" size={22} color={colors.neutral[600]} />
+          </TouchableOpacity>
+        </View>
+
+        {loading ? (
+          <View style={styles.pickerLoading}>
+            <ActivityIndicator size="large" color={colors.primary[500]} />
+            <Text style={styles.pickerLoadingText}>{t('common.loading')}</Text>
+          </View>
+        ) : checklists.length === 0 ? (
+          <View style={styles.pickerEmpty}>
+            <Icon name="list-outline" size={48} color={colors.neutral[300]} />
+            <Text style={styles.pickerEmptyText}>{t('caregiverReminders.noChecklists')}</Text>
+            <Text style={styles.pickerEmptySubtext}>{t('caregiverReminders.createChecklistFirst')}</Text>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.modalScroll}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="always"
+            pointerEvents="auto"
+          >
+            <Button
+              title="TEST BUTTON - TAP ME"
+              onPress={() => console.log('[ChecklistPickerModal] TEST BUTTON PRESSED')}
+            />
+            {checklists.map((checklist, index) => {
+              console.log('[ChecklistPickerModal] Rendering item', index, ':', checklist.id, checklist.title);
+              const isSelected = selectedId === checklist.id;
+              return (
+                <TouchableOpacity
+                  key={checklist.id}
+                  activeOpacity={0.6}
+                  style={[
+                    styles.checklistItem,
+                    isSelected && styles.checklistItemSelected,
+                    { backgroundColor: isSelected ? colors.primary[50] : colors.neutral[50] }
+                  ]}
+                  onPress={() => {
+                    console.log('[ManageReminders] Opening checklist picker');
+                    Alert.alert('Debug', 'Checklist selector tapped');
+                    setChecklistPickerVisible(true);
+                  }}
+                  onPressIn={() => {
+                    console.log('[ChecklistPickerModal] PRESSED IN:', checklist.id, checklist.title);
+                    onSelect(checklist.id);
+                  }}
+                >
+                  <View style={styles.checklistIcon}>
+                    <Icon name="list-outline" size={24} color={isSelected ? colors.primary[500] : colors.neutral[400]} />
+                  </View>
+                  <View style={styles.checklistContent}>
+                    <Text style={[styles.checklistTitle, isSelected && styles.checklistTitleSelected]}>
+                      {checklist.title}
+                    </Text>
+                    <Text style={styles.checklistMeta}>
+                      {checklist.category || 'General'}
+                    </Text>
+                  </View>
+                  {isSelected && (
+                    <Icon name="checkmark-circle" size={24} color={colors.success.main} />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+            <View style={{ height: spacing['4xl'] }} />
+          </ScrollView>
+        )}
+    </View>
+  );
+}
+
 function CaregiverReminderCard({
   reminder,
   onEdit,
@@ -507,17 +770,50 @@ function CaregiverReminderCard({
   onArchive: () => void;
 }) {
   const { t } = useTranslation();
+  const isGuided = reminder.reminderType === 'guided';
+  const isHighPriority = reminder.priority === 'high' || reminder.priority === 'critical';
+  
   return (
-    <AppCard style={styles.reminderCard}>
+    <AppCard style={[styles.reminderCard, isHighPriority && styles.highPriorityCard]}>
       <View style={styles.cardHeader}>
-        <Icon name={getCategoryIcon(reminder.category) as any} size={22} color={colors.secondary[500]} />
+        <View style={[styles.iconBadge, isGuided && styles.guidedBadge]}>
+          <Icon 
+            name={isGuided ? 'list-outline' : getCategoryIcon(reminder.category) as any} 
+            size={22} 
+            color={isGuided ? colors.warning.main : colors.secondary[500]} 
+          />
+        </View>
         <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle}>{reminder.title}</Text>
-          <Text style={styles.cardTime}>{reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}</Text>
+          <View style={styles.titleRow}>
+            <Text style={styles.cardTitle}>{reminder.title}</Text>
+            {/* Priority Badge */}
+            {isHighPriority && (
+              <View style={[styles.priorityBadge, reminder.priority === 'critical' && styles.criticalBadge]}>
+                <Text style={styles.priorityText}>
+                  {reminder.priority === 'critical' ? '!' : '↑'}
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.cardTime}>
+            {reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}
+            {isGuided && (
+              <Text style={styles.guidedIndicator}> · {t('patientReminders.guided')}</Text>
+            )}
+          </Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
             <Text style={styles.cardDays}>
               {reminder.daysOfWeek.map((d) => DAY_LABELS[d]).join(' · ')}
             </Text>
+          )}
+          {/* Linked Checklist Info */}
+          {isGuided && reminder.linkedChecklist && (
+            <View style={styles.checklistInfo}>
+              <Icon name="list-outline" size={12} color={colors.primary[500]} />
+              <Text style={styles.checklistText}>
+                {reminder.linkedChecklist.title} · {reminder.linkedChecklist.stepCount} {t('patientReminders.steps')}
+              </Text>
+            </View>
           )}
         </View>
         <StatusChip
@@ -592,6 +888,61 @@ const styles = StyleSheet.create({
   cardTime: { fontSize: typography.size.sm, color: colors.neutral[500], marginTop: 2 },
   cardDays: { fontSize: typography.size.xs, color: colors.secondary[500], marginTop: 2, fontWeight: '500' },
   cardDesc: { fontSize: typography.size.sm, color: colors.neutral[600], marginBottom: spacing.sm },
+  
+  // Redesigned: Card priority & type styles
+  highPriorityCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: colors.warning.main,
+  },
+  iconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.secondary[50],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  guidedBadge: {
+    backgroundColor: colors.warning.light,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  priorityBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.warning.main,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  criticalBadge: {
+    backgroundColor: colors.error.main,
+  },
+  priorityText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  guidedIndicator: {
+    color: colors.warning.main,
+    fontWeight: '600',
+  },
+  checklistInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+    paddingTop: spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[100],
+  },
+  checklistText: {
+    fontSize: typography.size.xs,
+    color: colors.primary[500],
+  },
   cardActions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
   emptyRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   emptyText: { fontSize: typography.size.sm, color: colors.neutral[500], flex: 1 },
@@ -673,4 +1024,144 @@ const styles = StyleSheet.create({
   },
   switchLabel: { fontSize: typography.size.base, fontWeight: '600', color: colors.neutral[800] },
   switchSub: { fontSize: typography.size.xs, color: colors.neutral[500], marginTop: 2 },
+  
+  // Redesigned: Priority styles
+  priorityChipActive: {
+    backgroundColor: colors.warning.main,
+    borderColor: colors.warning.dark,
+  },
+  highPriorityChip: {
+    borderColor: colors.warning.main,
+  },
+  criticalPriorityChip: {
+    borderColor: colors.error.main,
+    backgroundColor: colors.error.light,
+  },
+  
+  // Redesigned: Reminder Type styles
+  typeRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  typeChip: {
+    flex: 1,
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.neutral[100],
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  typeChipActive: {
+    backgroundColor: colors.secondary[500],
+    borderColor: colors.secondary[600],
+  },
+  typeChipText: { fontSize: typography.size.sm, color: colors.neutral[700], fontWeight: '600' },
+  typeChipTextActive: { color: '#fff' },
+  typeChipDesc: { 
+    fontSize: typography.size.xs, 
+    color: colors.neutral[500],
+    textAlign: 'center',
+    marginTop: spacing.xs,
+  },
+  
+  // Redesigned: Guided section styles
+  guidedSection: {
+    backgroundColor: colors.primary[50],
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.primary[100],
+  },
+  checklistSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    padding: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.neutral[200],
+  },
+  checklistPlaceholder: {
+    fontSize: typography.size.sm,
+    color: colors.neutral[500],
+  },
+  guidedHelper: {
+    fontSize: typography.size.xs,
+    color: colors.neutral[500],
+    marginTop: spacing.xs,
+    fontStyle: 'italic',
+  },
+  
+  // Checklist Picker Modal styles
+  pickerLoading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.md,
+  },
+  pickerLoadingText: {
+    fontSize: typography.size.base,
+    color: colors.neutral[500],
+  },
+  pickerEmpty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.md,
+    padding: spacing['2xl'],
+  },
+  pickerEmptyText: {
+    fontSize: typography.size.base,
+    fontWeight: '600',
+    color: colors.neutral[600],
+    textAlign: 'center',
+  },
+  pickerEmptySubtext: {
+    fontSize: typography.size.sm,
+    color: colors.neutral[400],
+    textAlign: 'center',
+  },
+  checklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  checklistItemSelected: {
+    borderColor: colors.primary[500],
+    backgroundColor: colors.primary[50],
+  },
+  checklistIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.neutral[100],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checklistContent: {
+    flex: 1,
+  },
+  checklistTitle: {
+    fontSize: typography.size.base,
+    fontWeight: '600',
+    color: colors.neutral[800],
+    marginBottom: 2,
+  },
+  checklistTitleSelected: {
+    color: colors.primary[600],
+  },
+  checklistMeta: {
+    fontSize: typography.size.xs,
+    color: colors.neutral[500],
+  },
 });

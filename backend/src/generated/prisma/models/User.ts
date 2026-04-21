@@ -47,6 +47,7 @@ export type UserMinAggregateOutputType = {
   isActive: boolean | null
   emailVerifiedAt: Date | null
   preferredNotificationMode: string | null
+  pushToken: string | null
   lastSeenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,6 +66,7 @@ export type UserMaxAggregateOutputType = {
   isActive: boolean | null
   emailVerifiedAt: Date | null
   preferredNotificationMode: string | null
+  pushToken: string | null
   lastSeenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -84,6 +86,7 @@ export type UserCountAggregateOutputType = {
   emailVerifiedAt: number
   accessibilitySettings: number
   preferredNotificationMode: number
+  pushToken: number
   lastSeenAt: number
   createdAt: number
   updatedAt: number
@@ -112,6 +115,7 @@ export type UserMinAggregateInputType = {
   isActive?: true
   emailVerifiedAt?: true
   preferredNotificationMode?: true
+  pushToken?: true
   lastSeenAt?: true
   createdAt?: true
   updatedAt?: true
@@ -130,6 +134,7 @@ export type UserMaxAggregateInputType = {
   isActive?: true
   emailVerifiedAt?: true
   preferredNotificationMode?: true
+  pushToken?: true
   lastSeenAt?: true
   createdAt?: true
   updatedAt?: true
@@ -149,6 +154,7 @@ export type UserCountAggregateInputType = {
   emailVerifiedAt?: true
   accessibilitySettings?: true
   preferredNotificationMode?: true
+  pushToken?: true
   lastSeenAt?: true
   createdAt?: true
   updatedAt?: true
@@ -255,6 +261,7 @@ export type UserGroupByOutputType = {
   emailVerifiedAt: Date | null
   accessibilitySettings: runtime.JsonValue
   preferredNotificationMode: string
+  pushToken: string | null
   lastSeenAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -297,6 +304,7 @@ export type UserWhereInput = {
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonFilter<"User">
   preferredNotificationMode?: Prisma.StringFilter<"User"> | string
+  pushToken?: Prisma.StringNullableFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -338,6 +346,7 @@ export type UserOrderByWithRelationInput = {
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
+  pushToken?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -382,6 +391,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonFilter<"User">
   preferredNotificationMode?: Prisma.StringFilter<"User"> | string
+  pushToken?: Prisma.StringNullableFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -423,6 +433,7 @@ export type UserOrderByWithAggregationInput = {
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
+  pushToken?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -450,6 +461,7 @@ export type UserScalarWhereWithAggregatesInput = {
   emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   accessibilitySettings?: Prisma.JsonWithAggregatesFilter<"User">
   preferredNotificationMode?: Prisma.StringWithAggregatesFilter<"User"> | string
+  pushToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -469,6 +481,7 @@ export type UserCreateInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -510,6 +523,7 @@ export type UserUncheckedCreateInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -551,6 +565,7 @@ export type UserUpdateInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +607,7 @@ export type UserUncheckedUpdateInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -633,6 +649,7 @@ export type UserCreateManyInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -652,6 +669,7 @@ export type UserUpdateManyMutationInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -671,6 +689,7 @@ export type UserUncheckedUpdateManyInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -690,6 +709,7 @@ export type UserCountOrderByAggregateInput = {
   emailVerifiedAt?: Prisma.SortOrder
   accessibilitySettings?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
+  pushToken?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -712,6 +732,7 @@ export type UserMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
+  pushToken?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -730,6 +751,7 @@ export type UserMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrder
   preferredNotificationMode?: Prisma.SortOrder
+  pushToken?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1111,6 +1133,7 @@ export type UserCreateWithoutCaregiverLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1151,6 +1174,7 @@ export type UserUncheckedCreateWithoutCaregiverLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1196,6 +1220,7 @@ export type UserCreateWithoutPatientLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1236,6 +1261,7 @@ export type UserUncheckedCreateWithoutPatientLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1281,6 +1307,7 @@ export type UserCreateWithoutInvitedCareLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1321,6 +1348,7 @@ export type UserUncheckedCreateWithoutInvitedCareLinksInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1377,6 +1405,7 @@ export type UserUpdateWithoutCaregiverLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1417,6 +1446,7 @@ export type UserUncheckedUpdateWithoutCaregiverLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1468,6 +1498,7 @@ export type UserUpdateWithoutPatientLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1508,6 +1539,7 @@ export type UserUncheckedUpdateWithoutPatientLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1559,6 +1591,7 @@ export type UserUpdateWithoutInvitedCareLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1599,6 +1632,7 @@ export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1639,6 +1673,7 @@ export type UserCreateWithoutPatientRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1679,6 +1714,7 @@ export type UserUncheckedCreateWithoutPatientRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1724,6 +1760,7 @@ export type UserCreateWithoutCreatedRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1764,6 +1801,7 @@ export type UserUncheckedCreateWithoutCreatedRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1809,6 +1847,7 @@ export type UserCreateWithoutEditedRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1849,6 +1888,7 @@ export type UserUncheckedCreateWithoutEditedRemindersInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1905,6 +1945,7 @@ export type UserUpdateWithoutPatientRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1945,6 +1986,7 @@ export type UserUncheckedUpdateWithoutPatientRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1996,6 +2038,7 @@ export type UserUpdateWithoutCreatedRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2036,6 +2079,7 @@ export type UserUncheckedUpdateWithoutCreatedRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2087,6 +2131,7 @@ export type UserUpdateWithoutEditedRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2127,6 +2172,7 @@ export type UserUncheckedUpdateWithoutEditedRemindersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2167,6 +2213,7 @@ export type UserCreateWithoutReminderEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2207,6 +2254,7 @@ export type UserUncheckedCreateWithoutReminderEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2252,6 +2300,7 @@ export type UserCreateWithoutActorEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2292,6 +2341,7 @@ export type UserUncheckedCreateWithoutActorEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2348,6 +2398,7 @@ export type UserUpdateWithoutReminderEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2388,6 +2439,7 @@ export type UserUncheckedUpdateWithoutReminderEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2439,6 +2491,7 @@ export type UserUpdateWithoutActorEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2479,6 +2532,7 @@ export type UserUncheckedUpdateWithoutActorEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2519,6 +2573,7 @@ export type UserCreateWithoutChecklistTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2559,6 +2614,7 @@ export type UserUncheckedCreateWithoutChecklistTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2604,6 +2660,7 @@ export type UserCreateWithoutCreatedTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2644,6 +2701,7 @@ export type UserUncheckedCreateWithoutCreatedTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2689,6 +2747,7 @@ export type UserCreateWithoutEditedTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2729,6 +2788,7 @@ export type UserUncheckedCreateWithoutEditedTemplatesInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2785,6 +2845,7 @@ export type UserUpdateWithoutChecklistTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2825,6 +2886,7 @@ export type UserUncheckedUpdateWithoutChecklistTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2876,6 +2938,7 @@ export type UserUpdateWithoutCreatedTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2916,6 +2979,7 @@ export type UserUncheckedUpdateWithoutCreatedTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2967,6 +3031,7 @@ export type UserUpdateWithoutEditedTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3007,6 +3072,7 @@ export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3047,6 +3113,7 @@ export type UserCreateWithoutChecklistRunsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3087,6 +3154,7 @@ export type UserUncheckedCreateWithoutChecklistRunsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3132,6 +3200,7 @@ export type UserCreateWithoutActorRunsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3172,6 +3241,7 @@ export type UserUncheckedCreateWithoutActorRunsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3228,6 +3298,7 @@ export type UserUpdateWithoutChecklistRunsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3268,6 +3339,7 @@ export type UserUncheckedUpdateWithoutChecklistRunsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3319,6 +3391,7 @@ export type UserUpdateWithoutActorRunsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3359,6 +3432,7 @@ export type UserUncheckedUpdateWithoutActorRunsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3399,6 +3473,7 @@ export type UserCreateWithoutGameSessionsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3439,6 +3514,7 @@ export type UserUncheckedCreateWithoutGameSessionsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3484,6 +3560,7 @@ export type UserCreateWithoutActorGameSessionsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3524,6 +3601,7 @@ export type UserUncheckedCreateWithoutActorGameSessionsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3580,6 +3658,7 @@ export type UserUpdateWithoutGameSessionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3620,6 +3699,7 @@ export type UserUncheckedUpdateWithoutGameSessionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3671,6 +3751,7 @@ export type UserUpdateWithoutActorGameSessionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3711,6 +3792,7 @@ export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3751,6 +3833,7 @@ export type UserCreateWithoutAnalyticsEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3791,6 +3874,7 @@ export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3836,6 +3920,7 @@ export type UserCreateWithoutActorAnalyticsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3876,6 +3961,7 @@ export type UserUncheckedCreateWithoutActorAnalyticsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3932,6 +4018,7 @@ export type UserUpdateWithoutAnalyticsEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3972,6 +4059,7 @@ export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4023,6 +4111,7 @@ export type UserUpdateWithoutActorAnalyticsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4063,6 +4152,7 @@ export type UserUncheckedUpdateWithoutActorAnalyticsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4103,6 +4193,7 @@ export type UserCreateWithoutContactConsentsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4143,6 +4234,7 @@ export type UserUncheckedCreateWithoutContactConsentsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4199,6 +4291,7 @@ export type UserUpdateWithoutContactConsentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4239,6 +4332,7 @@ export type UserUncheckedUpdateWithoutContactConsentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4279,6 +4373,7 @@ export type UserCreateWithoutPatientContactsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4319,6 +4414,7 @@ export type UserUncheckedCreateWithoutPatientContactsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4375,6 +4471,7 @@ export type UserUpdateWithoutPatientContactsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4415,6 +4512,7 @@ export type UserUncheckedUpdateWithoutPatientContactsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4455,6 +4553,7 @@ export type UserCreateWithoutCreatedMemosInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4495,6 +4594,7 @@ export type UserUncheckedCreateWithoutCreatedMemosInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4551,6 +4651,7 @@ export type UserUpdateWithoutCreatedMemosInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4591,6 +4692,7 @@ export type UserUncheckedUpdateWithoutCreatedMemosInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4631,6 +4733,7 @@ export type UserCreateWithoutOwnedAssetsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4671,6 +4774,7 @@ export type UserUncheckedCreateWithoutOwnedAssetsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4716,6 +4820,7 @@ export type UserCreateWithoutUploadedAssetsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4756,6 +4861,7 @@ export type UserUncheckedCreateWithoutUploadedAssetsInput = {
   emailVerifiedAt?: Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: string
+  pushToken?: string | null
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4812,6 +4918,7 @@ export type UserUpdateWithoutOwnedAssetsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4852,6 +4959,7 @@ export type UserUncheckedUpdateWithoutOwnedAssetsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4903,6 +5011,7 @@ export type UserUpdateWithoutUploadedAssetsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4943,6 +5052,7 @@ export type UserUncheckedUpdateWithoutUploadedAssetsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5203,6 +5313,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
+  pushToken?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5245,6 +5356,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
+  pushToken?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5264,6 +5376,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
+  pushToken?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5283,12 +5396,13 @@ export type UserSelectScalar = {
   emailVerifiedAt?: boolean
   accessibilitySettings?: boolean
   preferredNotificationMode?: boolean
+  pushToken?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "passwordHash" | "displayName" | "age" | "role" | "language" | "timezone" | "isActive" | "emailVerifiedAt" | "accessibilitySettings" | "preferredNotificationMode" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "passwordHash" | "displayName" | "age" | "role" | "language" | "timezone" | "isActive" | "emailVerifiedAt" | "accessibilitySettings" | "preferredNotificationMode" | "pushToken" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   caregiverLinks?: boolean | Prisma.User$caregiverLinksArgs<ExtArgs>
   patientLinks?: boolean | Prisma.User$patientLinksArgs<ExtArgs>
@@ -5357,6 +5471,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     emailVerifiedAt: Date | null
     accessibilitySettings: runtime.JsonValue
     preferredNotificationMode: string
+    pushToken: string | null
     lastSeenAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -5818,6 +5933,7 @@ export interface UserFieldRefs {
   readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly accessibilitySettings: Prisma.FieldRef<"User", 'Json'>
   readonly preferredNotificationMode: Prisma.FieldRef<"User", 'String'>
+  readonly pushToken: Prisma.FieldRef<"User", 'String'>
   readonly lastSeenAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

@@ -54,9 +54,14 @@
         "NSPhotoLibraryUsageDescription": "We need access to your photos to personalize profiles and checklist steps."
       }
     },
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": false
+    "extra": {
+      "eas": {
+        "projectId": "alzheimer-assistive-app"
+      }
     }
+  },
+  "experiments": {
+    "typedRoutes": true,
+    "reactCompiler": false
   }
 }

@@ -12,30 +12,63 @@ import type {
   ChartSeriesData,
   ChecklistRunDetail,
   ChecklistPeriodStats,
-  GameProgressSummary
+  GameProgressSummary,
+  // Redesigned: new progress types
+  PriorityMetrics,
+  GuidedTaskMetrics,
+  ComparisonDeltas,
+  EnhancedReminderMetrics,
 } from './../types.js';
 
 export class ProgressService {
 
   // --- STREAKS ----------------------------------------------------
+  // Redesigned: Enhanced streaks with priority-aware and guided task tracking
   async getStreaks(patientId: string): Promise<ProgressStreaksResponse> {
     const user = await prisma.user.findUnique({ where: { id: patientId }, select: { timezone: true } });
     const tz = user?.timezone || 'UTC';
     const todayStr = formatLocalDateStr(new Date(), tz);
 
-    // 1. Reminders
+    // 1. All Reminders
     const remEvents = await prisma.reminderEvent.findMany({
       where: { 
         patientUserId: patientId, 
-        eventType: { in: ['DONE', 'SNOOZED', 'SKIPPED'] }
+        // Redesigned: include new action types for guided reminders (cast as any until migration)
+        eventType: { in: ['DONE', 'SNOOZED', 'SKIPPED', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'] as any }
       },
-      select: { timestamp: true },
+      select: { timestamp: true, eventType: true },
       orderBy: { timestamp: 'desc' },
       take: 2000
     });
     const remDates = remEvents.map(e => formatLocalDateStr(e.timestamp, tz));
 
-    // 2. Checklists
+    // 2. Priority-specific streaks (high/critical reminders only)
+    const highPriorityEvents = await prisma.reminderEvent.findMany({
+      where: {
+        patientUserId: patientId,
+        eventType: { in: ['DONE', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'] as any },
+        // Cast priority filter as any until migration runs
+        reminder: { priority: { in: ['HIGH', 'CRITICAL'] as any } }
+      },
+      select: { timestamp: true },
+      orderBy: { timestamp: 'desc' },
+      take: 1000
+    });
+    const highPriorityDates = highPriorityEvents.map(e => formatLocalDateStr(e.timestamp, tz));
+
+    // 3. Guided task streaks (checklist-linked reminders)
+    const guidedEvents = await prisma.reminderEvent.findMany({
+      where: {
+        patientUserId: patientId,
+        eventType: { in: ['LINKED_CHECKLIST_COMPLETED'] as any },
+      },
+      select: { timestamp: true },
+      orderBy: { timestamp: 'desc' },
+      take: 1000
+    });
+    const guidedDates = guidedEvents.map(e => formatLocalDateStr(e.timestamp, tz));
+
+    // 4. Checklists
     const chkRuns = await prisma.checklistRun.findMany({
       where: { patientUserId: patientId, status: { in: ['STARTED', 'IN_PROGRESS', 'COMPLETED'] } },
       select: { startedAt: true, createdAt: true },
@@ -44,7 +77,7 @@ export class ProgressService {
     });
     const chkDates = chkRuns.map(r => formatLocalDateStr(r.startedAt || r.createdAt, tz));
 
-    // 3. Games
+    // 5. Games
     const gameRuns = await prisma.gameSession.findMany({
       where: { patientUserId: patientId, completed: true },
       select: { startedAt: true },
@@ -53,18 +86,22 @@ export class ProgressService {
     });
     const gameDates = gameRuns.map(g => formatLocalDateStr(g.startedAt, tz));
 
-    // 4. General (All)
+    // 6. General (All)
     const allDates = [...remDates, ...chkDates, ...gameDates].sort((a,b) => b.localeCompare(a)); // desc
 
     return {
       reminders: calculateStreaks(remDates, todayStr),
       checklists: calculateStreaks(chkDates, todayStr),
       games: calculateStreaks(gameDates, todayStr),
-      general: calculateStreaks(allDates, todayStr)
+      general: calculateStreaks(allDates, todayStr),
+      // Redesigned: new streak types
+      highPriorityReminders: calculateStreaks(highPriorityDates, todayStr),
+      guidedTasks: calculateStreaks(guidedDates, todayStr),
     };
   }
 
   // --- OVERVIEW ---------------------------------------------------
+  // Redesigned: Enhanced overview with priority-aware and guided-task metrics
   async getOverview(patientId: string): Promise<ProgressOverviewResponse> {
     // 1. Get streaks
     const streaks = await this.getStreaks(patientId);
@@ -72,27 +109,82 @@ export class ProgressService {
     // 2. Active days this week
     const tz = (await prisma.user.findUnique({ where: { id: patientId }, select: { timezone: true } }))?.timezone || 'UTC';
     const startOfWindow = getStartOfDaysAgo(14); // Fetch 14 days ago to calculate deltas
-
-    // Adherence Window Query (Reminders)
-    const remEvents = await prisma.reminderEvent.findMany({
-      where: { patientUserId: patientId, timestamp: { gte: startOfWindow } },
-      select: { timestamp: true, eventType: true }
-    });
-    
-    // Day logic
     const thisWeekStart = getStartOfDaysAgo(7);
     const uniqueActiveDaysThisWeek = new Set<string>();
 
-    let firedThisWeek = 0, doneThisWeek = 0;
-    let firedLastWeek = 0, doneLastWeek = 0;
+    // Redesigned: Enhanced reminder queries with priority and type
+    const [remEvents, priorityEvents, guidedEvents] = await Promise.all([
+      // All reminder events
+      prisma.reminderEvent.findMany({
+        where: { patientUserId: patientId, timestamp: { gte: startOfWindow } },
+        // Cast include as any until migration adds new fields
+        include: { reminder: { select: { priority: true, reminderType: true, category: true } as any } }
+      }),
+      // Priority-aware events (high/critical)
+      prisma.reminderEvent.findMany({
+        where: { 
+          patientUserId: patientId, 
+          timestamp: { gte: startOfWindow },
+          // Cast eventType filter as any until migration runs
+          eventType: { in: ['DONE', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'] as any },
+          reminder: { priority: { in: ['HIGH', 'CRITICAL'] as any } }
+        },
+        select: { timestamp: true, eventType: true }
+      }),
+      // Guided task events
+      prisma.reminderEvent.findMany({
+        where: { 
+          patientUserId: patientId, 
+          timestamp: { gte: startOfWindow },
+          // Cast eventType filter as any until migration runs
+          eventType: { in: ['START_NOW', 'LINKED_CHECKLIST_COMPLETED'] as any }
+        },
+        select: { timestamp: true, eventType: true }
+      }),
+    ]);
+
+    // Calculate period-based metrics
+    let firedThisWeek = 0, doneThisWeek = 0, skippedThisWeek = 0;
+    let firedLastWeek = 0, doneLastWeek = 0, skippedLastWeek = 0;
+    
+    // Priority-specific metrics
+    let highDoneThisWeek = 0, highTotalThisWeek = 0;
+    let highDoneLastWeek = 0, highTotalLastWeek = 0;
+    
+    // Guided task metrics
+    let guidedStartedThisWeek = 0, guidedCompletedThisWeek = 0;
+    let guidedStartedLastWeek = 0, guidedCompletedLastWeek = 0;
 
     remEvents.forEach(e => {
       const isThisWeek = e.timestamp >= thisWeekStart;
       const dStr = formatLocalDateStr(e.timestamp, tz);
-      if (isThisWeek && ['DONE', 'SNOOZED', 'SKIPPED'].includes(e.eventType)) uniqueActiveDaysThisWeek.add(dStr);
+      
+      // Track active days
+      if (isThisWeek && ['DONE', 'SNOOZED', 'SKIPPED', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'].includes(e.eventType)) {
+        uniqueActiveDaysThisWeek.add(dStr);
+      }
 
+      // Track fired/completed
       if (e.eventType === 'FIRED') isThisWeek ? firedThisWeek++ : firedLastWeek++;
       if (e.eventType === 'DONE') isThisWeek ? doneThisWeek++ : doneLastWeek++;
+      if (e.eventType === 'SKIPPED') isThisWeek ? skippedThisWeek++ : skippedLastWeek++;
+    });
+
+    // Priority metrics
+    priorityEvents.forEach(e => {
+      const isThisWeek = e.timestamp >= thisWeekStart;
+      if (['DONE', 'START_NOW', 'LINKED_CHECKLIST_COMPLETED'].includes(e.eventType)) {
+        isThisWeek ? highDoneThisWeek++ : highDoneLastWeek++;
+      }
+      isThisWeek ? highTotalThisWeek++ : highTotalLastWeek++;
+    });
+
+    // Guided task metrics
+    guidedEvents.forEach(e => {
+      const isThisWeek = e.timestamp >= thisWeekStart;
+      // Cast eventType comparison as any until migration runs
+      if ((e.eventType as any) === 'START_NOW') isThisWeek ? guidedStartedThisWeek++ : guidedStartedLastWeek++;
+      if ((e.eventType as any) === 'LINKED_CHECKLIST_COMPLETED') isThisWeek ? guidedCompletedThisWeek++ : guidedCompletedLastWeek++;
     });
 
     // Checklists
@@ -107,7 +199,7 @@ export class ProgressService {
     chkRuns.forEach(r => {
       const isThisWeek = r.createdAt >= thisWeekStart;
       const dStr = formatLocalDateStr(r.createdAt, tz);
-      uniqueActiveDaysThisWeek.add(dStr); // adding to general Engagement
+      uniqueActiveDaysThisWeek.add(dStr);
 
       if (isThisWeek) {
         startedThisWeekChk++;
@@ -134,6 +226,7 @@ export class ProgressService {
       }
     });
 
+    // Calculate rates
     const remThisWeek = firedThisWeek ? doneThisWeek / firedThisWeek : 0;
     const remLastWeek = firedLastWeek ? doneLastWeek / firedLastWeek : 0;
     const chkThisWeek = startedThisWeekChk ? compThisWeekChk / startedThisWeekChk : 0;
@@ -141,6 +234,13 @@ export class ProgressService {
     
     const avgScoreThis = scoresThisWeek.length ? scoresThisWeek.reduce((a,b)=>a+b,0)/scoresThisWeek.length : 0;
     const avgScoreLast = scoresLastWeek.length ? scoresLastWeek.reduce((a,b)=>a+b,0)/scoresLastWeek.length : 0;
+
+    // Redesigned: Priority and guided metrics
+    const highPriorityThisWeek = highTotalThisWeek ? highDoneThisWeek / highTotalThisWeek : 0;
+    const highPriorityLastWeek = highTotalLastWeek ? highDoneLastWeek / highTotalLastWeek : 0;
+    
+    const guidedCompletionThisWeek = guidedStartedThisWeek ? guidedCompletedThisWeek / guidedStartedThisWeek : 0;
+    const guidedCompletionLastWeek = guidedStartedLastWeek ? guidedCompletedLastWeek / guidedStartedLastWeek : 0;
 
     return {
       summary: {
@@ -151,13 +251,44 @@ export class ProgressService {
         currentGameStreak: streaks.games.current,
         bestGameStreak: streaks.games.best,
         generalEngagementStreak: streaks.general.current,
-        activeDaysThisWeek: uniqueActiveDaysThisWeek.size
+        activeDaysThisWeek: uniqueActiveDaysThisWeek.size,
+        // Redesigned: new streaks
+        highPriorityStreak: streaks.highPriorityReminders?.current || 0,
+        guidedTaskStreak: streaks.guidedTasks?.current || 0,
       },
       comparison: {
         reminderConsistencyDelta: remThisWeek - remLastWeek,
         checklistConsistencyDelta: chkThisWeek - chkLastWeek,
-        gameScoreDeltaVsPrevious: avgScoreThis - avgScoreLast
-      }
+        gameScoreDeltaVsPrevious: avgScoreThis - avgScoreLast,
+        // Redesigned: new comparison deltas
+        highPriorityDelta: highPriorityThisWeek - highPriorityLastWeek,
+        guidedTaskCompletionDelta: guidedCompletionThisWeek - guidedCompletionLastWeek,
+      },
+      // Redesigned: detailed metrics
+      priorityMetrics: {
+        normal: { completionRate: 0, total: 0, completed: 0 }, // Calculated below if needed
+        high: { 
+          completionRate: highPriorityThisWeek, 
+          total: highTotalThisWeek, 
+          completed: highDoneThisWeek,
+          skipped: skippedThisWeek 
+        },
+        critical: { completionRate: 0, total: 0, completed: 0 }, // Will be calculated separately
+      },
+      guidedTaskMetrics: {
+        started: guidedStartedThisWeek,
+        completed: guidedCompletedThisWeek,
+        completionRate: guidedCompletionThisWeek,
+        abandoned: guidedStartedThisWeek - guidedCompletedThisWeek,
+      },
+      // Redesigned: action-aware metrics
+      actionBreakdown: {
+        done: doneThisWeek,
+        snoozed: 0, // Would need separate query
+        skipped: skippedThisWeek,
+        startNow: guidedStartedThisWeek,
+        checklistCompleted: guidedCompletedThisWeek,
+      },
     };
   }
 

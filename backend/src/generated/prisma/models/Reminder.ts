@@ -28,13 +28,11 @@ export type AggregateReminder = {
 
 export type ReminderAvgAggregateOutputType = {
   daysOfWeek: number | null
-  priority: number | null
   defaultSnoozeMinutes: number | null
 }
 
 export type ReminderSumAggregateOutputType = {
   daysOfWeek: number[]
-  priority: number | null
   defaultSnoozeMinutes: number | null
 }
 
@@ -47,7 +45,9 @@ export type ReminderMinAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   description: string | null
-  priority: number | null
+  priority: $Enums.PriorityLevel | null
+  reminderType: $Enums.ReminderType | null
+  visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean | null
   defaultSnoozeMinutes: number | null
@@ -68,7 +68,9 @@ export type ReminderMaxAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   description: string | null
-  priority: number | null
+  priority: $Enums.PriorityLevel | null
+  reminderType: $Enums.ReminderType | null
+  visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean | null
   defaultSnoozeMinutes: number | null
@@ -92,6 +94,8 @@ export type ReminderCountAggregateOutputType = {
   daysOfWeek: number
   description: number
   priority: number
+  reminderType: number
+  visualCueAssetId: number
   linkedChecklistTemplateId: number
   snoozeEnabled: number
   defaultSnoozeMinutes: number
@@ -107,13 +111,11 @@ export type ReminderCountAggregateOutputType = {
 
 export type ReminderAvgAggregateInputType = {
   daysOfWeek?: true
-  priority?: true
   defaultSnoozeMinutes?: true
 }
 
 export type ReminderSumAggregateInputType = {
   daysOfWeek?: true
-  priority?: true
   defaultSnoozeMinutes?: true
 }
 
@@ -127,6 +129,8 @@ export type ReminderMinAggregateInputType = {
   endDate?: true
   description?: true
   priority?: true
+  reminderType?: true
+  visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
   defaultSnoozeMinutes?: true
@@ -148,6 +152,8 @@ export type ReminderMaxAggregateInputType = {
   endDate?: true
   description?: true
   priority?: true
+  reminderType?: true
+  visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
   defaultSnoozeMinutes?: true
@@ -171,6 +177,8 @@ export type ReminderCountAggregateInputType = {
   daysOfWeek?: true
   description?: true
   priority?: true
+  reminderType?: true
+  visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
   defaultSnoozeMinutes?: true
@@ -280,7 +288,9 @@ export type ReminderGroupByOutputType = {
   endDate: Date | null
   daysOfWeek: number[]
   description: string | null
-  priority: number
+  priority: $Enums.PriorityLevel
+  reminderType: $Enums.ReminderType
+  visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean
   defaultSnoozeMinutes: number
@@ -326,7 +336,9 @@ export type ReminderWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<"Reminder"> | Date | string | null
   daysOfWeek?: Prisma.IntNullableListFilter<"Reminder">
   description?: Prisma.StringNullableFilter<"Reminder"> | string | null
-  priority?: Prisma.IntFilter<"Reminder"> | number
+  priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   defaultSnoozeMinutes?: Prisma.IntFilter<"Reminder"> | number
@@ -340,6 +352,7 @@ export type ReminderWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   lastEditedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   linkedChecklist?: Prisma.XOR<Prisma.ChecklistTemplateNullableScalarRelationFilter, Prisma.ChecklistTemplateWhereInput> | null
+  visualCueAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
   events?: Prisma.ReminderEventListRelationFilter
 }
 
@@ -355,6 +368,8 @@ export type ReminderOrderByWithRelationInput = {
   daysOfWeek?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrder
+  reminderType?: Prisma.SortOrder
+  visualCueAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
@@ -368,6 +383,7 @@ export type ReminderOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   lastEditedBy?: Prisma.UserOrderByWithRelationInput
   linkedChecklist?: Prisma.ChecklistTemplateOrderByWithRelationInput
+  visualCueAsset?: Prisma.MediaAssetOrderByWithRelationInput
   events?: Prisma.ReminderEventOrderByRelationAggregateInput
 }
 
@@ -385,7 +401,9 @@ export type ReminderWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.DateTimeNullableFilter<"Reminder"> | Date | string | null
   daysOfWeek?: Prisma.IntNullableListFilter<"Reminder">
   description?: Prisma.StringNullableFilter<"Reminder"> | string | null
-  priority?: Prisma.IntFilter<"Reminder"> | number
+  priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   defaultSnoozeMinutes?: Prisma.IntFilter<"Reminder"> | number
@@ -399,6 +417,7 @@ export type ReminderWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   lastEditedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   linkedChecklist?: Prisma.XOR<Prisma.ChecklistTemplateNullableScalarRelationFilter, Prisma.ChecklistTemplateWhereInput> | null
+  visualCueAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
   events?: Prisma.ReminderEventListRelationFilter
 }, "id">
 
@@ -414,6 +433,8 @@ export type ReminderOrderByWithAggregationInput = {
   daysOfWeek?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrder
+  reminderType?: Prisma.SortOrder
+  visualCueAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
@@ -444,7 +465,9 @@ export type ReminderScalarWhereWithAggregatesInput = {
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Reminder"> | Date | string | null
   daysOfWeek?: Prisma.IntNullableListFilter<"Reminder">
   description?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
-  priority?: Prisma.IntWithAggregatesFilter<"Reminder"> | number
+  priority?: Prisma.EnumPriorityLevelWithAggregatesFilter<"Reminder"> | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeWithAggregatesFilter<"Reminder"> | $Enums.ReminderType
+  visualCueAssetId?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolWithAggregatesFilter<"Reminder"> | boolean
   defaultSnoozeMinutes?: Prisma.IntWithAggregatesFilter<"Reminder"> | number
@@ -466,7 +489,8 @@ export type ReminderCreateInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -477,6 +501,7 @@ export type ReminderCreateInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
   lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
   linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
   events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
 }
 
@@ -491,7 +516,9 @@ export type ReminderUncheckedCreateInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -514,7 +541,8 @@ export type ReminderUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -525,6 +553,7 @@ export type ReminderUpdateInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
   lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
   linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
   events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
 }
 
@@ -539,7 +568,9 @@ export type ReminderUncheckedUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -563,7 +594,9 @@ export type ReminderCreateManyInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -585,7 +618,8 @@ export type ReminderUpdateManyMutationInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -605,7 +639,9 @@ export type ReminderUncheckedUpdateManyInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -647,6 +683,8 @@ export type ReminderCountOrderByAggregateInput = {
   daysOfWeek?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priority?: Prisma.SortOrder
+  reminderType?: Prisma.SortOrder
+  visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
@@ -660,7 +698,6 @@ export type ReminderCountOrderByAggregateInput = {
 
 export type ReminderAvgOrderByAggregateInput = {
   daysOfWeek?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
 }
 
@@ -674,6 +711,8 @@ export type ReminderMaxOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priority?: Prisma.SortOrder
+  reminderType?: Prisma.SortOrder
+  visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
@@ -695,6 +734,8 @@ export type ReminderMinOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priority?: Prisma.SortOrder
+  reminderType?: Prisma.SortOrder
+  visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
@@ -708,7 +749,6 @@ export type ReminderMinOrderByAggregateInput = {
 
 export type ReminderSumOrderByAggregateInput = {
   daysOfWeek?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   defaultSnoozeMinutes?: Prisma.SortOrder
 }
 
@@ -856,6 +896,14 @@ export type ReminderUpdatedaysOfWeekInput = {
   push?: number | number[]
 }
 
+export type EnumPriorityLevelFieldUpdateOperationsInput = {
+  set?: $Enums.PriorityLevel
+}
+
+export type EnumReminderTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ReminderType
+}
+
 export type ReminderCreateNestedOneWithoutEventsInput = {
   create?: Prisma.XOR<Prisma.ReminderCreateWithoutEventsInput, Prisma.ReminderUncheckedCreateWithoutEventsInput>
   connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutEventsInput
@@ -912,6 +960,48 @@ export type ReminderUncheckedUpdateManyWithoutLinkedChecklistNestedInput = {
   deleteMany?: Prisma.ReminderScalarWhereInput | Prisma.ReminderScalarWhereInput[]
 }
 
+export type ReminderCreateNestedManyWithoutVisualCueAssetInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput> | Prisma.ReminderCreateWithoutVisualCueAssetInput[] | Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput[]
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput | Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput[]
+  createMany?: Prisma.ReminderCreateManyVisualCueAssetInputEnvelope
+  connect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+}
+
+export type ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput> | Prisma.ReminderCreateWithoutVisualCueAssetInput[] | Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput[]
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput | Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput[]
+  createMany?: Prisma.ReminderCreateManyVisualCueAssetInputEnvelope
+  connect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+}
+
+export type ReminderUpdateManyWithoutVisualCueAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput> | Prisma.ReminderCreateWithoutVisualCueAssetInput[] | Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput[]
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput | Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput[]
+  upsert?: Prisma.ReminderUpsertWithWhereUniqueWithoutVisualCueAssetInput | Prisma.ReminderUpsertWithWhereUniqueWithoutVisualCueAssetInput[]
+  createMany?: Prisma.ReminderCreateManyVisualCueAssetInputEnvelope
+  set?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  disconnect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  delete?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  connect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  update?: Prisma.ReminderUpdateWithWhereUniqueWithoutVisualCueAssetInput | Prisma.ReminderUpdateWithWhereUniqueWithoutVisualCueAssetInput[]
+  updateMany?: Prisma.ReminderUpdateManyWithWhereWithoutVisualCueAssetInput | Prisma.ReminderUpdateManyWithWhereWithoutVisualCueAssetInput[]
+  deleteMany?: Prisma.ReminderScalarWhereInput | Prisma.ReminderScalarWhereInput[]
+}
+
+export type ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput> | Prisma.ReminderCreateWithoutVisualCueAssetInput[] | Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput[]
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput | Prisma.ReminderCreateOrConnectWithoutVisualCueAssetInput[]
+  upsert?: Prisma.ReminderUpsertWithWhereUniqueWithoutVisualCueAssetInput | Prisma.ReminderUpsertWithWhereUniqueWithoutVisualCueAssetInput[]
+  createMany?: Prisma.ReminderCreateManyVisualCueAssetInputEnvelope
+  set?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  disconnect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  delete?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  connect?: Prisma.ReminderWhereUniqueInput | Prisma.ReminderWhereUniqueInput[]
+  update?: Prisma.ReminderUpdateWithWhereUniqueWithoutVisualCueAssetInput | Prisma.ReminderUpdateWithWhereUniqueWithoutVisualCueAssetInput[]
+  updateMany?: Prisma.ReminderUpdateManyWithWhereWithoutVisualCueAssetInput | Prisma.ReminderUpdateManyWithWhereWithoutVisualCueAssetInput[]
+  deleteMany?: Prisma.ReminderScalarWhereInput | Prisma.ReminderScalarWhereInput[]
+}
+
 export type ReminderCreateWithoutPatientInput = {
   id?: string
   title: string
@@ -922,7 +1012,8 @@ export type ReminderCreateWithoutPatientInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -932,6 +1023,7 @@ export type ReminderCreateWithoutPatientInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
   lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
   linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
   events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
 }
 
@@ -945,7 +1037,9 @@ export type ReminderUncheckedCreateWithoutPatientInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -978,7 +1072,8 @@ export type ReminderCreateWithoutCreatedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -988,6 +1083,7 @@ export type ReminderCreateWithoutCreatedByInput = {
   patient: Prisma.UserCreateNestedOneWithoutPatientRemindersInput
   lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
   linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
   events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
 }
 
@@ -1002,7 +1098,9 @@ export type ReminderUncheckedCreateWithoutCreatedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1034,7 +1132,8 @@ export type ReminderCreateWithoutLastEditedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1044,6 +1143,7 @@ export type ReminderCreateWithoutLastEditedByInput = {
   patient: Prisma.UserCreateNestedOneWithoutPatientRemindersInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
   linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
   events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
 }
 
@@ -1058,7 +1158,9 @@ export type ReminderUncheckedCreateWithoutLastEditedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1110,7 +1212,9 @@ export type ReminderScalarWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<"Reminder"> | Date | string | null
   daysOfWeek?: Prisma.IntNullableListFilter<"Reminder">
   description?: Prisma.StringNullableFilter<"Reminder"> | string | null
-  priority?: Prisma.IntFilter<"Reminder"> | number
+  priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   defaultSnoozeMinutes?: Prisma.IntFilter<"Reminder"> | number
@@ -1164,7 +1268,8 @@ export type ReminderCreateWithoutEventsInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1175,6 +1280,7 @@ export type ReminderCreateWithoutEventsInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
   lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
   linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
 }
 
 export type ReminderUncheckedCreateWithoutEventsInput = {
@@ -1188,7 +1294,9 @@ export type ReminderUncheckedCreateWithoutEventsInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1226,7 +1334,8 @@ export type ReminderUpdateWithoutEventsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1237,6 +1346,7 @@ export type ReminderUpdateWithoutEventsInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
   lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
   linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
 }
 
 export type ReminderUncheckedUpdateWithoutEventsInput = {
@@ -1250,7 +1360,9 @@ export type ReminderUncheckedUpdateWithoutEventsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1272,7 +1384,8 @@ export type ReminderCreateWithoutLinkedChecklistInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1282,6 +1395,7 @@ export type ReminderCreateWithoutLinkedChecklistInput = {
   patient: Prisma.UserCreateNestedOneWithoutPatientRemindersInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
   lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
+  visualCueAsset?: Prisma.MediaAssetCreateNestedOneWithoutRemindersInput
   events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
 }
 
@@ -1296,7 +1410,9 @@ export type ReminderUncheckedCreateWithoutLinkedChecklistInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1334,6 +1450,82 @@ export type ReminderUpdateManyWithWhereWithoutLinkedChecklistInput = {
   data: Prisma.XOR<Prisma.ReminderUpdateManyMutationInput, Prisma.ReminderUncheckedUpdateManyWithoutLinkedChecklistInput>
 }
 
+export type ReminderCreateWithoutVisualCueAssetInput = {
+  id?: string
+  title: string
+  category?: $Enums.ReminderCategory
+  scheduledTime: string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate: Date | string
+  endDate?: Date | string | null
+  daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
+  description?: string | null
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  snoozeEnabled?: boolean
+  defaultSnoozeMinutes?: number
+  isActive?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  patient: Prisma.UserCreateNestedOneWithoutPatientRemindersInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedRemindersInput
+  lastEditedBy: Prisma.UserCreateNestedOneWithoutEditedRemindersInput
+  linkedChecklist?: Prisma.ChecklistTemplateCreateNestedOneWithoutRemindersInput
+  events?: Prisma.ReminderEventCreateNestedManyWithoutReminderInput
+}
+
+export type ReminderUncheckedCreateWithoutVisualCueAssetInput = {
+  id?: string
+  patientUserId: string
+  title: string
+  category?: $Enums.ReminderCategory
+  scheduledTime: string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate: Date | string
+  endDate?: Date | string | null
+  daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
+  description?: string | null
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  linkedChecklistTemplateId?: string | null
+  snoozeEnabled?: boolean
+  defaultSnoozeMinutes?: number
+  isActive?: boolean
+  archivedAt?: Date | string | null
+  createdByUserId: string
+  lastEditedByUserId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutReminderInput
+}
+
+export type ReminderCreateOrConnectWithoutVisualCueAssetInput = {
+  where: Prisma.ReminderWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput>
+}
+
+export type ReminderCreateManyVisualCueAssetInputEnvelope = {
+  data: Prisma.ReminderCreateManyVisualCueAssetInput | Prisma.ReminderCreateManyVisualCueAssetInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReminderUpsertWithWhereUniqueWithoutVisualCueAssetInput = {
+  where: Prisma.ReminderWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReminderUpdateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedUpdateWithoutVisualCueAssetInput>
+  create: Prisma.XOR<Prisma.ReminderCreateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedCreateWithoutVisualCueAssetInput>
+}
+
+export type ReminderUpdateWithWhereUniqueWithoutVisualCueAssetInput = {
+  where: Prisma.ReminderWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReminderUpdateWithoutVisualCueAssetInput, Prisma.ReminderUncheckedUpdateWithoutVisualCueAssetInput>
+}
+
+export type ReminderUpdateManyWithWhereWithoutVisualCueAssetInput = {
+  where: Prisma.ReminderScalarWhereInput
+  data: Prisma.XOR<Prisma.ReminderUpdateManyMutationInput, Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetInput>
+}
+
 export type ReminderCreateManyPatientInput = {
   id?: string
   title: string
@@ -1344,7 +1536,9 @@ export type ReminderCreateManyPatientInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1367,7 +1561,9 @@ export type ReminderCreateManyCreatedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1389,7 +1585,9 @@ export type ReminderCreateManyLastEditedByInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1410,7 +1608,8 @@ export type ReminderUpdateWithoutPatientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1420,6 +1619,7 @@ export type ReminderUpdateWithoutPatientInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
   lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
   linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
   events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
 }
 
@@ -1433,7 +1633,9 @@ export type ReminderUncheckedUpdateWithoutPatientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1456,7 +1658,9 @@ export type ReminderUncheckedUpdateManyWithoutPatientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1478,7 +1682,8 @@ export type ReminderUpdateWithoutCreatedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1488,6 +1693,7 @@ export type ReminderUpdateWithoutCreatedByInput = {
   patient?: Prisma.UserUpdateOneRequiredWithoutPatientRemindersNestedInput
   lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
   linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
   events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
 }
 
@@ -1502,7 +1708,9 @@ export type ReminderUncheckedUpdateWithoutCreatedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1525,7 +1733,9 @@ export type ReminderUncheckedUpdateManyWithoutCreatedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1546,7 +1756,8 @@ export type ReminderUpdateWithoutLastEditedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1556,6 +1767,7 @@ export type ReminderUpdateWithoutLastEditedByInput = {
   patient?: Prisma.UserUpdateOneRequiredWithoutPatientRemindersNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
   linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
   events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
 }
 
@@ -1570,7 +1782,9 @@ export type ReminderUncheckedUpdateWithoutLastEditedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1593,7 +1807,9 @@ export type ReminderUncheckedUpdateManyWithoutLastEditedByInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1615,7 +1831,9 @@ export type ReminderCreateManyLinkedChecklistInput = {
   endDate?: Date | string | null
   daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
   description?: string | null
-  priority?: number
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  visualCueAssetId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1636,7 +1854,8 @@ export type ReminderUpdateWithoutLinkedChecklistInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1646,6 +1865,7 @@ export type ReminderUpdateWithoutLinkedChecklistInput = {
   patient?: Prisma.UserUpdateOneRequiredWithoutPatientRemindersNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
   lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
+  visualCueAsset?: Prisma.MediaAssetUpdateOneWithoutRemindersNestedInput
   events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
 }
 
@@ -1660,7 +1880,9 @@ export type ReminderUncheckedUpdateWithoutLinkedChecklistInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1683,7 +1905,107 @@ export type ReminderUncheckedUpdateManyWithoutLinkedChecklistInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  lastEditedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReminderCreateManyVisualCueAssetInput = {
+  id?: string
+  patientUserId: string
+  title: string
+  category?: $Enums.ReminderCategory
+  scheduledTime: string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate: Date | string
+  endDate?: Date | string | null
+  daysOfWeek?: Prisma.ReminderCreatedaysOfWeekInput | number[]
+  description?: string | null
+  priority?: $Enums.PriorityLevel
+  reminderType?: $Enums.ReminderType
+  linkedChecklistTemplateId?: string | null
+  snoozeEnabled?: boolean
+  defaultSnoozeMinutes?: number
+  isActive?: boolean
+  archivedAt?: Date | string | null
+  createdByUserId: string
+  lastEditedByUserId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ReminderUpdateWithoutVisualCueAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumReminderCategoryFieldUpdateOperationsInput | $Enums.ReminderCategory
+  scheduledTime?: Prisma.StringFieldUpdateOperationsInput | string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  patient?: Prisma.UserUpdateOneRequiredWithoutPatientRemindersNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRemindersNestedInput
+  lastEditedBy?: Prisma.UserUpdateOneRequiredWithoutEditedRemindersNestedInput
+  linkedChecklist?: Prisma.ChecklistTemplateUpdateOneWithoutRemindersNestedInput
+  events?: Prisma.ReminderEventUpdateManyWithoutReminderNestedInput
+}
+
+export type ReminderUncheckedUpdateWithoutVisualCueAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumReminderCategoryFieldUpdateOperationsInput | $Enums.ReminderCategory
+  scheduledTime?: Prisma.StringFieldUpdateOperationsInput | string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  lastEditedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.ReminderEventUncheckedUpdateManyWithoutReminderNestedInput
+}
+
+export type ReminderUncheckedUpdateManyWithoutVisualCueAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumReminderCategoryFieldUpdateOperationsInput | $Enums.ReminderCategory
+  scheduledTime?: Prisma.StringFieldUpdateOperationsInput | string
+  repeatRule?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  daysOfWeek?: Prisma.ReminderUpdatedaysOfWeekInput | number[]
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
+  reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1737,6 +2059,8 @@ export type ReminderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   daysOfWeek?: boolean
   description?: boolean
   priority?: boolean
+  reminderType?: boolean
+  visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: boolean
@@ -1750,6 +2074,7 @@ export type ReminderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
   events?: boolean | Prisma.Reminder$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.ReminderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reminder"]>
@@ -1766,6 +2091,8 @@ export type ReminderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   daysOfWeek?: boolean
   description?: boolean
   priority?: boolean
+  reminderType?: boolean
+  visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: boolean
@@ -1779,6 +2106,7 @@ export type ReminderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
 }, ExtArgs["result"]["reminder"]>
 
 export type ReminderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1793,6 +2121,8 @@ export type ReminderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   daysOfWeek?: boolean
   description?: boolean
   priority?: boolean
+  reminderType?: boolean
+  visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: boolean
@@ -1806,6 +2136,7 @@ export type ReminderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
 }, ExtArgs["result"]["reminder"]>
 
 export type ReminderSelectScalar = {
@@ -1820,6 +2151,8 @@ export type ReminderSelectScalar = {
   daysOfWeek?: boolean
   description?: boolean
   priority?: boolean
+  reminderType?: boolean
+  visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: boolean
@@ -1831,12 +2164,13 @@ export type ReminderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "title" | "category" | "scheduledTime" | "repeatRule" | "startDate" | "endDate" | "daysOfWeek" | "description" | "priority" | "linkedChecklistTemplateId" | "snoozeEnabled" | "defaultSnoozeMinutes" | "isActive" | "archivedAt" | "createdByUserId" | "lastEditedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["reminder"]>
+export type ReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "title" | "category" | "scheduledTime" | "repeatRule" | "startDate" | "endDate" | "daysOfWeek" | "description" | "priority" | "reminderType" | "visualCueAssetId" | "linkedChecklistTemplateId" | "snoozeEnabled" | "defaultSnoozeMinutes" | "isActive" | "archivedAt" | "createdByUserId" | "lastEditedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["reminder"]>
 export type ReminderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
   events?: boolean | Prisma.Reminder$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.ReminderCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1845,12 +2179,14 @@ export type ReminderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
 }
 export type ReminderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   lastEditedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   linkedChecklist?: boolean | Prisma.Reminder$linkedChecklistArgs<ExtArgs>
+  visualCueAsset?: boolean | Prisma.Reminder$visualCueAssetArgs<ExtArgs>
 }
 
 export type $ReminderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1860,6 +2196,7 @@ export type $ReminderPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     createdBy: Prisma.$UserPayload<ExtArgs>
     lastEditedBy: Prisma.$UserPayload<ExtArgs>
     linkedChecklist: Prisma.$ChecklistTemplatePayload<ExtArgs> | null
+    visualCueAsset: Prisma.$MediaAssetPayload<ExtArgs> | null
     events: Prisma.$ReminderEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1873,7 +2210,9 @@ export type $ReminderPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     endDate: Date | null
     daysOfWeek: number[]
     description: string | null
-    priority: number
+    priority: $Enums.PriorityLevel
+    reminderType: $Enums.ReminderType
+    visualCueAssetId: string | null
     linkedChecklistTemplateId: string | null
     snoozeEnabled: boolean
     defaultSnoozeMinutes: number
@@ -2281,6 +2620,7 @@ export interface Prisma__ReminderClient<T, Null = never, ExtArgs extends runtime
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lastEditedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   linkedChecklist<T extends Prisma.Reminder$linkedChecklistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reminder$linkedChecklistArgs<ExtArgs>>): Prisma.Prisma__ChecklistTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChecklistTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  visualCueAsset<T extends Prisma.Reminder$visualCueAssetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reminder$visualCueAssetArgs<ExtArgs>>): Prisma.Prisma__MediaAssetClient<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   events<T extends Prisma.Reminder$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reminder$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2321,7 +2661,9 @@ export interface ReminderFieldRefs {
   readonly endDate: Prisma.FieldRef<"Reminder", 'DateTime'>
   readonly daysOfWeek: Prisma.FieldRef<"Reminder", 'Int[]'>
   readonly description: Prisma.FieldRef<"Reminder", 'String'>
-  readonly priority: Prisma.FieldRef<"Reminder", 'Int'>
+  readonly priority: Prisma.FieldRef<"Reminder", 'PriorityLevel'>
+  readonly reminderType: Prisma.FieldRef<"Reminder", 'ReminderType'>
+  readonly visualCueAssetId: Prisma.FieldRef<"Reminder", 'String'>
   readonly linkedChecklistTemplateId: Prisma.FieldRef<"Reminder", 'String'>
   readonly snoozeEnabled: Prisma.FieldRef<"Reminder", 'Boolean'>
   readonly defaultSnoozeMinutes: Prisma.FieldRef<"Reminder", 'Int'>
@@ -2748,6 +3090,25 @@ export type Reminder$linkedChecklistArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.ChecklistTemplateInclude<ExtArgs> | null
   where?: Prisma.ChecklistTemplateWhereInput
+}
+
+/**
+ * Reminder.visualCueAsset
+ */
+export type Reminder$visualCueAssetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MediaAsset
+   */
+  select?: Prisma.MediaAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MediaAsset
+   */
+  omit?: Prisma.MediaAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MediaAssetInclude<ExtArgs> | null
+  where?: Prisma.MediaAssetWhereInput
 }
 
 /**

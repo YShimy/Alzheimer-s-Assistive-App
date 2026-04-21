@@ -97,6 +97,7 @@ export const UserScalarFieldEnum = {
   emailVerifiedAt: 'emailVerifiedAt',
   accessibilitySettings: 'accessibilitySettings',
   preferredNotificationMode: 'preferredNotificationMode',
+  pushToken: 'pushToken',
   lastSeenAt: 'lastSeenAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -152,6 +153,8 @@ export const ReminderScalarFieldEnum = {
   daysOfWeek: 'daysOfWeek',
   description: 'description',
   priority: 'priority',
+  reminderType: 'reminderType',
+  visualCueAssetId: 'visualCueAssetId',
   linkedChecklistTemplateId: 'linkedChecklistTemplateId',
   snoozeEnabled: 'snoozeEnabled',
   defaultSnoozeMinutes: 'defaultSnoozeMinutes',
@@ -178,6 +181,9 @@ export const ReminderEventScalarFieldEnum = {
   source: 'source',
   actionValue: 'actionValue',
   optionalReasonCode: 'optionalReasonCode',
+  linkedChecklistRunId: 'linkedChecklistRunId',
+  escalationTriggered: 'escalationTriggered',
+  escalationReason: 'escalationReason',
   createdAt: 'createdAt'
 } as const
 

@@ -4,6 +4,50 @@ export interface StreakData {
   lastActiveDate: string | null;
 }
 
+// Redesigned: Priority-aware metrics
+export interface PriorityMetrics {
+  completionRate: number;
+  total: number;
+  completed: number;
+  skipped?: number;
+}
+
+// Redesigned: Guided task metrics
+export interface GuidedTaskMetrics {
+  started: number;
+  completed: number;
+  completionRate: number;
+  abandoned: number;
+}
+
+// Redesigned: Action breakdown
+export interface ActionBreakdown {
+  done: number;
+  snoozed: number;
+  skipped: number;
+  startNow: number;
+  checklistCompleted: number;
+}
+
+// Redesigned: Enhanced comparison deltas
+export interface ComparisonDeltas {
+  reminderConsistencyDelta: number;
+  checklistConsistencyDelta: number;
+  gameScoreDeltaVsPrevious: number;
+  highPriorityDelta: number;
+  guidedTaskCompletionDelta: number;
+}
+
+export interface EnhancedReminderMetrics {
+  priorityMetrics: {
+    normal: PriorityMetrics;
+    high: PriorityMetrics;
+    critical: PriorityMetrics;
+  };
+  guidedTaskMetrics: GuidedTaskMetrics;
+  actionBreakdown: ActionBreakdown;
+}
+
 export interface ProgressOverviewResponse {
   summary: {
     currentReminderStreak: number;
@@ -14,12 +58,19 @@ export interface ProgressOverviewResponse {
     bestChecklistStreak: number;
     generalEngagementStreak: number;
     activeDaysThisWeek: number;
+    // Redesigned: new streaks
+    highPriorityStreak: number;
+    guidedTaskStreak: number;
   };
-  comparison: {
-    reminderConsistencyDelta: number;
-    checklistConsistencyDelta: number;
-    gameScoreDeltaVsPrevious: number;
+  comparison: ComparisonDeltas;
+  // Redesigned: detailed metrics
+  priorityMetrics?: {
+    normal: PriorityMetrics;
+    high: PriorityMetrics;
+    critical: PriorityMetrics;
   };
+  guidedTaskMetrics?: GuidedTaskMetrics;
+  actionBreakdown?: ActionBreakdown;
 }
 
 export interface ChartSeriesData {
@@ -93,6 +144,9 @@ export interface ProgressStreaksResponse {
   checklists: StreakData;
   games: StreakData;
   general: StreakData;
+  // Redesigned: new streak types
+  highPriorityReminders: StreakData;
+  guidedTasks: StreakData;
 }
 
 export interface WeeklyProgressResponse {

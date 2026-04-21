@@ -12,6 +12,7 @@ import { progressRouter } from '../modules/progress/router.js';
 import { syncRouter } from '../modules/sync/router.js';
 import { contactsRouter } from '../modules/contacts/router.js';
 import { mediaRouter } from '../modules/media/router.js';
+import notificationsController from '../modules/notifications/controller/notifications.controller.js';
 
 export function registerRoutes(app: Router): void {
   // Auth (no prefix needed, router handles paths)
@@ -52,4 +53,7 @@ export function registerRoutes(app: Router): void {
 
   // Media
   app.use('/api/media', mediaRouter);
+
+  // Notifications
+  app.use('/api/notifications', notificationsController);
 }

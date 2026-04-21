@@ -17,11 +17,10 @@ import {
 } from '../../../mobile/src/features/games/safePath/engine/scoring';
 import {
   getTier,
-  getNextTierOnSuccess,
-  getNextTierOnFail,
+  decideNextTier,
   DIFFICULTY_LADDER,
   MAX_TIER,
-  INITIAL_LIVES,
+  MIN_TIER,
 } from '../../../mobile/src/features/games/safePath/engine/difficulty';
 
 // ─── Board Generation Tests ─────────────────────────────────
@@ -143,31 +142,36 @@ describe('Move Validation', () => {
 // ─── Scoring Tests ──────────────────────────────────────────
 
 describe('Scoring', () => {
-  it('should return 0 for failed levels', () => {
-    expect(calculateLevelScore(getTier(1), 5000, false, 0)).toBe(0);
+  it('should return participation points for failed levels', () => {
+    // Fail now returns BASE_FAIL_SCORE (10) instead of 0
+    expect(calculateLevelScore(getTier(1), 5000, 'fail', 0, false)).toBe(10);
   });
 
   it('should calculate positive score for successful levels', () => {
-    expect(calculateLevelScore(getTier(1), 5000, true, 0)).toBeGreaterThan(0);
+    expect(calculateLevelScore(getTier(1), 5000, 'strong_clear', 0, false)).toBeGreaterThan(0);
   });
 
   it('should award higher score for faster completion', () => {
     const tier = getTier(3);
-    expect(calculateLevelScore(tier, 2000, true, 0)).toBeGreaterThan(
-      calculateLevelScore(tier, 12000, true, 0),
+    // Target is 25000ms. 8000ms (32%) gets 10pt speed bonus, 20000ms (80%) gets 5pt
+    expect(calculateLevelScore(tier, 8000, 'strong_clear', 0, false)).toBeGreaterThan(
+      calculateLevelScore(tier, 20000, 'strong_clear', 0, false),
     );
   });
 
-  it('should award 25-point clean bonus when no retries', () => {
+  it('should award bonus for no retries on strong clear', () => {
     const tier = getTier(1);
-    const cleanScore = calculateLevelScore(tier, 5000, true, 0);
-    const retryScore = calculateLevelScore(tier, 5000, true, 1);
-    expect(cleanScore).toBe(retryScore + 25);
+    // Strong clear (no retries) gets 10pt efficiency bonus + 10pt speed bonus = 20 extra
+    // Supported clear (with retries) doesn't get the efficiency bonus
+    const cleanScore = calculateLevelScore(tier, 5000, 'strong_clear', 0, false);
+    const retryScore = calculateLevelScore(tier, 5000, 'supported_clear', 1, false);
+    // Clean score should be higher due to efficiency bonus
+    expect(cleanScore).toBeGreaterThan(retryScore);
   });
 
   it('should increase base score with higher tiers', () => {
-    const score1 = calculateLevelScore(getTier(1), getTier(1).targetSolveTimeMs, true, 0);
-    const score5 = calculateLevelScore(getTier(5), getTier(5).targetSolveTimeMs, true, 0);
+    const score1 = calculateLevelScore(getTier(1), getTier(1).targetSolveTimeMs, 'strong_clear', 0, false);
+    const score5 = calculateLevelScore(getTier(5), getTier(5).targetSolveTimeMs, 'strong_clear', 0, false);
     expect(score5).toBeGreaterThan(score1);
   });
 });
@@ -181,16 +185,17 @@ describe('Session Result Builder', () => {
         { levelIndex: 0, difficultyTier: 1, gridRows: 4, gridCols: 4, bombCount: 3,
           previewDurationMs: 3500, solveTimeMs: 5000, success: true, scoreDelta: 200,
           pathLength: 7, retryCount: 0, startedAt: new Date().toISOString(),
-          completedAt: new Date().toISOString() },
+          completedAt: new Date().toISOString(), outcome: 'strong_clear', supportMode: false },
         { levelIndex: 1, difficultyTier: 2, gridRows: 4, gridCols: 4, bombCount: 4,
-          previewDurationMs: 3200, solveTimeMs: 8000, success: false, scoreDelta: 0,
+          previewDurationMs: 3200, solveTimeMs: 8000, success: false, scoreDelta: 10,
           pathLength: 3, retryCount: 0, startedAt: new Date().toISOString(),
-          completedAt: new Date().toISOString() },
+          completedAt: new Date().toISOString(), outcome: 'fail', supportMode: false },
       ],
       Date.now() - 30000, false, 2, 1,
     );
     expect(result.gameType).toBe('safe_path_memory');
-    expect(result.totalScore).toBe(200);
+    // Total score: 200 (success) + 10 (fail participation) = 210
+    expect(result.totalScore).toBe(210);
     expect(result.levelsPlayed).toBe(2);
     expect(result.levelsSucceeded).toBe(1);
     expect(result.levelsFailed).toBe(1);
@@ -203,19 +208,38 @@ describe('Session Result Builder', () => {
 // ─── Difficulty Progression Tests ───────────────────────────
 
 describe('Difficulty Progression', () => {
-  it('should have 8 tiers', () => {
-    expect(DIFFICULTY_LADDER.length).toBe(8);
+  it('should have 11 tiers (0-10)', () => {
+    expect(DIFFICULTY_LADDER.length).toBe(11);
   });
 
   it('should advance tier on success, capped at max', () => {
-    expect(getNextTierOnSuccess(1)).toBe(2);
-    expect(getNextTierOnSuccess(5)).toBe(6);
-    expect(getNextTierOnSuccess(8)).toBe(8);
+    // Tutorial (0) -> Tier 1 on success
+    const r0 = decideNextTier(0, 'strong_clear', [], false);
+    expect(r0.nextTier).toBe(1);
+    
+    // Normal tier advancement
+    const r1 = decideNextTier(1, 'strong_clear', [{ tier: 1, outcome: 'strong_clear', timestamp: 1 }], false);
+    expect(r1.nextTier).toBe(2);
+    
+    // Max tier (10) stays capped
+    const rMax = decideNextTier(10, 'strong_clear', [], false);
+    expect(rMax.nextTier).toBe(10);
+    expect(rMax.reason).toBe('max_tier');
   });
 
-  it('should step down tier on fail, min 1', () => {
-    expect(getNextTierOnFail(3)).toBe(2);
-    expect(getNextTierOnFail(1)).toBe(1);
+  it('should support mode or step down on fail', () => {
+    // With support needed (fails), should stay or decrease
+    const history = [
+      { tier: 3, outcome: 'fail' as const, timestamp: 1 },
+      { tier: 3, outcome: 'fail' as const, timestamp: 2 },
+    ];
+    const rFail = decideNextTier(3, 'fail', history, false);
+    expect(rFail.nextTier).toBeLessThanOrEqual(3);
+    expect(rFail.supportMode).toBe(true);
+    
+    // Tutorial should stay at 0 on fail
+    const rTutorial = decideNextTier(0, 'fail', [], false);
+    expect(rTutorial.nextTier).toBe(0);
   });
 
   it('should have increasing difficulty across tiers', () => {

@@ -14,6 +14,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import '@/src/shared/i18n';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { authApi } from '@/src/features/auth/api';
+import { usePushNotifications, useNotificationListener } from '@/src/features/notifications/hooks';
 import { colors } from '@/src/infrastructure/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
@@ -66,6 +67,14 @@ export default function RootLayout() {
         clearSession();
       });
   }, [token, isBootstrapping, role]);
+
+  // Register push notifications when authenticated
+  usePushNotifications();
+  
+  // Listen for incoming notifications
+  useNotificationListener((notification) => {
+    console.log('[RootLayout] Notification received:', notification);
+  });
 
   const isReady = !isBootstrapping && (fontsLoaded || fontError);
 

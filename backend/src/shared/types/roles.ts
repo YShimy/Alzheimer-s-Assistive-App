@@ -63,21 +63,57 @@ export function toPrismaReminderCategory(api: string): string {
   return api.toUpperCase();
 }
 
-// Reminder action mappings (public API: done | snooze | skip)
+// Reminder action mappings (public API: done | snooze | skip | start_now)
 export const ReminderActionApi = {
   DONE: 'done',
   SNOOZE: 'snooze',
   SKIP: 'skip',
+  START_NOW: 'start_now',
 } as const;
 
 export type ReminderActionApiValue = (typeof ReminderActionApi)[keyof typeof ReminderActionApi];
 
+// Priority level mappings
+export const PriorityLevelApi = {
+  NORMAL: 'normal',
+  HIGH: 'high',
+  CRITICAL: 'critical',
+} as const;
+
+export type PriorityLevelApiValue = (typeof PriorityLevelApi)[keyof typeof PriorityLevelApi];
+
+export function toApiPriorityLevel(prisma: string): PriorityLevelApiValue {
+  return prisma.toLowerCase() as PriorityLevelApiValue;
+}
+
+export function toPrismaPriorityLevel(api: string): string {
+  return api.toUpperCase();
+}
+
+// Reminder type mappings
+export const ReminderTypeApi = {
+  SIMPLE: 'simple',
+  GUIDED: 'guided',
+} as const;
+
+export type ReminderTypeApiValue = (typeof ReminderTypeApi)[keyof typeof ReminderTypeApi];
+
+export function toApiReminderType(prisma: string): ReminderTypeApiValue {
+  return prisma.toLowerCase() as ReminderTypeApiValue;
+}
+
+export function toPrismaReminderType(api: string): string {
+  return api.toUpperCase();
+}
+
 // Internal event type mapping from public action to Prisma enum
-export function actionToEventType(action: ReminderActionApiValue): string {
-  const map: Record<ReminderActionApiValue, string> = {
+// Redesigned: includes new guided reminder and escalation events
+export function actionToEventType(action: ReminderActionApiValue | string): string {
+  const map: Record<string, string> = {
     done: 'DONE',
     snooze: 'SNOOZED',
     skip: 'SKIPPED',
+    start_now: 'START_NOW',
   };
-  return map[action];
+  return map[action] || action.toUpperCase();
 }

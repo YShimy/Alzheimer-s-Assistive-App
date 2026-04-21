@@ -24,12 +24,24 @@ export const remindersRepo = {
 
     return prisma.reminder.findMany({
       where,
+      // Redesigned: include relations for linked checklist and visual cue
+      include: {
+        linkedChecklist: true,
+        visualCueAsset: true,
+      },
       orderBy: [{ priority: 'desc' }, { scheduledTime: 'asc' }],
     });
   },
 
   async findById(id: string): Promise<Reminder | null> {
-    return prisma.reminder.findUnique({ where: { id } });
+    // Redesigned: include relations for linked checklist and visual cue
+    return prisma.reminder.findUnique({ 
+      where: { id },
+      include: {
+        linkedChecklist: true,
+        visualCueAsset: true,
+      },
+    });
   },
 
   async create(data: {
@@ -42,7 +54,9 @@ export const remindersRepo = {
     endDate?: Date;
     daysOfWeek: number[];
     description?: string;
-    priority: number;
+    priority: any; // PriorityLevel enum
+    reminderType?: any; // ReminderType enum
+    visualCueAssetId?: string;
     linkedChecklistTemplateId?: string;
     snoozeEnabled: boolean;
     defaultSnoozeMinutes: number;
@@ -60,7 +74,12 @@ export const remindersRepo = {
         endDate: data.endDate ?? undefined,
         daysOfWeek: data.daysOfWeek,
         description: data.description ?? undefined,
+        // Redesigned: priority as enum
         priority: data.priority,
+        // Redesigned: reminder type
+        reminderType: data.reminderType ?? 'SIMPLE',
+        // Redesigned: visual cue
+        visualCueAssetId: data.visualCueAssetId ?? undefined,
         linkedChecklistTemplateId: data.linkedChecklistTemplateId ?? undefined,
         snoozeEnabled: data.snoozeEnabled,
         defaultSnoozeMinutes: data.defaultSnoozeMinutes,

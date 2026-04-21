@@ -362,6 +362,20 @@ export type EnumReminderCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel> | $Enums.ReminderCategory
 }
 
+export type EnumPriorityLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorityLevel | Prisma.EnumPriorityLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel> | $Enums.PriorityLevel
+}
+
+export type EnumReminderTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReminderType | Prisma.EnumReminderTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel> | $Enums.ReminderType
+}
+
 export type EnumReminderCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ReminderCategory | Prisma.EnumReminderCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.ReminderCategory[] | Prisma.ListEnumReminderCategoryFieldRefInput<$PrismaModel>
@@ -370,6 +384,26 @@ export type EnumReminderCategoryWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel>
+}
+
+export type EnumPriorityLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorityLevel | Prisma.EnumPriorityLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorityLevelWithAggregatesFilter<$PrismaModel> | $Enums.PriorityLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel>
+}
+
+export type EnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReminderType | Prisma.EnumReminderTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReminderTypeWithAggregatesFilter<$PrismaModel> | $Enums.ReminderType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>
 }
 
 export type EnumReminderEventTypeFilter<$PrismaModel = never> = {
@@ -781,6 +815,20 @@ export type NestedEnumReminderCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel> | $Enums.ReminderCategory
 }
 
+export type NestedEnumPriorityLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorityLevel | Prisma.EnumPriorityLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel> | $Enums.PriorityLevel
+}
+
+export type NestedEnumReminderTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReminderType | Prisma.EnumReminderTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel> | $Enums.ReminderType
+}
+
 export type NestedEnumReminderCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ReminderCategory | Prisma.EnumReminderCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.ReminderCategory[] | Prisma.ListEnumReminderCategoryFieldRefInput<$PrismaModel>
@@ -789,6 +837,26 @@ export type NestedEnumReminderCategoryWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumReminderCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumPriorityLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorityLevel | Prisma.EnumPriorityLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorityLevel[] | Prisma.ListEnumPriorityLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorityLevelWithAggregatesFilter<$PrismaModel> | $Enums.PriorityLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPriorityLevelFilter<$PrismaModel>
+}
+
+export type NestedEnumReminderTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReminderType | Prisma.EnumReminderTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReminderType[] | Prisma.ListEnumReminderTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReminderTypeWithAggregatesFilter<$PrismaModel> | $Enums.ReminderType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReminderTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumReminderEventTypeFilter<$PrismaModel = never> = {
