@@ -18,7 +18,10 @@ import type {
   GuidedTaskMetrics,
   ComparisonDeltas,
   EnhancedReminderMetrics,
+  PriorityBreakdownItem,
+  ProgressPriorityBreakdownResponse,
 } from './../types.js';
+
 
 export class ProgressService {
 
@@ -603,6 +606,163 @@ export class ProgressService {
   // --- GAME PROGRESS --------------------------------------------
   async getGameProgress(patientId: string, gameType: string): Promise<GameProgressSummary> {
     return gamesService.getGameProgress(patientId, gameType);
+  }
+
+  // --- PRIORITY BREAKDOWN ----------------------------------------
+  /**
+   * Compute detailed per-priority reminder adherence metrics.
+   *
+   * For each priority level (NORMAL, HIGH, CRITICAL):
+   *   - scheduledCount: total reminder action events in period
+   *   - doneCount / snoozeCount / skipCount: split by action
+   *   - completionRate: done / scheduled (0 if no data)
+   *   - escalationCount: events where escalationTriggered = true
+   *   - trendDelta: completionRate vs previous equivalent period
+   */
+  async getPriorityBreakdown(
+    patientId: string,
+    periodDays = 7,
+  ): Promise<ProgressPriorityBreakdownResponse> {
+    const now = new Date();
+    const periodStart = getStartOfDaysAgo(periodDays, now);
+    const prevPeriodStart = getStartOfDaysAgo(periodDays * 2, now);
+
+    // Fetch current period events with priority from reminder relation
+    const [currentEvents, prevEvents] = await Promise.all([
+      prisma.reminderEvent.findMany({
+        where: {
+          patientUserId: patientId,
+          timestamp: { gte: periodStart, lt: now },
+          eventType: { in: ['DONE', 'SNOOZED', 'SKIPPED'] },
+        },
+        include: {
+          reminder: { select: { priority: true } },
+        },
+      }),
+      prisma.reminderEvent.findMany({
+        where: {
+          patientUserId: patientId,
+          timestamp: { gte: prevPeriodStart, lt: periodStart },
+          eventType: { in: ['DONE', 'SNOOZED', 'SKIPPED'] },
+        },
+        include: {
+          reminder: { select: { priority: true } },
+        },
+      }),
+    ]);
+
+    // Fetch escalation events in current period
+    const escalationEvents = await prisma.reminderEvent.findMany({
+      where: {
+        patientUserId: patientId,
+        timestamp: { gte: periodStart, lt: now },
+        escalationTriggered: true,
+      },
+      include: {
+        reminder: { select: { priority: true } },
+      },
+    });
+
+    // Helper: build a bucket for a given priority
+    type Bucket = {
+      scheduled: number;
+      done: number;
+      snoozed: number;
+      skipped: number;
+    };
+
+    const emptyBucket = (): Bucket => ({
+      scheduled: 0,
+      done: 0,
+      snoozed: 0,
+      skipped: 0,
+    });
+
+    const priorityKeys = ['NORMAL', 'HIGH', 'CRITICAL'] as const;
+
+    function buildBuckets(events: typeof currentEvents): Record<string, Bucket> {
+      const buckets: Record<string, Bucket> = {
+        NORMAL: emptyBucket(),
+        HIGH: emptyBucket(),
+        CRITICAL: emptyBucket(),
+      };
+
+      for (const e of events) {
+        const prio = (e.reminder?.priority ?? 'NORMAL') as string;
+        if (!buckets[prio]) continue;
+        const b = buckets[prio]!;
+        b.scheduled++;
+        if (e.eventType === 'DONE') b.done++;
+        else if (e.eventType === 'SNOOZED') b.snoozed++;
+        else if (e.eventType === 'SKIPPED') b.skipped++;
+      }
+      return buckets;
+    }
+
+    const current = buildBuckets(currentEvents);
+    const prev = buildBuckets(prevEvents);
+
+    // Escalation counts per priority
+    const escalationByPriority: Record<string, number> = {
+      NORMAL: 0,
+      HIGH: 0,
+      CRITICAL: 0,
+    };
+    for (const e of escalationEvents) {
+      const prio = (e.reminder?.priority ?? 'NORMAL') as string;
+      if (escalationByPriority[prio] !== undefined) {
+        escalationByPriority[prio]!++;
+      }
+    }
+
+    const priorityBreakdown: PriorityBreakdownItem[] = priorityKeys.map((pKey) => {
+      const cur = current[pKey] ?? emptyBucket();
+      const prv = prev[pKey] ?? emptyBucket();
+
+      const completionRate = cur.scheduled > 0 ? cur.done / cur.scheduled : 0;
+      const prevCompletionRate = prv.scheduled > 0 ? prv.done / prv.scheduled : 0;
+      const trendDelta = prv.scheduled > 0 ? completionRate - prevCompletionRate : null;
+
+      return {
+        priority: pKey.toLowerCase() as 'normal' | 'high' | 'critical',
+        scheduledCount: cur.scheduled,
+        doneCount: cur.done,
+        snoozeCount: cur.snoozed,
+        skipCount: cur.skipped,
+        completionRate: Math.round(completionRate * 1000) / 1000,
+        escalationCount: escalationByPriority[pKey] ?? 0,
+        trendDelta: trendDelta !== null ? Math.round(trendDelta * 1000) / 1000 : null,
+      };
+    });
+
+    // Build human-readable summaries
+    const highItem = priorityBreakdown.find((p) => p.priority === 'high')!;
+    const critItem = priorityBreakdown.find((p) => p.priority === 'critical')!;
+
+    const pct = (r: number) => `${Math.round(r * 100)}%`;
+
+    const highAdherenceSummary =
+      highItem.scheduledCount === 0
+        ? 'No high-priority reminders this period.'
+        : `High-priority completion: ${pct(highItem.completionRate)} (${highItem.doneCount}/${highItem.scheduledCount})` +
+          (highItem.escalationCount > 0
+            ? `. ${highItem.escalationCount} escalation(s) triggered.`
+            : '.');
+
+    const criticalAdherenceSummary =
+      critItem.scheduledCount === 0
+        ? 'No critical reminders this period.'
+        : `Critical completion: ${pct(critItem.completionRate)} (${critItem.doneCount}/${critItem.scheduledCount})` +
+          (critItem.skipCount > 0
+            ? `. ${critItem.skipCount} skip(s) — caregiver alerted.`
+            : '.');
+
+    return {
+      periodDays,
+      priorityBreakdown,
+      highAdherenceSummary,
+      criticalAdherenceSummary,
+    };
   }
 }
 

@@ -29,6 +29,15 @@ remindersRouter.post(
   remindersController.create,
 );
 
+// GET /api/patients/:patientId/reminders/escalations
+// Returns escalation events for a patient — used by caregivers
+remindersRouter.get(
+  '/:patientId/reminders/escalations',
+  validateParams(patientIdParam),
+  careLinkGuard('canViewProgress'),
+  reminderActionsController.getEscalations,
+);
+
 // ─── Direct routes: mounted under /api/reminders ────────────
 export const reminderDirectRouter = Router();
 reminderDirectRouter.use(authMiddleware);
@@ -62,3 +71,4 @@ reminderDirectRouter.post(
   validateBody(reminderActionSchema),
   reminderActionsController.recordAction,
 );
+

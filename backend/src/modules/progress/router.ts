@@ -26,3 +26,7 @@ progressRouter.get('/game', progressController.getGameProgress);
 
 // GET /api/patients/:patientId/progress/weekly
 progressRouter.get('/weekly', progressController.getWeekly);
+
+// GET /api/patients/:patientId/progress/priority-breakdown?days=7
+progressRouter.get('/priority-breakdown', progressController.getPriorityBreakdown);
+

@@ -6,7 +6,9 @@ import type {
   ProgressChartsResponse,
   ProgressChecklistTrackingResponse,
   WeeklyProgressResponse,
-  GameProgressSummary
+  GameProgressSummary,
+  ProgressPriorityBreakdownResponse,
+  EscalationsResponse,
 } from './types';
 
 export const progressApi = {
@@ -36,5 +38,22 @@ export const progressApi = {
 
   async getGameProgress(patientId: string, gameType: string): Promise<GameProgressSummary> {
     return apiClient.get(`/patients/${patientId}/progress/game?gameType=${gameType}`);
-  }
+  },
+
+  /**
+   * Get per-priority reminder adherence breakdown.
+   * @param days Number of days to aggregate (default 7, max 30)
+   */
+  async getPriorityBreakdown(patientId: string, days = 7): Promise<ProgressPriorityBreakdownResponse> {
+    return apiClient.get(`/patients/${patientId}/progress/priority-breakdown?days=${days}`);
+  },
+
+  /**
+   * Get recent escalation alerts for a patient.
+   * Used by the caregiver dashboard to show unread alert cards.
+   */
+  async getEscalations(patientId: string, limit = 20): Promise<EscalationsResponse> {
+    return apiClient.get(`/patients/${patientId}/reminders/escalations?limit=${limit}`);
+  },
 };
+

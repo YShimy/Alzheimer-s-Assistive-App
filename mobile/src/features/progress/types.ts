@@ -4,6 +4,45 @@ export interface StreakData {
   lastActiveDate: string | null;
 }
 
+// ─── Priority Breakdown Types ──────────────────────────────
+
+export interface PriorityBreakdownItem {
+  priority: 'normal' | 'high' | 'critical';
+  scheduledCount: number;
+  doneCount: number;
+  snoozeCount: number;
+  skipCount: number;
+  completionRate: number;
+  escalationCount: number;
+  trendDelta: number | null;
+}
+
+export interface ProgressPriorityBreakdownResponse {
+  periodDays: number;
+  priorityBreakdown: PriorityBreakdownItem[];
+  highAdherenceSummary: string;
+  criticalAdherenceSummary: string;
+}
+
+// ─── Escalation Alert Types ─────────────────────────────────
+
+export interface EscalationAlert {
+  id: string;
+  reminderId: string;
+  patientUserId: string;
+  eventType: string;
+  timestamp: string;
+  escalationReason: string | null;
+  reminderTitle?: string;
+  priority?: string;
+}
+
+export interface EscalationsResponse {
+  escalations: EscalationAlert[];
+  count: number;
+}
+
+
 export interface ProgressOverviewResponse {
   summary: {
     currentReminderStreak: number;

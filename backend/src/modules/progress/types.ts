@@ -4,6 +4,33 @@ export interface StreakData {
   lastActiveDate: string | null;
 }
 
+// ─── Priority Breakdown Types ──────────────────────────────
+
+export interface PriorityBreakdownItem {
+  priority: 'normal' | 'high' | 'critical';
+  /** Total reminder events (FIRED or all action events) in period */
+  scheduledCount: number;
+  /** Events with eventType DONE */
+  doneCount: number;
+  /** Events with eventType SNOOZED */
+  snoozeCount: number;
+  /** Events with eventType SKIPPED */
+  skipCount: number;
+  /** doneCount / scheduledCount — 0 if none scheduled */
+  completionRate: number;
+  /** How many of the skips triggered an escalation (critical/high only) */
+  escalationCount: number;
+  /** Completion rate vs previous equivalent period (+/- delta) */
+  trendDelta: number | null;
+}
+
+export interface ProgressPriorityBreakdownResponse {
+  periodDays: number;
+  priorityBreakdown: PriorityBreakdownItem[];
+  highAdherenceSummary: string;
+  criticalAdherenceSummary: string;
+}
+
 // Redesigned: Priority-aware metrics
 export interface PriorityMetrics {
   completionRate: number;

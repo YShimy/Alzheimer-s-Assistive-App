@@ -5,18 +5,24 @@ import { useFocusEffect } from 'expo-router';
 import { ScreenContainer, AppCard, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useProgress } from '@/src/features/progress/useProgress';
-import { useChecklistTracking } from '@/src/features/progress/hooks';
+import { useChecklistTracking, usePriorityBreakdown } from '@/src/features/progress/hooks';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
 
 import { StreakCard } from '@/src/shared/ui/cards/StreakCard';
 import { CategoryProgressCard } from '@/src/shared/ui/cards/CategoryProgressCard';
 import { TrendLineChart, StackedConsistencyChart } from '@/src/shared/ui/charts/ProgressCharts';
+import { useSessionStore } from '@/src/state/sessionStore';
+
 
 export default function PatientProgressScreen() {
   const { t } = useTranslation();
+  const session = useSessionStore?.getState?.() as any;
+  const patientId: string | null = session?.user?.id ?? null;
+
   const { loading, refreshing, error, overview, streaks, categories, charts, reload, refresh } = useProgress();
   const { data: checklistTracking, loading: checklistLoading } = useChecklistTracking(null);
+  const { data: priorityData } = usePriorityBreakdown(patientId, 7);
 
   useFocusEffect(
     useCallback(() => {
@@ -99,6 +105,69 @@ export default function PatientProgressScreen() {
           <AppCard style={styles.chartContainer}>
             {overview && renderTrendMessage(overview.comparison.gameScoreDeltaVsPrevious, 'score')}
             <TrendLineChart data={charts.gameScoreSeries} />
+          </AppCard>
+        </View>
+      )}
+
+      {/* PRIORITY BREAKDOWN */}
+      {priorityData && priorityData.priorityBreakdown.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Reminder Priority Breakdown (7 Days)</Text>
+          <AppCard style={styles.priorityCard}>
+            {priorityData.priorityBreakdown.map((item) => {
+              const priorityColors: Record<string, string> = {
+                normal: colors.neutral[500] as string,
+                high: '#F59E0B',
+                critical: colors.error.main as string,
+              };
+              const barColor = priorityColors[item.priority] ?? (colors.primary.main as string);
+              const pctLabel = `${Math.round(item.completionRate * 100)}%`;
+              const trendIcon = item.trendDelta === null
+                ? null
+                : item.trendDelta > 0 ? '▲' : item.trendDelta < 0 ? '▼' : '→';
+              const trendColor = item.trendDelta === null
+                ? colors.neutral[400]
+                : item.trendDelta > 0 ? colors.success.main : item.trendDelta < 0 ? colors.error.main : colors.neutral[500];
+
+              return (
+                <View key={item.priority} style={styles.priorityRow}>
+                  <View style={styles.priorityHeader}>
+                    <Text style={styles.priorityLabel}>
+                      {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}
+                    </Text>
+                    <View style={styles.priorityMeta}>
+                      {trendIcon && (
+                        <Text style={[styles.trendIndicator, { color: trendColor as string }]}>
+                          {trendIcon} {item.trendDelta !== null ? `${Math.round(Math.abs(item.trendDelta) * 100)}%` : ''}
+                        </Text>
+                      )}
+                      {item.escalationCount > 0 && (
+                        <View style={styles.escalationBadge}>
+                          <Text style={styles.escalationBadgeText}>
+                            {item.escalationCount} alert{item.escalationCount > 1 ? 's' : ''}
+                          </Text>
+                        </View>
+                      )}
+                      <Text style={[styles.pctLabel, { color: barColor }]}>{pctLabel}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.barTrack}>
+                    <View
+                      style={[
+                        styles.barFill,
+                        {
+                          width: `${item.scheduledCount > 0 ? item.completionRate * 100 : 0}%` as any,
+                          backgroundColor: barColor,
+                        },
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.prioritySubtext}>
+                    {item.doneCount} done · {item.skipCount} skipped · {item.snoozeCount} snoozed
+                  </Text>
+                </View>
+              );
+            })}
           </AppCard>
         </View>
       )}
@@ -260,5 +329,68 @@ const styles = StyleSheet.create({
   },
   bottomGap: {
     height: spacing['3xl'] * 2,
-  }
+  },
+  // Priority breakdown
+  priorityCard: {
+    padding: spacing.md,
+    gap: spacing.md,
+  },
+  priorityRow: {
+    gap: spacing.xs,
+    paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.neutral[100],
+  },
+  priorityHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  priorityLabel: {
+    fontFamily: typography.family.headline,
+    fontSize: typography.size.sm,
+    color: colors.neutral[800],
+    fontWeight: '600',
+  },
+  priorityMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  trendIndicator: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.xs,
+  },
+  escalationBadge: {
+    backgroundColor: colors.error.light,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+  },
+  escalationBadgeText: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.xs,
+    color: colors.error.dark,
+    fontWeight: '600',
+  },
+  pctLabel: {
+    fontFamily: typography.family.headline,
+    fontSize: typography.size.sm,
+    fontWeight: '700',
+  },
+  barTrack: {
+    height: 8,
+    backgroundColor: colors.neutral[100],
+    borderRadius: radius.sm,
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: radius.sm,
+  },
+  prioritySubtext: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.xs,
+    color: colors.neutral[400],
+  },
 });

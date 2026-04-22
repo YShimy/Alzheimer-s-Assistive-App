@@ -207,18 +207,31 @@ export const reminderActionsService = {
   
   /**
    * Redesigned: get pending escalations for a patient
+   *
+   * Returns the most recent escalation events, enriched with reminder title and priority.
+   * Used by caregiver dashboard/home alert cards.
    */
-  async getPendingEscalations(patientId: string): Promise<ReminderEventResponse[]> {
+  async getPendingEscalations(
+    patientId: string,
+    limit = 20,
+  ): Promise<(ReminderEventResponse & { reminderTitle?: string; priority?: string })[]> {
     const events = await prisma.reminderEvent.findMany({
       where: {
         patientUserId: patientId,
-        // Cast as any until migration runs
         escalationTriggered: true as any,
       },
+      include: {
+        reminder: { select: { title: true, priority: true } },
+      },
       orderBy: { timestamp: 'desc' },
-      take: 50,
+      take: limit,
     });
     
-    return events.map(toEventResponse);
+    return events.map((e: any) => ({
+      ...toEventResponse(e),
+      reminderTitle: e.reminder?.title ?? undefined,
+      priority: e.reminder?.priority?.toLowerCase() ?? undefined,
+    }));
   },
 };
+

@@ -62,7 +62,7 @@ async function getLinkedCaregivers(patientId: string): Promise<Array<{ id: strin
   const links = await prisma.careLink.findMany({
     where: {
       patientUserId: patientId,
-      status: 'active',
+      status: 'ACTIVE', // FIXED: Prisma enum value is uppercase
     },
     select: {
       caregiverUserId: true,
@@ -70,6 +70,7 @@ async function getLinkedCaregivers(patientId: string): Promise<Array<{ id: strin
   });
 
   if (links.length === 0) return [];
+
 
   // Get caregiver user details
   const caregiverIds = links.map((l) => l.caregiverUserId);
@@ -171,21 +172,24 @@ export const notificationsService = {
 
     const { title, body } = buildEscalationMessage(notificationData);
 
-    // Build push messages for each caregiver
-    const messages: PushMessage[] = caregivers.map((caregiver) => ({
-      to: caregiver.pushToken,
-      title,
-      body,
-      data: {
-        type: 'escalation',
-        patientId,
-        reminderId,
-        escalationReason,
-        priority: reminder.priority,
-      },
-      sound: 'default',
-      priority: 'high',
-    }));
+    // Build push messages for each caregiver (only those with valid push tokens)
+    const messages: PushMessage[] = caregivers
+      .filter((caregiver) => caregiver.pushToken != null)
+      .map((caregiver) => ({
+        to: caregiver.pushToken!,
+        title,
+        body,
+        data: {
+          type: 'escalation',
+          patientId,
+          reminderId,
+          escalationReason,
+          priority: reminder.priority,
+        },
+        sound: 'default',
+        priority: 'high' as const,
+      }));
+
 
     // Send notifications
     await sendExpoPushNotification(messages);

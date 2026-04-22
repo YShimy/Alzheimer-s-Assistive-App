@@ -116,36 +116,48 @@ export function calculateAveragePrompts(records: LevelRecord[]): number {
 
 /**
  * Check if player qualifies for tier upgrade.
- * Rules: At least 90% correct in 2 consecutive sessions AND no more than 1 support prompt.
+ *
+ * IMPORTANT: `recent` MUST be same-tier records only (filtered by the store).
+ * Rules:
+ *   - At least 2 consecutive sessions at this tier
+ *   - At least 90% correct in both
+ *   - No more than 1 support prompt in either
  */
 export function shouldUpgradeTier(recent: LevelRecord[]): boolean {
+  // Need at least 2 sessions at this specific tier before upgrading
   if (recent.length < 2) return false;
-  
+
   const lastTwo = recent.slice(-2);
-  const highAccuracy = lastTwo.every(r => r.accuracy >= 0.9);
-  const lowPrompts = lastTwo.every(r => r.promptsUsed <= 1);
-  
+  const highAccuracy = lastTwo.every((r) => r.accuracy >= 0.9);
+  const lowPrompts = lastTwo.every((r) => r.promptsUsed <= 1);
+
   return highAccuracy && lowPrompts;
 }
 
 /**
  * Check if player should stay on current tier.
+ *
+ * IMPORTANT: `recent` MUST be same-tier records only.
  * Rules: 70-89% accuracy OR high prompt usage.
  */
 export function shouldStayOnTier(recent: LevelRecord[]): boolean {
+  // No data for this tier yet — default to staying
   if (recent.length === 0) return true;
-  
+
   const accuracy = calculateAccuracy(recent);
   const avgPrompts = calculateAveragePrompts(recent);
-  
+
   return (accuracy >= 0.7 && accuracy < 0.9) || avgPrompts > 1;
 }
 
 /**
  * Check if player needs support adjustment.
- * Rule: Under 70% correct.
+ *
+ * IMPORTANT: `recent` MUST be same-tier records only.
+ * Rule: Average accuracy under 70% (requires at least 1 record).
  */
 export function needsSupportAdjustment(recent: LevelRecord[]): boolean {
+  // Need at least 1 session at this tier before deciding to drop
   if (recent.length === 0) return false;
   const accuracy = calculateAccuracy(recent);
   return accuracy < 0.7;
@@ -155,42 +167,54 @@ export function needsSupportAdjustment(recent: LevelRecord[]): boolean {
 
 /**
  * Determine next tier based on exact specification.
+ *
+ * IMPORTANT: `history` must be same-tier records only (the store filters this).
+ * The current session's result is included in `history` before calling this function.
+ *
+ * Upgrade if:
+ *   - 2 consecutive same-tier sessions with >= 90% accuracy AND <= 1 prompt each
+ *
+ * Step down + support if:
+ *   - Average accuracy in same-tier sessions < 70%
+ *
+ * Stay if:
+ *   - 70-89% accuracy OR high prompt usage
+ *   - Not enough sessions yet (< 2) to evaluate for upgrade
  */
 export function decideNextTier(
   currentTier: number,
   accuracy: number,
   promptsUsed: number,
-  history: LevelRecord[]
+  history: LevelRecord[], // MUST be same-tier records
 ): AdvancementDecision {
-  // At max tier
+  // At max tier — stay here
   if (currentTier >= MAX_TIER) {
     return { nextTier: MAX_TIER, supportMode: false, reason: 'max_tier' };
   }
-  
-  // History already includes current result from store
-  // Check for support needs first (under 70%)
+
+  // Check support need first (under 70% average for this tier)
   if (needsSupportAdjustment(history)) {
-    return { 
+    return {
       nextTier: Math.max(currentTier - 1, MIN_TIER),
-      supportMode: true, 
-      reason: 'support_needed' 
+      supportMode: true,
+      reason: 'support_needed',
     };
   }
-  
-  // Check for upgrade eligibility (90%+ with low prompts)
+
+  // Check upgrade eligibility (90%+ in 2 consecutive same-tier sessions, low prompts)
   if (shouldUpgradeTier(history)) {
-    return { 
-      nextTier: Math.min(currentTier + 1, MAX_TIER), 
-      supportMode: false, 
-      reason: 'normal_advance' 
+    return {
+      nextTier: Math.min(currentTier + 1, MAX_TIER),
+      supportMode: false,
+      reason: 'normal_advance',
     };
   }
-  
-  // Stay on current tier for mixed performance
-  return { 
-    nextTier: currentTier, 
-    supportMode: promptsUsed > 1, 
-    reason: 'stay_mixed' 
+
+  // Mixed performance or not enough data — stay on this tier
+  return {
+    nextTier: currentTier,
+    supportMode: promptsUsed > 1,
+    reason: 'stay_mixed',
   };
 }
 
