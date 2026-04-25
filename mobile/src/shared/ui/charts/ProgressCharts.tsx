@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import { LineChart, BarChart } from 'react-native-gifted-charts';
 import { colors, typography, spacing, radius } from '../../../infrastructure/theme/tokens';
@@ -14,11 +15,16 @@ interface LineChartProps {
 }
 
 export function TrendLineChart({ data, title, valueSuffix = '' }: LineChartProps) {
-  const chartData = data.map((d, index) => ({
-    value: d.score || 0,
-    label: d.date.split('-').slice(1).join('/'), // MM/DD
-    dataPointText: String(d.score || 0),
-  }));
+  const { i18n } = useTranslation();
+  const chartData = data.map((d, index) => {
+    const dateObj = new Date(d.date);
+    const formattedDate = isNaN(dateObj.getTime()) ? d.date.split('-').slice(1).join('/') : new Intl.DateTimeFormat(i18n.language, { month: 'numeric', day: 'numeric' }).format(dateObj);
+    return {
+      value: d.score || 0,
+      label: formattedDate,
+      dataPointText: Intl.NumberFormat(i18n.language).format(d.score || 0),
+    };
+  });
 
   const maxVal = Math.max(...chartData.map(d => d.value), 10);
   
@@ -64,8 +70,11 @@ interface BarChartProps {
 }
 
 export function StackedConsistencyChart({ data, title, type }: BarChartProps) {
+  const { i18n } = useTranslation();
   // We'll show completed/acted vs scheduled/started
   const chartData = data.map((d) => {
+    const dateObj = new Date(d.date);
+    const formattedDate = isNaN(dateObj.getTime()) ? d.date.split('-').slice(1).join('/') : new Intl.DateTimeFormat(i18n.language, { month: 'numeric', day: 'numeric' }).format(dateObj);
     let completed = 0;
     let total = 0;
     if (type === 'reminders') {
@@ -83,7 +92,7 @@ export function StackedConsistencyChart({ data, title, type }: BarChartProps) {
         { value: completed, color: colors.success.main },
         { value: missed, color: colors.neutral[200] },
       ],
-      label: d.date.split('-').slice(1).join('/'), // MM/DD
+      label: formattedDate,
     };
   });
 

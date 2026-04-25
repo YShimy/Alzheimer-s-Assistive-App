@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useState, useCallback, useEffect } from 'react';
-import { useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import {
   ScreenContainer,
   AppCard,
@@ -22,11 +22,12 @@ import {
   LoadingState,
   EmptyState,
 } from '@/src/shared/ui';
+import { PatientSwitcher } from '@/src/shared/ui/PatientSwitcher';
+import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, CreateChecklistTemplateInput } from '@/src/features/checklists/types';
-import { carelinksApi } from '@/src/features/carelinks/api';
-import type { CareLink } from '@/src/features/carelinks/types';
 
 import * as ImagePicker from 'expo-image-picker';
 import { mediaApi } from '@/src/features/media/api';
@@ -83,10 +84,13 @@ type FormMode = 'create' | 'edit';
  * Caregiver checklist template management.
  */
 export default function CaregiverChecklistScreen() {
-  const { patientId: paramPatientId, patientName } = useLocalSearchParams<{ patientId: string; patientName: string }>();
-  const { t } = useTranslation();
-  const [links, setLinks] = useState<CareLink[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(paramPatientId || null);
+  const { t, i18n } = useTranslation();
+
+  // ─── Global patient context ─────────────────────────────────────────────
+  useCaregiverLinks();
+  const { links, selectedPatientId, loaded } = useCaregiverPatientStore();
+  const selectedPatient = selectedPatientId;
+
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -98,20 +102,6 @@ export default function CaregiverChecklistScreen() {
   const [formErrors, setFormErrors] = useState<Partial<Record<string, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Load linked patients
-  useEffect(() => {
-    carelinksApi
-      .getMyLinks()
-      .then(({ careLinks }) => {
-        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
-        setLinks(active);
-        if (!selectedPatient && active.length > 0 && active[0]!.patientUserId) {
-          setSelectedPatient(active[0]!.patientUserId);
-        }
-      })
-      .catch(() => setError('Failed to load linked patients'))
-      .finally(() => setLoading(false));
-  }, []);
 
   const load = useCallback(async () => {
     if (!selectedPatient) {
@@ -224,21 +214,28 @@ export default function CaregiverChecklistScreen() {
     setModalVisible(true);
   };
 
-  const validate = (): boolean => {
+  const validateForm = (): boolean => {
     const errs: typeof formErrors = {};
-    if (!form.title.trim()) errs.title = 'Title is required';
+    if (!form.title.trim()) errs.title = t('caregiverChecklists.validation.titleRequired');
     
     if (form.steps.length === 0) {
-       Alert.alert('Validation Error', 'At least one step is required to create a checklist.');
-       return false;
+      Alert.alert(t('common.error'), t('caregiverChecklists.validation.minSteps'));
+      return false;
     }
 
-    form.steps.forEach((s, i) => {
-      if (!s.title.trim()) errs[`step_${i}`] = 'Step title required';
-    });
-    if (form.estimatedMinutes && isNaN(parseInt(form.estimatedMinutes, 10))) {
-      errs.estimatedMinutes = 'Enter a number';
+    const invalidSteps = form.steps.some((s) => !s.title.trim());
+    if (invalidSteps) {
+      Alert.alert(t('common.error'), t('caregiverChecklists.validation.stepTitleRequired'));
+      return false;
     }
+
+    const mins = parseInt(form.estimatedMinutes, 10);
+    if (form.estimatedMinutes && (isNaN(mins) || mins < 0)) {
+      errs.estimatedMinutes = t('caregiverChecklists.validation.numberRequired');
+      setFormErrors(errs);
+      return false;
+    }
+
     setFormErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -258,7 +255,7 @@ export default function CaregiverChecklistScreen() {
   });
 
   const handleSubmit = async () => {
-    if (!validate()) return;
+    if (!validateForm()) return;
     if (!selectedPatient) {
       console.log('[CaregiverChecklists] No selectedPatient, cannot submit');
       return;
@@ -267,26 +264,21 @@ export default function CaregiverChecklistScreen() {
     setSubmitting(true);
     try {
       if (formMode === 'create') {
-        console.log('[CaregiverChecklists] Calling createTemplate with payload:', buildPayload());
-        const { template } = await checklistsApi.createTemplate(selectedPatient, buildPayload());
-        console.log(`[CaregiverChecklists] Template created successfully: ${template.id}`);
-        setTemplates((prev) => [template, ...prev]);
-        Alert.alert('Created', `"${template.title}" template added.`);
+        const { template: created } = await checklistsApi.createTemplate(selectedPatient, buildPayload());
+        setTemplates((prev) => [created, ...prev]);
+        Alert.alert(t('caregiverChecklists.createdAlert'), t('caregiverChecklists.createdSuccess', { title: created.title }));
       } else if (editingTemplate) {
-        const { template } = await checklistsApi.updateTemplate(editingTemplate.id, buildPayload());
-        setTemplates((prev) => prev.map((t) => (t.id === template.id ? template : t)));
-        Alert.alert('Saved', `"${template.title}" updated.`);
+        const { template: updated } = await checklistsApi.updateTemplate(editingTemplate.id, buildPayload() as any);
+        setTemplates((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+        Alert.alert(t('caregiverChecklists.savedAlert'), t('caregiverChecklists.savedSuccess', { title: updated.title }));
       }
       setModalVisible(false);
     } catch (err: any) {
-      console.error('[CaregiverChecklists] Error creating/updating template:', err);
-      if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-        Alert.alert(
-          'Not yet available',
-          'The checklist backend is not yet implemented. Your form was validated successfully — wire this to the real endpoint once it is ready.',
-        );
+      if (err.message === 'Not Implemented') {
+        Alert.alert(t('caregiverChecklists.savedAlert'), t('caregiverChecklists.backendNotImplemented'));
+        setModalVisible(false);
       } else {
-        Alert.alert('Error', err.message || 'Failed to save template');
+        Alert.alert(t('common.error'), err.message || t('common.error'));
       }
     } finally {
       setSubmitting(false);
@@ -295,24 +287,15 @@ export default function CaregiverChecklistScreen() {
 
   const handleArchive = (t: ChecklistTemplate) => {
     Alert.alert(
-      'Archive Template',
-      `Archive "${t.title}"? Patients will no longer see it.`,
+      t('caregiverChecklists.archiveAlert'),
+      t('caregiverChecklists.archiveConfirm', { title: t.title }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Archive',
+          text: t('caregiverChecklists.archiveTplBtn'),
           style: 'destructive',
-          onPress: async () => {
-            try {
-              await checklistsApi.archiveTemplate(t.id);
-              setTemplates((prev) => prev.filter((tpl) => tpl.id !== t.id));
-            } catch (err: any) {
-              if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-                Alert.alert('Not yet available', 'Archive endpoint not yet implemented on the backend.');
-              } else {
-                Alert.alert('Error', err.message || 'Failed to archive');
-              }
-            }
+          onPress: () => {
+            Alert.alert(t('caregiverChecklists.notAvailable'), t('caregiverChecklists.notAvailable'));
           },
         },
       ],
@@ -321,7 +304,7 @@ export default function CaregiverChecklistScreen() {
 
   // ─── Render ────────────────────────────────────────────────────────────
 
-  if (loading) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
+  if (!loaded) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
   if (error) return <ScreenContainer scroll={false}><EmptyState icon="alert-circle-outline" title="Error" message={error} /></ScreenContainer>;
 
   if (links.length === 0) {
@@ -336,6 +319,18 @@ export default function CaregiverChecklistScreen() {
     );
   }
 
+  if (!selectedPatient) {
+    return (
+      <ScreenContainer>
+        <EmptyState
+          icon="person-outline"
+          title={t('caregiverChecklists.noPatientSelected')}
+          message={t('caregiverChecklists.selectPatientMsg')}
+        />
+        <PatientSwitcher />
+      </ScreenContainer>
+    );
+  }
   const activeTemplates = templates.filter((t) => t.isActive);
   const archivedTemplates = templates.filter((t) => !t.isActive);
   const selectedLink = links.find((l) => l.patientUserId === selectedPatient);
@@ -343,28 +338,9 @@ export default function CaregiverChecklistScreen() {
   return (
     <>
       <ScreenContainer scroll={false} padded={false}>
-        {!paramPatientId && selectedLink && (
-          <View style={styles.patientCard}>
-            <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.patientLabel}>Managing checklists for</Text>
-              <Text style={styles.patientName}>
-                {selectedLink?.patient?.displayName ?? 'Patient'}
-              </Text>
-            </View>
-            {links.length > 1 && (
-              <StatusChip label={`${links.length} patients`} variant="info" />
-            )}
-          </View>
-        )}
+        {/* Patient switcher pill */}
+        <PatientSwitcher />
 
-        {patientName && (
-          <View style={{ paddingHorizontal: spacing['2xl'], paddingTop: spacing.md }}>
-            <Text style={{ fontSize: typography.size.sm, color: colors.neutral[500] }}>
-              Managing checklists for <Text style={{ fontWeight: '700', color: colors.secondary[600] }}>{patientName}</Text>
-            </Text>
-          </View>
-        )}
         <FlatList
           data={activeTemplates}
           keyExtractor={(t) => t.id}
@@ -463,11 +439,11 @@ export default function CaregiverChecklistScreen() {
                   >
                     <Icon
                       name={getCategoryIcon(cat)}
-                      size={14}
+                      size={16}
                       color={form.category === cat ? '#fff' : colors.neutral[600]}
                     />
                     <Text style={[styles.chipText, form.category === cat && styles.chipTextActive]}>
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      {t(`categories.${cat}`)}
                     </Text>
                   </Pressable>
                 ))}
@@ -504,7 +480,9 @@ export default function CaregiverChecklistScreen() {
               {form.steps.map((step, idx) => (
                 <View key={step.id} style={styles.stepEditor}>
                   <View style={styles.stepEditorHeader}>
-                    <Text style={styles.stepEditorNum}>Step {idx + 1}</Text>
+                    <Text style={styles.stepEditorNum}>
+                      {t('caregiverChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}
+                    </Text>
                     <View style={styles.stepEditorActions}>
                       {idx > 0 && (
                         <Pressable onPress={() => moveStep(step.id, 'up')} style={styles.stepActionBtn} accessibilityLabel="Move up">
@@ -544,11 +522,11 @@ export default function CaregiverChecklistScreen() {
                        <>
                         <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'image')}>
                           <Icon name="image-outline" size={16} color={colors.primary.main} />
-                          <Text style={styles.mediaBtnText}>Add Image</Text>
+                          <Text style={styles.mediaBtnText}>{t('caregiverChecklists.addImage')}</Text>
                         </Pressable>
                         <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'video')}>
                           <Icon name="videocam-outline" size={16} color={colors.secondary.main} />
-                          <Text style={styles.mediaBtnText}>Add Video</Text>
+                          <Text style={styles.mediaBtnText}>{t('caregiverChecklists.addVideo')}</Text>
                         </Pressable>
                        </>
                      ) : (
@@ -556,7 +534,7 @@ export default function CaregiverChecklistScreen() {
                           {step.imageAssetId && (
                             <View style={styles.previewContainer}>
                                <Icon name="image" size={16} color={colors.primary.main} />
-                               <Text style={styles.previewText}>Image attached</Text>
+                               <Text style={styles.previewText}>{t('caregiverChecklists.imageAttached')}</Text>
                                <Pressable onPress={() => removeMediaFromStep(step.id, 'image')}>
                                  <Icon name="close-circle" size={18} color={colors.error.main} />
                                </Pressable>
@@ -565,7 +543,7 @@ export default function CaregiverChecklistScreen() {
                           {step.videoAssetId && (
                             <View style={styles.previewContainer}>
                                <Icon name="videocam" size={16} color={colors.secondary.main} />
-                               <Text style={styles.previewText}>Video attached</Text>
+                               <Text style={styles.previewText}>{t('caregiverChecklists.videoAttached')}</Text>
                                <Pressable onPress={() => removeMediaFromStep(step.id, 'video')}>
                                  <Icon name="close-circle" size={18} color={colors.error.main} />
                                </Pressable>
@@ -615,7 +593,7 @@ function TemplateCard({
   onEdit: () => void;
   onArchive: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <AppCard style={styles.templateCard}>
       <View style={styles.cardHeader}>
@@ -625,14 +603,15 @@ function TemplateCard({
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{template.title}</Text>
           <View style={styles.cardMeta}>
-            <Icon name="list-outline" size={12} color={colors.neutral[400]} />
-            <Text style={styles.cardMetaText}>{template.steps?.length ?? 0} steps</Text>
+            <Text style={styles.cardStat}>
+              <Icon name="list" size={14} color={colors.neutral[500]} />{' '}
+              {t('caregiverChecklists.steps', { count: Intl.NumberFormat(i18n.language).format(template.steps?.length ?? 0) })}
+            </Text>
             {template.estimatedMinutes && (
-              <>
-                <Text style={styles.dot}>·</Text>
-                <Icon name="time-outline" size={12} color={colors.neutral[400]} />
-                <Text style={styles.cardMetaText}>{template.estimatedMinutes} min</Text>
-              </>
+              <Text style={styles.cardStat}>
+                <Icon name="time-outline" size={14} color={colors.neutral[500]} />{' '}
+                {t('caregiverChecklists.minutes', { count: Intl.NumberFormat(i18n.language).format(template.estimatedMinutes) })}
+              </Text>
             )}
           </View>
         </View>

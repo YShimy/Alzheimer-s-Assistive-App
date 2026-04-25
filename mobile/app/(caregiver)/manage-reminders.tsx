@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback } from 'react';
-import { useLocalSearchParams } from 'expo-router';
 import {
   ScreenContainer,
   AppCard,
@@ -26,12 +25,13 @@ import {
   EmptyState,
   ErrorState,
 } from '@/src/shared/ui';
+import { PatientSwitcher } from '@/src/shared/ui/PatientSwitcher';
+import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
-import { carelinksApi } from '@/src/features/carelinks/api';
 import { remindersApi } from '@/src/features/reminders/api';
 import { useChecklistTemplates } from '@/src/features/checklists/hooks';
 import type { Reminder, CreateReminderInput, UpdateReminderInput, PriorityLevel, ReminderType } from '@/src/features/reminders/types';
-import type { CareLink } from '@/src/features/carelinks/types';
 import type { ChecklistTemplate } from '@/src/features/checklists/types';
 
 const CATEGORIES = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
@@ -90,17 +90,15 @@ function formFromReminder(r: Reminder): ReminderForm {
   };
 }
 
-/**
- * Caregiver reminders management — view, create, edit, and archive
- * reminders for linked patients.
- */
 export default function CaregiverRemindersScreen() {
-  const { patientId: paramPatientId, patientName } = useLocalSearchParams<{ patientId: string; patientName: string }>();
-  const { t } = useTranslation();
-  const [links, setLinks] = useState<CareLink[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(paramPatientId || null);
+  const { t, i18n } = useTranslation();
+
+  // ─── Global patient context ─────────────────────────────────────────────
+  useCaregiverLinks(); // load links into store if not yet loaded
+  const { links, selectedPatientId, selectedPatientName, loaded } = useCaregiverPatientStore();
+  const selectedPatient = selectedPatientId;
+
   const [reminders, setReminders] = useState<Reminder[]>([]);
-  const [loading, setLoading] = useState(true);
   const [remindersLoading, setRemindersLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -116,21 +114,6 @@ export default function CaregiverRemindersScreen() {
   const [checklistPickerVisible, setChecklistPickerVisible] = useState(false);
   const { templates: checklists, loading: checklistsLoading } = useChecklistTemplates(selectedPatient ?? undefined);
 
-  // Load linked patients
-  useEffect(() => {
-    carelinksApi
-      .getMyLinks()
-      .then(({ careLinks }) => {
-        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
-        setLinks(active);
-        if (!selectedPatient && active.length > 0 && active[0]!.patientUserId) {
-          setSelectedPatient(active[0]!.patientUserId);
-        }
-      })
-      .catch(() => setError('Failed to load linked patients'))
-      .finally(() => setLoading(false));
-  }, []);
-
   const loadReminders = useCallback(async () => {
     if (!selectedPatient) return;
     setRemindersLoading(true);
@@ -138,11 +121,11 @@ export default function CaregiverRemindersScreen() {
       const { reminders: r } = await remindersApi.list(selectedPatient);
       setReminders(r);
     } catch (err: any) {
-      Alert.alert('Error', err.message || 'Failed to load reminders');
+      Alert.alert(t('common.error'), err.message || t('caregiverReminders.loadingError'));
     } finally {
       setRemindersLoading(false);
     }
-  }, [selectedPatient]);
+  }, [selectedPatient, t]);
 
   useEffect(() => {
     loadReminders();
@@ -168,12 +151,12 @@ export default function CaregiverRemindersScreen() {
 
   const validateForm = (): boolean => {
     const errs: typeof formErrors = {};
-    if (!form.title.trim()) errs.title = 'Title is required';
-    if (!/^\d{2}:\d{2}$/.test(form.scheduledTime)) errs.scheduledTime = 'Use HH:mm format (e.g. 08:30)';
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(form.startDate)) errs.startDate = 'Use YYYY-MM-DD format';
-    if (form.endDate && !/^\d{4}-\d{2}-\d{2}$/.test(form.endDate)) errs.endDate = 'Use YYYY-MM-DD format';
+    if (!form.title.trim()) errs.title = t('caregiverReminders.validation.titleRequired');
+    if (!/^\d{2}:\d{2}$/.test(form.scheduledTime)) errs.scheduledTime = t('caregiverReminders.validation.timeFormat');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(form.startDate)) errs.startDate = t('caregiverReminders.validation.dateFormat');
+    if (form.endDate && !/^\d{4}-\d{2}-\d{2}$/.test(form.endDate)) errs.endDate = t('caregiverReminders.validation.dateFormat');
     const snooze = parseInt(form.defaultSnoozeMinutes, 10);
-    if (isNaN(snooze) || snooze < 1 || snooze > 120) errs.defaultSnoozeMinutes = '1–120 minutes';
+    if (isNaN(snooze) || snooze < 1 || snooze > 120) errs.defaultSnoozeMinutes = t('caregiverReminders.validation.snoozeRange');
     setFormErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -201,15 +184,15 @@ export default function CaregiverRemindersScreen() {
       if (formMode === 'create') {
         const { reminder: created } = await remindersApi.create(selectedPatient, buildPayload());
         setReminders((prev) => [created, ...prev]);
-        Alert.alert('Created', `"${created.title}" has been added.`);
+        Alert.alert(t('caregiverReminders.createdAlert'), t('caregiverReminders.createdSuccess', { title: created.title }));
       } else if (editingReminder) {
         const { reminder: updated } = await remindersApi.update(editingReminder.id, buildPayload() as UpdateReminderInput);
         setReminders((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
-        Alert.alert('Updated', `"${updated.title}" has been saved.`);
+        Alert.alert(t('caregiverReminders.updatedAlert'), t('caregiverReminders.updatedSuccess', { title: updated.title }));
       }
       setModalVisible(false);
     } catch (err: any) {
-      Alert.alert('Error', err.message || 'Failed to save reminder');
+      Alert.alert(t('common.error'), err.message || t('caregiverReminders.saveError'));
     } finally {
       setSubmitting(false);
     }
@@ -217,19 +200,19 @@ export default function CaregiverRemindersScreen() {
 
   const handleArchive = (reminder: Reminder) => {
     Alert.alert(
-      'Archive Reminder',
-      `Archive "${reminder.title}"? The patient will no longer see it.`,
+      t('caregiverReminders.archiveBtn'),
+      t('caregiverReminders.archiveConfirm', { title: reminder.title }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Archive',
+          text: t('caregiverReminders.archiveBtn'),
           style: 'destructive',
           onPress: async () => {
             try {
               await remindersApi.archive(reminder.id);
               setReminders((prev) => prev.filter((r) => r.id !== reminder.id));
             } catch (err: any) {
-              Alert.alert('Error', err.message || 'Failed to archive');
+              Alert.alert(t('common.error'), err.message || t('caregiverReminders.archiveError'));
             }
           },
         },
@@ -246,7 +229,7 @@ export default function CaregiverRemindersScreen() {
 
   // ─── Render ────────────────────────────────────────────────────────────
 
-  if (loading) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
+  if (!loaded) return <ScreenContainer scroll={false}><LoadingState /></ScreenContainer>;
   if (error) return <ScreenContainer scroll={false}><ErrorState message={error} onRetry={() => {}} /></ScreenContainer>;
 
   if (links.length === 0) {
@@ -261,9 +244,20 @@ export default function CaregiverRemindersScreen() {
     );
   }
 
+  if (!selectedPatient) {
+    return (
+      <ScreenContainer>
+        <EmptyState
+          icon="person-outline"
+          title={t('caregiverReminders.noPatientSelected')}
+          message={t('caregiverReminders.selectPatientMsg')}
+        />
+        <PatientSwitcher />
+      </ScreenContainer>
+    );
+  }
   const activeReminders = reminders.filter((r) => r.isActive);
   const archivedReminders = reminders.filter((r) => !r.isActive);
-  const selectedLink = links.find((l) => l.patientUserId === selectedPatient);
 
   return (
     <ScreenContainer scroll={false} padded={false}>
@@ -274,29 +268,8 @@ export default function CaregiverRemindersScreen() {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>
-            {/* Patient selector */}
-            {!paramPatientId && (
-              <View style={styles.patientCard}>
-                <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
-                  <Text style={styles.patientName}>
-                    {selectedLink?.patient?.displayName ?? 'Patient'}
-                  </Text>
-                </View>
-                {links.length > 1 && (
-                  <StatusChip label={`${links.length} patients`} variant="info" />
-                )}
-              </View>
-            )}
-
-            {patientName && (
-              <View style={{ marginBottom: spacing.md }}>
-                <Text style={{ fontSize: typography.size.sm, color: colors.neutral[500] }}>
-                  Managing reminders for <Text style={{ fontWeight: '700', color: colors.secondary[600] }}>{patientName}</Text>
-                </Text>
-              </View>
-            )}
+            {/* Patient switcher pill */}
+            <PatientSwitcher style={{ marginHorizontal: 0, marginTop: 0, marginBottom: spacing.md }} />
 
             {/* Create button */}
             <AppButton
@@ -381,7 +354,7 @@ export default function CaregiverRemindersScreen() {
                   >
                     <Icon name={getCategoryIcon(cat)} size={16} color={form.category === cat ? '#fff' : colors.neutral[600]} />
                     <Text style={[styles.categoryChipText, form.category === cat && styles.categoryChipTextActive]}>
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      {t(`categories.${cat}`)}
                     </Text>
                   </Pressable>
                 ))}
@@ -502,15 +475,15 @@ export default function CaregiverRemindersScreen() {
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>{t('caregiverReminders.repeatLabel')}</Text>
               <View style={styles.dayRow}>
-                {DAY_LABELS.map((day, idx) => (
+                {['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((day, idx) => (
                   <Pressable
                     key={day}
                     style={[styles.dayChip, form.daysOfWeek.includes(idx) && styles.dayChipActive]}
                     onPress={() => toggleDay(idx)}
-                    accessibilityLabel={day}
+                    accessibilityLabel={t(`days.${day}`)}
                   >
                     <Text style={[styles.dayChipText, form.daysOfWeek.includes(idx) && styles.dayChipTextActive]}>
-                      {day}
+                      {t(`days.${day}_short`)}
                     </Text>
                   </Pressable>
                 ))}
@@ -596,10 +569,7 @@ export default function CaregiverRemindersScreen() {
                 </View>
               ) : (
                 <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
-                  <Button
-                    title="TEST BUTTON - TAP ME"
-                    onPress={() => console.log('[ChecklistPickerModal] TEST BUTTON PRESSED')}
-                  />
+
                   {checklists.map((checklist, index) => {
                     console.log('[ChecklistPickerModal] Rendering item', index, ':', checklist.id, checklist.title);
                     const isSelected = form.linkedChecklistTemplateId === checklist.id;
@@ -646,16 +616,15 @@ export default function CaregiverRemindersScreen() {
   );
 }
 
-// ─── Sub-components ────────────────────────────────────────────────────────
-
 function SectionHeader({ title, count, loading }: { title: string; count: number; loading?: boolean }) {
+  const { t, i18n } = useTranslation();
   return (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {loading ? (
-        <Text style={styles.sectionCount}>Loading…</Text>
+        <Text style={styles.sectionCount}>{t('common.loading')}</Text>
       ) : (
-        <StatusChip label={String(count)} variant={count > 0 ? 'info' : 'default'} />
+        <StatusChip label={Intl.NumberFormat(i18n.language).format(count)} variant={count > 0 ? 'info' : 'default'} />
       )}
     </View>
   );
@@ -710,10 +679,7 @@ function ChecklistPickerModal({
             keyboardShouldPersistTaps="always"
             pointerEvents="auto"
           >
-            <Button
-              title="TEST BUTTON - TAP ME"
-              onPress={() => console.log('[ChecklistPickerModal] TEST BUTTON PRESSED')}
-            />
+
             {checklists.map((checklist, index) => {
               console.log('[ChecklistPickerModal] Rendering item', index, ':', checklist.id, checklist.title);
               const isSelected = selectedId === checklist.id;
@@ -744,7 +710,7 @@ function ChecklistPickerModal({
                       {checklist.title}
                     </Text>
                     <Text style={styles.checklistMeta}>
-                      {checklist.category || 'General'}
+                      {checklist.category ? t(`categories.${checklist.category}`) : t('categories.custom')}
                     </Text>
                   </View>
                   {isSelected && (
@@ -803,7 +769,7 @@ function CaregiverReminderCard({
           </Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
             <Text style={styles.cardDays}>
-              {reminder.daysOfWeek.map((d) => DAY_LABELS[d]).join(' · ')}
+              {reminder.daysOfWeek.map((d) => t(`days.${['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][d]}_short`)).join(' · ')}
             </Text>
           )}
           {/* Linked Checklist Info */}

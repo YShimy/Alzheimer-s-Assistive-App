@@ -6,6 +6,7 @@ try {
 }
 
 import { useSessionStore } from '@/src/state/sessionStore';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { authApi } from './api';
 
 /**
@@ -18,10 +19,12 @@ import { authApi } from './api';
  */
 export function useLogout(): () => Promise<void> {
   const clearSession = useSessionStore((s) => s.clearSession);
+  const resetCaregiverStore = useCaregiverPatientStore((s) => s.reset);
 
   return async () => {
     // 1. Clear app JWT from SecureStore and wipe session state
     clearSession();
+    resetCaregiverStore();
 
     // 2. Silently revoke and sign out from Google native layer
     if (GoogleSignin) {

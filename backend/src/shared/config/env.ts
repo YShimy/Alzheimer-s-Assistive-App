@@ -12,8 +12,11 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().default(''),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
   API_BASE_URL: z.string().default('http://localhost:4000'),
-  // Redesigned: Device-reachable URL for Expo Go (use LAN IP like http://192.168.x.x:4000)
-  API_DEVICE_URL: z.string().optional(),
+  // Publicly reachable URL for deployed/tunneled backend — used for media publicUrl in all non-localhost clients
+  // Set this to your Railway/Render/ngrok/etc URL. If set, it overrides API_DEVICE_URL for media URL generation.
+  API_PUBLIC_URL: z.string().transform(v => v || undefined).optional(),
+  // LAN-reachable URL for same-network Expo Go dev (e.g. http://192.168.x.x:4000)
+  API_DEVICE_URL: z.string().transform(v => v || undefined).optional(),
 
   // SMTP / Mail
   SMTP_HOST: z.string().default('smtp.gmail.com'),

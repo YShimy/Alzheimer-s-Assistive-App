@@ -70,9 +70,9 @@ export default function GamesScreen() {
               <Ionicons name="list-outline" size={32} color={colors.secondary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>Routine Sequence</Text>
+              <Text style={styles.gameTitle}>{t('games.routineSequence.title')}</Text>
               <Text style={styles.gameDescription}>
-                Practice daily routines and remember step order
+                {t('games.routineSequence.description')}
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />

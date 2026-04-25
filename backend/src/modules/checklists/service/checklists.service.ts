@@ -3,7 +3,6 @@ import { AppError } from '../../../shared/errors/AppError.js';
 import { prisma } from '../../../shared/db/prisma.js';
 import { z } from 'zod';
 import type { createTemplateSchema, updateTemplateSchema, createRunSchema, updateRunSchema } from '../validation/checklists.schemas.js';
-import { mediaService } from '../../media/service/media.service.js';
 
 type CreateTemplateDto = z.infer<typeof createTemplateSchema>;
 type UpdateTemplateDto = z.infer<typeof updateTemplateSchema>;
@@ -24,9 +23,8 @@ async function resolveMediaUrls(steps: any[], forDevice: boolean = true) {
     where: { id: { in: Array.from(assetIds) } }
   });
 
-  // Redesigned: Transform assets to use device-reachable URLs
-  const transformedAssets = assets.map(a => mediaService.transformAssetForDevice(a));
-  const assetMap = new Map(transformedAssets.map(a => [a.id, a.publicUrl]));
+  // publicUrl is always stored with the correct reachable base URL (set at upload time by media.service)
+  const assetMap = new Map(assets.map(a => [a.id, a.publicUrl]));
 
   return steps.map(s => ({
     ...s,

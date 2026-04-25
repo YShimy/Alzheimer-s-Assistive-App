@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Cognitive Sanctuary",
+    "slug": "cognitive-sanctuary",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "cognitive-sanctuary",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "android": {
+      "package": "com.yshim.cognitivesanctuary",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -16,7 +17,21 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.yshim.cognitivesanctuary",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSContactsUsageDescription": "We need access to your contacts to help you import them for memory support.",
+        "NSCameraUsageDescription": "We need access to your camera to take photos for your memory support profiles.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to personalize profiles and checklist steps."
+      }
     },
     "web": {
       "output": "static",
@@ -46,19 +61,19 @@
       "expo-image-picker",
       "expo-notifications"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSContactsUsageDescription": "We need access to your contacts to help you import them for memory support.",
-        "NSCameraUsageDescription": "We need access to your camera to take photos for your memory support profiles.",
-        "NSPhotoLibraryUsageDescription": "We need access to your photos to personalize profiles and checklist steps."
-      }
-    },
     "extra": {
       "eas": {
-        "projectId": "alzheimer-assistive-app"
-      }
-    }
+        "projectId": "4e10ba52-58a0-4320-80d8-77ee58f8fcd4"
+      },
+      "router": {}
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/YOUR_ACTUAL_UUID_HERE"
+    },
+    "owner": "yshimy"
   },
   "experiments": {
     "typedRoutes": true,

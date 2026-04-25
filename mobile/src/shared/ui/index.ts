@@ -7,3 +7,4 @@ export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { StatusChip } from './StatusChip';
 export { Icon, type IconName } from './Icon';
+export { PatientSwitcher } from './PatientSwitcher';

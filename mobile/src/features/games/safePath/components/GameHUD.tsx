@@ -4,6 +4,7 @@
  */
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing, radius, shadows } from '../../../../infrastructure/theme/tokens';
 
 interface GameHUDProps {
@@ -27,22 +28,28 @@ export function GameHUD({
   onPause,
   onHelp,
 }: GameHUDProps) {
+  const { t, i18n } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
         <View style={styles.badge}>
           <Ionicons name="layers-outline" size={14} color={colors.primary[500]} />
-          <Text style={styles.badgeText}>Lv {levelIndex + 1}</Text>
+          <Text style={styles.badgeText}>
+            {t('games.safePath.levelLabel')} {Intl.NumberFormat(i18n.language).format(levelIndex + 1)}
+          </Text>
         </View>
         <View style={styles.badge}>
           <Ionicons name="speedometer-outline" size={14} color={colors.warning.main} />
-          <Text style={styles.badgeText}>T{tier}</Text>
+          <Text style={styles.badgeText}>
+            {t('games.safePath.highestTier').substring(0, 1)}{Intl.NumberFormat(i18n.language).format(tier)}
+          </Text>
         </View>
       </View>
 
       <View style={styles.centerSection}>
         <Ionicons name="star-outline" size={16} color={colors.primary[500]} />
-        <Text style={styles.scoreText}>{totalScore}</Text>
+        <Text style={styles.scoreText}>{Intl.NumberFormat(i18n.language).format(totalScore)}</Text>
       </View>
 
       <View style={styles.rightSection}>

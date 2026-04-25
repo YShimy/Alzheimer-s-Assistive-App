@@ -84,7 +84,7 @@ export default function ContactsListScreen() {
     );
   };
 
-  if (loading) return <LoadingState message="Loading your favorite people..." />;
+  if (loading) return <LoadingState message={t('contacts.loading')} />;
 
   const priorityContacts = contacts.filter(c => c.memo && (c.memo.patientFavorite || c.memo.caregiverFavorite));
   const otherContacts = contacts.filter(c => !c.memo || (!c.memo.patientFavorite && !c.memo.caregiverFavorite));

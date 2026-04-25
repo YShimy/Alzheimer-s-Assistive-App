@@ -4,9 +4,11 @@
     "cancel": "Cancel",
     "ok": "OK",
     "error": "Error",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "managing": "Managing"
   },
   "auth": {
+    "code": "Code",
     "login": "Login",
     "logout": "Logout",
     "email": "Email",
@@ -94,7 +96,9 @@
     "checklistsTitle": "Checklists",
     "checklistsHeader": "Checklist Templates",
     "progressTitle": "Progress",
-    "progressHeader": "Patient Progress"
+    "progressHeader": "Patient Progress",
+    "contactsTitle": "Contacts",
+    "contactsHeader": "Patient Contacts"
   },
   "patientTabs": {
     "homeTitle": "Today",
@@ -103,6 +107,8 @@
     "remindersHeader": "My Reminders",
     "progressTitle": "Progress",
     "progressHeader": "My Progress",
+    "gamesTitle": "Games",
+    "gamesHeader": "Cognitive Games",
     "checklistsTitle": "Checklists",
     "checklistsHeader": "My Checklists"
   },
@@ -125,8 +131,13 @@
     "help": "Help",
     "goodMorning": "Good morning,",
     "goodAfternoon": "Good afternoon,",
-    "goodEvening": "Good evening,"
+    "goodEvening": "Good evening,",
+    "errorNoCode": "Please enter an invite code",
+    "connectSuccess": "Successfully linked with your caregiver!",
+    "errorLinkFailed": "Failed to link with caregiver",
+    "defaultName": "there"
   },
+
   "caregiverHome": {
     "welcomeBack": "Welcome back,",
     "statsLinked": "Linked Patients",
@@ -135,9 +146,14 @@
     "noLinkedPatients": "No linked patients yet. Generate an invite code and share it with your patient.",
     "active": "Active",
     "pending": "Pending",
+    "revoked": "Revoked",
     "waitingForPatient": "Waiting for patient to accept",
     "inviteCodeGenerated": "Invite Code Generated",
-    "shareCodeMsg": "Share this code with your patient:\n\n{{code}}\n\nThey can enter it in their app to connect with you."
+    "shareCodeMsg": "Share this code with your patient:\n\n{{code}}\n\nThey can enter it in their app to connect with you.",
+    "reminders": "Reminders",
+    "checklists": "Checklists",
+    "progress": "Progress",
+    "contacts": "Contacts"
   },
   "caregiverPatients": {
     "loading": "Loading patients...",
@@ -146,9 +162,13 @@
     "createReminders": "Create Reminders",
     "editReminders": "Edit Reminders",
     "viewProgress": "View Progress",
+    "createChecklists": "Create Checklists",
     "manageContacts": "Manage Contacts",
     "revokeLink": "Revoke Link",
-    "revokeConfirm": "Are you sure you want to revoke this care link?"
+    "revokeAction": "Revoke",
+    "revokeConfirm": "Are you sure you want to revoke this care link?",
+    "successRevoked": "Care link revoked successfully",
+    "errorRevokeFailed": "Failed to revoke care link"
   },
   "caregiverReminders": {
     "loading": "Loading reminders...",
@@ -177,11 +197,25 @@
     "saveChangesBtn": "Save Changes",
     "archiveBtn": "Archive Reminder",
     "archiveConfirm": "Archive \"{{title}}\"? The patient will no longer see it.",
+    "noPatientSelected": "No patient selected",
+    "selectPatientMsg": "Go to the Dashboard and tap a patient to manage their reminders.",
+    "createdAlert": "Created",
+    "createdSuccess": "\"{{title}}\" has been added.",
+    "updatedAlert": "Updated",
+    "updatedSuccess": "\"{{title}}\" has been saved.",
+    "validation": {
+      "titleRequired": "Title is required",
+      "timeFormat": "Use HH:mm format (e.g. 08:30)",
+      "dateFormat": "Use YYYY-MM-DD format",
+      "snoozeRange": "1–120 minutes"
+    },
     "selectChecklist": "Select a Checklist",
     "checklistLinked": "Checklist linked",
     "guidedHelper": "Patient will follow step-by-step instructions",
     "noChecklists": "No checklists available",
-    "createChecklistFirst": "Create a checklist first to link it to this reminder"
+    "createChecklistFirst": "Create a checklist first to link it to this reminder",
+    "selectChecklistBtn": "Select Checklist",
+    "checklistHelp": "This checklist will be shown to the patient when the reminder triggers."
   },
   "caregiverChecklists": {
     "backendNoticeTitle": "Backend Not Yet Implemented",
@@ -207,7 +241,29 @@
     "createTplBtn": "Create Template",
     "saveChangesBtn": "Save Changes",
     "archiveTplBtn": "Archive Template",
-    "archiveConfirm": "Archive \"{{title}}\"? Patients will no longer see it."
+    "archiveConfirm": "Archive \"{{title}}\"? Patients will no longer see it.",
+    "noPatientSelected": "No patient selected",
+    "selectPatientMsg": "Go to the Dashboard and tap a patient to manage their checklists.",
+    "validation": {
+      "titleRequired": "Title is required",
+      "minSteps": "At least one step is required to create a checklist.",
+      "stepTitleRequired": "Step title required",
+      "numberRequired": "Enter a number"
+    },
+    "stepNumber": "Step {{num}}",
+    "addImage": "Add Image",
+    "addVideo": "Add Video",
+    "imageAttached": "Image attached",
+    "videoAttached": "Video attached",
+    "minutes": "min",
+    "steps": "steps",
+    "createdAlert": "Created",
+    "createdSuccess": "\"{{title}}\" template added.",
+    "savedAlert": "Saved",
+    "savedSuccess": "\"{{title}}\" updated.",
+    "archiveAlert": "Archive Template",
+    "notAvailable": "Not yet available",
+    "backendNotImplemented": "The checklist backend is not yet implemented. Your form was validated successfully."
   },
   "caregiverProgress": {
     "title": "Patient Progress",
@@ -233,8 +289,8 @@
     "snoozeLabel": "Snooze",
     "snoozeDuration": "Snooze duration",
     "reminderType": "Reminder Type",
-    "simple": "Simple",
-    "guided": "Guided",
+    "simple": "One Step",
+    "guided": "Step by step",
     "simpleDesc": "One-tap complete",
     "guidedDesc": "Step-by-step with checklist",
     "priority": "Priority",
@@ -249,7 +305,14 @@
     "escalationAlert": "Caregiver notified",
     "completedWithChecklist": "Completed with checklist",
     "stepsCompleted": "completed",
-    "complete": "Complete"
+    "complete": "Complete",
+    "active": "Active",
+    "inactive": "Inactive",
+    "templateNotFound": "Checklist template not found",
+    "emptyChecklistTitle": "Empty Checklist",
+    "emptyChecklistMsg": "This checklist has no steps yet. Ask your caregiver to add some.",
+    "failedToComplete": "Failed to complete reminder",
+    "checklistDefaultTitle": "Checklist"
   },
   "patientProgress": {
     "weekly": "Weekly Overview",
@@ -279,7 +342,53 @@
     "taskCompletion": "Task Completion",
     "actionsDone": "Done",
     "actionsSnoozed": "Snoozed",
-    "actionsSkipped": "Skipped"
+    "actionsSkipped": "Skipped",
+    "errorLoading": "We couldn't load your progress. Please try again.",
+    "trend": {
+      "default": "Consistency is key!",
+      "scoreUp": "You're scoring higher than last week. Great work!",
+      "consistencyUp": "You're more consistent than last week. Keep it up!",
+      "steady": "Maintaining a steady pace. You've got this.",
+      "down": "It's normal to have off weeks. Tomorrow is a fresh start."
+    },
+    "days": "days",
+    "currentStreak": "Current Streak",
+    "bestStreak": "Best Streak",
+    "keepItUp": "Looking great, keep it up!",
+    "headerTitle": "Your Progress",
+    "headerSubtitle": "Consistent practice helps strengthen your long-term cognitive health.",
+    "currentStreaks": "Current Streaks",
+    "streaks": {
+      "reminders": "Reminders",
+      "checklists": "Checklists",
+      "games": "Games"
+    },
+    "priorityLevels": {
+      "normal": "Normal",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "reminderConsistency7": "Reminder Consistency (Last 7 Days)",
+    "gamePerformance7": "Game Performance (Last 7 Days)",
+    "priorityBreakdown7": "Reminder Priority Breakdown (7 Days)",
+    "alerts": "{{count}} alert",
+    "alerts_plural": "{{count}} alerts",
+    "priorityStats": "{{done}} done · {{skip}} skipped · {{snooze}} snoozed",
+    "remindersByCategory30": "Reminders by Category (Last 30 Days)",
+    "checklistsByCategory30": "Checklists by Category (Last 30 Days)",
+    "checklistActivity": "Checklist Activity",
+    "completedThisWeek": "Completed This Week",
+    "completedThisMonth": "Completed This Month",
+    "recentChecklists": "Recent Checklists",
+    "escalationAlerts": "Escalation Alerts",
+    "reminder": "Reminder",
+    "reasons": {
+      "critical_skipped": "Critical reminder skipped",
+      "high_priority_skipped": "High priority skipped",
+      "repeated_skip_pattern": "Multiple reminders skipped",
+      "guided_not_started": "Guided task not started",
+      "default": "Reminder alert"
+    }
   },
   "patientChecklists": {
     "loading": "Loading checklists…",
@@ -295,7 +404,10 @@
     "stepsDone": "{{done}} of {{total}} steps done",
     "completePartialBtn": "Complete (partial)",
     "completeBtn": "Complete Checklist",
-    "saveExitBtn": "Save & Exit"
+    "saveExitBtn": "Save & Exit",
+    "stepNumber": "Step {{num}}",
+    "steps": "steps",
+    "step": "step"
   },
   "categories": {
     "medication": "Medication",
@@ -317,7 +429,14 @@
     "wed": "Wed",
     "thu": "Thu",
     "fri": "Fri",
-    "sat": "Sat"
+    "sat": "Sat",
+    "sun_short": "Sun",
+    "mon_short": "Mon",
+    "tue_short": "Tue",
+    "wed_short": "Wed",
+    "thu_short": "Thu",
+    "fri_short": "Fri",
+    "sat_short": "Sat"
   },
   "contacts": {
     "title": "Important People",
@@ -394,6 +513,7 @@
       "activeBanner": "Trace the safe path!",
       "levelCompleteTitle": "Level Complete!",
       "levelCompleteSub": "Great job navigating safely",
+      "levelLabel": "Level",
       "scoreLabel": "Score",
       "timeLabel": "Time",
       "streakLabel": "Streak",
@@ -431,7 +551,134 @@
     },
     "routineSequence": {
       "title": "Routine Sequence",
-      "description": "Practice daily routines and remember step order"
+      "description": "Practice daily routines and remember step order",
+      "tiers": {
+        "1": "Beginner",
+        "2": "Getting Started",
+        "3": "Skill Building",
+        "4": "Intermediate",
+        "5": "Advanced",
+        "6": "Expert",
+        "7": "Master"
+      },
+      "levelProgress": "Level {{current}} of {{total}}",
+      "studyTitle": "Study the Routine",
+      "rememberBtn": "I Remember This",
+      "stepLabel": "Step {{num}}",
+      "stepAnswered": "Step Answered",
+      "promptShown": "Prompt Shown",
+      "correctAnswer": "Correct Answer:",
+      "gotItBtn": "Got it, continue",
+      "wellDone": "Well Done!",
+      "supportMsg": "You completed the routine with some support. Great effort!",
+      "successMsg": "You completed the routine successfully.",
+      "seeResultsBtn": "See Results",
+      "sessionComplete": "Session Complete!",
+      "accuracy": "Accuracy",
+      "minutes": "minutes",
+      "avgPrompts": "Avg. Prompts",
+      "outstandingMsg": "Outstanding performance! Your memory is sharp.",
+      "goodWorkMsg": "Good work! You are improving steadily.",
+      "keepTryingMsg": "Keep trying! Practice makes the routine easier.",
+      "backToGames": "Back to Games",
+      "playAgain": "Play Again",
+      "nextRoutine": "Next Routine",
+      "startSession": "Start Session",
+      "howToPlay": "How to Play",
+      "howToPlaySteps": "1. Study the routine steps shown\n2. Remember the correct order\n3. Pick the next step when prompted\n4. Build the full routine",
+      "recognitionQuestion": "What comes first in \"{{title}}\"?",
+      "recallQuestion": "What is step {{step}} in \"{{title}}\"?",
+      "tip": "Tip: {{hint}}"
+    },
+    "routines": {
+      "morning-coffee": { "title": "Make Coffee" },
+      "wash-hands": { "title": "Wash Hands" },
+      "getting-ready": { "title": "Get Ready to Go Out" },
+      "prepare-tea": { "title": "Make Tea" },
+      "take-medication": { "title": "Take Medication" },
+      "brush-teeth": { "title": "Brush Teeth" },
+      "make-bed": { "title": "Make the Bed" },
+      "water-plants": { "title": "Water the Plants" },
+      "steps": {
+        "mc-1": { "label": "Fill kettle with water", "hint": "Use fresh cold water" },
+        "mc-2": { "label": "Boil the water", "hint": "Wait for it to bubble" },
+        "mc-3": { "label": "Add coffee to cup", "hint": "One spoonful is enough" },
+        "mc-4": { "label": "Pour hot water", "hint": "Be careful, it is hot" },
+        "mc-5": { "label": "Stir and enjoy", "hint": "Mix well before drinking" },
+        "wh-1": { "label": "Turn on the tap", "hint": "Use warm water" },
+        "wh-2": { "label": "Wet your hands", "hint": "Get them fully wet" },
+        "wh-3": { "label": "Apply soap", "hint": "A small amount is enough" },
+        "wh-4": { "label": "Rub for 20 seconds", "hint": "Sing Happy Birthday twice" },
+        "wh-5": { "label": "Rinse thoroughly", "hint": "Wash all soap away" },
+        "wh-6": { "label": "Dry with towel", "hint": "Pat gently, do not rub" },
+        "gr-1": { "label": "Check the weather", "hint": "Look outside or check phone" },
+        "gr-2": { "label": "Choose appropriate clothes", "hint": "Dress for the weather" },
+        "gr-3": { "label": "Put on shoes", "hint": "Comfortable walking shoes" },
+        "gr-4": { "label": "Check pockets for keys", "hint": "Keys, wallet, phone" },
+        "gr-5": { "label": "Lock the door", "hint": "Turn key until it clicks" },
+        "pt-1": { "label": "Fill kettle with water", "hint": "Fresh cold water" },
+        "pt-2": { "label": "Boil the water", "hint": "Wait for bubbles" },
+        "pt-3": { "label": "Place tea bag in cup", "hint": "One bag per cup" },
+        "pt-4": { "label": "Pour hot water", "hint": "Fill to near the top" },
+        "pt-5": { "label": "Steep for 3 minutes", "hint": "Wait patiently" },
+        "pt-6": { "label": "Remove tea bag", "hint": "Squeeze gently against side" },
+        "tm-1": { "label": "Read the label carefully", "hint": "Check name and dosage" },
+        "tm-2": { "label": "Get a glass of water", "hint": "Room temperature is best" },
+        "tm-3": { "label": "Take the correct dose", "hint": "Count the pills" },
+        "tm-4": { "label": "Swallow with water", "hint": "Drink all the water" },
+        "tm-5": { "label": "Note that you took it", "hint": "Check off or mark time" },
+        "bt-1": { "label": "Wet the toothbrush", "hint": "Run under tap briefly" },
+        "bt-2": { "label": "Apply toothpaste", "hint": "Pea-sized amount" },
+        "bt-3": { "label": "Brush for 2 minutes", "hint": "All sides, top and bottom" },
+        "bt-4": { "label": "Rinse mouth", "hint": "Spit, do not swallow" },
+        "bt-5": { "label": "Rinse toothbrush", "hint": "Clean the brush" },
+        "mb-1": { "label": "Pull up the fitted sheet", "hint": "Tuck under mattress" },
+        "mb-2": { "label": "Spread the top sheet", "hint": "Even on both sides" },
+        "mb-3": { "label": "Add the blanket or duvet", "hint": "Center it nicely" },
+        "mb-4": { "label": "Arrange pillows", "hint": "Fluff and place at head" },
+        "wp-1": { "label": "Check if soil is dry", "hint": "Stick finger an inch down" },
+        "wp-2": { "label": "Fill watering can", "hint": "Room temperature water" },
+        "wp-3": { "label": "Pour slowly at base", "hint": "Avoid getting leaves wet" },
+        "wp-4": { "label": "Let water soak in", "hint": "Wait a moment" },
+        "wp-5": { "label": "Empty excess water", "hint": "Drain the saucer" }
+      }
     }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "importBtn": "Import",
+    "priorityTitle": "Favorites",
+    "allTitle": "All Contacts",
+    "noContacts": "No Contacts",
+    "noContactsMsg": "Import contacts from your device to quickly call or message your loved ones.",
+    "loading": "Loading your favorite people...",
+    "memo": "Memo",
+    "call": "Call",
+    "email": "Email",
+    "importTitle": "Import Contacts",
+    "importSearch": "Search contacts...",
+    "selectedCount": "{{count}} selected",
+    "confirmImport": "Confirm Import",
+    "permissionDeniedTitle": "Permission Denied",
+    "permissionDeniedMsg": "We need access to your contacts to help you import them.",
+    "noSelectionTitle": "No contacts selected",
+    "noSelectionMsg": "Please select at least one contact to import.",
+    "importSuccessTitle": "Success",
+    "importSuccessMsg": "Imported {{count}} contacts successfully.",
+    "importErrorTitle": "Error",
+    "importErrorMsg": "Failed to import contacts. Please try again.",
+    "importLoading": "Reading your contacts..."
+  },
+  "contactConsent": {
+    "title": "Connect Your Loved Ones",
+    "description": "To help you quickly reach your family and friends, we can import them from your device.",
+    "points": {
+      "0": "We only read the contacts you select.",
+      "1": "You can add photos to help recognize them.",
+      "2": "Caregivers can add helpful memos.",
+      "3": "We never share your contacts with anyone."
+    },
+    "grantBtn": "Allow Access",
+    "denyBtn": "Not Now"
   }
 }

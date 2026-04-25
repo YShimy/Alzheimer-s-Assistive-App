@@ -4,12 +4,18 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "start:tunnel": "expo start --tunnel",
+    "start:remote": "EXPO_PUBLIC_API_URL=$REMOTE_API_URL expo start --tunnel",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "dev:android": "npx expo run:android",
     "dev:ios": "npx expo run:ios",
+    "eas:dev": "eas build --profile development --platform all",
+    "eas:preview": "eas build --profile preview --platform all",
+    "eas:preview:ios": "eas build --profile preview --platform ios",
+    "eas:preview:android": "eas build --profile preview --platform android",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "expo lint"

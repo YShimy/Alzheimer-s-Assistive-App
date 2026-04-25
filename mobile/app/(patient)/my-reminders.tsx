@@ -40,7 +40,7 @@ import { EventNames } from '@/src/infrastructure/events/eventNames';
  * Supports pull-to-refresh, per-action loading states, and error feedback.
  */
 export default function PatientRemindersScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const userId = useSessionStore((s) => s.userId);
   const { reminders, loading, error, refreshing, refresh, reload } = useReminders(userId, { active: 'true', pendingOnly: true });
@@ -64,12 +64,12 @@ export default function PatientRemindersScreen() {
           const template = templates.find(t => t.id === reminder.linkedChecklist?.id);
 
           if (!template) {
-            Alert.alert(t('common.error'), 'Checklist template not found');
+            Alert.alert(t('common.error'), t('patientReminders.templateNotFound'));
             return;
           }
 
           if (!template.steps || template.steps.length === 0) {
-            Alert.alert('Empty Checklist', 'This checklist has no steps yet. Ask your caregiver to add some.');
+            Alert.alert(t('patientReminders.emptyChecklistTitle'), t('patientReminders.emptyChecklistMsg'));
             return;
           }
 
@@ -213,7 +213,7 @@ export default function PatientRemindersScreen() {
               // Refresh reminders list
               await refresh();
             } catch (err: any) {
-              Alert.alert(t('common.error'), err.message || 'Failed to complete reminder');
+              Alert.alert(t('common.error'), err.message || t('patientReminders.failedToComplete'));
             }
           }
           setActiveRun(null);
@@ -234,7 +234,7 @@ interface ReminderCardProps {
 }
 
 function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCardProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isGuided = reminder.reminderType === 'guided';
   const isHighPriority = reminder.priority === 'high' || reminder.priority === 'critical';
   
@@ -262,7 +262,7 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
               <Icon name="time-outline" size={12} color={colors.neutral[400]} />
               <Text style={styles.cardTime}>{reminder.scheduledTime}</Text>
               <Text style={styles.dot}>·</Text>
-              <Text style={styles.cardCategory}>{formatCategory(reminder.category)}</Text>
+              <Text style={styles.cardCategory}>{t(`categories.${reminder.category}`, { defaultValue: reminder.category })}</Text>
               {/* Reminder Type Badge */}
               <Text style={styles.dot}>·</Text>
               <Text style={[styles.cardCategory, isGuided && styles.guidedText]}>
@@ -274,13 +274,13 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
               <View style={styles.checklistInfo}>
                 <Icon name="list-outline" size={12} color={colors.primary[500]} />
                 <Text style={styles.checklistText}>
-                  {reminder.linkedChecklist.title} · {reminder.linkedChecklist.stepCount} {t('patientReminders.steps')}
+                  {reminder.linkedChecklist.title} · {Intl.NumberFormat(i18n.language).format(reminder.linkedChecklist.stepCount)} {reminder.linkedChecklist.stepCount === 1 ? t('patientChecklists.step') : t('patientChecklists.steps')}
                 </Text>
               </View>
             )}
           </View>
           <StatusChip
-            label={reminder.isActive ? 'Active' : 'Inactive'}
+            label={reminder.isActive ? t('patientReminders.active') : t('patientReminders.inactive')}
             variant={reminder.isActive ? 'success' : 'default'}
           />
         </View>
@@ -294,7 +294,7 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
       {actionLoading ? (
         <View style={styles.actionLoading}>
           <ActivityIndicator size="small" color={colors.primary[500]} />
-          <Text style={styles.actionLoadingText}>Saving…</Text>
+          <Text style={styles.actionLoadingText}>{t('patientReminders.saving')}</Text>
         </View>
       ) : isGuided ? (
         // Guided Reminder: Start Now, Snooze, Skip
@@ -382,7 +382,7 @@ function ActionButton({
 // ─── Detail Modal ───────────────────────────────────────────────────────────
 
 function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null; onClose: () => void }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   if (!reminder) return null;
 
   const days = [
@@ -407,7 +407,7 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
               <Icon name={getCategoryIcon(reminder.category)} size={32} color={colors.primary[500]} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.detailTitle}>{reminder.title}</Text>
-                <StatusChip label={formatCategory(reminder.category)} variant="info" />
+                <StatusChip label={t(`categories.${reminder.category}`, { defaultValue: reminder.category })} variant="info" />
               </View>
             </View>
           </View>
@@ -462,7 +462,7 @@ interface ChecklistExecutionModalProps {
 }
 
 function ChecklistExecutionModal({ run, visible, onClose, onComplete }: ChecklistExecutionModalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [stepProgress, setStepProgress] = useState<StepProgress[]>([]);
   const [completing, setCompleting] = useState(false);
 
@@ -511,7 +511,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={styles.runContainer}>
         <View style={styles.runHeader}>
-          <Text style={styles.runTitle}>{run.template?.title || 'Checklist'}</Text>
+          <Text style={styles.runTitle}>{run.template?.title || t('patientReminders.checklistDefaultTitle')}</Text>
           <Pressable onPress={onClose} style={styles.runClose}>
             <Icon name="close" size={24} color={colors.neutral[600]} />
           </Pressable>
@@ -521,7 +521,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
         <View style={styles.runProgressSection}>
           <View style={styles.runProgressLabelRow}>
             <Text style={styles.runProgressLabel}>
-              {completedCount} / {totalSteps} {t('reminders.stepsCompleted')}
+              {Intl.NumberFormat(i18n.language).format(completedCount)} / {Intl.NumberFormat(i18n.language).format(totalSteps)} {t('patientReminders.stepsCompleted')}
             </Text>
             {allCompleted && (
               <Icon name="checkmark-circle" size={18} color={colors.success.main} />
@@ -552,7 +552,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
                   {done && <Icon name="checkmark" size={16} color="#fff" />}
                 </View>
                 <View style={styles.runStepInfo}>
-                  <Text style={styles.runStepNumber}>Step {idx + 1}</Text>
+                  <Text style={styles.runStepNumber}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
                   <Text style={[styles.runStepTitle, done && styles.runStepTitleDone]}>{step.title}</Text>
                   {step.description ? (
                     <Text style={styles.runStepDesc}>{step.description}</Text>
@@ -575,14 +575,14 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
 
           <View style={{ gap: spacing.md, paddingBottom: spacing['4xl'], marginTop: spacing.xl }}>
             <AppButton
-              title={completing ? 'Saving...' : allCompleted ? t('reminders.complete') : 'Complete Partial'}
+              title={completing ? t('patientReminders.saving') : allCompleted ? t('patientReminders.complete') : t('patientChecklists.completePartialBtn')}
               onPress={handleComplete}
               loading={completing}
               variant={allCompleted ? 'primary' : 'outline'}
               icon={<Icon name="checkmark-circle-outline" size={20} color={allCompleted ? '#fff' : colors.primary[500]} />}
             />
             <AppButton
-              title="Save & Exit"
+              title={t('patientChecklists.saveExitBtn')}
               onPress={onClose}
               variant="ghost"
             />

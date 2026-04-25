@@ -50,17 +50,17 @@ export default function PatientHomeScreen() {
 
   const handleAcceptInvite = async () => {
     if (!inviteCode.trim()) {
-      Alert.alert('Error', 'Please enter an invite code');
+      Alert.alert(t('common.error'), t('patientHome.errorNoCode', 'Please enter an invite code'));
       return;
     }
     setAccepting(true);
     try {
       await carelinksApi.acceptInvite(inviteCode.trim().toUpperCase());
-      Alert.alert('Success', 'Successfully linked with your caregiver!');
+      Alert.alert(t('common.success', 'Success'), t('patientHome.connectSuccess', 'Successfully linked with your caregiver!'));
       setInviteCode('');
       setShowInviteInput(false);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to link with caregiver');
+      Alert.alert(t('common.error'), error.message || t('patientHome.errorLinkFailed', 'Failed to link with caregiver'));
     } finally {
       setAccepting(false);
     }
@@ -72,7 +72,7 @@ export default function PatientHomeScreen() {
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>{greeting}</Text>
-          <Text style={styles.name}>{displayName || 'there'}</Text>
+          <Text style={styles.name}>{displayName || t('patientHome.defaultName', 'there')}</Text>
         </View>
         <Pressable onPress={handleLogout} style={styles.logoutBtn} accessibilityLabel="Log out">
           <Icon name="log-out-outline" size={22} color={colors.on_surface_variant} />

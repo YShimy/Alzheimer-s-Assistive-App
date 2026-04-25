@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl, Pressable } from 'r
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { ScreenContainer, AppCard, Icon, LoadingState, StatusChip, EmptyState } from '@/src/shared/ui';
+import { PatientSwitcher } from '@/src/shared/ui/PatientSwitcher';
+import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
-import { carelinksApi } from '@/src/features/carelinks/api';
 import { usePatientProgress } from '@/src/features/progress/usePatientProgress';
 import { useChecklistTracking, usePriorityBreakdown, useEscalations } from '@/src/features/progress/hooks';
-import type { CareLink } from '@/src/features/carelinks/types';
 import { useFocusEffect } from 'expo-router';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
@@ -16,27 +17,13 @@ import { StreakCard } from '@/src/shared/ui/cards/StreakCard';
 import { CategoryProgressCard } from '@/src/shared/ui/cards/CategoryProgressCard';
 import { TrendLineChart, StackedConsistencyChart } from '@/src/shared/ui/charts/ProgressCharts';
 
-
 export default function CaregiverProgressScreen() {
-  const { t } = useTranslation();
-  const [links, setLinks] = useState<CareLink[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
-  const [loadingLinks, setLoadingLinks] = useState(true);
+  const { t, i18n } = useTranslation();
 
-  // Load linked patients
-  useEffect(() => {
-    carelinksApi
-      .getMyLinks()
-      .then(({ careLinks }) => {
-        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
-        setLinks(active);
-        if (active.length > 0 && active[0]!.patientUserId) {
-          setSelectedPatient(active[0]!.patientUserId);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoadingLinks(false));
-  }, []);
+  // ─── Global patient context ─────────────────────────────────────────────
+  useCaregiverLinks();
+  const { links, selectedPatientId, selectedPatientName, loaded } = useCaregiverPatientStore();
+  const selectedPatient = selectedPatientId;
 
   const { loading: progressLoading, refreshing, error, overview, streaks, categories, charts, reload, refresh } = usePatientProgress(selectedPatient);
   const { data: checklistTracking } = useChecklistTracking(selectedPatient);
@@ -54,7 +41,7 @@ export default function CaregiverProgressScreen() {
     }, [reload])
   );
 
-  if (loadingLinks) return <LoadingState message={t('loading') || 'Loading...'} />;
+  if (!loaded) return <LoadingState message={t('loading') || 'Loading...'} />;
 
   if (links.length === 0) {
     return (
@@ -68,7 +55,18 @@ export default function CaregiverProgressScreen() {
     );
   }
 
-  const selectedLink = links.find((l) => l.patientUserId === selectedPatient);
+  if (!selectedPatient) {
+    return (
+      <ScreenContainer scroll={false}>
+        <EmptyState
+          icon="person-outline"
+          title={t('caregiverReminders.noPatientSelected')}
+          message={t('caregiverReminders.selectPatientMsg')}
+        />
+        <PatientSwitcher />
+      </ScreenContainer>
+    );
+  }
 
   const renderTrendMessage = (delta: number, context: 'consistency' | 'score') => {
     if (!overview) return null;
@@ -76,12 +74,12 @@ export default function CaregiverProgressScreen() {
     let color = colors.neutral[600];
 
     if (delta > 0) {
-      text = context === 'score' ? "Scoring higher than last week. Great work!" : "More consistent than last week. Keep it up!";
+      text = context === 'score' ? t('patientProgress.trend.scoreUp') : t('patientProgress.trend.consistencyUp');
       color = colors.success.main as any;
     } else if (delta < 0 && Math.abs(delta) < 0.2) {
-      text = "Maintaining a steady pace.";
+      text = t('patientProgress.trend.steady');
     } else if (delta < 0) {
-      text = "It's normal to have off weeks.";
+      text = t('patientProgress.trend.down');
     }
 
     return (
@@ -99,7 +97,7 @@ export default function CaregiverProgressScreen() {
           <View style={{ flex: 1 }}>
             <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
             <Text style={styles.patientName}>
-              {selectedLink?.patient?.displayName ?? 'Patient'}
+              {selectedPatientName ?? 'Patient'}
             </Text>
           </View>
         </View>
@@ -115,11 +113,11 @@ export default function CaregiverProgressScreen() {
         <View style={{ flex: 1 }}>
           <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
           <Text style={styles.patientName}>
-            {selectedLink?.patient?.displayName ?? 'Patient'}
+            {selectedPatientName ?? 'Patient'}
           </Text>
         </View>
         {links.length > 1 && (
-          <StatusChip label={t('caregiverProgress.patients', { count: links.length })} variant="info" />
+          <PatientSwitcher />
         )}
       </View>
 
@@ -128,13 +126,13 @@ export default function CaregiverProgressScreen() {
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} colors={[colors.primary.main]} />}
       >
-        <Text style={styles.headerTitle}>Patient Progress</Text>
-        <Text style={styles.headerSubtitle}>Viewing progress for {selectedLink?.patient?.displayName ?? 'Patient'}</Text>
+        <Text style={styles.headerTitle}>{t('caregiverTabs.progressHeader')}</Text>
+        <Text style={styles.headerSubtitle}>{t('caregiverReminders.managingFor')} {selectedPatientName ?? t('auth.patient')}</Text>
 
         {/* ESCALATION ALERTS */}
         {escalationData && escalationData.escalations.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>⚠️ Escalation Alerts</Text>
+            <Text style={styles.sectionTitle}>⚠️ {t('patientProgress.escalationAlerts')}</Text>
             {escalationData.escalations.slice(0, 5).map((alert) => {
               const priorityColor =
                 alert.priority === 'critical'
@@ -143,15 +141,8 @@ export default function CaregiverProgressScreen() {
                   ? '#F59E0B'
                   : colors.neutral[500];
 
-              const reasonLabels: Record<string, string> = {
-                critical_skipped: 'Critical reminder skipped',
-                high_priority_skipped: 'High priority skipped',
-                repeated_skip_pattern: 'Multiple reminders skipped',
-                guided_not_started: 'Guided task not started',
-              };
-
               const reasonLabel =
-                reasonLabels[alert.escalationReason ?? ''] || 'Reminder alert';
+                t(`patientProgress.reasons.${alert.escalationReason}`, { defaultValue: t('patientProgress.reasons.default') });
 
               return (
                 <AppCard
@@ -161,7 +152,7 @@ export default function CaregiverProgressScreen() {
                   <View style={styles.alertHeader}>
                     <Icon name="warning-outline" size={18} color={priorityColor as string} />
                     <Text style={styles.alertTitle} numberOfLines={1}>
-                      {alert.reminderTitle ?? 'Reminder'}
+                      {alert.reminderTitle ?? t('patientProgress.reminder')}
                     </Text>
                     {alert.priority && (
                       <View
@@ -171,14 +162,14 @@ export default function CaregiverProgressScreen() {
                         ]}
                       >
                         <Text style={[styles.priorityBadgeText, { color: priorityColor as string }]}>
-                          {alert.priority.charAt(0).toUpperCase() + alert.priority.slice(1)}
+                          {t(`patientReminders.priority${alert.priority.charAt(0).toUpperCase() + alert.priority.slice(1)}`)}
                         </Text>
                       </View>
                     )}
                   </View>
                   <Text style={styles.alertReason}>{reasonLabel}</Text>
                   <Text style={styles.alertTime}>
-                    {new Date(alert.timestamp).toLocaleString()}
+                    {new Date(alert.timestamp).toLocaleString(i18n.language)}
                   </Text>
                 </AppCard>
               );
@@ -189,17 +180,17 @@ export default function CaregiverProgressScreen() {
         {/* STREAKS SECTION */}
         {streaks && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Current Streaks</Text>
-            <StreakCard title="Reminders" icon="notifications-outline" data={streaks.reminders} color={colors.primary.main} />
-            <StreakCard title="Checklists" icon="checkbox-outline" data={streaks.checklists} color={colors.secondary.main} />
-            <StreakCard title="Games" icon="game-controller-outline" data={streaks.games} color={colors.tertiary.main} />
+            <Text style={styles.sectionTitle}>{t('patientProgress.currentStreaks')}</Text>
+            <StreakCard title={t('patientProgress.streaks.reminders')} icon="notifications-outline" data={streaks.reminders} color={colors.primary.main} />
+            <StreakCard title={t('patientProgress.streaks.checklists')} icon="checkbox-outline" data={streaks.checklists} color={colors.secondary.main} />
+            <StreakCard title={t('patientProgress.streaks.games')} icon="game-controller-outline" data={streaks.games} color={colors.tertiary.main} />
           </View>
         )}
 
         {/* CONSISTENCY CHARTS */}
         {charts && charts.reminderSeries && charts.reminderSeries.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Reminder Consistency (Last 7 Days)</Text>
+            <Text style={styles.sectionTitle}>{t('patientProgress.reminderConsistency7')}</Text>
             <AppCard style={styles.chartContainer}>
               {overview && renderTrendMessage(overview.comparison.reminderConsistencyDelta, 'consistency')}
               <StackedConsistencyChart data={charts.reminderSeries} type="reminders" />
@@ -210,7 +201,7 @@ export default function CaregiverProgressScreen() {
         {/* GAME SCORE CHARTS */}
         {charts && charts.gameScoreSeries && charts.gameScoreSeries.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Game Performance (Last 7 Days)</Text>
+            <Text style={styles.sectionTitle}>{t('patientProgress.gamePerformance7')}</Text>
             <AppCard style={styles.chartContainer}>
               {overview && renderTrendMessage(overview.comparison.gameScoreDeltaVsPrevious, 'score')}
               <TrendLineChart data={charts.gameScoreSeries} />
@@ -221,7 +212,7 @@ export default function CaregiverProgressScreen() {
         {/* PRIORITY BREAKDOWN */}
         {priorityData && priorityData.priorityBreakdown.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Reminder Priority Breakdown (7 Days)</Text>
+            <Text style={styles.sectionTitle}>{t('patientProgress.priorityBreakdown7')}</Text>
             {priorityData.criticalAdherenceSummary && (
               <Text style={styles.adherenceSummary}>{priorityData.criticalAdherenceSummary}</Text>
             )}
@@ -233,7 +224,7 @@ export default function CaregiverProgressScreen() {
                   critical: colors.error.main as string,
                 };
                 const barColor = priorityColors[item.priority] ?? (colors.primary.main as string);
-                const pctLabel = `${Math.round(item.completionRate * 100)}%`;
+                const pctLabel = Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 }).format(item.completionRate);
                 const trendIcon =
                   item.trendDelta === null
                     ? null
@@ -254,23 +245,22 @@ export default function CaregiverProgressScreen() {
                 return (
                   <View key={item.priority} style={styles.priorityRow}>
                     <View style={styles.priorityHeader}>
-                      <Text style={styles.priorityLabel}>
-                        {item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}
-                      </Text>
+                    <Text style={styles.priorityLabel}>
+                      {t(`patientProgress.priorityLevels.${item.priority}`, { defaultValue: item.priority })}
+                    </Text>
                       <View style={styles.priorityMeta}>
                         {trendIcon && (
                           <Text style={[styles.trendIndicator, { color: trendColor as string }]}>
                             {trendIcon}{' '}
                             {item.trendDelta !== null
-                              ? `${Math.round(Math.abs(item.trendDelta) * 100)}%`
+                              ? Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 }).format(Math.abs(item.trendDelta))
                               : ''}
                           </Text>
                         )}
                         {item.escalationCount > 0 && (
                           <View style={styles.escalationBadge}>
                             <Text style={styles.escalationBadgeText}>
-                              {item.escalationCount} alert
-                              {item.escalationCount > 1 ? 's' : ''}
+                              {t('patientProgress.alerts', { count: item.escalationCount })}
                             </Text>
                           </View>
                         )}
@@ -289,8 +279,11 @@ export default function CaregiverProgressScreen() {
                       />
                     </View>
                     <Text style={styles.prioritySubtext}>
-                      {item.doneCount} done · {item.skipCount} skipped ·{' '}
-                      {item.snoozeCount} snoozed
+                      {t('patientProgress.priorityStats', { 
+                        done: Intl.NumberFormat(i18n.language).format(item.doneCount), 
+                        skip: Intl.NumberFormat(i18n.language).format(item.skipCount), 
+                        snooze: Intl.NumberFormat(i18n.language).format(item.snoozeCount) 
+                      })}
                     </Text>
                   </View>
                 );
@@ -302,44 +295,44 @@ export default function CaregiverProgressScreen() {
         {/* CATEGORY BREAKDOWN */}
         {categories && categories.reminderCategories.length > 0 && (
           <View style={styles.section}>
-            <CategoryProgressCard title="Reminders by Category (Last 30 Days)" categories={categories.reminderCategories} />
+            <CategoryProgressCard title={t('patientProgress.remindersByCategory30')} categories={categories.reminderCategories} />
           </View>
         )}
 
         {/* CHECKLIST CATEGORIES */}
         {categories && categories.checklistCategories.length > 0 && (
           <View style={styles.section}>
-            <CategoryProgressCard title="Checklists by Category (Last 30 Days)" categories={categories.checklistCategories} />
+            <CategoryProgressCard title={t('patientProgress.checklistsByCategory30')} categories={categories.checklistCategories} />
           </View>
         )}
 
         {/* CHECKLIST TRACKING */}
         {checklistTracking && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Checklist Activity</Text>
+            <Text style={styles.sectionTitle}>{t('patientProgress.checklistActivity')}</Text>
             <AppCard style={styles.chartContainer}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: spacing.md }}>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontFamily: typography.family.display, fontSize: typography.size['2xl'], color: colors.primary.main }}>
-                    {checklistTracking.thisWeek.completedRuns}
+                    {Intl.NumberFormat(i18n.language).format(checklistTracking.thisWeek.completedRuns)}
                   </Text>
                   <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[600] }}>
-                    Completed This Week
+                    {t('patientProgress.completedThisWeek')}
                   </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontFamily: typography.family.display, fontSize: typography.size['2xl'], color: colors.primary.main }}>
-                    {checklistTracking.thisMonth.completedRuns}
+                    {Intl.NumberFormat(i18n.language).format(checklistTracking.thisMonth.completedRuns)}
                   </Text>
                   <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[600] }}>
-                    Completed This Month
+                    {t('patientProgress.completedThisMonth')}
                   </Text>
                 </View>
               </View>
               {checklistTracking.thisWeek.runs.length > 0 && (
                 <View style={{ borderTopWidth: 1, borderTopColor: colors.neutral[200], paddingTop: spacing.md }}>
                   <Text style={{ fontFamily: typography.family.headline, fontSize: typography.size.sm, color: colors.neutral[700], marginBottom: spacing.sm }}>
-                    Recent Checklists
+                    {t('patientProgress.recentChecklists')}
                   </Text>
                   {checklistTracking.thisWeek.runs.slice(0, 3).map((run) => (
                     <View key={run.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.xs }}>
@@ -348,7 +341,7 @@ export default function CaregiverProgressScreen() {
                         {run.templateTitle}
                       </Text>
                       <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.xs, color: colors.neutral[500] }}>
-                        {new Date(run.startedAt).toLocaleDateString()}
+                        {new Date(run.startedAt).toLocaleDateString(i18n.language)}
                       </Text>
                     </View>
                   ))}

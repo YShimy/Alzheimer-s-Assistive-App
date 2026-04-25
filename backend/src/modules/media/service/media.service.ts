@@ -1,67 +1,69 @@
-import { AppError } from '../../../shared/errors/AppError.js';
 import { prisma } from '../../../shared/db/prisma.js';
 import { env } from '../../../shared/config/env.js';
 
-// Redesigned: Helper to get device-reachable URL for Expo Go
-function getDeviceReachableUrl(): string {
-  // Prefer API_DEVICE_URL if set (should be LAN IP like http://192.168.x.x:4000)
-  if (env.API_DEVICE_URL) {
-    return env.API_DEVICE_URL.replace(/\/$/, '');
-  }
-  
-  // In development, try to auto-detect LAN IP for better Expo Go experience
-  if (env.NODE_ENV === 'development') {
-    const os = process.platform;
-    // Return localhost for web/simulator, but device URL should be set explicitly for real devices
-    return env.API_BASE_URL.replace(/\/$/, '');
-  }
-  
-  return env.API_BASE_URL.replace(/\/$/, '');
+/**
+ * Returns the base URL used to generate public-facing media asset URLs.
+ *
+ * Priority (highest to lowest):
+ *   1. API_PUBLIC_URL  — deployed/tunneled public URL (Railway, Render, ngrok, etc.)
+ *                        Use this for any tester not on your LAN.
+ *   2. API_DEVICE_URL  — LAN/hotspot IP (e.g. http://172.20.10.5:4000)
+ *                        Use this for same-network Expo Go dev only.
+ *   3. API_BASE_URL    — defaults to http://localhost:4000
+ *                        Usable only from the same machine (e.g. web browser).
+ *
+ * To fix media URLs for remote testers: set API_PUBLIC_URL in backend .env.
+ */
+export function getPublicBaseUrl(): string {
+  const raw = env.API_PUBLIC_URL ?? env.API_DEVICE_URL ?? env.API_BASE_URL;
+  return raw.trim().replace(/\/$/, '');
 }
 
 export const mediaService = {
-  async saveAsset(userId: string, file: Express.Multer.File, assetType: 'IMAGE'|'VIDEO') {
-    // Redesigned: Use device-reachable URL for media access
-    const baseUrl = getDeviceReachableUrl();
-    const publicUrl = `${baseUrl}/uploads/${file.filename}`;
-    
-    // Also store localhost URL for server-side use if device URL is different
-    const serverUrl = env.API_BASE_URL.replace(/\/$/, '');
-    const localUrl = serverUrl !== baseUrl ? `${serverUrl}/uploads/${file.filename}` : undefined;
+  async saveAsset(userId: string, file: Express.Multer.File, assetType: 'IMAGE' | 'VIDEO') {
+    const base = getPublicBaseUrl();
+    const publicUrl = `${base}/uploads/${file.filename}`;
 
     const asset = await prisma.mediaAsset.create({
       data: {
-         uploadedByUserId: userId,
-         ownerUserId: userId,
-         assetType,
-         storageProvider: 'local',
-         storageKey: file.filename,
-         publicUrl,
-         // Redesigned: store alternative URL for server use
-         thumbnailUrl: localUrl,
-         mimeType: file.mimetype,
-      }
+        uploadedByUserId: userId,
+        ownerUserId: userId,
+        assetType,
+        storageProvider: 'local',
+        storageKey: file.filename,
+        publicUrl,
+        mimeType: file.mimetype,
+      },
     });
     return asset;
   },
-  
-  // Redesigned: Get media URL appropriate for the client type
-  getMediaUrl(assetId: string, forDevice: boolean = false): string {
-    const baseUrl = forDevice ? getDeviceReachableUrl() : env.API_BASE_URL.replace(/\/$/, '');
-    return `${baseUrl}/api/media/${assetId}`;
+
+  async getAsset(id: string) {
+    return prisma.mediaAsset.findUnique({ where: { id } });
   },
-  
-  // Redesigned: Transform asset to use device-reachable URL
-  transformAssetForDevice(asset: any): any {
-    if (!asset) return asset;
-    
-    const deviceUrlBase = getDeviceReachableUrl();
-    
-    return {
-      ...asset,
-      // Use device-reachable URL for publicUrl
-      publicUrl: asset.publicUrl?.replace(env.API_BASE_URL.replace(/\/$/, ''), deviceUrlBase),
-      thumbnailUrl: asset.thumbnailUrl?.replace(env.API_BASE_URL.replace(/\/$/, ''), deviceUrlBase),
-    };
-  }
+
+  /**
+   * Re-stamps the publicUrl of an existing asset using the current API_PUBLIC_URL.
+   * Call this after updating API_PUBLIC_URL to fix URLs stored in the database.
+   *
+   * Example (run once via ts-node or a migration script):
+   *   await mediaService.restampAllPublicUrls();
+   */
+  async restampAllPublicUrls() {
+    const base = getPublicBaseUrl();
+    const all = await prisma.mediaAsset.findMany({
+      where: { storageProvider: 'local' },
+      select: { id: true, storageKey: true },
+    });
+    let updated = 0;
+    for (const asset of all) {
+      const newUrl = `${base}/uploads/${asset.storageKey}`;
+      await prisma.mediaAsset.update({
+        where: { id: asset.id },
+        data: { publicUrl: newUrl },
+      });
+      updated++;
+    }
+    return { updated };
+  },
 };

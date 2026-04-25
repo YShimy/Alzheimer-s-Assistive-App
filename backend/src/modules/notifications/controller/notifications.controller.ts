@@ -14,9 +14,7 @@ const router = Router();
 
 // Register push token
 const registerTokenSchema = z.object({
-  body: z.object({
-    pushToken: z.string().min(1, 'Push token is required'),
-  }),
+  pushToken: z.string().min(1, 'Push token is required'),
 });
 
 router.post(

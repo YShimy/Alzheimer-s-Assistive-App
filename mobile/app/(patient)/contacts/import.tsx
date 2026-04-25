@@ -9,7 +9,7 @@ import { contactsApi } from '@/src/features/contacts/api';
 import { useSessionStore } from '@/src/state/sessionStore';
 
 export default function ContactImportScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const userId = useSessionStore((s) => s.userId);
   
@@ -34,7 +34,7 @@ export default function ContactImportScreen() {
           setFilteredContacts(sorted);
         }
       } else {
-        Alert.alert('Permission Denied', 'We need access to your contacts to help you import them.');
+        Alert.alert(t('contacts.permissionDeniedTitle'), t('contacts.permissionDeniedMsg'));
         router.back();
       }
       setLoading(false);
@@ -61,7 +61,7 @@ export default function ContactImportScreen() {
   const handleImport = async () => {
     if (!userId) return;
     if (selectedIds.size === 0) {
-      Alert.alert('No contacts selected', 'Please select at least one contact to import.');
+      Alert.alert(t('contacts.noSelectionTitle'), t('contacts.noSelectionMsg'));
       return;
     }
 
@@ -77,17 +77,17 @@ export default function ContactImportScreen() {
         }));
 
       await contactsApi.importSelected(userId, toImport);
-      Alert.alert('Success', `Imported ${selectedIds.size} contacts successfully.`);
+      Alert.alert(t('contacts.importSuccessTitle'), t('contacts.importSuccessMsg', { count: Intl.NumberFormat(i18n.language).format(selectedIds.size) }));
       router.replace('/(patient)/contacts');
     } catch (error) {
       console.error('Import failed', error);
-      Alert.alert('Error', 'Failed to import contacts. Please try again.');
+      Alert.alert(t('contacts.importErrorTitle'), t('contacts.importErrorMsg'));
     } finally {
       setImporting(false);
     }
   };
 
-  if (loading) return <LoadingState message="Reading your contacts..." />;
+  if (loading) return <LoadingState message={t('contacts.importLoading')} />;
 
   return (
     <ScreenContainer scroll={false}>
@@ -135,7 +135,7 @@ export default function ContactImportScreen() {
 
       <View style={styles.footer}>
         <Text style={styles.countText}>
-          {t('contacts.selectedCount', { count: selectedIds.size })}
+          {t('contacts.selectedCount', { count: Intl.NumberFormat(i18n.language).format(selectedIds.size) })}
         </Text>
         <AppButton
           title={t('contacts.confirmImport')}

@@ -26,7 +26,7 @@ import { useSessionStore } from '@/src/state/sessionStore';
  * Patient checklist screen.
  */
 export default function PatientChecklistScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { userId } = useSessionStore();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
@@ -62,7 +62,7 @@ export default function PatientChecklistScreen() {
 
   const handleStart = async (template: ChecklistTemplate) => {
     if (!template.steps || template.steps.length === 0) {
-      Alert.alert('Empty Checklist', 'This checklist has no steps yet. Ask your caregiver to add some.');
+      Alert.alert(t('patientReminders.emptyChecklistTitle'), t('patientReminders.emptyChecklistMsg'));
       return;
     }
     setSubmitting(true);
@@ -80,9 +80,9 @@ export default function PatientChecklistScreen() {
       });
     } catch (err: any) {
       if (err?.code === 'NOT_IMPLEMENTED' || err?.status === 501) {
-        Alert.alert('Not Available', 'Checklist runs are not yet enabled on the server. Check back soon.');
+        Alert.alert(t('patientChecklists.comingSoonTitle'), t('patientChecklists.comingSoonMsg'));
       } else {
-        Alert.alert('Error', err.message || 'Failed to start checklist');
+        Alert.alert(t('common.error'), err.message || t('patientChecklists.failedToStart', 'Failed to start checklist'));
       }
     } finally {
       setSubmitting(false);
@@ -100,7 +100,7 @@ export default function PatientChecklistScreen() {
       });
       setRunModalVisible(false);
       setActiveRun(null);
-      Alert.alert('Done!', 'Great job completing the checklist.');
+      Alert.alert(t('patientChecklists.doneTitle'), t('patientChecklists.doneMsg'));
 
       eventLogger.log({
         eventName: EventNames.CHECKLIST_COMPLETED,
@@ -108,7 +108,7 @@ export default function PatientChecklistScreen() {
         payload: { completedStepsCount: activeRun.stepProgress.filter((s) => s.completed).length, totalSteps: activeRun.template?.steps?.length },
       });
     } catch (err: any) {
-      Alert.alert('Error', err.message || 'Failed to mark complete');
+      Alert.alert(t('common.error'), err.message || t('patientChecklists.failedToComplete', 'Failed to mark complete'));
     } finally {
       setSubmitting(false);
     }
@@ -198,7 +198,7 @@ function ChecklistTemplateCard({
   onStart: () => void;
   starting: boolean;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const stepCount = template.steps?.length ?? 0;
   return (
     <AppCard style={styles.templateCard}>
@@ -210,12 +210,12 @@ function ChecklistTemplateCard({
           <Text style={styles.cardTitle}>{template.title}</Text>
           <View style={styles.cardMeta}>
             <Icon name="list-outline" size={12} color={colors.neutral[400]} />
-            <Text style={styles.cardMetaText}>{stepCount} {stepCount === 1 ? 'step' : 'steps'}</Text>
+            <Text style={styles.cardMetaText}>{Intl.NumberFormat(i18n.language).format(stepCount)} {stepCount === 1 ? t('patientChecklists.step') : t('patientChecklists.steps')}</Text>
             {template.estimatedMinutes && (
               <>
                 <Text style={styles.dot}>·</Text>
                 <Icon name="time-outline" size={12} color={colors.neutral[400]} />
-                <Text style={styles.cardMetaText}>{template.estimatedMinutes} min</Text>
+                <Text style={styles.cardMetaText}>{Intl.NumberFormat(i18n.language).format(template.estimatedMinutes)} {t('caregiverChecklists.minutes')}</Text>
               </>
             )}
           </View>
@@ -252,7 +252,7 @@ function RunModal({
   onAbandon: () => void;
   submitting: boolean;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const steps = run.template?.steps ?? [];
   const completedCount = steps.filter((s) =>
     run.stepProgress.find((sp) => sp.stepId === s.id && sp.completed),
@@ -265,7 +265,7 @@ function RunModal({
       <View style={styles.modal}>
         <View style={styles.modalHandle} />
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>{run.template?.title ?? 'Checklist'}</Text>
+          <Text style={styles.modalTitle}>{run.template?.title ?? t('patientReminders.checklistDefaultTitle')}</Text>
           <Pressable onPress={onAbandon} style={styles.modalClose} accessibilityLabel="Close">
             <Icon name="close" size={22} color={colors.neutral[600]} />
           </Pressable>
@@ -301,7 +301,7 @@ function RunModal({
                   {done && <Icon name="checkmark" size={16} color="#fff" />}
                 </View>
                 <View style={styles.stepInfo}>
-                  <Text style={[styles.stepNumber]}>Step {idx + 1}</Text>
+                  <Text style={[styles.stepNumber]}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
                   <Text style={[styles.stepTitle, done && styles.stepTitleDone]}>{step.title}</Text>
                   {step.description ? (
                     <Text style={styles.stepDesc}>{step.description}</Text>

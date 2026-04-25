@@ -1,28 +1,33 @@
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, AppButton, Icon, StatusChip } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { useLogout } from '@/src/features/auth/useLogout';
 import { carelinksApi } from '@/src/features/carelinks/api';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import type { CareLink } from '@/src/features/carelinks/types';
 
 /**
- * Caregiver home — dashboard with linked patients summary,
- * invite code generation, and quick actions.
+ * Caregiver home — dashboard with linked patients list and per-patient management.
  */
 export default function CaregiverHomeScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const router = useRouter();
   const displayName = useSessionStore((s) => s.displayName);
   const logout = useLogout();
-  const [links, setLinks] = useState<CareLink[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { links, setLinks, selectPatient, loaded } = useCaregiverPatientStore();
+  const [loading, setLoading] = useState(!loaded);
 
   useEffect(() => {
     carelinksApi
       .getMyLinks()
-      .then(({ careLinks }) => setLinks(careLinks))
+      .then(({ careLinks }) => {
+        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
+        setLinks(active);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -34,12 +39,17 @@ export default function CaregiverHomeScreen() {
         t('caregiverHome.inviteCodeGenerated'),
         t('caregiverHome.shareCodeMsg', { code: careLink.inviteCode }),
       );
-      // Refresh links
       const { careLinks } = await carelinksApi.getMyLinks();
-      setLinks(careLinks);
+      const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
+      setLinks(active);
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Failed to create invite');
     }
+  };
+
+  const handleManagePatient = (link: CareLink) => {
+    selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+    router.push('/(caregiver)/manage-reminders' as any);
   };
 
   const activeLinks = links.filter((l) => l.status === 'active');
@@ -78,28 +88,70 @@ export default function CaregiverHomeScreen() {
         icon={<Icon name="link-outline" size={20} color="#fff" />}
       />
 
-      {/* Active patients */}
+      {/* Active patients with manage buttons */}
       <Text style={styles.sectionTitle}>{t('caregiverHome.statsLinked')}</Text>
       {activeLinks.length === 0 ? (
         <AppCard>
           <View style={styles.emptyRow}>
             <Icon name="people-outline" size={24} color={colors.neutral[300]} />
-            <Text style={styles.emptyText}>
-              {t('caregiverHome.noLinkedPatients')}
-            </Text>
+            <Text style={styles.emptyText}>{t('caregiverHome.noLinkedPatients')}</Text>
           </View>
         </AppCard>
       ) : (
         activeLinks.map((link) => (
-          <AppCard
-            key={link.id}
-            style={styles.linkCard}
-            icon={<Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />}
-            title={link.patient?.displayName || 'Patient'}
-            subtitle={link.patient?.email || ''}
-            rightElement={<StatusChip label={t('caregiverHome.active')} variant="success" />}
-          >
-            <View />
+          <AppCard key={link.id} style={styles.linkCard}>
+            <View style={styles.patientRow}>
+              <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
+              <View style={styles.patientInfo}>
+                <Text style={styles.patientName}>{link.patient?.displayName || 'Patient'}</Text>
+                <Text style={styles.patientEmail}>{link.patient?.email || ''}</Text>
+              </View>
+              <StatusChip label={t('caregiverHome.active')} variant="success" />
+            </View>
+
+            {/* Per-patient quick-action buttons */}
+            <View style={styles.actionRow}>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+                  router.push('/(caregiver)/manage-reminders' as any);
+                }}
+              >
+                <Icon name="alarm-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.reminders')}</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+                  router.push('/(caregiver)/manage-checklists' as any);
+                }}
+              >
+                <Icon name="clipboard-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.checklists')}</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+                  router.push('/(caregiver)/progress' as any);
+                }}
+              >
+                <Icon name="trending-up-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.progress')}</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+                  router.push('/(caregiver)/contacts' as any);
+                }}
+              >
+                <Icon name="people-circle-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.contacts')}</Text>
+              </Pressable>
+            </View>
           </AppCard>
         ))
       )}
@@ -109,15 +161,15 @@ export default function CaregiverHomeScreen() {
         <>
           <Text style={styles.sectionTitle}>{t('caregiverHome.statsPending')}</Text>
           {pendingLinks.map((link) => (
-            <AppCard
-              key={link.id}
-              style={styles.linkCard}
-              icon={<Icon name="hourglass-outline" size={24} color={colors.warning.main} />}
-              title={`Code: ${link.inviteCode}`}
-              subtitle={t('caregiverHome.waitingForPatient')}
-              rightElement={<StatusChip label={t('caregiverHome.pending')} variant="warning" />}
-            >
-              <View />
+            <AppCard key={link.id} style={styles.linkCard}>
+              <View style={styles.patientRow}>
+                <Icon name="hourglass-outline" size={24} color={colors.warning.main} />
+                <View style={styles.patientInfo}>
+                  <Text style={styles.patientName}>{`Code: ${link.inviteCode}`}</Text>
+                  <Text style={styles.patientEmail}>{t('caregiverHome.waitingForPatient')}</Text>
+                </View>
+                <StatusChip label={t('caregiverHome.pending')} variant="warning" />
+              </View>
             </AppCard>
           ))}
         </>
@@ -161,6 +213,35 @@ const styles = StyleSheet.create({
     marginTop: spacing['2xl'],
   },
   linkCard: { marginBottom: spacing.md },
+  patientRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    marginBottom: spacing.md,
+  },
+  patientInfo: { flex: 1 },
+  patientName: { fontSize: typography.size.base, fontWeight: '600', color: colors.neutral[800] },
+  patientEmail: { fontSize: typography.size.sm, color: colors.neutral[500] },
+  actionRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[100],
+    paddingTop: spacing.md,
+  },
+  actionBtn: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+    backgroundColor: colors.secondary[50],
+  },
+  actionBtnText: {
+    fontSize: typography.size.xs,
+    color: colors.secondary[700],
+    fontWeight: '600',
+  },
   emptyRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   emptyText: { fontSize: typography.size.sm, color: colors.neutral[500], flex: 1 },
 });

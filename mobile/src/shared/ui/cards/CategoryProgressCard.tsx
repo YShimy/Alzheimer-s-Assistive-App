@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors, typography, spacing, radius, shadows } from '../../../infrastructure/theme/tokens';
 import type { CategoryMetric } from '../../../features/progress/types';
@@ -9,6 +10,8 @@ interface CategoryProgressProps {
 }
 
 export function CategoryProgressCard({ categories, title }: CategoryProgressProps) {
+  const { t, i18n } = useTranslation();
+  
   if (!categories || categories.length === 0) {
     return null;
   }
@@ -23,7 +26,7 @@ export function CategoryProgressCard({ categories, title }: CategoryProgressProp
       {sorted.map((item, idx) => (
         <View key={idx} style={styles.row}>
           <Text style={styles.catName} numberOfLines={1}>
-            {item.category.charAt(0).toUpperCase() + item.category.slice(1).toLowerCase()}
+            {t(`categories.${item.category.toLowerCase()}`, { defaultValue: item.category.charAt(0).toUpperCase() + item.category.slice(1).toLowerCase() })}
           </Text>
           
           <View style={styles.barContainer}>
@@ -36,7 +39,7 @@ export function CategoryProgressCard({ categories, title }: CategoryProgressProp
           </View>
           
           <Text style={styles.percentage}>
-            {Math.round(item.completionRate * 100)}%
+            {Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 }).format(item.completionRate)}
           </Text>
         </View>
       ))}

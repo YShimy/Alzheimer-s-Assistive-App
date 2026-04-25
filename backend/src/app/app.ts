@@ -10,7 +10,12 @@ export function createApp() {
 
   // ─── Global Middleware ──────────────────────────────
   app.use(helmet({ crossOriginResourcePolicy: false })); // allow images to load across origins
-  app.use(cors());
+  app.use(cors({
+    origin: function (origin, callback) {
+      callback(null, true);
+    },
+    credentials: true,
+  }));
   app.use(express.json());
   
   // ─── Static files for media storage ─────────────────

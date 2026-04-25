@@ -64,8 +64,8 @@ export default function PatientLayout() {
       <Tabs.Screen
         name="games"
         options={{
-          title: 'Games',
-          headerTitle: 'Cognitive Games',
+          title: t('patientTabs.gamesTitle'),
+          headerTitle: t('patientTabs.gamesHeader'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="game-controller-outline" size={size} color={color} />
           ),
@@ -119,6 +119,13 @@ export default function PatientLayout() {
         options={{
           href: null,
           headerTitle: 'Safe Path Memory',
+        }}
+      />
+      <Tabs.Screen
+        name="routine-sequence-game"
+        options={{
+          href: null,
+          headerTitle: t('games.routineSequence.title'),
         }}
       />
       <Tabs.Screen

@@ -20,7 +20,7 @@ interface LevelSuccessProps {
 }
 
 export function LevelSuccessFeedback({ levelResult, totalScore, streak, onContinue }: LevelSuccessProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <View style={styles.overlay}>
@@ -32,12 +32,12 @@ export function LevelSuccessFeedback({ levelResult, totalScore, streak, onContin
         <Text style={styles.subtitle}>{t('games.safePath.levelCompleteSub')}</Text>
 
         <View style={styles.statsRow}>
-          <StatChip label={t('games.safePath.scoreLabel')} value={`+${levelResult.scoreDelta}`} color={colors.primary[500]} />
-          <StatChip label={t('games.safePath.timeLabel')} value={`${(levelResult.solveTimeMs / 1000).toFixed(1)}s`} color={colors.neutral[600]} />
-          {streak > 1 && <StatChip label={t('games.safePath.streakLabel')} value={`${streak}`} color={colors.warning.main} />}
+          <StatChip label={t('games.safePath.scoreLabel')} value={`+${Intl.NumberFormat(i18n.language).format(levelResult.scoreDelta)}`} color={colors.primary[500]} />
+          <StatChip label={t('games.safePath.timeLabel')} value={`${Intl.NumberFormat(i18n.language, { maximumFractionDigits: 1 }).format(levelResult.solveTimeMs / 1000)}s`} color={colors.neutral[600]} />
+          {streak > 1 && <StatChip label={t('games.safePath.streakLabel')} value={`${Intl.NumberFormat(i18n.language).format(streak)}`} color={colors.warning.main} />}
         </View>
 
-        <Text style={styles.totalScore}>{t('games.safePath.totalScoreLabel', { score: totalScore })}</Text>
+        <Text style={styles.totalScore}>{t('games.safePath.totalScoreLabel', { score: Intl.NumberFormat(i18n.language).format(totalScore) })}</Text>
 
         <AppButton title={t('games.safePath.nextLevelBtn')} onPress={onContinue} variant="primary" size="lg" />
       </View>
@@ -54,7 +54,7 @@ interface LevelFailProps {
 }
 
 export function LevelFailFeedback({ lives, onContinue, onEndSession }: LevelFailProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isGameOver = lives <= 0;
 
   return (
@@ -80,7 +80,7 @@ export function LevelFailFeedback({ lives, onContinue, onEndSession }: LevelFail
                 color={i < lives ? colors.error.main : colors.neutral[300]}
               />
             ))}
-            <Text style={styles.livesText}>{t('games.safePath.livesLeftCount', { count: lives })}</Text>
+            <Text style={styles.livesText}>{t('games.safePath.livesLeftCount', { count: Intl.NumberFormat(i18n.language).format(lives) })}</Text>
           </View>
         )}
 
@@ -109,7 +109,15 @@ interface SessionSummaryProps {
 }
 
 export function SessionSummaryView({ result, onPlayAgain, onExit }: SessionSummaryProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const formatDurationLocal = (seconds: number): string => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    const mStr = Intl.NumberFormat(i18n.language).format(m);
+    const sStr = Intl.NumberFormat(i18n.language).format(s);
+    return m > 0 ? `${mStr}m ${sStr}s` : `${sStr}s`;
+  };
 
   return (
     <View style={styles.overlay}>
@@ -120,19 +128,19 @@ export function SessionSummaryView({ result, onPlayAgain, onExit }: SessionSumma
         <Text style={styles.title}>{t('games.safePath.sessionSummaryTitle')}</Text>
 
         <View style={styles.summaryGrid}>
-          <SummaryItem icon="star-outline" label={t('games.safePath.totalScore')} value={result.totalScore.toString()} />
-          <SummaryItem icon="layers-outline" label={t('games.safePath.highestTier')} value={`T${result.highestTierReached}`} />
-          <SummaryItem icon="checkmark-circle-outline" label={t('games.safePath.levelsPassed')} value={result.levelsSucceeded.toString()} />
-          <SummaryItem icon="close-circle-outline" label={t('games.safePath.levelsFailed')} value={result.levelsFailed.toString()} />
-          <SummaryItem icon="time-outline" label={t('games.safePath.duration')} value={formatDuration(result.durationSeconds)} />
-          <SummaryItem icon="flame-outline" label={t('games.safePath.bestStreak')} value={result.longestStreak.toString()} />
+          <SummaryItem icon="star-outline" label={t('games.safePath.totalScore')} value={Intl.NumberFormat(i18n.language).format(result.totalScore)} />
+          <SummaryItem icon="layers-outline" label={t('games.safePath.highestTier')} value={`${t('games.safePath.highestTier').substring(0, 1)}${Intl.NumberFormat(i18n.language).format(result.highestTierReached)}`} />
+          <SummaryItem icon="checkmark-circle-outline" label={t('games.safePath.levelsPassed')} value={Intl.NumberFormat(i18n.language).format(result.levelsSucceeded)} />
+          <SummaryItem icon="close-circle-outline" label={t('games.safePath.levelsFailed')} value={Intl.NumberFormat(i18n.language).format(result.levelsFailed)} />
+          <SummaryItem icon="time-outline" label={t('games.safePath.duration')} value={formatDurationLocal(result.durationSeconds)} />
+          <SummaryItem icon="flame-outline" label={t('games.safePath.bestStreak')} value={Intl.NumberFormat(i18n.language).format(result.longestStreak)} />
         </View>
 
         {result.bestLevelScore > 0 && (
           <View style={styles.highlightBox}>
             <Ionicons name="ribbon-outline" size={18} color={colors.primary[500]} />
             <Text style={styles.highlightText}>
-              {t('games.safePath.bestLevelScore', { score: result.bestLevelScore })}
+              {t('games.safePath.bestLevelScore', { score: Intl.NumberFormat(i18n.language).format(result.bestLevelScore) })}
             </Text>
           </View>
         )}

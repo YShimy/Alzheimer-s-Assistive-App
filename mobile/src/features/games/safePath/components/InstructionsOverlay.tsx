@@ -107,13 +107,14 @@ function StepItem({ step, icon, title, description }: {
   title: string;
   description: string;
 }) {
+  const { i18n } = useTranslation();
   return (
     <View style={styles.stepItem}>
       <View style={styles.stepIcon}>
         <Ionicons name={icon} size={22} color={colors.primary[500]} />
       </View>
       <View style={styles.stepContent}>
-        <Text style={styles.stepTitle}>{step}. {title}</Text>
+        <Text style={styles.stepTitle}>{Intl.NumberFormat(i18n.language).format(step)}. {title}</Text>
         <Text style={styles.stepDescription}>{description}</Text>
       </View>
     </View>

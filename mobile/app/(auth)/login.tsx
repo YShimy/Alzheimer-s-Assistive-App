@@ -155,25 +155,7 @@ export default function LoginScreen() {
     }
   };
 
-  // ─── Dev Login ──────────────────────────────────────────
 
-  const handleDevLogin = async (role: 'PATIENT' | 'CAREGIVER') => {
-    setError('');
-    setLoading(true);
-    try {
-      const result = await authApi.devLogin(role);
-      setSession({
-        token: result.accessToken,
-        role: result.user.role.toUpperCase() as 'PATIENT' | 'CAREGIVER',
-        userId: result.user.id,
-        displayName: result.user.displayName,
-      });
-    } catch (err: any) {
-      setError(err?.message ?? 'Dev sign-in failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <ScreenContainer scroll backgroundColor={colors.primary[50]}>
@@ -263,30 +245,7 @@ export default function LoginScreen() {
               </Pressable>
             </View>
 
-            {/* Dev Login (development only) */}
-            {__DEV__ && (
-              <View style={styles.devContainer}>
-                <Text style={styles.devTitle}>{t('auth.devLoginTitle')}</Text>
-                <View style={styles.devButtons}>
-                  <AppButton
-                    title={t('auth.patient')}
-                    onPress={() => handleDevLogin('PATIENT')}
-                    variant="outline"
-                    style={{ flex: 1 }}
-                    size="sm"
-                    disabled={loading}
-                  />
-                  <AppButton
-                    title={t('auth.caregiver')}
-                    onPress={() => handleDevLogin('CAREGIVER')}
-                    variant="outline"
-                    style={{ flex: 1 }}
-                    size="sm"
-                    disabled={loading}
-                  />
-                </View>
-              </View>
-            )}
+
           </View>
 
           {/* Privacy note */}
@@ -400,22 +359,5 @@ const styles = StyleSheet.create({
     color: colors.neutral[400],
     textAlign: 'center',
     marginBottom: spacing['2xl'],
-  },
-  devContainer: {
-    marginTop: spacing.xl,
-    paddingTop: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.neutral[200],
-  },
-  devTitle: {
-    fontSize: typography.size.sm,
-    fontWeight: '600',
-    color: colors.neutral[500],
-    textAlign: 'center',
-    marginBottom: spacing.md,
-  },
-  devButtons: {
-    flexDirection: 'row',
-    gap: spacing.md,
   },
 });

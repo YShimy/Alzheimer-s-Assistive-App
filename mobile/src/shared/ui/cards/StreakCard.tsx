@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing, radius, shadows } from '../../../infrastructure/theme/tokens';
 import { Icon } from '../Icon';
 import type { StreakData } from '../../../features/progress/types';
@@ -8,10 +9,9 @@ interface StreakCardProps {
   title: string;
   icon: string;
   data: StreakData;
-  color?: string;
 }
-
 export function StreakCard({ title, icon, data, color = colors.primary[500] }: StreakCardProps) {
+  const { t, i18n } = useTranslation();
   const isAlive = data.current > 0;
 
   return (
@@ -26,25 +26,25 @@ export function StreakCard({ title, icon, data, color = colors.primary[500] }: S
       <View style={styles.metricsRow}>
         <View style={styles.metricItem}>
           <Text style={[styles.metricValue, { color: isAlive ? colors.success.dark : colors.neutral[900] }]}>
-            {data.current} <Text style={styles.metricLabel}>days</Text>
+            {Intl.NumberFormat(i18n.language).format(data.current)} <Text style={styles.metricLabel}>{t('patientProgress.days')}</Text>
           </Text>
-          <Text style={styles.metricSub}>Current Streak</Text>
+          <Text style={styles.metricSub}>{t('patientProgress.currentStreak')}</Text>
         </View>
 
         <View style={styles.divider} />
 
         <View style={styles.metricItem}>
           <Text style={styles.metricValue}>
-            {data.best} <Text style={styles.metricLabel}>days</Text>
+            {Intl.NumberFormat(i18n.language).format(data.best)} <Text style={styles.metricLabel}>{t('patientProgress.days')}</Text>
           </Text>
-          <Text style={styles.metricSub}>Best Streak</Text>
+          <Text style={styles.metricSub}>{t('patientProgress.bestStreak')}</Text>
         </View>
       </View>
 
       {isAlive && (
         <View style={[styles.statusBadge, { backgroundColor: colors.success.light }]}>
           <Icon name="flame" size={14} color={colors.success.dark} />
-          <Text style={styles.statusText}>Looking great, keep it up!</Text>
+          <Text style={styles.statusText}>{t('patientProgress.keepItUp')}</Text>
         </View>
       )}
     </View>

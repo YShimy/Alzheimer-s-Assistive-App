@@ -37,15 +37,15 @@ export default function CaregiverPatientsScreen() {
     Alert.alert(t('caregiverPatients.revokeLink'), t('caregiverPatients.revokeConfirm'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Revoke',
+        text: t('caregiverPatients.revokeAction'),
         style: 'destructive',
         onPress: async () => {
           try {
             await carelinksApi.revoke(id);
-            Alert.alert('Success', 'Care link revoked');
+            Alert.alert(t('common.success'), t('caregiverPatients.successRevoked'));
             load();
           } catch (err: any) {
-            Alert.alert('Error', err.message || 'Failed to revoke');
+            Alert.alert(t('common.error'), err.message || t('caregiverPatients.errorRevokeFailed'));
           }
         },
       },
@@ -73,12 +73,12 @@ export default function CaregiverPatientsScreen() {
               <View style={styles.cardLeft}>
                 <Icon name="person-circle-outline" size={36} color={colors.secondary[500]} />
                 <View>
-                  <Text style={styles.patientName}>{item.patient?.displayName || 'Pending'}</Text>
-                  <Text style={styles.patientEmail}>{item.patient?.email || `Code: ${item.inviteCode}`}</Text>
+                  <Text style={styles.patientName}>{item.patient?.displayName || t('caregiverHome.pending')}</Text>
+                  <Text style={styles.patientEmail}>{item.patient?.email || `${t('auth.code')}: ${item.inviteCode}`}</Text>
                 </View>
               </View>
               <StatusChip
-                label={item.status}
+                label={t(`caregiverHome.${item.status}`)}
                 variant={item.status === 'active' ? 'success' : item.status === 'pending' ? 'warning' : 'error'}
               />
             </View>

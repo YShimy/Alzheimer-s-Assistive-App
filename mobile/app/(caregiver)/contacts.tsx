@@ -4,28 +4,23 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { ScreenContainer, AppCard, AppButton, AppInput, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
+import { PatientSwitcher } from '@/src/shared/ui/PatientSwitcher';
+import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { contactsApi } from '@/src/features/contacts/api';
-import { carelinksApi } from '@/src/features/carelinks/api';
 import { mediaApi } from '@/src/features/media/api';
 import type { PatientContact, ContactMemo } from '@/src/features/contacts/types';
-import type { CareLink } from '@/src/features/carelinks/types';
 import { Image } from 'expo-image';
 
 export default function CaregiverContactsScreen() {
-  const { patientId: paramPatientId, patientName: paramPatientName } = useLocalSearchParams<{ 
-    patientId: string; 
-    patientName: string;
-    contactId?: string;
-  }>();
   const { t } = useTranslation();
   const router = useRouter();
 
-  // Patient selection state
-  const [links, setLinks] = useState<CareLink[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(paramPatientId || null);
-  const [selectedPatientName, setSelectedPatientName] = useState<string>(paramPatientName || '');
-  const [loadingLinks, setLoadingLinks] = useState(true);
+  // ─── Global patient context ─────────────────────────────────────────────
+  useCaregiverLinks();
+  const { links, selectedPatientId, selectedPatientName, loaded, selectPatient } = useCaregiverPatientStore();
+  const selectedPatient = selectedPatientId;
 
   // Contacts state
   const [contacts, setContacts] = useState<PatientContact[]>([]);
@@ -40,22 +35,6 @@ export default function CaregiverContactsScreen() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  // Load linked patients
-  useEffect(() => {
-    carelinksApi
-      .getMyLinks()
-      .then(({ careLinks }) => {
-        const active = careLinks.filter((l) => l.status === 'active' && l.patientUserId);
-        setLinks(active);
-        if (!selectedPatient && active.length > 0 && active[0]!.patientUserId) {
-          setSelectedPatient(active[0]!.patientUserId);
-          setSelectedPatientName(active[0]!.patient?.displayName || 'Patient');
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoadingLinks(false));
-  }, []);
 
   // Load contacts for selected patient
   const load = useCallback(async (isRefresh = false) => {
@@ -155,14 +134,11 @@ export default function CaregiverContactsScreen() {
     }
   };
 
-  const selectPatient = (link: CareLink) => {
-    setSelectedPatient(link.patientUserId);
-    setSelectedPatientName(link.patient?.displayName || 'Patient');
-    setContacts([]);
-    setEditingContact(null);
+  const selectPatientLocal = (link: any) => {
+    selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
   };
 
-  if (loadingLinks) return <ScreenContainer><LoadingState /></ScreenContainer>;
+  if (!loaded) return <ScreenContainer><LoadingState /></ScreenContainer>;
 
   // Show patient selector if no patient selected or multiple patients
   if (!selectedPatient || links.length === 0) {
@@ -183,7 +159,7 @@ export default function CaregiverContactsScreen() {
             renderItem={({ item }) => (
               <AppCard
                 style={styles.patientCard}
-                onPress={() => selectPatient(item)}
+                onPress={() => selectPatientLocal(item)}
                 icon={<Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />}
               >
                 <View>
@@ -308,15 +284,10 @@ export default function CaregiverContactsScreen() {
       <View style={styles.header}>
         <View>
           <Text style={styles.headerTitle}>Contacts</Text>
-          <Text style={styles.headerSubtitle}>Managing contacts for {selectedPatientName}</Text>
+          <Text style={styles.headerSubtitle}>Managing contacts for {selectedPatientName ?? 'Patient'}</Text>
         </View>
         {links.length > 1 && (
-          <AppButton
-            title="Switch Patient"
-            onPress={() => setSelectedPatient(null)}
-            variant="ghost"
-            size="sm"
-          />
+          <PatientSwitcher />
         )}
       </View>
 

@@ -42,7 +42,7 @@ const LEVELS_PER_SESSION = 3;
 
 export default function RoutineSequenceGameScreen() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const store = useRoutineSequenceStore();
 
   // Get patientId from session (falls back gracefully)
@@ -96,7 +96,7 @@ export default function RoutineSequenceGameScreen() {
   // ─── Study Phase ─────────────────────────────────────────
   const handleStudyComplete = () => {
     eventLogger.log({
-      eventName: 'routine_sequence_study_viewed',
+      eventName: EventNames.ROUTINE_SEQUENCE_STUDY_VIEWED,
       screenName: 'RoutineSequenceGameScreen',
       payload: { gameType: 'routine_sequence', tier: store.currentTier.tier },
     });
@@ -110,7 +110,7 @@ export default function RoutineSequenceGameScreen() {
     const result = store.submitStepAnswer(stepId, timeMs);
 
     eventLogger.log({
-      eventName: 'routine_sequence_step_answered',
+      eventName: EventNames.ROUTINE_SEQUENCE_STEP_ANSWERED,
       screenName: 'RoutineSequenceGameScreen',
       payload: {
         gameType: 'routine_sequence',
@@ -126,7 +126,7 @@ export default function RoutineSequenceGameScreen() {
 
   const handlePromptAcknowledge = () => {
     eventLogger.log({
-      eventName: 'routine_sequence_prompt_shown',
+      eventName: EventNames.ROUTINE_SEQUENCE_PROMPT_SHOWN,
       screenName: 'RoutineSequenceGameScreen',
       payload: { gameType: 'routine_sequence', tier: store.currentTier.tier },
     });
@@ -161,13 +161,15 @@ export default function RoutineSequenceGameScreen() {
           levelsPlayed: result.routinesAttempted,
         },
       });
-    } else {
       // More levels to play — store phase was set to 'intro' (between-level)
       // Show a brief advancement message
       const levelJustCompleted = store.levelIndex; // already incremented by advanceAfterLevel
       const msg =
         levelJustCompleted < LEVELS_PER_SESSION
-          ? `Level ${levelJustCompleted} of ${LEVELS_PER_SESSION} done! Keep going.`
+          ? t('games.routineSequence.levelProgress', {
+              current: Intl.NumberFormat(i18n.language).format(levelJustCompleted),
+              total: Intl.NumberFormat(i18n.language).format(LEVELS_PER_SESSION),
+            })
           : null;
       setAdvancementMessage(msg);
     }
@@ -175,16 +177,7 @@ export default function RoutineSequenceGameScreen() {
 
   // ─── Render Helpers ─────────────────────────────────────
   const getTierLabel = (tier: number) => {
-    const labels: Record<number, string> = {
-      1: 'Beginner',
-      2: 'Getting Started',
-      3: 'Building Up',
-      4: 'Intermediate',
-      5: 'Advanced',
-      6: 'Expert',
-      7: 'Master',
-    };
-    return labels[tier] ?? `Tier ${tier}`;
+    return t(`games.routineSequence.tiers.${tier}`, { defaultValue: `Tier ${Intl.NumberFormat(i18n.language).format(tier)}` });
   };
 
   // ─── Phase: Intro / Between-Levels ──────────────────────
@@ -199,16 +192,19 @@ export default function RoutineSequenceGameScreen() {
         <Text style={styles.title}>
           {isFirstLevel
             ? t('games.routineSequence.title')
-            : `Level ${store.levelIndex + 1} of ${LEVELS_PER_SESSION}`}
+            : t('games.routineSequence.levelProgress', {
+                current: Intl.NumberFormat(i18n.language).format(store.levelIndex + 1),
+                total: Intl.NumberFormat(i18n.language).format(LEVELS_PER_SESSION),
+              })}
         </Text>
 
         {/* Tier indicator */}
         <View style={styles.tierBadge}>
           <Text style={styles.tierBadgeText}>
-            Tier {store.currentTier.tier} · {getTierLabel(store.currentTier.tier)}
+            {t('games.safePath.scoreLabel')}: {Intl.NumberFormat(i18n.language).format(store.currentTier.tier)} · {getTierLabel(store.currentTier.tier)}
           </Text>
           {store.supportMode && (
-            <Text style={styles.supportBadgeText}>Support Mode</Text>
+            <Text style={styles.supportBadgeText}>{t('games.tags.supportive')}</Text>
           )}
         </View>
 
@@ -225,19 +221,16 @@ export default function RoutineSequenceGameScreen() {
 
         {isFirstLevel && (
           <View style={styles.instructionsBox}>
-            <Text style={styles.instructionsTitle}>How to Play</Text>
+            <Text style={styles.instructionsTitle}>{t('games.routineSequence.howToPlay')}</Text>
             <Text style={styles.instructionsText}>
-              1. Study the routine steps shown{'\n'}
-              2. Remember the correct order{'\n'}
-              3. Select the next step when asked{'\n'}
-              4. Build the complete routine
+              {t('games.routineSequence.howToPlaySteps')}
             </Text>
           </View>
         )}
 
         <Pressable style={styles.primaryButton} onPress={handleStartLevel}>
           <Text style={styles.primaryButtonText}>
-            {isFirstLevel ? 'Start Session' : 'Next Routine'}
+            {isFirstLevel ? t('games.routineSequence.startSession') : t('games.routineSequence.nextRoutine')}
           </Text>
         </Pressable>
 
@@ -248,7 +241,7 @@ export default function RoutineSequenceGameScreen() {
             setSessionResult(result);
           }}
         >
-          <Text style={styles.quitButtonText}>End Session Early</Text>
+          <Text style={styles.quitButtonText}>{t('games.safePath.endSessionBtn')}</Text>
         </Pressable>
       </ScrollView>
     );
@@ -260,8 +253,8 @@ export default function RoutineSequenceGameScreen() {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.phaseTitle}>Study the Routine</Text>
-        <Text style={styles.routineTitle}>{store.currentRoutine.title}</Text>
+        <Text style={styles.phaseTitle}>{t('games.routineSequence.studyTitle')}</Text>
+        <Text style={styles.routineTitle}>{t(`routines.${store.currentRoutine.id}.title`, { defaultValue: store.currentRoutine.title })}</Text>
 
         <ScrollView
           style={styles.stepsScrollView}
@@ -271,12 +264,12 @@ export default function RoutineSequenceGameScreen() {
           {store.currentRoutine.steps.map((step, index) => (
             <View key={step.stepId} style={styles.studyStep}>
               <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>{index + 1}</Text>
+                <Text style={styles.stepNumberText}>{Intl.NumberFormat(i18n.language).format(index + 1)}</Text>
               </View>
               <View style={styles.stepContent}>
-                <Text style={styles.stepLabel}>{step.label}</Text>
+                <Text style={styles.stepLabel}>{t(`routines.steps.${step.stepId}.label`, { defaultValue: step.label })}</Text>
                 {store.currentTier?.showHints && step.hint && (
-                  <Text style={styles.stepHint}>{step.hint}</Text>
+                  <Text style={styles.stepHint}>{t(`routines.steps.${step.stepId}.hint`, { defaultValue: step.hint })}</Text>
                 )}
               </View>
             </View>
@@ -284,7 +277,7 @@ export default function RoutineSequenceGameScreen() {
         </ScrollView>
 
         <Pressable style={styles.primaryButton} onPress={handleStudyComplete}>
-          <Text style={styles.primaryButtonText}>I Remember This</Text>
+          <Text style={styles.primaryButtonText}>{t('games.routineSequence.rememberBtn')}</Text>
         </Pressable>
       </View>
     );
@@ -302,8 +295,11 @@ export default function RoutineSequenceGameScreen() {
     // Determine question phrasing based on tier mode
     const isRecognition = store.currentTier.mode === 'recognition';
     const questionText = isRecognition
-      ? `What comes first in "${store.currentRoutine.title}"?`
-      : `What is step ${progress.current} of "${store.currentRoutine.title}"?`;
+      ? t('games.routineSequence.recognitionQuestion', { title: t(`routines.${store.currentRoutine.id}.title`, { defaultValue: store.currentRoutine.title }) })
+      : t('games.routineSequence.recallQuestion', { 
+          step: Intl.NumberFormat(i18n.language).format(progress.current), 
+          title: t(`routines.${store.currentRoutine.id}.title`, { defaultValue: store.currentRoutine.title }) 
+        });
 
     return (
       <View style={styles.container}>
@@ -316,7 +312,10 @@ export default function RoutineSequenceGameScreen() {
           />
         </View>
         <Text style={styles.progressText}>
-          Step {progress.current} of {progress.total}
+          {t('games.routineSequence.levelProgress', {
+            current: Intl.NumberFormat(i18n.language).format(progress.current),
+            total: Intl.NumberFormat(i18n.language).format(progress.total),
+          })}
         </Text>
 
         <Text style={styles.questionText}>{questionText}</Text>
@@ -330,7 +329,7 @@ export default function RoutineSequenceGameScreen() {
             const distractorStep = store.distractorSteps.find(
               (s) => s.stepId === stepId,
             );
-            const label = step?.label ?? distractorStep?.label ?? stepId;
+            const label = t(`routines.steps.${stepId}.label`, { defaultValue: step?.label ?? distractorStep?.label ?? stepId });
 
             return (
               <Pressable
@@ -349,7 +348,7 @@ export default function RoutineSequenceGameScreen() {
 
         {store.currentTier?.showHints && (
           <Text style={styles.hintText}>
-            Tip: {currentStep.hint || 'Choose the correct next step'}
+            {t('games.routineSequence.tip', { hint: currentStep.hint || t('games.routineSequence.stepLabel', { num: Intl.NumberFormat(i18n.language).format(progress.current) }) })}
           </Text>
         )}
       </View>
@@ -368,16 +367,16 @@ export default function RoutineSequenceGameScreen() {
           size={64}
           color={colors.warning.main}
         />
-        <Text style={styles.feedbackTitle}>Not quite!</Text>
+        <Text style={styles.feedbackTitle}>{t('games.safePath.oopsTitle')}</Text>
         <Text style={styles.feedbackText}>
-          That's okay — let's look at the correct step.
+          {t('games.routineSequence.supportMsg')}
         </Text>
         {correctStep && (
           <View style={styles.correctStepBox}>
-            <Text style={styles.correctStepLabel}>Correct answer:</Text>
-            <Text style={styles.correctStepText}>{correctStep.label}</Text>
+            <Text style={styles.correctStepLabel}>{t('games.routineSequence.correctAnswer')}</Text>
+            <Text style={styles.correctStepText}>{t(`routines.steps.${correctStep.stepId}.label`, { defaultValue: correctStep.label })}</Text>
             {correctStep.hint && (
-              <Text style={styles.correctStepHint}>{correctStep.hint}</Text>
+              <Text style={styles.correctStepHint}>{t(`routines.steps.${correctStep.stepId}.hint`, { defaultValue: correctStep.hint })}</Text>
             )}
           </View>
         )}
@@ -385,7 +384,7 @@ export default function RoutineSequenceGameScreen() {
           style={styles.secondaryButton}
           onPress={handlePromptAcknowledge}
         >
-          <Text style={styles.secondaryButtonText}>Got it, Continue</Text>
+          <Text style={styles.secondaryButtonText}>{t('games.routineSequence.gotItBtn')}</Text>
         </Pressable>
       </View>
     );
@@ -403,11 +402,11 @@ export default function RoutineSequenceGameScreen() {
           size={64}
           color={colors.success.main}
         />
-        <Text style={styles.successTitle}>Well Done!</Text>
+        <Text style={styles.successTitle}>{t('games.routineSequence.wellDone')}</Text>
         <Text style={styles.successText}>
           {store.supportMode
-            ? 'You completed the routine with some support. Great effort!'
-            : 'You completed the routine successfully.'}
+            ? t('games.routineSequence.supportMsg')
+            : t('games.routineSequence.successMsg')}
         </Text>
 
         {isSaving ? (
@@ -421,7 +420,7 @@ export default function RoutineSequenceGameScreen() {
             onPress={handleAdvanceAfterLevel}
           >
             <Text style={styles.primaryButtonText}>
-              {isLastLevel ? 'See Results' : 'Next Level'}
+              {isLastLevel ? t('games.routineSequence.seeResultsBtn') : t('games.safePath.nextLevelBtn')}
             </Text>
           </Pressable>
         )}
@@ -445,55 +444,55 @@ export default function RoutineSequenceGameScreen() {
 
     return (
       <ScrollView contentContainerStyle={styles.summaryContent}>
-        <Text style={styles.summaryTitle}>Session Complete</Text>
+        <Text style={styles.summaryTitle}>{t('games.routineSequence.sessionComplete')}</Text>
 
         <View style={styles.statsGrid}>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>{result.totalScore}</Text>
-            <Text style={styles.statLabel}>Score</Text>
+            <Text style={styles.statValue}>{Intl.NumberFormat(i18n.language).format(result.totalScore)}</Text>
+            <Text style={styles.statLabel}>{t('games.safePath.scoreLabel')}</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>{result.highestTierReached}</Text>
-            <Text style={styles.statLabel}>Tier Reached</Text>
+            <Text style={styles.statValue}>{Intl.NumberFormat(i18n.language).format(result.highestTierReached)}</Text>
+            <Text style={styles.statLabel}>{t('games.safePath.highestTier')}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>
-              {Math.round(result.averageAccuracy * 100)}%
+              {Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 }).format(result.averageAccuracy)}
             </Text>
-            <Text style={styles.statLabel}>Accuracy</Text>
+            <Text style={styles.statLabel}>{t('games.routineSequence.accuracy')}</Text>
           </View>
         </View>
 
         <View style={styles.summaryDetailRow}>
           <View style={styles.summaryDetailItem}>
             <Text style={styles.summaryDetailValue}>
-              {result.routinesCompleted}
+              {Intl.NumberFormat(i18n.language).format(result.routinesCompleted)}
             </Text>
             <Text style={styles.summaryDetailLabel}>
-              / {result.routinesAttempted} Completed
+              / {Intl.NumberFormat(i18n.language).format(result.routinesAttempted)} {t('games.safePath.levelCompleteTitle')}
             </Text>
           </View>
           <View style={styles.summaryDetailItem}>
             <Text style={styles.summaryDetailValue}>
-              {Math.round(result.durationSeconds / 60)}
+              {Intl.NumberFormat(i18n.language).format(Math.round(result.durationSeconds / 60))}
             </Text>
-            <Text style={styles.summaryDetailLabel}>Minutes</Text>
+            <Text style={styles.summaryDetailLabel}>{t('games.routineSequence.minutes')}</Text>
           </View>
           <View style={styles.summaryDetailItem}>
             <Text style={styles.summaryDetailValue}>
-              {result.averagePromptsUsed.toFixed(1)}
+              {Intl.NumberFormat(i18n.language, { minimumFractionDigits: 1 }).format(result.averagePromptsUsed)}
             </Text>
-            <Text style={styles.summaryDetailLabel}>Avg Prompts</Text>
+            <Text style={styles.summaryDetailLabel}>{t('games.routineSequence.avgPrompts')}</Text>
           </View>
         </View>
 
         <View style={styles.summaryMessage}>
           <Text style={styles.summaryMessageText}>
             {result.averageAccuracy >= 0.9
-              ? "Outstanding! You're building strong routine memory."
+              ? t('games.routineSequence.outstandingMsg')
               : result.averageAccuracy >= 0.7
-              ? "Good work! Consistent practice makes perfect."
-              : "Every attempt counts. You'll improve with each session."}
+              ? t('games.routineSequence.goodWorkMsg')
+              : t('games.routineSequence.keepTryingMsg')}
           </Text>
         </View>
 
@@ -501,7 +500,7 @@ export default function RoutineSequenceGameScreen() {
           style={styles.primaryButton}
           onPress={() => router.push('/(patient)/games' as any)}
         >
-          <Text style={styles.primaryButtonText}>Back to Games</Text>
+          <Text style={styles.primaryButtonText}>{t('games.routineSequence.backToGames')}</Text>
         </Pressable>
 
         <Pressable
@@ -511,7 +510,7 @@ export default function RoutineSequenceGameScreen() {
             store.startSession(patientId);
           }}
         >
-          <Text style={styles.secondaryButtonText}>Play Again</Text>
+          <Text style={styles.secondaryButtonText}>{t('games.routineSequence.playAgain')}</Text>
         </Pressable>
       </ScrollView>
     );
