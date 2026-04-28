@@ -24,7 +24,7 @@ export class GamesRepo {
         actorUserId,
         actorRole,
         source: dto.source ?? 'games',
-        metadata: dto.metadata ?? undefined,
+        metadata: dto.metadata ? (dto.metadata as any) : undefined,
         levelResults: dto.levelResults && dto.levelResults.length > 0
           ? {
               create: dto.levelResults.map((lr) => ({
@@ -41,7 +41,7 @@ export class GamesRepo {
                 retryCount: lr.retryCount ?? 0,
                 startedAt: lr.startedAt ? new Date(lr.startedAt) : new Date(),
                 completedAt: lr.completedAt ? new Date(lr.completedAt) : null,
-                metadata: lr.metadata ?? undefined,
+                metadata: lr.metadata ? (lr.metadata as any) : undefined,
               })),
             }
           : undefined,

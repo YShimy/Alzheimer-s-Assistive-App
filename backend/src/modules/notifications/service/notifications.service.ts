@@ -5,7 +5,7 @@
  * Uses Expo Push Notification API.
  */
 
-import { prisma } from '@/shared/db/prisma';
+import { prisma } from '../../../shared/db/prisma.js';
 
 interface PushMessage {
   to: string;

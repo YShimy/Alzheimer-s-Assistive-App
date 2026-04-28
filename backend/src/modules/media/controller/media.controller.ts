@@ -17,7 +17,7 @@ export const mediaController = {
   },
 
   async getMedia(req: Request, res: Response) {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const asset = await prisma.mediaAsset.findUnique({ where: { id } });
     if (!asset) throw new AppError('Asset not found', 404);
     res.json({ asset });

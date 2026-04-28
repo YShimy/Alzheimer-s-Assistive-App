@@ -1,0 +1,1 @@
+{"version":3,"file":"moveValidator.d.ts","sourceRoot":"","sources":["moveValidator.ts"],"names":[],"mappings":"AAAA;;;;;GAKG;AACH,OAAO,KAAK,EAAE,SAAS,EAAE,eAAe,EAAE,UAAU,EAAE,SAAS,EAAE,MAAM,SAAS,CAAC;AAYjF;;;;;;;;;;GAUG;AACH,wBAAgB,YAAY,CAC1B,KAAK,EAAE,eAAe,EACtB,eAAe,EAAE,SAAS,EAC1B,MAAM,EAAE,SAAS,EACjB,UAAU,EAAE,GAAG,CAAC,MAAM,CAAC,EACvB,KAAK,EAAE,SAAS,GACf,UAAU,CAoCZ"}
