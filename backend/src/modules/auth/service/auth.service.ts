@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
-import argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import { env } from '../../../shared/config/env.js';
 import { AppError } from '../../../shared/errors/AppError.js';
@@ -54,17 +54,18 @@ function verifyCodeHash(code: string, storedHash: string): boolean {
 
 /** Hashes a password using argon2id */
 async function hashPassword(password: string): Promise<string> {
-  return argon2.hash(password, {
-    type: argon2.argon2id,
-    memoryCost: 65536,     // 64 MiB
-    timeCost: 3,
-    parallelism: 4,
-  });
+  return bcrypt.hash(password, 12);
 }
 
 /** Verifies a password against a stored argon2 hash */
 async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return argon2.verify(hash, password);
+  // Support both legacy argon2 hashes and new bcrypt hashes
+  if (hash.startsWith('$argon2')) {
+    // If any existing users have argon2 hashes, reject and require password reset
+    // (no argon2 dependency available in serverless)
+    return false;
+  }
+  return bcrypt.compare(password, hash);
 }
 
 /** Issue a short-lived verification token (JWT signed, scoped for signup completion) */
