@@ -34,6 +34,26 @@ export function createApp() {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  // ─── DB Diagnostic (temporary) ─────────────────────
+  app.get('/api/debug/db', async (_req, res) => {
+    try {
+      const { prisma } = await import('../shared/db/prisma.js');
+      const userCount = await prisma.user.count();
+      res.json({ status: 'ok', userCount, env: {
+        NODE_ENV: process.env.NODE_ENV,
+        hasJwtSecret: !!process.env.JWT_SECRET,
+        hasDbUrl: !!process.env.DATABASE_URL,
+        dbUrlPreview: process.env.DATABASE_URL?.substring(0, 40) + '...',
+      }});
+    } catch (err: any) {
+      res.status(500).json({
+        error: err.message,
+        code: err.code,
+        stack: err.stack?.split('\n').slice(0, 5),
+      });
+    }
+  });
+
   // ─── API Routes ─────────────────────────────────────
   registerRoutes(app);
 
