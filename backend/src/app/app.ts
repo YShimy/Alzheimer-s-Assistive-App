@@ -19,7 +19,9 @@ export function createApp() {
   app.use(express.json());
   
   // ─── Static files for media storage ─────────────────
-  app.use('/uploads', express.static('uploads'));
+  // Vercel: files are in /tmp/uploads/ (ephemeral). Local: uploads/ in project root.
+  const uploadsDir = process.env.NODE_ENV === 'production' ? '/tmp/uploads' : 'uploads';
+  app.use('/uploads', express.static(uploadsDir));
 
   // ─── Request Logging ────────────────────────────────
   app.use((req, _res, next) => {

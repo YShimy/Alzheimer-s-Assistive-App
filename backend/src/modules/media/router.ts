@@ -8,8 +8,9 @@ import { mediaController } from './controller/media.controller.js';
 
 import * as fs from 'fs';
 
-// Ensure uploads directory exists
-const uploadDir = 'uploads/';
+// Vercel serverless: only /tmp is writable. Local dev: use uploads/ in project root.
+const uploadDir = process.env.NODE_ENV === 'production' ? '/tmp/uploads/' : 'uploads/';
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
