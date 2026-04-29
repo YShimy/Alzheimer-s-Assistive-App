@@ -46,11 +46,22 @@ export function createApp() {
         dbUrlPreview: process.env.DATABASE_URL?.substring(0, 40) + '...',
       }});
     } catch (err: any) {
-      res.status(500).json({
-        error: err.message,
-        code: err.code,
-        stack: err.stack?.split('\n').slice(0, 5),
-      });
+      res.status(500).json({ error: err.message, code: err.code });
+    }
+  });
+
+  // ─── Signin Diagnostic (temporary) ─────────────────
+  app.post('/api/debug/signin', async (req, res) => {
+    const steps: string[] = [];
+    try {
+      steps.push('1. importing prisma');
+      const { prisma } = await import('../shared/db/prisma.js');
+      steps.push('2. calling findUnique');
+      const user = await prisma.user.findUnique({ where: { email: req.body.email ?? 'test@test.com' } });
+      steps.push(`3. result: ${user ? 'user found' : 'null'}`);
+      res.json({ ok: true, steps });
+    } catch (err: any) {
+      res.status(500).json({ failedAt: steps, error: err.message, code: err.code, stack: err.stack?.split('\n').slice(0, 8) });
     }
   });
 
