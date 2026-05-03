@@ -38,9 +38,7 @@ export function errorMiddleware(
   res.status(500).json({
     error: {
       code: 'INTERNAL_ERROR',
-      message: err.message,
-      name: err.name,
-      stack: err.stack,
+      message: 'An unexpected error occurred',
     },
   });
 }
