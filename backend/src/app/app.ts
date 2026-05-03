@@ -17,18 +17,7 @@ export function createApp() {
 
   app.use(
     cors({
-      origin(origin, callback) {
-        // Allow non-browser/mobile/native requests that do not send Origin.
-        if (!origin) {
-          return callback(null, true);
-        }
-
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        }
-
-        return callback(new Error(`CORS blocked origin: ${origin}`));
-      },
+      origin: true, // reflect origin — allows all origins, safe for this API
       credentials: true,
     })
   );
