@@ -12,11 +12,11 @@ export function validateBody<T extends z.ZodType>(schema: T) {
 
     if (!result.success) {
       const formatted = z.prettifyError(result.error);
-      throw new AppError(
+      return next(new AppError(
         `Validation failed: ${formatted}`,
         400,
         ErrorCode.VALIDATION_ERROR,
-      );
+      ));
     }
 
     req.body = result.data;
@@ -33,11 +33,11 @@ export function validateQuery<T extends z.ZodType>(schema: T) {
 
     if (!result.success) {
       const formatted = z.prettifyError(result.error);
-      throw new AppError(
+      return next(new AppError(
         `Invalid query parameters: ${formatted}`,
         400,
         ErrorCode.VALIDATION_ERROR,
-      );
+      ));
     }
 
     Object.defineProperty(req, 'query', {
@@ -59,11 +59,11 @@ export function validateParams<T extends z.ZodType>(schema: T) {
 
     if (!result.success) {
       const formatted = z.prettifyError(result.error);
-      throw new AppError(
+      return next(new AppError(
         `Invalid path parameters: ${formatted}`,
         400,
         ErrorCode.VALIDATION_ERROR,
-      );
+      ));
     }
 
     Object.defineProperty(req, 'params', {
