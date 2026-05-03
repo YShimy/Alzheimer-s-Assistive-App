@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { prisma } from '../../../shared/db/prisma.js';
-import { supabaseAdmin, STORAGE_BUCKET } from '../../../shared/supabase/supabase.client.js';
+import { getSupabaseAdmin, STORAGE_BUCKET } from '../../../shared/supabase/supabase.client.js';
 
 // ─── Storage key helpers ──────────────────────────────────────────────────────
 
@@ -35,7 +35,9 @@ export const mediaService = {
     const storageKey = buildStorageKey(userId, file.mimetype);
 
     // 1. Upload to Supabase Storage
-    const { error: uploadError } = await supabaseAdmin.storage
+    const supabase = getSupabaseAdmin();
+
+    const { error: uploadError } = await supabase.storage
       .from(STORAGE_BUCKET)
       .upload(storageKey, file.buffer, {
         contentType: file.mimetype,
@@ -47,7 +49,7 @@ export const mediaService = {
     }
 
     // 2. Get the public URL
-    const { data: urlData } = supabaseAdmin.storage
+    const { data: urlData } = supabase.storage
       .from(STORAGE_BUCKET)
       .getPublicUrl(storageKey);
 
@@ -81,7 +83,7 @@ export const mediaService = {
     if (!asset) return null;
 
     if (asset.storageProvider === 'supabase') {
-      const { error } = await supabaseAdmin.storage
+      const { error } = await getSupabaseAdmin().storage
         .from(STORAGE_BUCKET)
         .remove([asset.storageKey]);
 
