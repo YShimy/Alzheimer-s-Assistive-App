@@ -46,6 +46,9 @@ export function usePatientProgress(patientId: string | null) {
     loadAll(false);
   }, [loadAll]);
 
+  const reload = useCallback(() => loadAll(false), [loadAll]);
+  const refresh = useCallback(() => loadAll(true), [loadAll]);
+
   return {
     loading,
     refreshing,
@@ -54,7 +57,7 @@ export function usePatientProgress(patientId: string | null) {
     streaks,
     categories,
     charts,
-    reload: () => loadAll(false),
-    refresh: () => loadAll(true)
+    reload,
+    refresh
   };
 }

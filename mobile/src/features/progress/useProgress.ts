@@ -46,6 +46,9 @@ export function useProgress() {
     }
   }, [userId]);
 
+  const reload = useCallback(() => loadAll(false), [loadAll]);
+  const refresh = useCallback(() => loadAll(true), [loadAll]);
+
   return {
     loading,
     refreshing,
@@ -54,7 +57,7 @@ export function useProgress() {
     streaks,
     categories,
     charts,
-    reload: () => loadAll(false),
-    refresh: () => loadAll(true)
+    reload,
+    refresh
   };
 }
