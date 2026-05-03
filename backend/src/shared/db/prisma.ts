@@ -16,6 +16,9 @@ const pool = new pg.Pool({
   // Connection is still encrypted — we just skip CA certificate verification
   // which is required for Supabase session pooler on serverless platforms.
   ssl: { rejectUnauthorized: false },
+  // Serverless limits: prevent each Vercel lambda from opening 10 connections
+  max: process.env.VERCEL ? 1 : 10,
+  idleTimeoutMillis: 10000,
 });
 const adapter = new PrismaPg(pool as any);
 
