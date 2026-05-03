@@ -10,12 +10,28 @@ export function createApp() {
 
   // ─── Global Middleware ──────────────────────────────
   app.use(helmet({ crossOriginResourcePolicy: false })); // allow images to load across origins
-  app.use(cors({
-    origin: function (origin, callback) {
-      callback(null, true);
-    },
-    credentials: true,
-  }));
+  const allowedOrigins = (process.env.CLIENT_APP_URL ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  app.use(
+    cors({
+      origin(origin, callback) {
+        // Allow non-browser/mobile/native requests that do not send Origin.
+        if (!origin) {
+          return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        return callback(new Error(`CORS blocked origin: ${origin}`));
+      },
+      credentials: true,
+    })
+  );
   app.use(express.json());
   
   // ─── Static files for media storage ─────────────────
@@ -30,8 +46,34 @@ export function createApp() {
   });
 
   // ─── Health Check ───────────────────────────────────
+  app.get('/health', (_req, res) => {
+    res.status(200).json({
+      status: 'ok',
+      service: 'cognitive-support-backend',
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.status(200).json({
+      status: 'ok',
+      service: 'cognitive-support-backend',
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  app.get('/api/health/db', async (_req, res, next) => {
+    try {
+      const { prisma } = await import('../shared/db/prisma.js');
+      await prisma.$queryRaw`SELECT 1`;
+      res.status(200).json({
+        status: 'ok',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      next(error);
+    }
   });
 
   // ─── DB Diagnostic (temporary) ─────────────────────
