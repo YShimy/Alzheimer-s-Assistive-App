@@ -59,10 +59,8 @@ class ApiClient {
   }
 
   private getHeaders(contentType: string | null = 'application/json'): HeadersInit {
-    const headers: Record<string, string> = {
-      'ngrok-skip-browser-warning': 'true',
-    };
-    
+    const headers: Record<string, string> = {};
+
     if (contentType) {
       headers['Content-Type'] = contentType;
     }
