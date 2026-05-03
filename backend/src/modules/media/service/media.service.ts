@@ -1,40 +1,71 @@
+import { randomUUID } from 'crypto';
 import { prisma } from '../../../shared/db/prisma.js';
-import { env } from '../../../shared/config/env.js';
+import { supabaseAdmin, STORAGE_BUCKET } from '../../../shared/supabase/supabase.client.js';
 
-/**
- * Returns the base URL used to generate public-facing media asset URLs.
- *
- * Priority (highest to lowest):
- *   1. API_PUBLIC_URL  — deployed/tunneled public URL (Railway, Render, ngrok, etc.)
- *                        Use this for any tester not on your LAN.
- *   2. API_DEVICE_URL  — LAN/hotspot IP (e.g. http://172.20.10.5:4000)
- *                        Use this for same-network Expo Go dev only.
- *   3. API_BASE_URL    — defaults to http://localhost:4000
- *                        Usable only from the same machine (e.g. web browser).
- *
- * To fix media URLs for remote testers: set API_PUBLIC_URL in backend .env.
- */
-export function getPublicBaseUrl(): string {
-  const raw = env.API_PUBLIC_URL ?? env.API_DEVICE_URL ?? env.API_BASE_URL;
-  return raw.trim().replace(/\/$/, '');
+// ─── Storage key helpers ──────────────────────────────────────────────────────
+
+function getExtensionFromMimeType(mimeType: string): string {
+  switch (mimeType) {
+    case 'image/jpeg': return 'jpg';
+    case 'image/png':  return 'png';
+    case 'image/webp': return 'webp';
+    case 'video/mp4':  return 'mp4';
+    case 'video/quicktime': return 'mov';
+    default:           return 'bin';
+  }
 }
 
-export const mediaService = {
-  async saveAsset(userId: string, file: Express.Multer.File, assetType: 'IMAGE' | 'VIDEO') {
-    const base = getPublicBaseUrl();
-    const publicUrl = `${base}/uploads/${file.filename}`;
+function buildStorageKey(uploadedByUserId: string, mimeType: string): string {
+  const ext = getExtensionFromMimeType(mimeType);
+  return `media/${uploadedByUserId}/${Date.now()}-${randomUUID()}.${ext}`;
+}
 
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+export const mediaService = {
+  /**
+   * Uploads an in-memory file (from multer.memoryStorage) to Supabase Storage,
+   * then records the MediaAsset in the database.
+   */
+  async saveAsset(
+    userId: string,
+    file: Express.Multer.File,
+    assetType: 'IMAGE' | 'VIDEO',
+  ) {
+    const storageKey = buildStorageKey(userId, file.mimetype);
+
+    // 1. Upload to Supabase Storage
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .upload(storageKey, file.buffer, {
+        contentType: file.mimetype,
+        upsert: false,
+      });
+
+    if (uploadError) {
+      throw new Error(`Supabase upload failed: ${uploadError.message}`);
+    }
+
+    // 2. Get the public URL
+    const { data: urlData } = supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(storageKey);
+
+    const publicUrl = urlData.publicUrl;
+
+    // 3. Persist the MediaAsset record
     const asset = await prisma.mediaAsset.create({
       data: {
         uploadedByUserId: userId,
         ownerUserId: userId,
         assetType,
-        storageProvider: 'local',
-        storageKey: file.filename,
+        storageProvider: 'supabase',
+        storageKey,
         publicUrl,
         mimeType: file.mimetype,
       },
     });
+
     return asset;
   },
 
@@ -43,27 +74,23 @@ export const mediaService = {
   },
 
   /**
-   * Re-stamps the publicUrl of an existing asset using the current API_PUBLIC_URL.
-   * Call this after updating API_PUBLIC_URL to fix URLs stored in the database.
-   *
-   * Example (run once via ts-node or a migration script):
-   *   await mediaService.restampAllPublicUrls();
+   * Deletes a media asset from Supabase Storage and removes the DB record.
    */
-  async restampAllPublicUrls() {
-    const base = getPublicBaseUrl();
-    const all = await prisma.mediaAsset.findMany({
-      where: { storageProvider: 'local' },
-      select: { id: true, storageKey: true },
-    });
-    let updated = 0;
-    for (const asset of all) {
-      const newUrl = `${base}/uploads/${asset.storageKey}`;
-      await prisma.mediaAsset.update({
-        where: { id: asset.id },
-        data: { publicUrl: newUrl },
-      });
-      updated++;
+  async deleteAsset(id: string) {
+    const asset = await prisma.mediaAsset.findUnique({ where: { id } });
+    if (!asset) return null;
+
+    if (asset.storageProvider === 'supabase') {
+      const { error } = await supabaseAdmin.storage
+        .from(STORAGE_BUCKET)
+        .remove([asset.storageKey]);
+
+      if (error) {
+        // Log but don't hard-fail — DB cleanup is more important
+        console.warn(`[mediaService] Failed to delete from Supabase Storage: ${error.message}`);
+      }
     }
-    return { updated };
+
+    return prisma.mediaAsset.delete({ where: { id } });
   },
 };

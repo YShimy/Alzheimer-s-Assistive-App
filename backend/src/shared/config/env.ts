@@ -24,6 +24,11 @@ const envSchema = z.object({
   SMTP_USER: z.string().default(''),
   SMTP_PASS: z.string().default(''),
   MAIL_FROM: z.string().default('youssef.elshimyy@gmail.com'),
+
+  // Supabase Storage
+  SUPABASE_URL: z.string().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+  SUPABASE_STORAGE_BUCKET: z.string().default('cognitive-media'),
 });
 
 const parsed = envSchema.safeParse(process.env);

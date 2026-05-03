@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.7.0",
+    "@supabase/supabase-js": "^2.105.1",
     "@types/bcryptjs": "^2.4.6",
     "argon2": "^0.44.0",
     "bcryptjs": "^3.0.3",
