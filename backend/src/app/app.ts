@@ -33,6 +33,11 @@ export function createApp() {
     })
   );
   app.use(express.json());
+
+  // ─── Minimal POST test (temporary) ──────────────────
+  app.post('/api/debug/echo', (req, res) => {
+    res.json({ received: req.body });
+  });
   
   // ─── Static files for media storage ─────────────────
   // Vercel: files are in /tmp/uploads/ (ephemeral). Local: uploads/ in project root.
