@@ -107,6 +107,22 @@ export function createApp() {
     }
   });
 
+  // ─── Raw Auth Diagnostic (temporary) ────────────────
+  // Bypasses all middleware — exposes raw errors for debugging only
+  app.post('/api/debug/auth-raw', async (req, res) => {
+    const log: string[] = [];
+    try {
+      log.push('start');
+      const { authService } = await import('../modules/auth/service/auth.service.js');
+      log.push('authService imported');
+      const result = await authService.signin(req.body.email, req.body.password);
+      log.push('signin succeeded');
+      res.json({ ok: true, log, hasAccessToken: !!result.accessToken });
+    } catch (err: any) {
+      res.status(200).json({ ok: false, log, error: err.message, code: err.code, name: err.name, stack: err.stack?.split('\n').slice(0, 10) });
+    }
+  });
+
   // ─── API Routes ─────────────────────────────────────
   registerRoutes(app);
 
