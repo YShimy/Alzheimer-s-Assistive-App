@@ -22,7 +22,7 @@ const CATEGORIES: PatientDocumentCategory[] = [
 ];
 
 export default function RecordsUploadScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { selectedPatientId } = useCaregiverPatientStore();
 
@@ -91,7 +91,9 @@ export default function RecordsUploadScreen() {
     <ScreenContainer scroll={true}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.backBtn}>
-          <Icon name="arrow-back" size={24} color={colors.on_surface} />
+          <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+            <Icon name="arrow-back" size={24} color={colors.on_surface} />
+          </View>
         </Pressable>
         <Text style={styles.title}>{t('records.uploadTitle', 'Upload Record')}</Text>
       </View>
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   backBtn: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   title: {
     fontFamily: typography.family.display,

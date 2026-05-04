@@ -628,5 +628,51 @@
         "wp-5": { "label": "تفريغ الماء الزائد", "hint": "صرف الوعاء السفلي" }
       }
     }
+  },
+  "records": {
+    "title": "سجلات المريض",
+    "subtitle": "رفع وتنظيم المستندات المتعلقة بالمريض لمرجع مقدم الرعاية.",
+    "openError": "فشل فتح المستند.",
+    "archiveTitle": "أرشفة السجل",
+    "archiveMsg": "هل أنت متأكد من رغبتك في أرشفة هذا السجل؟ سيتم إخفاؤه من العرض الافتراضي.",
+    "archiveBtn": "أرشفة",
+    "archiveError": "فشل أرشفة المستند.",
+    "openBtn": "فتح",
+    "uploadBtn": "رفع سجل",
+    "emptyTitle": "لم يتم العثور على سجلات",
+    "emptySubtitle": "قم برفع تقارير طبية، وصفات طبية، أو وثائق هوية.",
+    "headerTitle": "سجلات المريض",
+    "filterAll": "الكل",
+    "titleRequired": "العنوان مطلوب.",
+    "fileRequired": "الرجاء تحديد ملف.",
+    "fileTooLarge": "حجم الملف يجب أن يكون أقل من 15 ميغابايت.",
+    "uploadSuccess": "تم رفع السجل بنجاح.",
+    "uploadError": "فشل رفع السجل.",
+    "uploadTitle": "رفع سجل",
+    "uploadDisclaimer": "هذا التطبيق يحفظ المستندات المقدمة من مقدم الرعاية ولا يفسر أو يشخص الحالات الطبية.",
+    "fieldTitle": "العنوان *",
+    "fieldTitlePlaceholder": "مثال: تقرير الرنين المغناطيسي للدماغ",
+    "fieldCategory": "الفئة *",
+    "fieldSource": "المصدر / الطبيب (اختياري)",
+    "fieldSourcePlaceholder": "مثال: د. أحمد",
+    "fieldNotes": "ملاحظات (اختياري)",
+    "fieldNotesPlaceholder": "أي ملاحظات إضافية",
+    "fieldFile": "ملف المستند *",
+    "selectFile": "تحديد PDF أو صورة",
+    "uploadAction": "رفع",
+    "categories": {
+      "PRESCRIPTION": "وصفة طبية",
+      "LAB_RESULT": "نتيجة مختبر",
+      "SCAN_IMAGING": "أشعة وتصوير",
+      "DOCTOR_VISIT_NOTE": "ملاحظة زيارة طبيب",
+      "DISCHARGE_SUMMARY": "ملخص خروج",
+      "MEDICATION_PLAN": "خطة علاجية",
+      "CARE_PLAN": "خطة رعاية",
+      "ADMINISTRATIVE": "إداري",
+      "MEDICAL_REPORT": "تقرير طبي",
+      "TEST_RESULT": "نتيجة فحص",
+      "IDENTITY_DOCUMENT": "وثيقة هوية",
+      "OTHER": "أخرى"
+    }
   }
 }

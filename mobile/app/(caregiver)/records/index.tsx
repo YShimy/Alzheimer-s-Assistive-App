@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   backBtn: {
-    marginRight: spacing.md,
+    marginEnd: spacing.md,
   },
   title: {
     fontFamily: typography.family.display,
@@ -203,13 +203,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    marginRight: spacing.sm,
+    marginEnd: spacing.sm,
   },
   cardTitle: {
     fontFamily: typography.family.title,
     fontSize: typography.size.base,
     color: colors.on_surface,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
     flex: 1,
   },
   categoryBadge: {
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.on_surface_variant,
     marginBottom: spacing.xs,
-    marginLeft: spacing.xs,
+    marginStart: spacing.xs,
   },
   cardDetailRow: {
     flexDirection: 'row',

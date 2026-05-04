@@ -136,7 +136,7 @@ export default function CaregiverProgressScreen() {
           onPress={() => router.push('/(caregiver)/records')}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary_container, alignItems: 'center', justifyContent: 'center', marginRight: spacing.md }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary_container, alignItems: 'center', justifyContent: 'center', marginEnd: spacing.md }}>
               <Icon name="folder-open-outline" size={24} color={colors.primary.main} />
             </View>
             <View style={{ flex: 1 }}>
@@ -147,7 +147,9 @@ export default function CaregiverProgressScreen() {
                 {t('records.subtitle', 'Upload and organize patient-related documents for caregiver reference.')}
               </Text>
             </View>
-            <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+            <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+              <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+            </View>
           </View>
         </AppCard>
 
