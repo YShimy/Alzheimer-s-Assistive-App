@@ -9,7 +9,7 @@ import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { usePatientProgress } from '@/src/features/progress/usePatientProgress';
 import { useChecklistTracking, usePriorityBreakdown, useEscalations } from '@/src/features/progress/hooks';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
 
@@ -19,6 +19,7 @@ import { TrendLineChart, StackedConsistencyChart } from '@/src/shared/ui/charts/
 
 export default function CaregiverProgressScreen() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
 
   // ─── Global patient context ─────────────────────────────────────────────
   useCaregiverLinks();
@@ -128,6 +129,27 @@ export default function CaregiverProgressScreen() {
       >
         <Text style={styles.headerTitle}>{t('caregiverTabs.progressHeader')}</Text>
         <Text style={styles.headerSubtitle}>{t('caregiverReminders.managingFor')} {selectedPatientName ?? t('auth.patient')}</Text>
+
+        {/* PATIENT RECORDS ENTRY */}
+        <AppCard
+          style={[styles.section, { marginBottom: spacing.xl }]}
+          onPress={() => router.push('/(caregiver)/records')}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary_container, alignItems: 'center', justifyContent: 'center', marginRight: spacing.md }}>
+              <Icon name="folder-open-outline" size={24} color={colors.primary.main} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: typography.family.title, fontSize: typography.size.base, color: colors.on_surface }}>
+                {t('records.title', 'Patient Records')}
+              </Text>
+              <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.on_surface_variant, marginTop: 2 }}>
+                {t('records.subtitle', 'Upload and organize patient-related documents for caregiver reference.')}
+              </Text>
+            </View>
+            <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+          </View>
+        </AppCard>
 
         {/* ESCALATION ALERTS */}
         {escalationData && escalationData.escalations.length > 0 && (

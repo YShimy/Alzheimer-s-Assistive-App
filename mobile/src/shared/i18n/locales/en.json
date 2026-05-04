@@ -646,7 +646,8 @@
   },
   "contacts": {
     "title": "Contacts",
-    "importBtn": "Import",
+    "importBtn": "Import from Phone",
+    "importMoreBtn": "Import More from Phone",
     "priorityTitle": "Favorites",
     "allTitle": "All Contacts",
     "noContacts": "No Contacts",

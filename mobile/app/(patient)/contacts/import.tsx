@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList, Pressable, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as Contacts from 'expo-contacts';
 import { ScreenContainer, AppButton, AppInput, Icon, LoadingState } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
@@ -20,26 +20,64 @@ export default function ContactImportScreen() {
   const [importing, setImporting] = useState(false);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-        });
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-        if (data.length > 0) {
-          const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
-          setDeviceContacts(sorted);
-          setFilteredContacts(sorted);
+      const fetchContacts = async () => {
+        setLoading(true);
+        setSelectedIds(new Set());
+        setSearch('');
+
+        try {
+          const { status } = await Contacts.requestPermissionsAsync();
+          if (status !== 'granted') {
+            if (isActive) {
+              Alert.alert(t('contacts.permissionDeniedTitle'), t('contacts.permissionDeniedMsg'));
+              router.back();
+            }
+            return;
+          }
+
+          // Fetch device contacts
+          const { data } = await Contacts.getContactsAsync({
+            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+          });
+
+          // Fetch already saved contacts
+          let savedContactIds = new Set<string>();
+          if (userId) {
+            try {
+              const res = await contactsApi.listContacts(userId);
+              // Save the sourceContactId to know what we already imported
+              res.contacts.forEach(c => {
+                if (c.sourceContactId) savedContactIds.add(c.sourceContactId);
+              });
+            } catch (e) {
+              console.error('Failed to fetch existing contacts', e);
+            }
+          }
+
+          if (isActive) {
+            // Filter out contacts we already have
+            const freshContacts = data
+              .filter(c => c.id && !savedContactIds.has(c.id))
+              .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+            setDeviceContacts(freshContacts);
+            setFilteredContacts(freshContacts);
+          }
+        } finally {
+          if (isActive) setLoading(false);
         }
-      } else {
-        Alert.alert(t('contacts.permissionDeniedTitle'), t('contacts.permissionDeniedMsg'));
-        router.back();
-      }
-      setLoading(false);
-    })();
-  }, []);
+      };
+
+      fetchContacts();
+
+      return () => {
+        isActive = false;
+      };
+    }, [userId, t, router])
+  );
 
   useEffect(() => {
     const term = search.toLowerCase();

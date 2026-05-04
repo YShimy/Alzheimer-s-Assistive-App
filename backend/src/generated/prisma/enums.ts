@@ -118,6 +118,29 @@ export const VerificationPurpose = {
 export type VerificationPurpose = (typeof VerificationPurpose)[keyof typeof VerificationPurpose]
 
 
+export const PatientDocumentCategory = {
+  PRESCRIPTION: 'PRESCRIPTION',
+  LAB_RESULT: 'LAB_RESULT',
+  SCAN_IMAGING: 'SCAN_IMAGING',
+  DOCTOR_VISIT_NOTE: 'DOCTOR_VISIT_NOTE',
+  DISCHARGE_SUMMARY: 'DISCHARGE_SUMMARY',
+  MEDICATION_PLAN: 'MEDICATION_PLAN',
+  CARE_PLAN: 'CARE_PLAN',
+  ADMINISTRATIVE: 'ADMINISTRATIVE',
+  OTHER: 'OTHER'
+} as const
+
+export type PatientDocumentCategory = (typeof PatientDocumentCategory)[keyof typeof PatientDocumentCategory]
+
+
+export const PatientDocumentStatus = {
+  ACTIVE: 'ACTIVE',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type PatientDocumentStatus = (typeof PatientDocumentStatus)[keyof typeof PatientDocumentStatus]
+
+
 export const ConsentStatus = {
   PENDING: 'PENDING',
   GRANTED: 'GRANTED',

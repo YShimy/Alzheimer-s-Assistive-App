@@ -330,6 +330,8 @@ export type UserWhereInput = {
   createdMemos?: Prisma.ContactMemoListRelationFilter
   uploadedAssets?: Prisma.MediaAssetListRelationFilter
   ownedAssets?: Prisma.MediaAssetListRelationFilter
+  patientDocuments?: Prisma.PatientDocumentListRelationFilter
+  uploadedPatientDocuments?: Prisma.PatientDocumentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -372,6 +374,8 @@ export type UserOrderByWithRelationInput = {
   createdMemos?: Prisma.ContactMemoOrderByRelationAggregateInput
   uploadedAssets?: Prisma.MediaAssetOrderByRelationAggregateInput
   ownedAssets?: Prisma.MediaAssetOrderByRelationAggregateInput
+  patientDocuments?: Prisma.PatientDocumentOrderByRelationAggregateInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -417,6 +421,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdMemos?: Prisma.ContactMemoListRelationFilter
   uploadedAssets?: Prisma.MediaAssetListRelationFilter
   ownedAssets?: Prisma.MediaAssetListRelationFilter
+  patientDocuments?: Prisma.PatientDocumentListRelationFilter
+  uploadedPatientDocuments?: Prisma.PatientDocumentListRelationFilter
 }, "id" | "googleId" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -507,6 +513,8 @@ export type UserCreateInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -549,6 +557,8 @@ export type UserUncheckedCreateInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUpdateInput = {
@@ -591,6 +601,8 @@ export type UserUpdateInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -633,6 +645,8 @@ export type UserUncheckedUpdateInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -801,6 +815,34 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutPatientDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutPatientDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPatientDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUploadedPatientDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutUploadedPatientDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedPatientDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPatientDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutPatientDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPatientDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutPatientDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPatientDocumentsInput, Prisma.UserUpdateWithoutPatientDocumentsInput>, Prisma.UserUncheckedUpdateWithoutPatientDocumentsInput>
+}
+
+export type UserUpdateOneRequiredWithoutUploadedPatientDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutUploadedPatientDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedPatientDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedPatientDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedPatientDocumentsInput, Prisma.UserUpdateWithoutUploadedPatientDocumentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedPatientDocumentsInput>
 }
 
 export type UserCreateNestedOneWithoutCaregiverLinksInput = {
@@ -1119,6 +1161,382 @@ export type UserUpdateOneRequiredWithoutUploadedAssetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedAssetsInput, Prisma.UserUpdateWithoutUploadedAssetsInput>, Prisma.UserUncheckedUpdateWithoutUploadedAssetsInput>
 }
 
+export type UserCreateWithoutPatientDocumentsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserUncheckedCreateWithoutPatientDocumentsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+}
+
+export type UserCreateOrConnectWithoutPatientDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutPatientDocumentsInput>
+}
+
+export type UserCreateWithoutUploadedPatientDocumentsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+}
+
+export type UserUncheckedCreateWithoutUploadedPatientDocumentsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+}
+
+export type UserCreateOrConnectWithoutUploadedPatientDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutUploadedPatientDocumentsInput>
+}
+
+export type UserUpsertWithoutPatientDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPatientDocumentsInput, Prisma.UserUncheckedUpdateWithoutPatientDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutPatientDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPatientDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPatientDocumentsInput, Prisma.UserUncheckedUpdateWithoutPatientDocumentsInput>
+}
+
+export type UserUpdateWithoutPatientDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPatientDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUncheckedUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUncheckedUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserUpsertWithoutUploadedPatientDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedUpdateWithoutUploadedPatientDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedCreateWithoutUploadedPatientDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedPatientDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedPatientDocumentsInput, Prisma.UserUncheckedUpdateWithoutUploadedPatientDocumentsInput>
+}
+
+export type UserUpdateWithoutUploadedPatientDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedPatientDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUncheckedUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUncheckedUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+}
+
 export type UserCreateWithoutCaregiverLinksInput = {
   id?: string
   googleId?: string | null
@@ -1158,6 +1576,8 @@ export type UserCreateWithoutCaregiverLinksInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCaregiverLinksInput = {
@@ -1199,6 +1619,8 @@ export type UserUncheckedCreateWithoutCaregiverLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCaregiverLinksInput = {
@@ -1245,6 +1667,8 @@ export type UserCreateWithoutPatientLinksInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutPatientLinksInput = {
@@ -1286,6 +1710,8 @@ export type UserUncheckedCreateWithoutPatientLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutPatientLinksInput = {
@@ -1332,6 +1758,8 @@ export type UserCreateWithoutInvitedCareLinksInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutInvitedCareLinksInput = {
@@ -1373,6 +1801,8 @@ export type UserUncheckedCreateWithoutInvitedCareLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutInvitedCareLinksInput = {
@@ -1430,6 +1860,8 @@ export type UserUpdateWithoutCaregiverLinksInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCaregiverLinksInput = {
@@ -1471,6 +1903,8 @@ export type UserUncheckedUpdateWithoutCaregiverLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutPatientLinksInput = {
@@ -1523,6 +1957,8 @@ export type UserUpdateWithoutPatientLinksInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPatientLinksInput = {
@@ -1564,6 +2000,8 @@ export type UserUncheckedUpdateWithoutPatientLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutInvitedCareLinksInput = {
@@ -1616,6 +2054,8 @@ export type UserUpdateWithoutInvitedCareLinksInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
@@ -1657,6 +2097,8 @@ export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutPatientRemindersInput = {
@@ -1698,6 +2140,8 @@ export type UserCreateWithoutPatientRemindersInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutPatientRemindersInput = {
@@ -1739,6 +2183,8 @@ export type UserUncheckedCreateWithoutPatientRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutPatientRemindersInput = {
@@ -1785,6 +2231,8 @@ export type UserCreateWithoutCreatedRemindersInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedRemindersInput = {
@@ -1826,6 +2274,8 @@ export type UserUncheckedCreateWithoutCreatedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedRemindersInput = {
@@ -1872,6 +2322,8 @@ export type UserCreateWithoutEditedRemindersInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutEditedRemindersInput = {
@@ -1913,6 +2365,8 @@ export type UserUncheckedCreateWithoutEditedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutEditedRemindersInput = {
@@ -1970,6 +2424,8 @@ export type UserUpdateWithoutPatientRemindersInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPatientRemindersInput = {
@@ -2011,6 +2467,8 @@ export type UserUncheckedUpdateWithoutPatientRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutCreatedRemindersInput = {
@@ -2063,6 +2521,8 @@ export type UserUpdateWithoutCreatedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedRemindersInput = {
@@ -2104,6 +2564,8 @@ export type UserUncheckedUpdateWithoutCreatedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutEditedRemindersInput = {
@@ -2156,6 +2618,8 @@ export type UserUpdateWithoutEditedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEditedRemindersInput = {
@@ -2197,6 +2661,8 @@ export type UserUncheckedUpdateWithoutEditedRemindersInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutReminderEventsInput = {
@@ -2238,6 +2704,8 @@ export type UserCreateWithoutReminderEventsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutReminderEventsInput = {
@@ -2279,6 +2747,8 @@ export type UserUncheckedCreateWithoutReminderEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutReminderEventsInput = {
@@ -2325,6 +2795,8 @@ export type UserCreateWithoutActorEventsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutActorEventsInput = {
@@ -2366,6 +2838,8 @@ export type UserUncheckedCreateWithoutActorEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutActorEventsInput = {
@@ -2423,6 +2897,8 @@ export type UserUpdateWithoutReminderEventsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReminderEventsInput = {
@@ -2464,6 +2940,8 @@ export type UserUncheckedUpdateWithoutReminderEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutActorEventsInput = {
@@ -2516,6 +2994,8 @@ export type UserUpdateWithoutActorEventsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActorEventsInput = {
@@ -2557,6 +3037,8 @@ export type UserUncheckedUpdateWithoutActorEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutChecklistTemplatesInput = {
@@ -2598,6 +3080,8 @@ export type UserCreateWithoutChecklistTemplatesInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutChecklistTemplatesInput = {
@@ -2639,6 +3123,8 @@ export type UserUncheckedCreateWithoutChecklistTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutChecklistTemplatesInput = {
@@ -2685,6 +3171,8 @@ export type UserCreateWithoutCreatedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTemplatesInput = {
@@ -2726,6 +3214,8 @@ export type UserUncheckedCreateWithoutCreatedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTemplatesInput = {
@@ -2772,6 +3262,8 @@ export type UserCreateWithoutEditedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutEditedTemplatesInput = {
@@ -2813,6 +3305,8 @@ export type UserUncheckedCreateWithoutEditedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutEditedTemplatesInput = {
@@ -2870,6 +3364,8 @@ export type UserUpdateWithoutChecklistTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChecklistTemplatesInput = {
@@ -2911,6 +3407,8 @@ export type UserUncheckedUpdateWithoutChecklistTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutCreatedTemplatesInput = {
@@ -2963,6 +3461,8 @@ export type UserUpdateWithoutCreatedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTemplatesInput = {
@@ -3004,6 +3504,8 @@ export type UserUncheckedUpdateWithoutCreatedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutEditedTemplatesInput = {
@@ -3056,6 +3558,8 @@ export type UserUpdateWithoutEditedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
@@ -3097,6 +3601,8 @@ export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutChecklistRunsInput = {
@@ -3138,6 +3644,8 @@ export type UserCreateWithoutChecklistRunsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutChecklistRunsInput = {
@@ -3179,6 +3687,8 @@ export type UserUncheckedCreateWithoutChecklistRunsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutChecklistRunsInput = {
@@ -3225,6 +3735,8 @@ export type UserCreateWithoutActorRunsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutActorRunsInput = {
@@ -3266,6 +3778,8 @@ export type UserUncheckedCreateWithoutActorRunsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutActorRunsInput = {
@@ -3323,6 +3837,8 @@ export type UserUpdateWithoutChecklistRunsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChecklistRunsInput = {
@@ -3364,6 +3880,8 @@ export type UserUncheckedUpdateWithoutChecklistRunsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutActorRunsInput = {
@@ -3416,6 +3934,8 @@ export type UserUpdateWithoutActorRunsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActorRunsInput = {
@@ -3457,6 +3977,8 @@ export type UserUncheckedUpdateWithoutActorRunsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutGameSessionsInput = {
@@ -3498,6 +4020,8 @@ export type UserCreateWithoutGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutGameSessionsInput = {
@@ -3539,6 +4063,8 @@ export type UserUncheckedCreateWithoutGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutGameSessionsInput = {
@@ -3585,6 +4111,8 @@ export type UserCreateWithoutActorGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutActorGameSessionsInput = {
@@ -3626,6 +4154,8 @@ export type UserUncheckedCreateWithoutActorGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutActorGameSessionsInput = {
@@ -3683,6 +4213,8 @@ export type UserUpdateWithoutGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameSessionsInput = {
@@ -3724,6 +4256,8 @@ export type UserUncheckedUpdateWithoutGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutActorGameSessionsInput = {
@@ -3776,6 +4310,8 @@ export type UserUpdateWithoutActorGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
@@ -3817,6 +4353,8 @@ export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutAnalyticsEventsInput = {
@@ -3858,6 +4396,8 @@ export type UserCreateWithoutAnalyticsEventsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
@@ -3899,6 +4439,8 @@ export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutAnalyticsEventsInput = {
@@ -3945,6 +4487,8 @@ export type UserCreateWithoutActorAnalyticsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutActorAnalyticsInput = {
@@ -3986,6 +4530,8 @@ export type UserUncheckedCreateWithoutActorAnalyticsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutActorAnalyticsInput = {
@@ -4043,6 +4589,8 @@ export type UserUpdateWithoutAnalyticsEventsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
@@ -4084,6 +4632,8 @@ export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutActorAnalyticsInput = {
@@ -4136,6 +4686,8 @@ export type UserUpdateWithoutActorAnalyticsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActorAnalyticsInput = {
@@ -4177,6 +4729,8 @@ export type UserUncheckedUpdateWithoutActorAnalyticsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutContactConsentsInput = {
@@ -4218,6 +4772,8 @@ export type UserCreateWithoutContactConsentsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutContactConsentsInput = {
@@ -4259,6 +4815,8 @@ export type UserUncheckedCreateWithoutContactConsentsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutContactConsentsInput = {
@@ -4316,6 +4874,8 @@ export type UserUpdateWithoutContactConsentsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactConsentsInput = {
@@ -4357,6 +4917,8 @@ export type UserUncheckedUpdateWithoutContactConsentsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutPatientContactsInput = {
@@ -4398,6 +4960,8 @@ export type UserCreateWithoutPatientContactsInput = {
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutPatientContactsInput = {
@@ -4439,6 +5003,8 @@ export type UserUncheckedCreateWithoutPatientContactsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutPatientContactsInput = {
@@ -4496,6 +5062,8 @@ export type UserUpdateWithoutPatientContactsInput = {
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPatientContactsInput = {
@@ -4537,6 +5105,8 @@ export type UserUncheckedUpdateWithoutPatientContactsInput = {
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutCreatedMemosInput = {
@@ -4578,6 +5148,8 @@ export type UserCreateWithoutCreatedMemosInput = {
   patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedMemosInput = {
@@ -4619,6 +5191,8 @@ export type UserUncheckedCreateWithoutCreatedMemosInput = {
   patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedMemosInput = {
@@ -4676,6 +5250,8 @@ export type UserUpdateWithoutCreatedMemosInput = {
   patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedMemosInput = {
@@ -4717,6 +5293,8 @@ export type UserUncheckedUpdateWithoutCreatedMemosInput = {
   patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutOwnedAssetsInput = {
@@ -4758,6 +5336,8 @@ export type UserCreateWithoutOwnedAssetsInput = {
   patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedAssetsInput = {
@@ -4799,6 +5379,8 @@ export type UserUncheckedCreateWithoutOwnedAssetsInput = {
   patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedAssetsInput = {
@@ -4845,6 +5427,8 @@ export type UserCreateWithoutUploadedAssetsInput = {
   patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
   createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
   ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedAssetsInput = {
@@ -4886,6 +5470,8 @@ export type UserUncheckedCreateWithoutUploadedAssetsInput = {
   patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
   createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
   ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedAssetsInput = {
@@ -4943,6 +5529,8 @@ export type UserUpdateWithoutOwnedAssetsInput = {
   patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedAssetsInput = {
@@ -4984,6 +5572,8 @@ export type UserUncheckedUpdateWithoutOwnedAssetsInput = {
   patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutUploadedAssetsInput = {
@@ -5036,6 +5626,8 @@ export type UserUpdateWithoutUploadedAssetsInput = {
   patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
   createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
   ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedAssetsInput = {
@@ -5077,6 +5669,8 @@ export type UserUncheckedUpdateWithoutUploadedAssetsInput = {
   patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
   createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
   ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 
@@ -5107,6 +5701,8 @@ export type UserCountOutputType = {
   createdMemos: number
   uploadedAssets: number
   ownedAssets: number
+  patientDocuments: number
+  uploadedPatientDocuments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5132,6 +5728,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   createdMemos?: boolean | UserCountOutputTypeCountCreatedMemosArgs
   uploadedAssets?: boolean | UserCountOutputTypeCountUploadedAssetsArgs
   ownedAssets?: boolean | UserCountOutputTypeCountOwnedAssetsArgs
+  patientDocuments?: boolean | UserCountOutputTypeCountPatientDocumentsArgs
+  uploadedPatientDocuments?: boolean | UserCountOutputTypeCountUploadedPatientDocumentsArgs
 }
 
 /**
@@ -5298,6 +5896,20 @@ export type UserCountOutputTypeCountOwnedAssetsArgs<ExtArgs extends runtime.Type
   where?: Prisma.MediaAssetWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPatientDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PatientDocumentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedPatientDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PatientDocumentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5339,6 +5951,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdMemos?: boolean | Prisma.User$createdMemosArgs<ExtArgs>
   uploadedAssets?: boolean | Prisma.User$uploadedAssetsArgs<ExtArgs>
   ownedAssets?: boolean | Prisma.User$ownedAssetsArgs<ExtArgs>
+  patientDocuments?: boolean | Prisma.User$patientDocumentsArgs<ExtArgs>
+  uploadedPatientDocuments?: boolean | Prisma.User$uploadedPatientDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -5426,6 +6040,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdMemos?: boolean | Prisma.User$createdMemosArgs<ExtArgs>
   uploadedAssets?: boolean | Prisma.User$uploadedAssetsArgs<ExtArgs>
   ownedAssets?: boolean | Prisma.User$ownedAssetsArgs<ExtArgs>
+  patientDocuments?: boolean | Prisma.User$patientDocumentsArgs<ExtArgs>
+  uploadedPatientDocuments?: boolean | Prisma.User$uploadedPatientDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -5456,6 +6072,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdMemos: Prisma.$ContactMemoPayload<ExtArgs>[]
     uploadedAssets: Prisma.$MediaAssetPayload<ExtArgs>[]
     ownedAssets: Prisma.$MediaAssetPayload<ExtArgs>[]
+    patientDocuments: Prisma.$PatientDocumentPayload<ExtArgs>[]
+    uploadedPatientDocuments: Prisma.$PatientDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -5891,6 +6509,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdMemos<T extends Prisma.User$createdMemosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdMemosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactMemoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedAssets<T extends Prisma.User$uploadedAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ownedAssets<T extends Prisma.User$ownedAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  patientDocuments<T extends Prisma.User$patientDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$patientDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PatientDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedPatientDocuments<T extends Prisma.User$uploadedPatientDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedPatientDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PatientDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6855,6 +7475,54 @@ export type User$ownedAssetsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MediaAssetScalarFieldEnum | Prisma.MediaAssetScalarFieldEnum[]
+}
+
+/**
+ * User.patientDocuments
+ */
+export type User$patientDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PatientDocument
+   */
+  select?: Prisma.PatientDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PatientDocument
+   */
+  omit?: Prisma.PatientDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PatientDocumentInclude<ExtArgs> | null
+  where?: Prisma.PatientDocumentWhereInput
+  orderBy?: Prisma.PatientDocumentOrderByWithRelationInput | Prisma.PatientDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.PatientDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PatientDocumentScalarFieldEnum | Prisma.PatientDocumentScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedPatientDocuments
+ */
+export type User$uploadedPatientDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PatientDocument
+   */
+  select?: Prisma.PatientDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PatientDocument
+   */
+  omit?: Prisma.PatientDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PatientDocumentInclude<ExtArgs> | null
+  where?: Prisma.PatientDocumentWhereInput
+  orderBy?: Prisma.PatientDocumentOrderByWithRelationInput | Prisma.PatientDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.PatientDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PatientDocumentScalarFieldEnum | Prisma.PatientDocumentScalarFieldEnum[]
 }
 
 /**

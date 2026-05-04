@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, Platform, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Updates from 'expo-updates';
 import { setAppLanguage } from '@/src/shared/i18n';
@@ -17,8 +17,9 @@ export function LanguageToggleButton() {
     } else {
       try {
         await Updates.reloadAsync();
-      } catch (e) {
-        Alert.alert('Restart Needed', 'Please manually restart the app to fully apply RTL layout changes in development mode.');
+      } catch {
+        // In dev mode Updates.reloadAsync() is unavailable — the language
+        // change is already applied via i18n so we silently continue.
       }
     }
   };

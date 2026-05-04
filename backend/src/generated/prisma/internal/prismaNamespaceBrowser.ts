@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  PatientDocument: 'PatientDocument',
   EmailVerification: 'EmailVerification',
   CareLink: 'CareLink',
   Reminder: 'Reminder',
@@ -104,6 +105,30 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const PatientDocumentScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  uploadedByUserId: 'uploadedByUserId',
+  title: 'title',
+  category: 'category',
+  documentDate: 'documentDate',
+  sourceName: 'sourceName',
+  notes: 'notes',
+  originalFileName: 'originalFileName',
+  mimeType: 'mimeType',
+  fileSizeBytes: 'fileSizeBytes',
+  storageProvider: 'storageProvider',
+  storageBucket: 'storageBucket',
+  storageKey: 'storageKey',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type PatientDocumentScalarFieldEnum = (typeof PatientDocumentScalarFieldEnum)[keyof typeof PatientDocumentScalarFieldEnum]
 
 
 export const EmailVerificationScalarFieldEnum = {

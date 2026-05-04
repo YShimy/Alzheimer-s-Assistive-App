@@ -9,7 +9,8 @@ type CareLinkPermission =
   | 'canViewProgress'
   | 'canCreateChecklists'
   | 'canEditChecklists'
-  | 'canMarkTasksOnBehalf';
+  | 'canMarkTasksOnBehalf'
+  | 'canManageRecords';
 
 /**
  * Verifies that the requesting caregiver has an active CareLink
@@ -63,6 +64,7 @@ export function careLinkGuard(requiredPermission: CareLinkPermission) {
       canCreateChecklists: true,
       canEditChecklists: true,
       canMarkTasksOnBehalf: false,
+      canManageRecords: true,
     };
 
     const permissions = careLink.permissions as Record<string, boolean> | null;

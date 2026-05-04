@@ -143,11 +143,67 @@ model User {
   createdMemos       ContactMemo[]           @relation("CreatedMemos")
   uploadedAssets     MediaAsset[]            @relation("UploadedAssets")
   ownedAssets        MediaAsset[]            @relation("OwnedAssets")
+  patientDocuments         PatientDocument[] @relation("PatientDocuments")
+  uploadedPatientDocuments PatientDocument[] @relation("UploadedPatientDocuments")
 
   @@index([email])
   @@index([googleId])
   @@index([role])
   @@map("users")
+}
+
+enum PatientDocumentCategory {
+  PRESCRIPTION
+  LAB_RESULT
+  SCAN_IMAGING
+  DOCTOR_VISIT_NOTE
+  DISCHARGE_SUMMARY
+  MEDICATION_PLAN
+  CARE_PLAN
+  ADMINISTRATIVE
+  OTHER
+}
+
+enum PatientDocumentStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+model PatientDocument {
+  id               String   @id @default(uuid())
+
+  patientId        String
+  uploadedByUserId String
+
+  title            String
+  category         PatientDocumentCategory
+  documentDate     DateTime?
+  sourceName       String?
+  notes            String?
+
+  originalFileName String
+  mimeType         String
+  fileSizeBytes    Int
+
+  storageProvider  String   @default("supabase")
+  storageBucket    String
+  storageKey       String
+
+  status           PatientDocumentStatus @default(ACTIVE)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  archivedAt       DateTime?
+
+  patient          User     @relation("PatientDocuments", fields: [patientId], references: [id])
+  uploadedBy       User     @relation("UploadedPatientDocuments", fields: [uploadedByUserId], references: [id])
+
+  @@index([patientId])
+  @@index([uploadedByUserId])
+  @@index([category])
+  @@index([documentDate])
+  @@index([status])
+  @@map("patient_documents")
 }
 
 model EmailVerification {

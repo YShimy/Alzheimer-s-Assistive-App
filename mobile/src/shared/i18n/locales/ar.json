@@ -425,7 +425,8 @@
   },
   "contacts": {
     "title": "جهات الاتصال",
-    "importBtn": "استيراد",
+    "importBtn": "استيراد من الهاتف",
+    "importMoreBtn": "استيراد المزيد من الهاتف",
     "priorityTitle": "المفضلة",
     "allTitle": "جميع جهات الاتصال",
     "noContacts": "لا توجد جهات اتصال",

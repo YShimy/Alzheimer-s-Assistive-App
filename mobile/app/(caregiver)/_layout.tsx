@@ -97,6 +97,10 @@ export default function CaregiverLayout() {
           },
         }}
       />
+      {/* Records screens — hidden from tab bar, navigated to programmatically */}
+      <Tabs.Screen name="records" options={{ href: null }} />
+      <Tabs.Screen name="records/index" options={{ href: null }} />
+      <Tabs.Screen name="records/upload" options={{ href: null }} />
     </Tabs>
   );
 }

@@ -243,6 +243,13 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumPatientDocumentCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentCategory | Prisma.EnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel> | $Enums.PatientDocumentCategory
+}
+
 export type IntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -252,6 +259,49 @@ export type IntFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntFilter<$PrismaModel> | number
+}
+
+export type EnumPatientDocumentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentStatus | Prisma.EnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel> | $Enums.PatientDocumentStatus
+}
+
+export type EnumPatientDocumentCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentCategory | Prisma.EnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentCategoryWithAggregatesFilter<$PrismaModel> | $Enums.PatientDocumentCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel>
+}
+
+export type IntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedIntFilter<$PrismaModel>
+  _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type EnumPatientDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentStatus | Prisma.EnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PatientDocumentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel>
 }
 
 export type EnumVerificationPurposeFilter<$PrismaModel = never> = {
@@ -283,22 +333,6 @@ export type JsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
-}
-
-export type IntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedIntFilter<$PrismaModel>
-  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 export type EnumVerificationPurposeWithAggregatesFilter<$PrismaModel = never> = {
@@ -723,11 +757,28 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
-export type NestedEnumVerificationPurposeFilter<$PrismaModel = never> = {
-  equals?: $Enums.VerificationPurpose | Prisma.EnumVerificationPurposeFieldRefInput<$PrismaModel>
-  in?: $Enums.VerificationPurpose[] | Prisma.ListEnumVerificationPurposeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VerificationPurpose[] | Prisma.ListEnumVerificationPurposeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVerificationPurposeFilter<$PrismaModel> | $Enums.VerificationPurpose
+export type NestedEnumPatientDocumentCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentCategory | Prisma.EnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel> | $Enums.PatientDocumentCategory
+}
+
+export type NestedEnumPatientDocumentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentStatus | Prisma.EnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel> | $Enums.PatientDocumentStatus
+}
+
+export type NestedEnumPatientDocumentCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentCategory | Prisma.EnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentCategory[] | Prisma.ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentCategoryWithAggregatesFilter<$PrismaModel> | $Enums.PatientDocumentCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientDocumentCategoryFilter<$PrismaModel>
 }
 
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -755,6 +806,23 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type NestedEnumPatientDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientDocumentStatus | Prisma.EnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientDocumentStatus[] | Prisma.ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PatientDocumentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientDocumentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationPurposeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationPurpose | Prisma.EnumVerificationPurposeFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationPurpose[] | Prisma.ListEnumVerificationPurposeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationPurpose[] | Prisma.ListEnumVerificationPurposeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationPurposeFilter<$PrismaModel> | $Enums.VerificationPurpose
 }
 
 export type NestedEnumVerificationPurposeWithAggregatesFilter<$PrismaModel = never> = {

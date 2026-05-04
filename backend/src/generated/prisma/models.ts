@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User.js'
+export type * from './models/PatientDocument.js'
 export type * from './models/EmailVerification.js'
 export type * from './models/CareLink.js'
 export type * from './models/Reminder.js'

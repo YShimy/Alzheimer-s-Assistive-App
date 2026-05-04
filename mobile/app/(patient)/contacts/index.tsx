@@ -98,7 +98,7 @@ export default function ContactsListScreen() {
           style={styles.manageBtn}
         >
           <Icon name="add-circle-outline" size={20} color={colors.primary.main} />
-          <Text style={styles.manageBtnText}>{t('contacts.importBtn')}</Text>
+          <Text style={styles.manageBtnText}>{contacts.length > 0 ? t('contacts.importMoreBtn') : t('contacts.importBtn')}</Text>
         </Pressable>
       </View>
 

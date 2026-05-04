@@ -12,6 +12,7 @@ import { progressRouter } from '../modules/progress/router.js';
 import { syncRouter } from '../modules/sync/router.js';
 import { contactsRouter } from '../modules/contacts/router.js';
 import { mediaRouter } from '../modules/media/router.js';
+import { recordsRouter } from '../modules/records/router.js';
 import notificationsController from '../modules/notifications/controller/notifications.controller.js';
 
 export function registerRoutes(app: Router): void {
@@ -29,6 +30,9 @@ export function registerRoutes(app: Router): void {
 
   // Contacts - patient-scoped routes
   app.use('/api/patients/:patientId', contactsRouter);
+
+  // Records - caregiver only
+  app.use('/api/patients/:patientId/documents', recordsRouter);
 
   // Reminders — direct routes (GET/PATCH /reminders/:id, POST /reminders/:id/actions)
   app.use('/api/reminders', reminderDirectRouter);

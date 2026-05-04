@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  PatientDocument: 'PatientDocument',
   EmailVerification: 'EmailVerification',
   CareLink: 'CareLink',
   Reminder: 'Reminder',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset"
+    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -488,6 +489,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    PatientDocument: {
+      payload: Prisma.$PatientDocumentPayload<ExtArgs>
+      fields: Prisma.PatientDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PatientDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PatientDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.PatientDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PatientDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.PatientDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.PatientDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.PatientDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PatientDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.PatientDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        update: {
+          args: Prisma.PatientDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.PatientDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PatientDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PatientDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.PatientDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.PatientDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePatientDocument>
+        }
+        groupBy: {
+          args: Prisma.PatientDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PatientDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientDocumentCountAggregateOutputType> | number
         }
       }
     }
@@ -1515,6 +1590,30 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const PatientDocumentScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  uploadedByUserId: 'uploadedByUserId',
+  title: 'title',
+  category: 'category',
+  documentDate: 'documentDate',
+  sourceName: 'sourceName',
+  notes: 'notes',
+  originalFileName: 'originalFileName',
+  mimeType: 'mimeType',
+  fileSizeBytes: 'fileSizeBytes',
+  storageProvider: 'storageProvider',
+  storageBucket: 'storageBucket',
+  storageKey: 'storageKey',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type PatientDocumentScalarFieldEnum = (typeof PatientDocumentScalarFieldEnum)[keyof typeof PatientDocumentScalarFieldEnum]
+
+
 export const EmailVerificationScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -1913,6 +2012,34 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'PatientDocumentCategory'
+ */
+export type EnumPatientDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientDocumentCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'PatientDocumentCategory[]'
+ */
+export type ListEnumPatientDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientDocumentCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PatientDocumentStatus'
+ */
+export type EnumPatientDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientDocumentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PatientDocumentStatus[]'
+ */
+export type ListEnumPatientDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientDocumentStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'VerificationPurpose'
  */
 export type EnumVerificationPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationPurpose'>
@@ -2175,6 +2302,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  patientDocument?: Prisma.PatientDocumentOmit
   emailVerification?: Prisma.EmailVerificationOmit
   careLink?: Prisma.CareLinkOmit
   reminder?: Prisma.ReminderOmit
