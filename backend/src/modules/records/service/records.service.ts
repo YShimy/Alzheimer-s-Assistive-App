@@ -6,6 +6,22 @@ import { ErrorCode } from '../../../shared/errors/errorCodes.js';
 
 const PATIENT_RECORDS_BUCKET = process.env.SUPABASE_PATIENT_RECORDS_BUCKET ?? 'patient-records';
 
+let _bucketEnsured = false;
+
+async function ensureBucketExists(supabase: ReturnType<typeof getSupabaseAdmin>) {
+  if (_bucketEnsured) return;
+  const { error } = await supabase.storage.createBucket(PATIENT_RECORDS_BUCKET, {
+    public: false,
+    allowedMimeTypes: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'],
+    fileSizeLimit: 15 * 1024 * 1024,
+  });
+  // "already exists" is not an error we care about
+  if (error && !error.message.includes('already exists')) {
+    console.warn('[recordsService] Could not ensure bucket exists:', error.message);
+  }
+  _bucketEnsured = true;
+}
+
 export const recordsService = {
   async uploadDocument(
     patientId: string,
@@ -27,6 +43,8 @@ export const recordsService = {
     const storageKey = `patients/${patientId}/documents/${documentId}/${safeFileName}`;
 
     const supabase = getSupabaseAdmin();
+    await ensureBucketExists(supabase);
+
     const { error: uploadError } = await supabase.storage
       .from(PATIENT_RECORDS_BUCKET)
       .upload(storageKey, file.buffer, {

@@ -1,10 +1,12 @@
 import { apiClient } from '../../infrastructure/api/client';
 import { Platform } from 'react-native';
 import type { PatientDocument, UploadDocumentInput, UpdateDocumentInput } from './types';
-import * as FileSystem from 'expo-file-system';
 
 export const recordsApi = {
-  async listDocuments(patientId: string, filters?: { category?: string; includeArchived?: boolean }): Promise<{ documents: PatientDocument[] }> {
+  async listDocuments(
+    patientId: string,
+    filters?: { category?: string; includeArchived?: boolean }
+  ): Promise<{ documents: PatientDocument[] }> {
     let url = `/patients/${patientId}/documents`;
     const params = new URLSearchParams();
     if (filters?.category) params.append('category', filters.category);
@@ -18,11 +20,18 @@ export const recordsApi = {
     return apiClient.get(`/patients/${patientId}/documents/${documentId}`);
   },
 
-  async getViewUrl(patientId: string, documentId: string): Promise<{ url: string; expiresInSeconds: number }> {
+  async getViewUrl(
+    patientId: string,
+    documentId: string
+  ): Promise<{ url: string; expiresInSeconds: number }> {
     return apiClient.get(`/patients/${patientId}/documents/${documentId}/view-url`);
   },
 
-  async updateDocument(patientId: string, documentId: string, data: UpdateDocumentInput): Promise<PatientDocument> {
+  async updateDocument(
+    patientId: string,
+    documentId: string,
+    data: UpdateDocumentInput
+  ): Promise<PatientDocument> {
     return apiClient.patch(`/patients/${patientId}/documents/${documentId}`, data);
   },
 
@@ -31,7 +40,8 @@ export const recordsApi = {
   },
 
   async uploadDocument(patientId: string, data: UploadDocumentInput): Promise<PatientDocument> {
-    // For React Native we use FormData to upload the file
+    // Use apiClient.upload() — NOT post() — so the fetch boundary is set correctly
+    // and Content-Type is NOT forced to application/json.
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('category', data.category);
@@ -39,20 +49,16 @@ export const recordsApi = {
     if (data.sourceName) formData.append('sourceName', data.sourceName);
     if (data.notes) formData.append('notes', data.notes);
 
-    const fileExt = data.fileName.split('.').pop() || 'bin';
-    const finalMimeType = data.mimeType || 'application/octet-stream';
-    
-    // Convert local URI to a Blob-like object for React Native
+    // React Native requires a special object shape for file blobs in FormData
+    const fileExt = data.fileName.split('.').pop() ?? 'bin';
+    const mimeType = data.mimeType || (fileExt === 'pdf' ? 'application/pdf' : 'application/octet-stream');
+
     formData.append('file', {
       uri: Platform.OS === 'android' ? data.fileUri : data.fileUri.replace('file://', ''),
       name: data.fileName || `upload.${fileExt}`,
-      type: finalMimeType,
+      type: mimeType,
     } as any);
 
-    return apiClient.post(`/patients/${patientId}/documents`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  }
+    return apiClient.upload(`/patients/${patientId}/documents`, formData);
+  },
 };
