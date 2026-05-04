@@ -9,6 +9,9 @@ import { useSessionStore } from '@/src/state/sessionStore';
 import type { PatientContact } from '@/src/features/contacts/types';
 import { Image } from 'expo-image';
 
+import * as Contacts from 'expo-contacts';
+import { Alert } from 'react-native';
+
 export default function ContactsListScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -50,6 +53,52 @@ export default function ContactsListScreen() {
     fetchData(true);
   };
 
+  const handleNativeImport = async () => {
+    if (!userId) return;
+    try {
+      // The native picker doesn't require full contact permissions on modern iOS/Android,
+      // but we request it just in case on older versions.
+      await Contacts.requestPermissionsAsync();
+      
+      const contact = await Contacts.presentContactPickerAsync();
+      if (!contact) return; // User cancelled
+
+      // Set importing state
+      setLoading(true);
+
+      // Construct a safe display name
+      const displayName = contact.name || 
+        [contact.firstName, contact.middleName, contact.lastName].filter(Boolean).join(' ') || 
+        'Unknown';
+
+      const toImport = [{
+        id: contact.id,
+        name: displayName,
+        phoneNumbers: contact.phoneNumbers?.map(p => p.number!).filter(Boolean),
+        emails: contact.emails?.map(e => e.email!).filter(Boolean),
+      }];
+
+      await contactsApi.importSelected(userId, toImport);
+      
+      Alert.alert(
+        t('contacts.importSuccessTitle', 'Import Successful'), 
+        t('contacts.importSuccessMsg', 'Successfully imported {{count}} contacts.', { count: 1 })
+      );
+      
+      // Refresh the list
+      fetchData(true);
+    } catch (error: any) {
+      console.error('Failed to import contact', error);
+      if (error?.status === 403) {
+         Alert.alert(t('contacts.consentRequiredTitle', 'Consent Required'), t('contacts.consentRequiredMsg', 'The patient must grant consent to sync contacts.'));
+      } else {
+         Alert.alert(t('contacts.importErrorTitle', 'Import Failed'), t('contacts.importErrorMsg', 'An unexpected error occurred while importing contacts.'));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderContact = ({ item }: { item: PatientContact }) => {
     const memo = item.memo;
     const photoUrl = memo?.photoAsset?.publicUrl;
@@ -84,7 +133,7 @@ export default function ContactsListScreen() {
     );
   };
 
-  if (loading) return <LoadingState message={t('contacts.loading')} />;
+  if (loading && !refreshing) return <LoadingState message={t('contacts.loading')} />;
 
   const priorityContacts = contacts.filter(c => c.memo && (c.memo.patientFavorite || c.memo.caregiverFavorite));
   const otherContacts = contacts.filter(c => !c.memo || (!c.memo.patientFavorite && !c.memo.caregiverFavorite));
@@ -94,7 +143,7 @@ export default function ContactsListScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>{t('contacts.title')}</Text>
         <Pressable 
-          onPress={() => router.push('/(patient)/contacts/import')}
+          onPress={handleNativeImport}
           style={styles.manageBtn}
         >
           <Icon name="add-circle-outline" size={20} color={colors.primary.main} />
@@ -126,7 +175,7 @@ export default function ContactsListScreen() {
             title={t('contacts.noContacts')}
             message={t('contacts.noContactsMsg')}
             actionTitle={t('contacts.importBtn')}
-            onAction={() => router.push('/(patient)/contacts/import')}
+            onAction={handleNativeImport}
           />
         }
         contentContainerStyle={styles.list}
