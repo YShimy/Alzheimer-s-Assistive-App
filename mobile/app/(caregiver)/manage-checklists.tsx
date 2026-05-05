@@ -29,8 +29,8 @@ import { colors, typography, spacing, radius, shadows } from '@/src/infrastructu
 import { checklistsApi } from '@/src/features/checklists/api';
 import type { ChecklistTemplate, CreateChecklistTemplateInput } from '@/src/features/checklists/types';
 
-import * as ImagePicker from 'expo-image-picker';
 import { mediaApi } from '@/src/features/media/api';
+import { pickMedia } from '@/src/platform/filePicker';
 import { Image } from 'expo-image';
 
 const CATEGORIES = ['morning', 'evening', 'medication', 'hygiene', 'activity', 'custom'] as const;
@@ -161,14 +161,8 @@ export default function CaregiverChecklistScreen() {
   };
 
   const handlePickMediaForStep = async (stepId: string, type: 'image' | 'video') => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: type === 'image' ? ['images'] : ['videos'],
-      allowsEditing: type === 'image',
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
+    const asset = await pickMedia(type);
+    if (asset) {
       try {
         const { asset: mediaAsset } = await mediaApi.upload(asset.uri, asset.mimeType || (type === 'image' ? 'image/jpeg' : 'video/mp4'));
         setForm((f) => ({

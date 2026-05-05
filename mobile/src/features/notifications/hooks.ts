@@ -15,6 +15,11 @@ import { useSessionStore } from '@/src/state/sessionStore';
  * Register for push notifications and send token to backend
  */
 async function registerForPushNotificationsAsync(): Promise<string | null> {
+  if (Platform.OS === 'web') {
+    console.log('[Notifications] Push notifications not available on web');
+    return null;
+  }
+
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -64,6 +69,7 @@ export function usePushNotifications() {
 
   useEffect(() => {
     if (!userId) return;
+    if (Platform.OS === 'web') return;
 
     let isMounted = true;
 
@@ -92,6 +98,8 @@ export function usePushNotifications() {
  */
 export function useNotificationListener(onNotification?: (notification: Notifications.Notification) => void) {
   useEffect(() => {
+    if (Platform.OS === 'web') return;
+
     const subscription = Notifications.addNotificationReceivedListener((notification) => {
       console.log('[Notifications] Received:', notification);
       onNotification?.(notification);

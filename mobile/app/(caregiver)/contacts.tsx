@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, FlatList, Pressable, RefreshControl, Alert, Scr
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
-import * as ImagePicker from 'expo-image-picker';
 import { ScreenContainer, AppCard, AppButton, AppInput, Icon, LoadingState, EmptyState } from '@/src/shared/ui';
 import { PatientSwitcher } from '@/src/shared/ui/PatientSwitcher';
 import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
@@ -10,6 +9,7 @@ import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { contactsApi } from '@/src/features/contacts/api';
 import { mediaApi } from '@/src/features/media/api';
+import { pickImage } from '@/src/platform/filePicker';
 import type { PatientContact, ContactMemo } from '@/src/features/contacts/types';
 import { Image } from 'expo-image';
 
@@ -84,15 +84,8 @@ export default function CaregiverContactsScreen() {
   };
 
   const handlePickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
+    const asset = await pickImage();
+    if (asset) {
       setLoading(true);
       try {
         const { asset: mediaAsset } = await mediaApi.upload(asset.uri, asset.mimeType || 'image/jpeg');

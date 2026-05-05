@@ -6,8 +6,8 @@ import { ScreenContainer, AppInput, AppButton, Icon } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { recordsApi } from '@/src/features/records/api';
+import { pickDocument } from '@/src/platform/filePicker';
 import type { PatientDocumentCategory } from '@/src/features/records/types';
-import * as DocumentPicker from 'expo-document-picker';
 
 const CATEGORIES: PatientDocumentCategory[] = [
   'PRESCRIPTION',
@@ -21,6 +21,13 @@ const CATEGORIES: PatientDocumentCategory[] = [
   'OTHER',
 ];
 
+interface SelectedFile {
+  uri: string;
+  name: string;
+  mimeType: string;
+  size?: number;
+}
+
 export default function RecordsUploadScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -30,19 +37,15 @@ export default function RecordsUploadScreen() {
   const [category, setCategory] = useState<PatientDocumentCategory>('OTHER');
   const [sourceName, setSourceName] = useState('');
   const [notes, setNotes] = useState('');
-  const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+  const [file, setFile] = useState<SelectedFile | null>(null);
   
   const [uploading, setUploading] = useState(false);
 
   const handleSelectFile = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'],
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        setFile(result.assets[0]);
+      const picked = await pickDocument('application/pdf,image/jpeg,image/png,image/webp');
+      if (picked) {
+        setFile(picked);
       }
     } catch (err) {
       console.error('Error picking document', err);

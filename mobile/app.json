@@ -74,10 +74,10 @@
     "updates": {
       "url": "https://u.expo.dev/YOUR_ACTUAL_UUID_HERE"
     },
-    "owner": "yshimy"
-  },
-  "experiments": {
-    "typedRoutes": true,
-    "reactCompiler": false
+    "owner": "yshimy",
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": false
+    }
   }
 }

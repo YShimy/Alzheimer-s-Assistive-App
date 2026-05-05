@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Alert, Platform, ScrollView } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
@@ -12,17 +12,28 @@ export default function ContactImportScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const userId = useSessionStore((s) => s.userId);
-  
+
+  // ─── Web Manual Add State ──────────────────────────────────────────────
+  const [manualName, setManualName] = useState('');
+  const [manualRelation, setManualRelation] = useState('');
+  const [manualPhone, setManualPhone] = useState('');
+  const [manualEmail, setManualEmail] = useState('');
+  const [manualNote, setManualNote] = useState('');
+  const [adding, setAdding] = useState(false);
+
+  // ─── Native Bulk Import State ──────────────────────────────────────────
   const [deviceContacts, setDeviceContacts] = useState<Contacts.Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contacts.Contact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Platform.OS !== 'web');
   const [importing, setImporting] = useState(false);
   const [search, setSearch] = useState('');
 
   useFocusEffect(
     useCallback(() => {
+      if (Platform.OS === 'web') return;
+
       let isActive = true;
 
       const fetchContacts = async () => {
@@ -59,7 +70,7 @@ export default function ContactImportScreen() {
           }
 
           if (isActive) {
-            const sortedContacts = [...data].sort((a, b) => 
+            const sortedContacts = [...data].sort((a, b) =>
               (a.name || '').localeCompare(b.name || '')
             );
             setSavedIds(existingIds);
@@ -80,6 +91,7 @@ export default function ContactImportScreen() {
   );
 
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     const term = search.toLowerCase();
     setFilteredContacts(
       deviceContacts.filter(c => {
@@ -109,9 +121,9 @@ export default function ContactImportScreen() {
     setImporting(true);
     try {
       const toImport = deviceContacts
-        .filter(c => selectedIds.has(c.id!))
+        .filter(c => selectedIds.has((c as any).id))
         .map(c => ({
-          id: c.id,
+          id: (c as any).id,
           name: c.name || 'Unknown',
           phoneNumbers: c.phoneNumbers?.map(p => p.number!).filter(Boolean),
           emails: c.emails?.map(e => e.email!).filter(Boolean),
@@ -120,10 +132,10 @@ export default function ContactImportScreen() {
       // Auto-grant consent since the user is actively choosing to import contacts
       await contactsApi.grantConsent(userId, 'import_screen');
       await contactsApi.importSelected(userId, toImport);
-      
+
       Alert.alert(
-        t('contacts.importSuccessTitle', 'Import Successful'), 
-        t('contacts.importSuccessMsg', 'Successfully imported {{count}} contacts.', { count: Intl.NumberFormat(i18n.language).format(selectedIds.size) })
+        t('contacts.importSuccessTitle', 'Import Successful'),
+        t('contacts.importSuccessMsg', 'Successfully imported {{count}} contacts.', { count: selectedIds.size })
       );
       router.replace('/(patient)/contacts');
     } catch (error: any) {
@@ -139,6 +151,117 @@ export default function ContactImportScreen() {
     }
   };
 
+  const handleManualAdd = async () => {
+    if (!userId) return;
+    if (!manualName.trim()) {
+      Alert.alert(t('common.error', 'Error'), t('contacts.nameRequired', 'Name is required.'));
+      return;
+    }
+
+    setAdding(true);
+    try {
+      const toImport = [{
+        name: manualName.trim(),
+        phoneNumbers: manualPhone.trim() ? [manualPhone.trim()] : undefined,
+        emails: manualEmail.trim() ? [manualEmail.trim()] : undefined,
+      }];
+
+      await contactsApi.grantConsent(userId, 'manual_add');
+      await contactsApi.importSelected(userId, toImport);
+
+      Alert.alert(
+        t('contacts.importSuccessTitle', 'Contact Added'),
+        t('contacts.importSuccessMsg', 'Successfully added 1 contact.', { count: 1 })
+      );
+      router.replace('/(patient)/contacts');
+    } catch (error: any) {
+      console.error('Manual add failed', error);
+      if (error?.status === 403) {
+        Alert.alert(t('contacts.consentRequiredTitle', 'Consent Required'), t('contacts.consentRequiredMsg', 'The patient must grant consent to sync contacts.'));
+      } else {
+        Alert.alert(t('contacts.importErrorTitle', 'Add Failed'), t('contacts.importErrorMsg', 'An unexpected error occurred while adding the contact.'));
+      }
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  // ─── Web Manual Add Form ───────────────────────────────────────────────
+  if (Platform.OS === 'web') {
+    return (
+      <ScreenContainer>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.webHeader}>
+            <Text style={styles.webTitle}>{t('contacts.addManuallyTitle', 'Add Contact Manually')}</Text>
+            <Text style={styles.webSubtitle}>
+              {t('contacts.webFallbackMsg', 'Phone contact import is available in the Android app. On web, please add contacts manually.')}
+            </Text>
+          </View>
+
+          <View style={styles.formSection}>
+            <Text style={styles.label}>{t('contacts.fieldName', 'Name *')}</Text>
+            <AppInput
+              placeholder={t('contacts.fieldNamePlaceholder', 'e.g. John Smith')}
+              value={manualName}
+              onChangeText={setManualName}
+            />
+          </View>
+
+          <View style={styles.formSection}>
+            <Text style={styles.label}>{t('contacts.fieldRelation', 'Relation')}</Text>
+            <AppInput
+              placeholder={t('contacts.fieldRelationPlaceholder', 'e.g. Son, Doctor')}
+              value={manualRelation}
+              onChangeText={setManualRelation}
+            />
+          </View>
+
+          <View style={styles.formSection}>
+            <Text style={styles.label}>{t('contacts.fieldPhone', 'Phone')}</Text>
+            <AppInput
+              placeholder={t('contacts.fieldPhonePlaceholder', 'e.g. +1 555 123 4567')}
+              value={manualPhone}
+              onChangeText={setManualPhone}
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          <View style={styles.formSection}>
+            <Text style={styles.label}>{t('contacts.fieldEmail', 'Email (optional)')}</Text>
+            <AppInput
+              placeholder={t('contacts.fieldEmailPlaceholder', 'e.g. john@example.com')}
+              value={manualEmail}
+              onChangeText={setManualEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+
+          <View style={styles.formSection}>
+            <Text style={styles.label}>{t('contacts.fieldNote', 'Note (optional)')}</Text>
+            <AppInput
+              placeholder={t('contacts.fieldNotePlaceholder', 'Any additional notes')}
+              value={manualNote}
+              onChangeText={setManualNote}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
+
+          <View style={styles.footer}>
+            <AppButton
+              title={t('contacts.addContactBtn', 'Add Contact')}
+              onPress={handleManualAdd}
+              loading={adding}
+              disabled={!manualName.trim()}
+            />
+          </View>
+        </ScrollView>
+      </ScreenContainer>
+    );
+  }
+
+  // ─── Native Bulk Import UI ────────────────────────────────────────────
   if (loading) return <LoadingState message={t('contacts.importLoading', 'Loading contacts...')} />;
 
   return (
@@ -149,16 +272,15 @@ export default function ContactImportScreen() {
           placeholder={t('contacts.importSearch', 'Search contacts...')}
           value={search}
           onChangeText={setSearch}
-          leftIcon={<Icon name="search-outline" size={20} color={colors.on_surface_variant} />}
         />
       </View>
 
       <FlatList
         data={filteredContacts}
-        keyExtractor={(item) => item.id!}
+        keyExtractor={(item) => (item as any).id}
         renderItem={({ item }) => {
-          const isAlreadyImported = savedIds.has(item.id!);
-          const isSelected = selectedIds.has(item.id!);
+          const isAlreadyImported = savedIds.has((item as any).id);
+          const isSelected = selectedIds.has((item as any).id);
           const displayName = item.name || 'Unknown';
           
           return (
@@ -168,7 +290,7 @@ export default function ContactImportScreen() {
                 isSelected && styles.selectedRow,
                 isAlreadyImported && styles.importedRow
               ]} 
-              onPress={() => toggleSelect(item.id!)}
+              onPress={() => toggleSelect((item as any).id)}
               disabled={isAlreadyImported}
             >
               <View style={[
@@ -205,7 +327,7 @@ export default function ContactImportScreen() {
 
       <View style={styles.footer}>
         <Text style={styles.countText}>
-          {t('contacts.selectedCount', '{{count}} selected', { count: Intl.NumberFormat(i18n.language).format(selectedIds.size) })}
+          {t('contacts.selectedCount', '{{count}} selected', { count: selectedIds.size })}
         </Text>
         <AppButton
           title={t('contacts.confirmImport', 'Import')}
@@ -294,5 +416,29 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.outline,
     paddingHorizontal: spacing.sm,
+  },
+  webHeader: {
+    paddingBottom: spacing.lg,
+  },
+  webTitle: {
+    fontFamily: typography.family.display,
+    fontSize: typography.size.xl,
+    color: colors.on_surface,
+    marginBottom: spacing.md,
+  },
+  webSubtitle: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.sm,
+    color: colors.on_surface_variant,
+    marginBottom: spacing.lg,
+  },
+  formSection: {
+    marginBottom: spacing.md,
+  },
+  label: {
+    fontFamily: typography.family.label,
+    fontSize: typography.size.sm,
+    color: colors.on_surface,
+    marginBottom: spacing.xs,
   },
 });

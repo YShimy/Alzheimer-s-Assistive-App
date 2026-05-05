@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable, Alert, Linking, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Alert, RefreshControl } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, Icon, LoadingState, EmptyState, AppButton } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { recordsApi } from '@/src/features/records/api';
+import { openExternalUrl } from '@/src/platform/openExternalUrl';
 import type { PatientDocument, PatientDocumentCategory } from '@/src/features/records/types';
 
 export default function RecordsListScreen() {
@@ -48,7 +49,7 @@ export default function RecordsListScreen() {
   const handleOpen = async (doc: PatientDocument) => {
     try {
       const res = await recordsApi.getViewUrl(doc.patientId, doc.id);
-      Linking.openURL(res.url);
+      await openExternalUrl(res.url);
     } catch (e) {
       Alert.alert(t('error'), t('records.openError', 'Failed to open document.'));
     }
@@ -154,8 +155,12 @@ export default function RecordsListScreen() {
               icon="document-text-outline"
               title={t('records.emptyTitle', 'No records uploaded')}
               message={t('records.emptyMsg', 'Upload documents such as prescriptions, visit notes, scan reports, or care plans for caregiver reference.')}
-              actionTitle={t('records.uploadBtn', 'Upload Record')}
-              onAction={() => router.push('/(caregiver)/records/upload')}
+              action={
+                <AppButton
+                  title={t('records.uploadBtn', 'Upload Record')}
+                  onPress={() => router.push('/(caregiver)/records/upload')}
+                />
+              }
             />
           ) : <LoadingState />
         }

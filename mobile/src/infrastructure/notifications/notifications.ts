@@ -4,18 +4,21 @@ import { Platform } from 'react-native';
 /**
  * Notification wrapper for scheduling local reminders.
  * Patient reminders are scheduled locally for reliability.
+ * On web, scheduling is skipped gracefully.
  */
 
-// Configure how notifications appear when app is in foreground
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+if (Platform.OS !== 'web') {
+  // Configure how notifications appear when app is in foreground
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+}
 
 export const notifications = {
   /**
@@ -23,6 +26,8 @@ export const notifications = {
    * Returns true if granted.
    */
   async requestPermission(): Promise<boolean> {
+    if (Platform.OS === 'web') return false;
+
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
     if (existingStatus === 'granted') return true;
@@ -51,6 +56,11 @@ export const notifications = {
     body: string;
     scheduledAt: Date;
   }): Promise<string> {
+    if (Platform.OS === 'web') {
+      console.log('[Notifications] Skipping local notification scheduling on web');
+      return 'web-noop';
+    }
+
     const trigger = params.scheduledAt.getTime() - Date.now();
 
     if (trigger <= 0) {
@@ -84,6 +94,7 @@ export const notifications = {
    * Cancel a previously scheduled notification.
    */
   async cancelReminder(notificationId: string): Promise<void> {
+    if (Platform.OS === 'web') return;
     await Notifications.cancelScheduledNotificationAsync(notificationId);
   },
 
@@ -91,6 +102,7 @@ export const notifications = {
    * Cancel all scheduled notifications.
    */
   async cancelAll(): Promise<void> {
+    if (Platform.OS === 'web') return;
     await Notifications.cancelAllScheduledNotificationsAsync();
   },
 };

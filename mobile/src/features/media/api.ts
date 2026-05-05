@@ -1,20 +1,13 @@
-import { Platform } from 'react-native';
 import { apiClient } from '../../infrastructure/api/client';
+import { createFormDataFile } from '@/src/platform/createFormDataFile';
 import type { MediaAsset } from './types';
 
 export const mediaApi = {
   async upload(fileUri: string, mimeType: string): Promise<{ asset: MediaAsset }> {
     const formData = new FormData();
-    
-    // In React Native, we need to provide name and type for file upload
     const filename = fileUri.split('/').pop() || 'upload';
-    
-    formData.append('file', {
-      uri: Platform.OS === 'ios' ? fileUri.replace('file://', '') : fileUri,
-      name: filename,
-      type: mimeType,
-    } as any);
-
+    const fileObj = await createFormDataFile(fileUri, filename, mimeType);
+    formData.append('file', fileObj);
     return apiClient.upload('/media/upload', formData);
   },
 

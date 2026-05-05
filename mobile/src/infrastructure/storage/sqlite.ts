@@ -1,17 +1,25 @@
+import { Platform } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
 const DB_NAME = 'cognitive_support_cache.db';
 
 let _db: SQLite.SQLiteDatabase | null = null;
 
+// In-memory fallback for web where SQLite is unavailable
+const _memoryCache = new Map<string, any>();
+
 /**
  * Minimal local SQLite cache.
  * This is NOT a mirror of the full backend schema.
  * Used only for offline resilience and fast reads.
+ * On web, falls back to a simple in-memory Map.
  */
 export const localDb = {
   /** Get or create the database connection. */
   async getDb(): Promise<SQLite.SQLiteDatabase> {
+    if (Platform.OS === 'web') {
+      throw new Error('SQLite is not available on web');
+    }
     if (!_db) {
       _db = await SQLite.openDatabaseAsync(DB_NAME);
       await this.initialize();
@@ -21,6 +29,7 @@ export const localDb = {
 
   /** Create cache tables if they don't exist. */
   async initialize(): Promise<void> {
+    if (Platform.OS === 'web') return;
     const db = _db!;
 
     await db.execAsync(`
@@ -45,6 +54,10 @@ export const localDb = {
 
   /** Store a JSON-serialized reminder in cache. */
   async cacheReminder(id: string, data: object): Promise<void> {
+    if (Platform.OS === 'web') {
+      _memoryCache.set(`reminder_${id}`, data);
+      return;
+    }
     const db = await this.getDb();
     await db.runAsync(
       `INSERT OR REPLACE INTO cached_reminders (id, data, synced_at) VALUES (?, ?, ?)`,
@@ -54,6 +67,13 @@ export const localDb = {
 
   /** Retrieve all cached reminders. */
   async getCachedReminders(): Promise<object[]> {
+    if (Platform.OS === 'web') {
+      const results: object[] = [];
+      for (const [key, value] of _memoryCache) {
+        if (key.startsWith('reminder_')) results.push(value);
+      }
+      return results;
+    }
     const db = await this.getDb();
     const rows = await db.getAllAsync<{ data: string }>(
       `SELECT data FROM cached_reminders ORDER BY synced_at DESC`,
@@ -63,6 +83,9 @@ export const localDb = {
 
   /** Get the last sync timestamp. */
   async getLastSyncTime(): Promise<string | null> {
+    if (Platform.OS === 'web') {
+      return _memoryCache.get('last_sync') ?? null;
+    }
     const db = await this.getDb();
     const row = await db.getFirstAsync<{ value: string }>(
       `SELECT value FROM sync_meta WHERE key = ?`,
@@ -73,6 +96,10 @@ export const localDb = {
 
   /** Update the last sync timestamp. */
   async setLastSyncTime(iso: string): Promise<void> {
+    if (Platform.OS === 'web') {
+      _memoryCache.set('last_sync', iso);
+      return;
+    }
     const db = await this.getDb();
     await db.runAsync(
       `INSERT OR REPLACE INTO sync_meta (key, value) VALUES (?, ?)`,
@@ -82,6 +109,10 @@ export const localDb = {
 
   /** Clear all cached data. */
   async clearAll(): Promise<void> {
+    if (Platform.OS === 'web') {
+      _memoryCache.clear();
+      return;
+    }
     const db = await this.getDb();
     await db.execAsync(`
       DELETE FROM cached_reminders;

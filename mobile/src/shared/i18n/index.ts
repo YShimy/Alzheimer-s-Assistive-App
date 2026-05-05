@@ -14,6 +14,9 @@ const resources = {
 
 const LANG_KEY = 'APP_LANG';
 
+const canUseLocalStorage =
+  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+
 const languageDetector = {
   type: 'languageDetector' as const,
   async: true,
@@ -21,18 +24,20 @@ const languageDetector = {
     let savedLang: string | null = null;
     try {
       if (Platform.OS === 'web') {
-        savedLang = localStorage.getItem(LANG_KEY);
+        if (canUseLocalStorage) {
+          savedLang = window.localStorage.getItem(LANG_KEY);
+        }
       } else {
         savedLang = await SecureStore.getItemAsync(LANG_KEY);
       }
     } catch (err) {
       console.warn('Failed to detect saved language', err);
     }
-    
+
     if (savedLang) {
       return callback(savedLang);
     }
-    
+
     const locales = Localization.getLocales();
     callback(locales && locales.length > 0 && locales[0].languageCode ? locales[0].languageCode : 'en');
   },
@@ -40,7 +45,9 @@ const languageDetector = {
   cacheUserLanguage: async (lang: string) => {
     try {
       if (Platform.OS === 'web') {
-        localStorage.setItem(LANG_KEY, lang);
+        if (canUseLocalStorage) {
+          window.localStorage.setItem(LANG_KEY, lang);
+        }
       } else {
         await SecureStore.setItemAsync(LANG_KEY, lang);
       }

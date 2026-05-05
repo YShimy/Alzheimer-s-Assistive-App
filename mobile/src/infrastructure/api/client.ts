@@ -2,22 +2,10 @@ import { Platform } from 'react-native';
 import { sessionStore } from '../../state/sessionStore';
 
 /**
- * API base URL selection — 3 tiers in priority order:
+ * API base URL selection.
  *
- * 1. EXPO_PUBLIC_API_URL  (set in .env / EAS env)
- *    → Use this for ALL non-localhost scenarios:
- *      - Remote testers / deployed builds  → set to https://your-backend.up.railway.app/api
- *      - Same-network Expo Go dev          → set to http://192.168.x.x:4000/api
- *
- * 2. http://localhost:4000/api
- *    → Web browser only (__DEV__ + web), where localhost IS the backend machine.
- *
- * 3. Explicit error (removed silent LAN fallback)
- *    → If EXPO_PUBLIC_API_URL is not set and we're on a native device, throw clearly
- *      instead of silently using a wrong IP and getting confusing network errors.
- *
- * To set for remote testing in an EAS build, add EXPO_PUBLIC_API_URL to your
- * eas.json profile's `env` block or set it in the Expo dashboard.
+ * EXPO_PUBLIC_API_URL must be set for all builds (native and web).
+ * No localhost or hardcoded IPs are used — the env variable is the single source of truth.
  */
 function resolveApiBaseUrl(): string {
   const envUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -26,21 +14,15 @@ function resolveApiBaseUrl(): string {
     return envUrl.trim().replace(/\/$/, '');
   }
 
-  // Web browser in dev: localhost is safe
-  if (Platform.OS === 'web' && __DEV__) {
-    return 'http://localhost:4000/api';
-  }
-
-  // Native device without EXPO_PUBLIC_API_URL set — fail loudly in dev, use localhost in prod
-  // (prod builds should always have EXPO_PUBLIC_API_URL set via EAS env)
   if (__DEV__) {
     console.error(
       '[ApiClient] EXPO_PUBLIC_API_URL is not set.\n' +
       'Set it in mobile/.env to your backend URL.\n' +
-      'Example: EXPO_PUBLIC_API_URL=http://192.168.1.5:4000/api\n' +
-      'Or for remote use: EXPO_PUBLIC_API_URL=https://your-backend.up.railway.app/api'
+      'Example for deployed backend: EXPO_PUBLIC_API_URL=https://your-backend.vercel.app/api\n' +
+      'Example for local dev:       EXPO_PUBLIC_API_URL=http://localhost:4000/api'
     );
   }
+
   // Last-resort fallback — will fail but gives a meaningful error rather than silent garbage
   return 'http://localhost:4000/api';
 }

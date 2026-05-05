@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Pressable,
-  ActivityIndicator, Alert, Switch, Linking,
+  ActivityIndicator, Alert, Switch,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, Icon } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
+import { openExternalUrl } from '@/src/platform/openExternalUrl';
 import { summaryExportsApi, type SummaryExport, type CreateExportInput } from '@/src/features/summary-exports/api';
 
 type RangePreset = 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
@@ -86,7 +87,7 @@ export default function ExportSummaryScreen() {
 
   const handleOpenPdf = async (url: string) => {
     try {
-      await Linking.openURL(url);
+      await openExternalUrl(url);
     } catch {
       Alert.alert(t('common.error', 'Error'), t('summaryExport.openError', 'Could not open PDF.'));
     }

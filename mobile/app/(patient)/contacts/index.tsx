@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Pressable, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, RefreshControl, Platform, Alert } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useState, useCallback } from 'react';
@@ -10,7 +10,6 @@ import type { PatientContact } from '@/src/features/contacts/types';
 import { Image } from 'expo-image';
 
 import * as Contacts from 'expo-contacts';
-import { Alert } from 'react-native';
 
 export default function ContactsListScreen() {
   const { t } = useTranslation();
@@ -53,8 +52,14 @@ export default function ContactsListScreen() {
     fetchData(true);
   };
 
-  const handleNativeImport = async () => {
+  const handleAddContact = async () => {
     if (!userId) return;
+
+    if (Platform.OS === 'web') {
+      router.push('/(patient)/contacts/import');
+      return;
+    }
+
     try {
       // The native picker doesn't require full contact permissions on modern iOS/Android,
       // but we request it just in case on older versions.
@@ -143,11 +148,16 @@ export default function ContactsListScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>{t('contacts.title')}</Text>
         <Pressable 
-          onPress={handleNativeImport}
+          onPress={handleAddContact}
           style={styles.manageBtn}
         >
           <Icon name="add-circle-outline" size={20} color={colors.primary.main} />
-          <Text style={styles.manageBtnText}>{contacts.length > 0 ? t('contacts.importMoreBtn') : t('contacts.importBtn')}</Text>
+          <Text style={styles.manageBtnText}>
+            {Platform.OS === 'web'
+              ? t('contacts.addManuallyShort', 'Add Contact')
+              : contacts.length > 0 ? t('contacts.importMoreBtn') : t('contacts.importBtn')
+            }
+          </Text>
         </Pressable>
       </View>
 
@@ -174,8 +184,12 @@ export default function ContactsListScreen() {
             icon="people-outline"
             title={t('contacts.noContacts')}
             message={t('contacts.noContactsMsg')}
-            actionTitle={t('contacts.importBtn')}
-            onAction={handleNativeImport}
+            action={
+              <AppButton
+                title={Platform.OS === 'web' ? t('contacts.addManuallyShort', 'Add Contact') : t('contacts.importBtn')}
+                onPress={handleAddContact}
+              />
+            }
           />
         }
         contentContainerStyle={styles.list}

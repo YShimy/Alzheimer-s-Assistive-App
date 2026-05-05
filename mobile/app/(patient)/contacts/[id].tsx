@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Pressable, Linking, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
@@ -6,6 +6,7 @@ import { ScreenContainer, AppButton, Icon, LoadingState, AppCard } from '@/src/s
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { contactsApi } from '@/src/features/contacts/api';
 import { useSessionStore } from '@/src/state/sessionStore';
+import { openExternalUrl } from '@/src/platform/openExternalUrl';
 import type { PatientContact } from '@/src/features/contacts/types';
 import { Image } from 'expo-image';
 
@@ -56,13 +57,13 @@ export default function ContactDetailScreen() {
 
   const makeCall = () => {
     if (contact?.normalizedPhones?.[0]) {
-      Linking.openURL(`tel:${contact.normalizedPhones[0]}`);
+      openExternalUrl(`tel:${contact.normalizedPhones[0]}`);
     }
   };
 
   const sendEmail = () => {
     if (contact?.normalizedEmails?.[0]) {
-       Linking.openURL(`mailto:${contact.normalizedEmails[0]}`);
+      openExternalUrl(`mailto:${contact.normalizedEmails[0]}`);
     }
   };
 
@@ -74,7 +75,7 @@ export default function ContactDetailScreen() {
 
   return (
     <ScreenContainer>
-      <ScrollView bounces={false} showVerticalScrollIndicator={false}>
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
             <View style={styles.avatarContainer}>
               {photoUrl ? (
