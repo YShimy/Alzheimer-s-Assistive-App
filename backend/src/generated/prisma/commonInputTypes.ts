@@ -542,6 +542,23 @@ export type EnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
 }
 
+export type EnumPatientSummaryExportStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientSummaryExportStatus | Prisma.EnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel> | $Enums.PatientSummaryExportStatus
+}
+
+export type EnumPatientSummaryExportStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientSummaryExportStatus | Prisma.EnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientSummaryExportStatusWithAggregatesFilter<$PrismaModel> | $Enums.PatientSummaryExportStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1027,6 +1044,23 @@ export type NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAssetTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumPatientSummaryExportStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientSummaryExportStatus | Prisma.EnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel> | $Enums.PatientSummaryExportStatus
+}
+
+export type NestedEnumPatientSummaryExportStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PatientSummaryExportStatus | Prisma.EnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PatientSummaryExportStatus[] | Prisma.ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPatientSummaryExportStatusWithAggregatesFilter<$PrismaModel> | $Enums.PatientSummaryExportStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPatientSummaryExportStatusFilter<$PrismaModel>
 }
 
 

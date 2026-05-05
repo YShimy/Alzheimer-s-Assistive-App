@@ -164,3 +164,12 @@ export const AssetType = {
 } as const
 
 export type AssetType = (typeof AssetType)[keyof typeof AssetType]
+
+
+export const PatientSummaryExportStatus = {
+  COMPLETED: 'COMPLETED',
+  ARCHIVED: 'ARCHIVED',
+  FAILED: 'FAILED'
+} as const
+
+export type PatientSummaryExportStatus = (typeof PatientSummaryExportStatus)[keyof typeof PatientSummaryExportStatus]

@@ -14,6 +14,8 @@ import { contactsRouter } from '../modules/contacts/router.js';
 import { mediaRouter } from '../modules/media/router.js';
 import { recordsRouter } from '../modules/records/router.js';
 import notificationsController from '../modules/notifications/controller/notifications.controller.js';
+import { importantInfoRouter, importantInfoPatientRouter } from '../modules/important-info/router.js';
+import { summaryExportsRouter } from '../modules/summary-exports/router.js';
 
 export function registerRoutes(app: Router): void {
   // Auth (no prefix needed, router handles paths)
@@ -60,4 +62,11 @@ export function registerRoutes(app: Router): void {
 
   // Notifications
   app.use('/api/notifications', notificationsController);
+
+  // Important Information (caregiver scoped + patient me route)
+  app.use('/api/patients/:patientId/important-info', importantInfoRouter);
+  app.use('/api/me', importantInfoPatientRouter);
+
+  // Summary Exports (caregiver only)
+  app.use('/api/patients/:patientId/summary-exports', summaryExportsRouter);
 }

@@ -398,7 +398,9 @@ export const ModelName = {
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
   ContactMemo: 'ContactMemo',
-  MediaAsset: 'MediaAsset'
+  MediaAsset: 'MediaAsset',
+  PatientImportantInfo: 'PatientImportantInfo',
+  PatientSummaryExport: 'PatientSummaryExport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset"
+    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset" | "patientImportantInfo" | "patientSummaryExport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1530,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PatientImportantInfo: {
+      payload: Prisma.$PatientImportantInfoPayload<ExtArgs>
+      fields: Prisma.PatientImportantInfoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PatientImportantInfoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PatientImportantInfoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        findFirst: {
+          args: Prisma.PatientImportantInfoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PatientImportantInfoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        findMany: {
+          args: Prisma.PatientImportantInfoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>[]
+        }
+        create: {
+          args: Prisma.PatientImportantInfoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        createMany: {
+          args: Prisma.PatientImportantInfoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PatientImportantInfoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>[]
+        }
+        delete: {
+          args: Prisma.PatientImportantInfoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        update: {
+          args: Prisma.PatientImportantInfoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        deleteMany: {
+          args: Prisma.PatientImportantInfoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PatientImportantInfoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PatientImportantInfoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>[]
+        }
+        upsert: {
+          args: Prisma.PatientImportantInfoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientImportantInfoPayload>
+        }
+        aggregate: {
+          args: Prisma.PatientImportantInfoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePatientImportantInfo>
+        }
+        groupBy: {
+          args: Prisma.PatientImportantInfoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientImportantInfoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PatientImportantInfoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientImportantInfoCountAggregateOutputType> | number
+        }
+      }
+    }
+    PatientSummaryExport: {
+      payload: Prisma.$PatientSummaryExportPayload<ExtArgs>
+      fields: Prisma.PatientSummaryExportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PatientSummaryExportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PatientSummaryExportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        findFirst: {
+          args: Prisma.PatientSummaryExportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PatientSummaryExportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        findMany: {
+          args: Prisma.PatientSummaryExportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>[]
+        }
+        create: {
+          args: Prisma.PatientSummaryExportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        createMany: {
+          args: Prisma.PatientSummaryExportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PatientSummaryExportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>[]
+        }
+        delete: {
+          args: Prisma.PatientSummaryExportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        update: {
+          args: Prisma.PatientSummaryExportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        deleteMany: {
+          args: Prisma.PatientSummaryExportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PatientSummaryExportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PatientSummaryExportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>[]
+        }
+        upsert: {
+          args: Prisma.PatientSummaryExportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PatientSummaryExportPayload>
+        }
+        aggregate: {
+          args: Prisma.PatientSummaryExportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePatientSummaryExport>
+        }
+        groupBy: {
+          args: Prisma.PatientSummaryExportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientSummaryExportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PatientSummaryExportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PatientSummaryExportCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1880,6 +2030,73 @@ export const MediaAssetScalarFieldEnum = {
 export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
 
 
+export const PatientImportantInfoScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  updatedByUserId: 'updatedByUserId',
+  preferredName: 'preferredName',
+  dateOfBirth: 'dateOfBirth',
+  primaryLanguage: 'primaryLanguage',
+  addressNote: 'addressNote',
+  livingSituation: 'livingSituation',
+  primaryCaregiverName: 'primaryCaregiverName',
+  primaryCaregiverPhone: 'primaryCaregiverPhone',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  doctorName: 'doctorName',
+  doctorPhone: 'doctorPhone',
+  clinicOrHospitalName: 'clinicOrHospitalName',
+  allergies: 'allergies',
+  currentMedicationSummary: 'currentMedicationSummary',
+  importantConditionsNote: 'importantConditionsNote',
+  mobilitySupportNote: 'mobilitySupportNote',
+  dietaryNotes: 'dietaryNotes',
+  morningRoutineNotes: 'morningRoutineNotes',
+  eveningRoutineNotes: 'eveningRoutineNotes',
+  mealSupportNotes: 'mealSupportNotes',
+  sleepRoutineNotes: 'sleepRoutineNotes',
+  hydrationNotes: 'hydrationNotes',
+  communicationTips: 'communicationTips',
+  calmingStrategies: 'calmingStrategies',
+  memorySupportTips: 'memorySupportTips',
+  preferredActivities: 'preferredActivities',
+  distressTriggers: 'distressTriggers',
+  homeSafetyNotes: 'homeSafetyNotes',
+  wanderingRiskNotes: 'wanderingRiskNotes',
+  emergencyInstructions: 'emergencyInstructions',
+  generalNotes: 'generalNotes',
+  visibilityConfig: 'visibilityConfig',
+  lastReviewedAt: 'lastReviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PatientImportantInfoScalarFieldEnum = (typeof PatientImportantInfoScalarFieldEnum)[keyof typeof PatientImportantInfoScalarFieldEnum]
+
+
+export const PatientSummaryExportScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  generatedByUserId: 'generatedByUserId',
+  rangeStart: 'rangeStart',
+  rangeEnd: 'rangeEnd',
+  title: 'title',
+  status: 'status',
+  storageProvider: 'storageProvider',
+  storageBucket: 'storageBucket',
+  storageKey: 'storageKey',
+  fileSizeBytes: 'fileSizeBytes',
+  mimeType: 'mimeType',
+  includedSections: 'includedSections',
+  summaryMetadata: 'summaryMetadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type PatientSummaryExportScalarFieldEnum = (typeof PatientSummaryExportScalarFieldEnum)[keyof typeof PatientSummaryExportScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2194,6 +2411,20 @@ export type ListEnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
+ * Reference to a field of type 'PatientSummaryExportStatus'
+ */
+export type EnumPatientSummaryExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientSummaryExportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PatientSummaryExportStatus[]'
+ */
+export type ListEnumPatientSummaryExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PatientSummaryExportStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2316,6 +2547,8 @@ export type GlobalOmitConfig = {
   patientContact?: Prisma.PatientContactOmit
   contactMemo?: Prisma.ContactMemoOmit
   mediaAsset?: Prisma.MediaAssetOmit
+  patientImportantInfo?: Prisma.PatientImportantInfoOmit
+  patientSummaryExport?: Prisma.PatientSummaryExportOmit
 }
 
 /* Types for Logging */

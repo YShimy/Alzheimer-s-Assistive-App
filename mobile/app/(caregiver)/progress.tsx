@@ -132,7 +132,7 @@ export default function CaregiverProgressScreen() {
 
         {/* PATIENT RECORDS ENTRY */}
         <AppCard
-          style={[styles.section, { marginBottom: spacing.xl }]}
+          style={[styles.section, { marginBottom: spacing.md }]}
           onPress={() => router.push('/(caregiver)/records')}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -145,6 +145,52 @@ export default function CaregiverProgressScreen() {
               </Text>
               <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.on_surface_variant, marginTop: 2 }}>
                 {t('records.subtitle', 'Upload and organize patient-related documents for caregiver reference.')}
+              </Text>
+            </View>
+            <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+              <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+            </View>
+          </View>
+        </AppCard>
+
+        {/* IMPORTANT INFORMATION ENTRY */}
+        <AppCard
+          style={[styles.section, { marginBottom: spacing.md }]}
+          onPress={() => router.push('/(caregiver)/important-info')}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.secondary_container, alignItems: 'center', justifyContent: 'center', marginEnd: spacing.md }}>
+              <Icon name="information-circle-outline" size={24} color={colors.secondary[600]} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: typography.family.title, fontSize: typography.size.base, color: colors.on_surface }}>
+                {t('importantInfo.title', 'Important Information')}
+              </Text>
+              <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.on_surface_variant, marginTop: 2 }}>
+                {t('importantInfo.subtitle', 'Caregiver-provided information to support daily care and communication.')}
+              </Text>
+            </View>
+            <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+              <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+            </View>
+          </View>
+        </AppCard>
+
+        {/* EXPORT SUMMARY PDF ENTRY */}
+        <AppCard
+          style={[styles.section, { marginBottom: spacing.xl }]}
+          onPress={() => router.push('/(caregiver)/export-summary')}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.tertiary_container, alignItems: 'center', justifyContent: 'center', marginEnd: spacing.md }}>
+              <Icon name="document-text-outline" size={24} color={colors.tertiary.main} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: typography.family.title, fontSize: typography.size.base, color: colors.on_surface }}>
+                {t('summaryExport.title', 'Export Summary PDF')}
+              </Text>
+              <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.on_surface_variant, marginTop: 2 }}>
+                {t('summaryExport.subtitle', 'Create a caregiver summary from reminders, routines, engagement, records, and important information.')}
               </Text>
             </View>
             <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>

@@ -142,6 +142,14 @@ export default function PatientLayout() {
           headerTitle: t('caregiverChecklists.manageChecklists', 'Manage Checklists'),
         }}
       />
+      {/* Important Information — read-only patient view */}
+      <Tabs.Screen
+        name="important-info"
+        options={{
+          href: null,
+          headerTitle: t('importantInfo.title', 'Important Information'),
+        }}
+      />
     </Tabs>
   );
 }

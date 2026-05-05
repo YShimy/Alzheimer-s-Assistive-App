@@ -65,7 +65,9 @@ export const ModelName = {
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
   ContactMemo: 'ContactMemo',
-  MediaAsset: 'MediaAsset'
+  MediaAsset: 'MediaAsset',
+  PatientImportantInfo: 'PatientImportantInfo',
+  PatientSummaryExport: 'PatientSummaryExport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -395,6 +397,73 @@ export const MediaAssetScalarFieldEnum = {
 } as const
 
 export type MediaAssetScalarFieldEnum = (typeof MediaAssetScalarFieldEnum)[keyof typeof MediaAssetScalarFieldEnum]
+
+
+export const PatientImportantInfoScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  updatedByUserId: 'updatedByUserId',
+  preferredName: 'preferredName',
+  dateOfBirth: 'dateOfBirth',
+  primaryLanguage: 'primaryLanguage',
+  addressNote: 'addressNote',
+  livingSituation: 'livingSituation',
+  primaryCaregiverName: 'primaryCaregiverName',
+  primaryCaregiverPhone: 'primaryCaregiverPhone',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  doctorName: 'doctorName',
+  doctorPhone: 'doctorPhone',
+  clinicOrHospitalName: 'clinicOrHospitalName',
+  allergies: 'allergies',
+  currentMedicationSummary: 'currentMedicationSummary',
+  importantConditionsNote: 'importantConditionsNote',
+  mobilitySupportNote: 'mobilitySupportNote',
+  dietaryNotes: 'dietaryNotes',
+  morningRoutineNotes: 'morningRoutineNotes',
+  eveningRoutineNotes: 'eveningRoutineNotes',
+  mealSupportNotes: 'mealSupportNotes',
+  sleepRoutineNotes: 'sleepRoutineNotes',
+  hydrationNotes: 'hydrationNotes',
+  communicationTips: 'communicationTips',
+  calmingStrategies: 'calmingStrategies',
+  memorySupportTips: 'memorySupportTips',
+  preferredActivities: 'preferredActivities',
+  distressTriggers: 'distressTriggers',
+  homeSafetyNotes: 'homeSafetyNotes',
+  wanderingRiskNotes: 'wanderingRiskNotes',
+  emergencyInstructions: 'emergencyInstructions',
+  generalNotes: 'generalNotes',
+  visibilityConfig: 'visibilityConfig',
+  lastReviewedAt: 'lastReviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PatientImportantInfoScalarFieldEnum = (typeof PatientImportantInfoScalarFieldEnum)[keyof typeof PatientImportantInfoScalarFieldEnum]
+
+
+export const PatientSummaryExportScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  generatedByUserId: 'generatedByUserId',
+  rangeStart: 'rangeStart',
+  rangeEnd: 'rangeEnd',
+  title: 'title',
+  status: 'status',
+  storageProvider: 'storageProvider',
+  storageBucket: 'storageBucket',
+  storageKey: 'storageKey',
+  fileSizeBytes: 'fileSizeBytes',
+  mimeType: 'mimeType',
+  includedSections: 'includedSections',
+  summaryMetadata: 'summaryMetadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type PatientSummaryExportScalarFieldEnum = (typeof PatientSummaryExportScalarFieldEnum)[keyof typeof PatientSummaryExportScalarFieldEnum]
 
 
 export const SortOrder = {

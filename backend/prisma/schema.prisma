@@ -146,6 +146,14 @@ model User {
   patientDocuments         PatientDocument[] @relation("PatientDocuments")
   uploadedPatientDocuments PatientDocument[] @relation("UploadedPatientDocuments")
 
+  // Important Information Card
+  importantInfo            PatientImportantInfo?  @relation("PatientImportantInfo")
+  updatedImportantInfoCards PatientImportantInfo[] @relation("UpdatedImportantInfo")
+
+  // Summary Exports
+  patientSummaryExports    PatientSummaryExport[] @relation("PatientSummaryExports")
+  generatedSummaryExports  PatientSummaryExport[] @relation("GeneratedSummaryExports")
+
   @@index([email])
   @@index([googleId])
   @@index([role])
@@ -573,4 +581,114 @@ model MediaAsset {
 
   @@index([ownerUserId])
   @@map("media_assets")
+}
+
+// ─── Important Information Card ────────────────────────────────
+
+model PatientImportantInfo {
+  id                       String    @id @default(uuid())
+
+  patientId                String    @unique
+  updatedByUserId          String?
+
+  // Basic Support Info
+  preferredName            String?
+  dateOfBirth              DateTime?
+  primaryLanguage          String?
+  addressNote              String?
+  livingSituation          String?
+
+  // Emergency / Support Contacts
+  primaryCaregiverName     String?
+  primaryCaregiverPhone    String?
+  emergencyContactName     String?
+  emergencyContactPhone    String?
+  doctorName               String?
+  doctorPhone              String?
+  clinicOrHospitalName     String?
+
+  // Health Reference Info (caregiver-entered, not verified)
+  allergies                String?
+  currentMedicationSummary String?
+  importantConditionsNote  String?
+  mobilitySupportNote      String?
+  dietaryNotes             String?
+
+  // Daily Routine Support
+  morningRoutineNotes      String?
+  eveningRoutineNotes      String?
+  mealSupportNotes         String?
+  sleepRoutineNotes        String?
+  hydrationNotes           String?
+
+  // Communication and Comfort
+  communicationTips        String?
+  calmingStrategies        String?
+  memorySupportTips        String?
+  preferredActivities      String?
+  distressTriggers         String?
+
+  // Safety Notes
+  homeSafetyNotes          String?
+  wanderingRiskNotes       String?
+  emergencyInstructions    String?
+
+  // Additional Notes
+  generalNotes             String?
+
+  // Visibility config: { fieldName: "PATIENT_VISIBLE" | "CAREGIVER_ONLY" }
+  visibilityConfig         Json?
+  lastReviewedAt           DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  patient   User  @relation("PatientImportantInfo", fields: [patientId], references: [id])
+  updatedBy User? @relation("UpdatedImportantInfo", fields: [updatedByUserId], references: [id])
+
+  @@index([updatedByUserId])
+  @@index([updatedAt])
+  @@map("patient_important_info")
+}
+
+// ─── Summary Exports ───────────────────────────────────────────
+
+enum PatientSummaryExportStatus {
+  COMPLETED
+  ARCHIVED
+  FAILED
+}
+
+model PatientSummaryExport {
+  id                  String                    @id @default(uuid())
+
+  patientId           String
+  generatedByUserId   String
+
+  rangeStart          DateTime
+  rangeEnd            DateTime
+
+  title               String?
+  status              PatientSummaryExportStatus @default(COMPLETED)
+
+  storageProvider     String   @default("supabase")
+  storageBucket       String
+  storageKey          String
+  fileSizeBytes       Int?
+  mimeType            String   @default("application/pdf")
+
+  includedSections    Json?
+  summaryMetadata     Json?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  archivedAt          DateTime?
+
+  patient     User @relation("PatientSummaryExports", fields: [patientId], references: [id])
+  generatedBy User @relation("GeneratedSummaryExports", fields: [generatedByUserId], references: [id])
+
+  @@index([patientId])
+  @@index([generatedByUserId])
+  @@index([rangeStart, rangeEnd])
+  @@index([createdAt])
+  @@map("patient_summary_exports")
 }

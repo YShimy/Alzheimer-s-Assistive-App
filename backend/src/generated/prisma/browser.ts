@@ -92,3 +92,13 @@ export type ContactMemo = Prisma.ContactMemoModel
  * 
  */
 export type MediaAsset = Prisma.MediaAssetModel
+/**
+ * Model PatientImportantInfo
+ * 
+ */
+export type PatientImportantInfo = Prisma.PatientImportantInfoModel
+/**
+ * Model PatientSummaryExport
+ * 
+ */
+export type PatientSummaryExport = Prisma.PatientSummaryExportModel

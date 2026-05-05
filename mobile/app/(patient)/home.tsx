@@ -180,6 +180,13 @@ export default function PatientHomeScreen() {
           bgColor={colors.error_container}
           onPress={() => router.push('/(patient)/contacts')}
         />
+        <QuickCard
+          icon="information-circle-outline"
+          title={t('importantInfo.title', 'Important Info')}
+          color={colors.secondary.main}
+          bgColor={colors.secondary_container}
+          onPress={() => router.push('/(patient)/important-info')}
+        />
       </View>
     </ScreenContainer>
   );
