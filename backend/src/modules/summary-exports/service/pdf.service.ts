@@ -189,9 +189,11 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     doc.x = doc.page.margins.left;
     doc.y = discY + 66; // Move cursor past the disclaimer block
 
+    let sectionNum = 1;
+
     // ── Important Information ──────────────────────────────────────────────
     if (sections.importantInfo && importantInfo) {
-      writeSectionHeader(doc, '1. Important Information');
+      writeSectionHeader(doc, `${sectionNum++}. Important Information`);
       doc.font('Helvetica').fontSize(10)
         .fillColor(theme.text_variant)
         .text('Caregiver-provided information to support daily care and communication.');
@@ -217,7 +219,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
     // ── Reminders ─────────────────────────────────────────────────────────
     if (sections.reminders && reminderStats.length > 0) {
-      writeSectionHeader(doc, '2. Reminder Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Reminder Summary`);
 
       const done = reminderStats.filter(e => e.eventType === 'DONE').length;
       const skipped = reminderStats.filter(e => e.eventType === 'SKIPPED').length;
@@ -232,13 +234,13 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       writeStatRow(doc, 'Skipped', skipped);
       writeStatRow(doc, 'Completion rate', pct(rate));
     } else if (sections.reminders) {
-      writeSectionHeader(doc, '2. Reminder Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Reminder Summary`);
       doc.fillColor(theme.text_variant).text('No reminder activity in selected range.');
     }
 
     // ── Checklists ────────────────────────────────────────────────────────
     if (sections.checklists && checklistStats.length > 0) {
-      writeSectionHeader(doc, '3. Routine / Checklist Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Routine / Checklist Summary`);
 
       const completed = checklistStats.filter(r => r.status === 'COMPLETED').length;
       const rate = checklistStats.length > 0 ? completed / checklistStats.length : 0;
@@ -262,13 +264,13 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         sorted.forEach(([title, count]) => doc.text(`• ${title}: ${count} time(s)`));
       }
     } else if (sections.checklists) {
-      writeSectionHeader(doc, '3. Routine / Checklist Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Routine / Checklist Summary`);
       doc.fillColor(theme.text_variant).text('No routine activity in selected range.');
     }
 
     // ── Games ─────────────────────────────────────────────────────────────
     if (sections.games && gameStats.length > 0) {
-      writeSectionHeader(doc, '4. Engagement Activities Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Engagement Activities Summary`);
       doc.font('Helvetica').fontSize(9)
         .fillColor(theme.text_variant)
         .text('Note: Engagement data reflects app activity only and does not represent a clinical assessment.');
@@ -285,13 +287,13 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const maxTier = Math.max(...gameStats.map(g => g.highestTierReached ?? 0));
       if (maxTier > 0) writeStatRow(doc, 'Highest difficulty tier reached', maxTier);
     } else if (sections.games) {
-      writeSectionHeader(doc, '4. Engagement Activities Summary');
+      writeSectionHeader(doc, `${sectionNum++}. Engagement Activities Summary`);
       doc.fillColor(theme.text_variant).text('No engagement activity in selected range.');
     }
 
     // ── Patient Records ───────────────────────────────────────────────────
     if (sections.patientRecords && documents.length > 0) {
-      writeSectionHeader(doc, '5. Patient Records Uploaded');
+      writeSectionHeader(doc, `${sectionNum++}. Patient Records Uploaded`);
       doc.font('Helvetica').fontSize(9)
         .fillColor(theme.text_variant)
         .text('Document file contents are not included. Only metadata is listed.');
@@ -309,13 +311,13 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         doc.moveDown(1);
       });
     } else if (sections.patientRecords) {
-      writeSectionHeader(doc, '5. Patient Records Uploaded');
+      writeSectionHeader(doc, `${sectionNum++}. Patient Records Uploaded`);
       doc.fillColor(theme.text_variant).text('No records uploaded in selected range.');
     }
 
     // ── Timeline ──────────────────────────────────────────────────────────
     if (sections.timeline && timelineEvents.length > 0) {
-      writeSectionHeader(doc, '6. Activity Timeline');
+      writeSectionHeader(doc, `${sectionNum++}. Activity Timeline`);
       if (timelineEvents.length === 50) {
         doc.font('Helvetica').fontSize(9)
           .fillColor(theme.text_variant)
