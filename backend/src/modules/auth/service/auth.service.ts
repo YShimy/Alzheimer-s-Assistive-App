@@ -324,7 +324,8 @@ export const authService = {
   //  SIGN IN — Email + Password
   // ═══════════════════════════════════════════════════════════
   async signin(email: string, password: string): Promise<LoginResponse> {
-    const user = await authRepo.findByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await authRepo.findByEmail(normalizedEmail);
 
     if (!user || !user.passwordHash) {
       // Use generic message to prevent email enumeration
