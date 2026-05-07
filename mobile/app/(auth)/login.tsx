@@ -221,21 +221,7 @@ export default function LoginScreen() {
               </View>
             )}
 
-            {/* Divider */}
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{t('auth.or')}</Text>
-              <View style={styles.dividerLine} />
-            </View>
 
-            {/* Google Sign-In */}
-            <AppButton
-              title={t('auth.continueGoogle')}
-              onPress={handleGoogleSignIn}
-              variant="outline"
-              disabled={loading}
-              icon={<Icon name="logo-google" size={18} color={colors.on_surface} />}
-            />
 
             {/* Sign Up Link */}
             <View style={styles.switchRow}>
