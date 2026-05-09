@@ -116,7 +116,7 @@ router.post(
   authMiddleware,
   async (req, res, next) => {
     try {
-      await notificationsService.markRead(req.params.id!, req.user!.userId);
+      await notificationsService.markRead(String(req.params.id), req.user!.userId);
       res.json({ success: true });
     } catch (error) {
       next(error);

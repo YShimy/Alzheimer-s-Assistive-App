@@ -30,6 +30,7 @@ import { useCaregiverLinks } from '@/src/shared/hooks/useCaregiverLinks';
 import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { remindersApi } from '@/src/features/reminders/api';
+import { reminderScheduler } from '@/src/features/reminders/reminderScheduler';
 import { useChecklistTemplates } from '@/src/features/checklists/hooks';
 import type { Reminder, CreateReminderInput, UpdateReminderInput, PriorityLevel, ReminderType } from '@/src/features/reminders/types';
 import type { ChecklistTemplate } from '@/src/features/checklists/types';
@@ -123,6 +124,7 @@ export default function CaregiverRemindersScreen() {
     try {
       const { reminders: r } = await remindersApi.list(selectedPatient);
       setReminders(r);
+      reminderScheduler.syncSchedule(r).catch(() => {});
     } catch (err: any) {
       Alert.alert(t('common.error'), err.message || t('caregiverReminders.loadingError'));
     } finally {
@@ -188,11 +190,15 @@ export default function CaregiverRemindersScreen() {
     try {
       if (formMode === 'create') {
         const { reminder: created } = await remindersApi.create(selectedPatient, buildPayload());
-        setReminders((prev) => [created, ...prev]);
+        const next = [created, ...reminders];
+        setReminders(next);
+        reminderScheduler.syncSchedule(next).catch(() => {});
         Alert.alert(t('caregiverReminders.createdAlert'), t('caregiverReminders.createdSuccess', { title: created.title }));
       } else if (editingReminder) {
         const { reminder: updated } = await remindersApi.update(editingReminder.id, buildPayload() as UpdateReminderInput);
-        setReminders((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+        const next = reminders.map((r) => (r.id === updated.id ? updated : r));
+        setReminders(next);
+        reminderScheduler.syncSchedule(next).catch(() => {});
         Alert.alert(t('caregiverReminders.updatedAlert'), t('caregiverReminders.updatedSuccess', { title: updated.title }));
       }
       setModalVisible(false);
@@ -215,7 +221,9 @@ export default function CaregiverRemindersScreen() {
           onPress: async () => {
             try {
               await remindersApi.archive(reminder.id);
-              setReminders((prev) => prev.filter((r) => r.id !== reminder.id));
+              const next = reminders.filter((r) => r.id !== reminder.id);
+              setReminders(next);
+              reminderScheduler.syncSchedule(next).catch(() => {});
             } catch (err: any) {
               Alert.alert(t('common.error'), err.message || t('caregiverReminders.archiveError'));
             }
@@ -460,7 +468,7 @@ export default function CaregiverRemindersScreen() {
                   </Text>
                   <Icon name="chevron-forward" size={20} color={colors.neutral[400]} />
                 </TouchableOpacity>
-                <Text style={styles.checklistHelp}>{t('caregiverReminders.checklistHelp')}</Text>
+                <Text style={styles.guidedHelper}>{t('caregiverReminders.checklistHelp')}</Text>
               </View>
             )}
 
@@ -720,12 +728,7 @@ function ChecklistPickerModal({
                     { backgroundColor: isSelected ? colors.primary[50] : colors.neutral[50] }
                   ]}
                   onPress={() => {
-                    console.log('[ManageReminders] Opening checklist picker');
-                    Alert.alert('Debug', 'Checklist selector tapped');
-                    setChecklistPickerVisible(true);
-                  }}
-                  onPressIn={() => {
-                    console.log('[ChecklistPickerModal] PRESSED IN:', checklist.id, checklist.title);
+                    console.log('[ChecklistPickerModal] Selected checklist ID:', checklist.id);
                     onSelect(checklist.id);
                   }}
                 >
@@ -767,7 +770,7 @@ function CaregiverReminderCard({
   const isHighPriority = reminder.priority === 'high' || reminder.priority === 'critical';
   
   return (
-    <AppCard style={[styles.reminderCard, isHighPriority && styles.highPriorityCard]}>
+    <AppCard style={StyleSheet.flatten([styles.reminderCard, isHighPriority && styles.highPriorityCard])}>
       <View style={styles.cardHeader}>
         <View style={[styles.iconBadge, isGuided && styles.guidedBadge]}>
           <Icon 

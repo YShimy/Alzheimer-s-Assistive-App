@@ -24,7 +24,8 @@ import {
 } from '@/src/shared/ui';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { remindersApi } from '@/src/features/reminders/api';
-import type { Reminder, CreateReminderInput, UpdateReminderInput } from '@/src/features/reminders/types';
+import type { Reminder, CreateReminderInput, UpdateReminderInput, PriorityLevel } from '@/src/features/reminders/types';
+import { reminderScheduler } from '@/src/features/reminders/reminderScheduler';
 import { useSessionStore } from '@/src/state/sessionStore';
 
 const CATEGORIES = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
@@ -42,7 +43,7 @@ interface ReminderForm {
   daysOfWeek: number[];
   snoozeEnabled: boolean;
   defaultSnoozeMinutes: string;
-  priority: string;
+  priority: PriorityLevel;
 }
 
 function emptyForm(): ReminderForm {
@@ -56,7 +57,7 @@ function emptyForm(): ReminderForm {
     daysOfWeek: [],
     snoozeEnabled: true,
     defaultSnoozeMinutes: '10',
-    priority: '1',
+    priority: 'normal',
   };
 }
 
@@ -71,7 +72,7 @@ function formFromReminder(r: Reminder): ReminderForm {
     daysOfWeek: r.daysOfWeek ?? [],
     snoozeEnabled: r.snoozeEnabled,
     defaultSnoozeMinutes: String(r.defaultSnoozeMinutes),
-    priority: String(r.priority),
+    priority: r.priority ?? 'normal',
   };
 }
 
@@ -108,6 +109,7 @@ export default function PatientManageRemindersScreen() {
     try {
       const { reminders: r } = await remindersApi.list(selectedPatient);
       setReminders(r);
+      reminderScheduler.syncSchedule(r).catch(() => {});
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Failed to load reminders');
     } finally {
@@ -159,7 +161,7 @@ export default function PatientManageRemindersScreen() {
     daysOfWeek: form.daysOfWeek,
     snoozeEnabled: form.snoozeEnabled,
     defaultSnoozeMinutes: parseInt(form.defaultSnoozeMinutes, 10) || 10,
-    priority: (parseInt(form.priority, 10) || 1) as 1 | 2 | 3,
+    priority: form.priority,
   });
 
   const handleSubmit = async () => {
@@ -169,11 +171,15 @@ export default function PatientManageRemindersScreen() {
     try {
       if (formMode === 'create') {
         const { reminder: created } = await remindersApi.create(selectedPatient, buildPayload());
-        setReminders((prev) => [created, ...prev]);
+        const next = [created, ...reminders];
+        setReminders(next);
+        reminderScheduler.syncSchedule(next).catch(() => {});
         Alert.alert('Created', `"${created.title}" has been added.`);
       } else if (editingReminder) {
         const { reminder: updated } = await remindersApi.update(editingReminder.id, buildPayload() as UpdateReminderInput);
-        setReminders((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+        const next = reminders.map((r) => (r.id === updated.id ? updated : r));
+        setReminders(next);
+        reminderScheduler.syncSchedule(next).catch(() => {});
         Alert.alert('Updated', `"${updated.title}" has been saved.`);
       }
       setModalVisible(false);
@@ -196,7 +202,9 @@ export default function PatientManageRemindersScreen() {
           onPress: async () => {
             try {
               await remindersApi.archive(reminder.id);
-              setReminders((prev) => prev.filter((r) => r.id !== reminder.id));
+              const next = reminders.filter((r) => r.id !== reminder.id);
+              setReminders(next);
+              reminderScheduler.syncSchedule(next).catch(() => {});
             } catch (err: any) {
               Alert.alert('Error', err.message || 'Failed to archive');
             }

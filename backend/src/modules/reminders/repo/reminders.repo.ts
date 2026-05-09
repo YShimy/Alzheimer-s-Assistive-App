@@ -60,6 +60,7 @@ export const remindersRepo = {
     linkedChecklistTemplateId?: string;
     snoozeEnabled: boolean;
     defaultSnoozeMinutes: number;
+    nativeAlarmEnabled?: boolean;
     createdByUserId: string;
     lastEditedByUserId: string;
   }): Promise<Reminder> {
@@ -83,6 +84,7 @@ export const remindersRepo = {
         linkedChecklistTemplateId: data.linkedChecklistTemplateId ?? undefined,
         snoozeEnabled: data.snoozeEnabled,
         defaultSnoozeMinutes: data.defaultSnoozeMinutes,
+        nativeAlarmEnabled: data.nativeAlarmEnabled ?? false,
         createdByUserId: data.createdByUserId,
         lastEditedByUserId: data.lastEditedByUserId,
       },

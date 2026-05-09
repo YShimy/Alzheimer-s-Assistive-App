@@ -39,6 +39,7 @@ export interface ReminderResponse {
   visualCue?: VisualCueSummary | null;
   snoozeEnabled: boolean;
   defaultSnoozeMinutes: number;
+  nativeAlarmEnabled: boolean;
   isActive: boolean;
   archivedAt: string | null;
   createdByUserId: string;

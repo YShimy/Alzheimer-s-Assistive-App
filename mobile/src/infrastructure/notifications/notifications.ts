@@ -86,6 +86,8 @@ export const notifications = {
       body: params.body,
       data: { reminderId: params.id },
       sound: 'default',
+      // @ts-ignore — channelId for Android so it uses the 'reminders' channel
+      channelId: Platform.OS === 'android' ? 'reminders' : undefined,
     };
 
     if (trigger <= 0) {
