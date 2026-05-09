@@ -3,6 +3,7 @@ import { createApp } from './app.js';
 import { env } from '../shared/config/env.js';
 import { connectDatabase } from '../shared/db/prisma.js';
 import { logger } from '../shared/logger/logger.js';
+import { receiptChecker } from '../shared/queue/receiptChecker.js';
 
 async function main() {
   // Connect to database
@@ -17,6 +18,10 @@ async function main() {
   server.listen(env.PORT, '0.0.0.0', () => {
     logger.info(`🚀 Server running on http://localhost:${env.PORT}`);
     logger.info(`📋 Health check: http://localhost:${env.PORT}/api/health`);
+
+    // Start background CRON: checks Expo push receipts and removes dead tokens
+    receiptChecker.start();
+    logger.info('🔔 Push receipt checker started (runs every 15 minutes)');
   });
 }
 

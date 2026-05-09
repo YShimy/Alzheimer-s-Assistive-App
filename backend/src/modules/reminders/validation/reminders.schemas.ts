@@ -22,6 +22,8 @@ export const createReminderSchema = z.object({
   linkedChecklistTemplateId: z.string().uuid().optional(),
   snoozeEnabled: z.boolean().default(true),
   defaultSnoozeMinutes: z.number().int().min(1).max(120).default(10),
+  // Native phone alarm (critical priority only)
+  nativeAlarmEnabled: z.boolean().default(false),
 });
 
 export const updateReminderSchema = z.object({
@@ -43,6 +45,8 @@ export const updateReminderSchema = z.object({
   snoozeEnabled: z.boolean().optional(),
   defaultSnoozeMinutes: z.number().int().min(1).max(120).optional(),
   isActive: z.boolean().optional(),
+  // Native phone alarm (critical priority only)
+  nativeAlarmEnabled: z.boolean().optional(),
 });
 
 export const patientIdParam = z.object({

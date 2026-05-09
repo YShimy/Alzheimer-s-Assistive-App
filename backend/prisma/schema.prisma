@@ -98,6 +98,11 @@ enum VerificationPurpose {
   PASSWORD_RESET
 }
 
+enum NotificationType {
+  ESCALATION
+  SYSTEM
+}
+
 // ─── Models ───────────────────────────────────────────
 
 model User {
@@ -114,7 +119,7 @@ model User {
   emailVerifiedAt           DateTime?
   accessibilitySettings     Json      @default("{\"textSize\": \"medium\", \"highContrast\": false, \"audioCuesEnabled\": false}")
   preferredNotificationMode String    @default("push") // push | local | silent
-  pushToken                 String? // Expo push notification token
+  pushToken                 String? // Expo push notification token (deprecated, use Device model)
   lastSeenAt                DateTime?
   createdAt                 DateTime  @default(now())
   updatedAt                 DateTime  @updatedAt
@@ -153,6 +158,10 @@ model User {
   // Summary Exports
   patientSummaryExports    PatientSummaryExport[] @relation("PatientSummaryExports")
   generatedSummaryExports  PatientSummaryExport[] @relation("GeneratedSummaryExports")
+
+  // Notification system
+  devices       Device[]       @relation("UserDevices")
+  notifications Notification[] @relation("UserNotifications")
 
   @@index([email])
   @@index([googleId])
@@ -272,6 +281,9 @@ model Reminder {
   
   // Redesigned: proper priority enum instead of numeric
   priority                    PriorityLevel    @default(NORMAL)
+  
+  // Native phone alarm for critical reminders
+  nativeAlarmEnabled          Boolean          @default(false)
   
   // Redesigned: reminder type (simple vs guided)
   reminderType                ReminderType     @default(SIMPLE)
@@ -691,4 +703,52 @@ model PatientSummaryExport {
   @@index([rangeStart, rangeEnd])
   @@index([createdAt])
   @@map("patient_summary_exports")
+}
+
+// ─── Notification System ───────────────────────────────────────────────────
+
+model Device {
+  id        String   @id @default(uuid())
+  userId    String
+  pushToken String   @unique
+  platform  String   @default("unknown") // "ios" | "android" | "unknown"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User         @relation("UserDevices", fields: [userId], references: [id], onDelete: Cascade)
+  tickets PushTicket[]
+
+  @@index([userId])
+  @@map("devices")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType @default(ESCALATION)
+  title     String
+  body      String
+  isRead    Boolean          @default(false)
+  payload   Json?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model PushTicket {
+  id        String   @id @default(uuid())
+  ticketId  String   @unique
+  deviceId  String
+  createdAt DateTime @default(now())
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("push_tickets")
 }

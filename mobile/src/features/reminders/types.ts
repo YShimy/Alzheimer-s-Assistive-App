@@ -37,6 +37,8 @@ export interface Reminder {
   // Redesigned: optional visual cue
   visualCueAssetId: string | null;
   visualCue?: VisualCueSummary | null;
+  // Native phone alarm for critical reminders
+  nativeAlarmEnabled: boolean;
   snoozeEnabled: boolean;
   defaultSnoozeMinutes: number;
   isActive: boolean;
@@ -65,6 +67,8 @@ export interface CreateReminderInput {
   visualCueAssetId?: string;
   snoozeEnabled?: boolean;
   defaultSnoozeMinutes?: number;
+  // Native phone alarm for critical reminders
+  nativeAlarmEnabled?: boolean;
 }
 
 export interface UpdateReminderInput extends Partial<CreateReminderInput> {

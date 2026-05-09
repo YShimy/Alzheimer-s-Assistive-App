@@ -126,3 +126,18 @@ export type PatientImportantInfo = Prisma.PatientImportantInfoModel
  * 
  */
 export type PatientSummaryExport = Prisma.PatientSummaryExportModel
+/**
+ * Model Device
+ * 
+ */
+export type Device = Prisma.DeviceModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model PushTicket
+ * 
+ */
+export type PushTicket = Prisma.PushTicketModel

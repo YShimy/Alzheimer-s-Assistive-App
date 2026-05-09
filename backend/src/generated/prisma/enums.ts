@@ -118,6 +118,14 @@ export const VerificationPurpose = {
 export type VerificationPurpose = (typeof VerificationPurpose)[keyof typeof VerificationPurpose]
 
 
+export const NotificationType = {
+  ESCALATION: 'ESCALATION',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const PatientDocumentCategory = {
   PRESCRIPTION: 'PRESCRIPTION',
   LAB_RESULT: 'LAB_RESULT',

@@ -213,7 +213,9 @@
     "checklistHelp": "سيتم عرض هذه القائمة للمريض عند تفعيل التذكير.",
     "noChecklists": "لا توجد قوائم",
     "createChecklistFirst": "قم بإنشاء قائمة أولاً لربطها بالتذكير.",
-    "selectChecklistBtn": "اختر قائمة"
+    "selectChecklistBtn": "اختر قائمة",
+    "nativeAlarmLabel": "منبّه هاتف حقيقي",
+    "nativeAlarmSub": "يرنّ كمنبّه كامل حتى في وضع الصمت وعدم الإزعاج"
   },
   "caregiverChecklists": {
     "backendNoticeTitle": "الواجهة الخلفية لم تنفذ بعد",

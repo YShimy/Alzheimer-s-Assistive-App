@@ -215,7 +215,9 @@
     "noChecklists": "No checklists available",
     "createChecklistFirst": "Create a checklist first to link it to this reminder",
     "selectChecklistBtn": "Select Checklist",
-    "checklistHelp": "This checklist will be shown to the patient when the reminder triggers."
+    "checklistHelp": "This checklist will be shown to the patient when the reminder triggers.",
+    "nativeAlarmLabel": "Native Phone Alarm",
+    "nativeAlarmSub": "Ring as a full alarm, breaking through silent and Do Not Disturb mode"
   },
   "caregiverChecklists": {
     "backendNoticeTitle": "Backend Not Yet Implemented",

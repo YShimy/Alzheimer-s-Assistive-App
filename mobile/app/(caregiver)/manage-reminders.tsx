@@ -54,6 +54,7 @@ interface ReminderForm {
   priority: PriorityLevel;
   reminderType: ReminderType;
   linkedChecklistTemplateId: string;
+  nativeAlarmEnabled: boolean;
 }
 
 function emptyForm(): ReminderForm {
@@ -70,6 +71,7 @@ function emptyForm(): ReminderForm {
     priority: 'normal',
     reminderType: 'simple',
     linkedChecklistTemplateId: '',
+    nativeAlarmEnabled: false,
   };
 }
 
@@ -87,6 +89,7 @@ function formFromReminder(r: Reminder): ReminderForm {
     priority: r.priority ?? 'normal',
     reminderType: r.reminderType ?? 'simple',
     linkedChecklistTemplateId: r.linkedChecklistTemplateId ?? '',
+    nativeAlarmEnabled: r.nativeAlarmEnabled ?? false,
   };
 }
 
@@ -174,6 +177,8 @@ export default function CaregiverRemindersScreen() {
     priority: form.priority,
     reminderType: form.reminderType,
     linkedChecklistTemplateId: form.linkedChecklistTemplateId || undefined,
+    // Only send nativeAlarmEnabled when priority is critical
+    nativeAlarmEnabled: form.priority === 'critical' ? form.nativeAlarmEnabled : false,
   });
 
   const handleSubmit = async () => {
@@ -384,7 +389,29 @@ export default function CaregiverRemindersScreen() {
               </ScrollView>
             </View>
 
-            {/* Redesigned: Reminder Type selector */}
+            {/* Native Alarm Toggle — only visible for critical priority */}
+            {form.priority === 'critical' && (
+              <View style={[styles.switchRow, styles.alarmToggleRow]}>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Icon name="alarm-outline" size={18} color={colors.error?.main ?? '#FF3B30'} />
+                    <Text style={[styles.switchLabel, { color: colors.error?.main ?? '#FF3B30' }]}>
+                      {t('caregiverReminders.nativeAlarmLabel')}
+                    </Text>
+                  </View>
+                  <Text style={styles.switchSub}>
+                    {t('caregiverReminders.nativeAlarmSub')}
+                  </Text>
+                </View>
+                <Switch
+                  value={form.nativeAlarmEnabled}
+                  onValueChange={(v) => setForm((f) => ({ ...f, nativeAlarmEnabled: v }))}
+                  trackColor={{ true: colors.error?.main ?? '#FF3B30', false: colors.neutral[300] }}
+                  thumbColor={form.nativeAlarmEnabled ? '#fff' : colors.neutral[400]}
+                />
+              </View>
+            )}
+
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>{t('patientReminders.reminderType')}</Text>
               <View style={styles.typeRow}>
@@ -1129,5 +1156,14 @@ const styles = StyleSheet.create({
   checklistMeta: {
     fontSize: typography.size.xs,
     color: colors.neutral[500],
+  },
+  // Native alarm toggle — red-tinted highlight row
+  alarmToggleRow: {
+    backgroundColor: colors.error?.light ?? '#FFF0EE',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.error?.main ?? '#FF3B30',
+    marginBottom: spacing.md,
+    padding: spacing.lg,
   },
 });

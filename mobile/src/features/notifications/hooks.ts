@@ -27,6 +27,16 @@ async function registerForPushNotificationsAsync(): Promise<string | null> {
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
     });
+    // Alarm-grade channel for critical reminders (bypassDnd)
+    await Notifications.setNotificationChannelAsync('alarms', {
+      name: 'Critical Alarms',
+      description: 'Urgent reminders that ring even in Do Not Disturb mode',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 500, 250, 500, 250, 500],
+      lightColor: '#FF3B30',
+      bypassDnd: true,
+      showBadge: true,
+    });
   }
 
   if (!Device.isDevice) {
@@ -77,7 +87,8 @@ export function usePushNotifications() {
       const token = await registerForPushNotificationsAsync();
       if (token && isMounted) {
         try {
-          await notificationsApi.registerPushToken(token);
+          const platform = Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'unknown';
+          await notificationsApi.registerPushToken(token, platform);
           console.log('[Notifications] Token registered with backend');
         } catch (error) {
           console.error('[Notifications] Failed to register token:', error);

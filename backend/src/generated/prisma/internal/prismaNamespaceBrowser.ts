@@ -67,7 +67,10 @@ export const ModelName = {
   ContactMemo: 'ContactMemo',
   MediaAsset: 'MediaAsset',
   PatientImportantInfo: 'PatientImportantInfo',
-  PatientSummaryExport: 'PatientSummaryExport'
+  PatientSummaryExport: 'PatientSummaryExport',
+  Device: 'Device',
+  Notification: 'Notification',
+  PushTicket: 'PushTicket'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -180,6 +183,7 @@ export const ReminderScalarFieldEnum = {
   daysOfWeek: 'daysOfWeek',
   description: 'description',
   priority: 'priority',
+  nativeAlarmEnabled: 'nativeAlarmEnabled',
   reminderType: 'reminderType',
   visualCueAssetId: 'visualCueAssetId',
   linkedChecklistTemplateId: 'linkedChecklistTemplateId',
@@ -464,6 +468,43 @@ export const PatientSummaryExportScalarFieldEnum = {
 } as const
 
 export type PatientSummaryExportScalarFieldEnum = (typeof PatientSummaryExportScalarFieldEnum)[keyof typeof PatientSummaryExportScalarFieldEnum]
+
+
+export const DeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  pushToken: 'pushToken',
+  platform: 'platform',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  isRead: 'isRead',
+  payload: 'payload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const PushTicketScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  deviceId: 'deviceId',
+  createdAt: 'createdAt'
+} as const
+
+export type PushTicketScalarFieldEnum = (typeof PushTicketScalarFieldEnum)[keyof typeof PushTicketScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -32,6 +32,9 @@
         "NSContactsUsageDescription": "We need access to your contacts to help you import them for memory support.",
         "NSCameraUsageDescription": "We need access to your camera to take photos for your memory support profiles.",
         "NSPhotoLibraryUsageDescription": "We need access to your photos to personalize profiles and checklist steps."
+      },
+      "entitlements": {
+        "com.apple.developer.usernotifications.critical-alerts": true
       }
     },
     "web": {

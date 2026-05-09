@@ -7,14 +7,15 @@ import type { Reminder } from './types';
 function getNextOccurrences(reminder: Reminder, daysAhead: number): Date[] {
   const dates: Date[] = [];
   const now = new Date();
-  
+
   if (!reminder.scheduledTime) return dates;
   const [hours, minutes] = reminder.scheduledTime.split(':').map(Number);
 
   // Determine active days (0 = Sunday, 1 = Monday, etc.)
-  const activeDays: number[] = (reminder.daysOfWeek && reminder.daysOfWeek.length > 0)
-    ? reminder.daysOfWeek
-    : [0, 1, 2, 3, 4, 5, 6];
+  const activeDays: number[] =
+    reminder.daysOfWeek && reminder.daysOfWeek.length > 0
+      ? reminder.daysOfWeek
+      : [0, 1, 2, 3, 4, 5, 6];
 
   for (let i = 0; i < daysAhead; i++) {
     const candidate = new Date(now);
@@ -36,32 +37,50 @@ export const reminderScheduler = {
   /**
    * Keep local notifications entirely in sync with the fetched reminders list.
    * Cancel-all + reschedule-all strategy ensures no stale notifications.
+   *
+   * Critical reminders with nativeAlarmEnabled=true are scheduled as alarms
+   * (breaks through silent/DND mode on iOS and Android).
+   * All other reminders use standard notifications.
    */
   async syncSchedule(reminders: Reminder[]): Promise<void> {
     try {
       await notifications.cancelAll();
 
-      const activeReminders = reminders.filter(r => r.isActive && !r.archivedAt);
+      const activeReminders = reminders.filter((r) => r.isActive && !r.archivedAt);
 
       for (const reminder of activeReminders) {
         const nextOccurrences = getNextOccurrences(reminder, 7); // Schedule next 7 days
+
+        const isCriticalAlarm =
+          reminder.priority === 'critical' && reminder.nativeAlarmEnabled === true;
+
         for (const date of nextOccurrences) {
-          await notifications.scheduleReminder({
-            id: `${reminder.id}_${date.getTime()}`, // unique ID per occurrence
-            title: reminder.title,
-            body: reminder.description ?? reminder.category,
-            scheduledAt: date,
-          });
+          if (isCriticalAlarm) {
+            // Alarm-grade delivery — breaks through silent/DND
+            await notifications.scheduleAlarm({
+              id: `${reminder.id}_${date.getTime()}`,
+              title: reminder.title,       // Alarm label = reminder name
+              body: reminder.description ?? `Critical: ${reminder.title}`,
+              scheduledAt: date,
+            });
+          } else {
+            // Standard notification delivery
+            await notifications.scheduleReminder({
+              id: `${reminder.id}_${date.getTime()}`,
+              title: reminder.title,
+              body: reminder.description ?? reminder.category,
+              scheduledAt: date,
+            });
+          }
         }
       }
     } catch (err) {
-      console.warn('Failed to sync notification schedule', err);
+      console.warn('[ReminderScheduler] Failed to sync notification schedule:', err);
     }
   },
 
   /**
-   * Cancel specific notifications if needed, but usually syncSchedule handles everything 
-   * since it clears the slate.
+   * Cancel specific notifications — handled by full syncSchedule.
    */
   async cancelReminderNotifications(allActiveReminders: Reminder[]): Promise<void> {
     await this.syncSchedule(allActiveReminders);

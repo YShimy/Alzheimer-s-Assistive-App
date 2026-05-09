@@ -57,6 +57,8 @@ function toReminderResponse(r: any): ReminderResponse {
     visualCue: buildVisualCueSummary(r),
     snoozeEnabled: r.snoozeEnabled,
     defaultSnoozeMinutes: r.defaultSnoozeMinutes,
+    // Native alarm flag
+    nativeAlarmEnabled: r.nativeAlarmEnabled ?? false,
     isActive: r.isActive,
     archivedAt: r.archivedAt?.toISOString() ?? null,
     createdByUserId: r.createdByUserId,
@@ -133,6 +135,7 @@ export const remindersService = {
       linkedChecklistTemplateId: input.linkedChecklistTemplateId,
       snoozeEnabled: input.snoozeEnabled ?? true,
       defaultSnoozeMinutes: input.defaultSnoozeMinutes ?? 10,
+      nativeAlarmEnabled: input.nativeAlarmEnabled ?? false,
       createdByUserId,
       lastEditedByUserId: createdByUserId,
     });
@@ -173,6 +176,7 @@ export const remindersService = {
     if (input.linkedChecklistTemplateId !== undefined) updateData.linkedChecklistTemplateId = input.linkedChecklistTemplateId;
     if (input.snoozeEnabled !== undefined) updateData.snoozeEnabled = input.snoozeEnabled;
     if (input.defaultSnoozeMinutes !== undefined) updateData.defaultSnoozeMinutes = input.defaultSnoozeMinutes;
+    if (input.nativeAlarmEnabled !== undefined) updateData.nativeAlarmEnabled = input.nativeAlarmEnabled;
     if (input.isActive !== undefined) updateData.isActive = input.isActive;
 
     const updated = await remindersRepo.update(id, updateData);
