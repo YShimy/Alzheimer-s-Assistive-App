@@ -61,6 +61,8 @@ export const ModelName = {
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
   GameLevelResult: 'GameLevelResult',
+  GameItemResult: 'GameItemResult',
+  SpacedRetrievalItem: 'SpacedRetrievalItem',
   AnalyticsEvent: 'AnalyticsEvent',
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
@@ -185,6 +187,7 @@ export const ReminderScalarFieldEnum = {
   priority: 'priority',
   nativeAlarmEnabled: 'nativeAlarmEnabled',
   reminderType: 'reminderType',
+  gameType: 'gameType',
   visualCueAssetId: 'visualCueAssetId',
   linkedChecklistTemplateId: 'linkedChecklistTemplateId',
   snoozeEnabled: 'snoozeEnabled',
@@ -268,16 +271,23 @@ export const GameSessionScalarFieldEnum = {
   patientUserId: 'patientUserId',
   gameType: 'gameType',
   difficultyLevel: 'difficultyLevel',
-  startedAt: 'startedAt',
-  completedAt: 'completedAt',
-  durationSeconds: 'durationSeconds',
-  score: 'score',
   highestTierReached: 'highestTierReached',
   levelsPlayed: 'levelsPlayed',
   levelsSucceeded: 'levelsSucceeded',
   levelsFailed: 'levelsFailed',
   completed: 'completed',
   quitEarly: 'quitEarly',
+  status: 'status',
+  score: 'score',
+  accuracyPercent: 'accuracyPercent',
+  levelStarted: 'levelStarted',
+  levelCompleted: 'levelCompleted',
+  highestLevel: 'highestLevel',
+  durationSeconds: 'durationSeconds',
+  reminderId: 'reminderId',
+  caregiverId: 'caregiverId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
   actorUserId: 'actorUserId',
   actorRole: 'actorRole',
   source: 'source',
@@ -309,6 +319,53 @@ export const GameLevelResultScalarFieldEnum = {
 } as const
 
 export type GameLevelResultScalarFieldEnum = (typeof GameLevelResultScalarFieldEnum)[keyof typeof GameLevelResultScalarFieldEnum]
+
+
+export const GameItemResultScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  itemIndex: 'itemIndex',
+  prompt: 'prompt',
+  correct: 'correct',
+  firstTryCorrect: 'firstTryCorrect',
+  usedCue: 'usedCue',
+  responseTimeMs: 'responseTimeMs',
+  attempts: 'attempts',
+  selectedAnswer: 'selectedAnswer',
+  correctAnswer: 'correctAnswer',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type GameItemResultScalarFieldEnum = (typeof GameItemResultScalarFieldEnum)[keyof typeof GameItemResultScalarFieldEnum]
+
+
+export const SpacedRetrievalItemScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  createdByUserId: 'createdByUserId',
+  prompt: 'prompt',
+  correctAnswer: 'correctAnswer',
+  acceptableAnswers: 'acceptableAnswers',
+  distractors: 'distractors',
+  cueText: 'cueText',
+  category: 'category',
+  active: 'active',
+  currentIntervalStep: 'currentIntervalStep',
+  currentIntervalSeconds: 'currentIntervalSeconds',
+  masteryStatus: 'masteryStatus',
+  consecutiveCorrect: 'consecutiveCorrect',
+  consecutiveIncorrect: 'consecutiveIncorrect',
+  totalAttempts: 'totalAttempts',
+  correctAttempts: 'correctAttempts',
+  lastPracticedAt: 'lastPracticedAt',
+  nextDueAt: 'nextDueAt',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SpacedRetrievalItemScalarFieldEnum = (typeof SpacedRetrievalItemScalarFieldEnum)[keyof typeof SpacedRetrievalItemScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {

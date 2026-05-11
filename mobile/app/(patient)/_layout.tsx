@@ -115,17 +115,31 @@ export default function PatientLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="safe-path-game"
+        name="memory-match-game"
         options={{
           href: null,
-          headerTitle: 'Safe Path Memory',
+          headerTitle: 'Memory Match',
+        }}
+      />
+      <Tabs.Screen
+        name="orientation-practice"
+        options={{
+          href: null,
+          headerTitle: 'Orientation Practice',
         }}
       />
       <Tabs.Screen
         name="routine-sequence-game"
         options={{
           href: null,
-          headerTitle: t('games.routineSequence.title'),
+          headerTitle: 'Routine Sequence',
+        }}
+      />
+      <Tabs.Screen
+        name="safe-path-game"
+        options={{
+          href: null,
+          headerTitle: 'Safe Path',
         }}
       />
       <Tabs.Screen

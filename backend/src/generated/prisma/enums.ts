@@ -43,7 +43,8 @@ export type ReminderCategory = (typeof ReminderCategory)[keyof typeof ReminderCa
 
 export const ReminderType = {
   SIMPLE: 'SIMPLE',
-  GUIDED: 'GUIDED'
+  GUIDED: 'GUIDED',
+  GAME_SESSION: 'GAME_SESSION'
 } as const
 
 export type ReminderType = (typeof ReminderType)[keyof typeof ReminderType]
@@ -124,6 +125,47 @@ export const NotificationType = {
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const GameType = {
+  ASSOCIATIVE_MEMORY_MATCH: 'ASSOCIATIVE_MEMORY_MATCH',
+  SPACED_RETRIEVAL_ORIENTATION: 'SPACED_RETRIEVAL_ORIENTATION'
+} as const
+
+export type GameType = (typeof GameType)[keyof typeof GameType]
+
+
+export const GameSessionStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ABANDONED: 'ABANDONED'
+} as const
+
+export type GameSessionStatus = (typeof GameSessionStatus)[keyof typeof GameSessionStatus]
+
+
+export const SpacedRetrievalCategory = {
+  ORIENTATION_DATE: 'ORIENTATION_DATE',
+  ORIENTATION_PLACE: 'ORIENTATION_PLACE',
+  CAREGIVER: 'CAREGIVER',
+  DAILY_ROUTINE: 'DAILY_ROUTINE',
+  APP_NAVIGATION: 'APP_NAVIGATION',
+  SAFETY_SUPPORT: 'SAFETY_SUPPORT',
+  OTHER: 'OTHER'
+} as const
+
+export type SpacedRetrievalCategory = (typeof SpacedRetrievalCategory)[keyof typeof SpacedRetrievalCategory]
+
+
+export const MasteryStatus = {
+  NEW: 'NEW',
+  LEARNING: 'LEARNING',
+  STRENGTHENING: 'STRENGTHENING',
+  MASTERED: 'MASTERED',
+  NEEDS_REVIEW: 'NEEDS_REVIEW'
+} as const
+
+export type MasteryStatus = (typeof MasteryStatus)[keyof typeof MasteryStatus]
 
 
 export const PatientDocumentCategory = {

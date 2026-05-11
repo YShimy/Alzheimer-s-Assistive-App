@@ -78,11 +78,11 @@ const PATIENTS = [
   { email: 'demo.patient10@example.com', name: 'Sami Ibrahim', caregiverIndex: 3 },
 ];
 
-const GAMES = [
-  { id: 'safe-path', name: 'Safe Path Memory', levels: 5 },
-  { id: 'routine-sequence', name: 'Routine Sequence', levels: 4 },
-  { id: 'match-familiar', name: 'Match Familiar Items', levels: 3 },
-];
+// Game types for the new evidence-informed games
+const GAME_TYPES = {
+  MEMORY_MATCH: 'ASSOCIATIVE_MEMORY_MATCH',
+  SPACED_RETRIEVAL: 'SPACED_RETRIEVAL_ORIENTATION',
+} as const;
 
 function randomDateWithinLast(days: number): Date {
   const now = new Date();
@@ -111,6 +111,8 @@ async function cleanDemoData() {
     prisma.checklistRun.deleteMany({ where: { patientUserId: { in: demoUserIds } } }),
     prisma.checklistTemplate.deleteMany({ where: { patientUserId: { in: demoUserIds } } }),
     prisma.gameLevelResult.deleteMany({ where: { session: { patientUserId: { in: demoUserIds } } } }),
+    (prisma as any).gameItemResult?.deleteMany({ where: { session: { patientUserId: { in: demoUserIds } } } }),
+    (prisma as any).spacedRetrievalItem?.deleteMany({ where: { patientId: { in: demoUserIds } } }),
     prisma.gameSession.deleteMany({ where: { patientUserId: { in: demoUserIds } } }),
     prisma.patientDocument.deleteMany({ where: { patientId: { in: demoUserIds } } }),
     prisma.patientImportantInfo.deleteMany({ where: { patientId: { in: demoUserIds } } }),
@@ -266,7 +268,37 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
     }
   }
 
-  // 2. Checklists
+  // 2b. Game Reminders
+  await prisma.reminder.create({
+    data: {
+      patientUserId: patientId,
+      createdByUserId: caregiverId,
+      lastEditedByUserId: caregiverId,
+      title: 'Memory Match Practice',
+      category: ReminderCategory.TASK,
+      priority: PriorityLevel.NORMAL,
+      reminderType: ReminderType.SIMPLE,
+      scheduledTime: '10:00',
+      startDate: thirtyDaysAgo,
+      notes: 'Time for your Memory Match practice session.',
+    }
+  });
+
+  await prisma.reminder.create({
+    data: {
+      patientUserId: patientId,
+      createdByUserId: caregiverId,
+      lastEditedByUserId: caregiverId,
+      title: 'Daily Orientation Practice',
+      category: ReminderCategory.TASK,
+      priority: PriorityLevel.NORMAL,
+      reminderType: ReminderType.SIMPLE,
+      scheduledTime: '09:00',
+      startDate: thirtyDaysAgo,
+      notes: 'Practice your daily orientation questions.',
+    }
+  });
+
   const clConfig = [
     { title: 'Morning Routine', category: ChecklistCategory.MORNING, steps: ['Wash face', 'Take morning medication', 'Eat breakfast', 'Drink water'] },
     { title: 'Evening Routine', category: ChecklistCategory.EVENING, steps: ['Prepare clothes for tomorrow', 'Take evening medication', 'Brush teeth', 'Go to bed'] },
@@ -315,35 +347,115 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
     }
   }
 
-  // 3. Games
-  const numGameSessions = 4 + Math.floor(Math.random() * 7);
-  for (let i = 0; i < numGameSessions; i++) {
-    const game = GAMES[Math.floor(Math.random() * GAMES.length)];
-    const score = 100 + Math.floor(Math.random() * 400);
-    const eventDate = randomDateWithinLast(28);
 
-    const session = await prisma.gameSession.create({
+  // 3. Spaced Retrieval Items
+  const srItemsData = [
+    { prompt: 'What day is it today?', correctAnswer: new Date().toLocaleDateString('en-US', { weekday: 'long' }), cueText: 'Think about what you did this morning.', category: 'ORIENTATION_DATE', masteryStatus: 'LEARNING', intervalStep: 2 },
+    { prompt: 'What month are we in?', correctAnswer: new Date().toLocaleDateString('en-US', { month: 'long' }), cueText: 'Look at a calendar or your phone.', category: 'ORIENTATION_DATE', masteryStatus: 'STRENGTHENING', intervalStep: 4 },
+    { prompt: 'What year is it?', correctAnswer: String(new Date().getFullYear()), cueText: null, category: 'ORIENTATION_DATE', masteryStatus: 'MASTERED', intervalStep: 7 },
+    { prompt: 'Where can you find your daily reminders?', correctAnswer: 'In the Reminders section of the app', cueText: 'Tap the alarm icon at the bottom of the screen.', category: 'APP_NAVIGATION', masteryStatus: 'LEARNING', intervalStep: 1 },
+    { prompt: 'What should you do if you feel unwell?', correctAnswer: 'Contact your caregiver or call for help', cueText: 'Your caregiver\'s number is saved in your Contacts.', category: 'SAFETY_SUPPORT', masteryStatus: 'STRENGTHENING', intervalStep: 3 },
+    { prompt: 'What is the name of your caregiver?', correctAnswer: caregiverName.split(' ')[0] ?? 'Your caregiver', cueText: 'Their name is listed in your Contacts section.', category: 'CAREGIVER', masteryStatus: 'MASTERED', intervalStep: 7 },
+    { prompt: 'After breakfast, what is your morning routine?', correctAnswer: 'Check reminders, then follow the morning checklist', cueText: 'Check the morning checklist in the app.', category: 'DAILY_ROUTINE', masteryStatus: 'NEW', intervalStep: 0 },
+  ];
+
+  const srItems = [];
+  for (const item of srItemsData) {
+    const now = new Date();
+    const srItem = await (prisma as any).spacedRetrievalItem.create({
+      data: {
+        patientId,
+        createdByUserId: caregiverId,
+        prompt: item.prompt,
+        correctAnswer: item.correctAnswer,
+        cueText: item.cueText,
+        category: item.category,
+        masteryStatus: item.masteryStatus,
+        currentIntervalStep: item.intervalStep,
+        currentIntervalSeconds: [0,15,30,60,120,300,600][Math.min(item.intervalStep, 6)] ?? 0,
+        active: true,
+        totalAttempts: 5 + Math.floor(Math.random() * 10),
+        correctAttempts: 3 + Math.floor(Math.random() * 8),
+        lastPracticedAt: randomDateWithinLast(3),
+        nextDueAt: new Date(now.getTime() + (item.masteryStatus === 'MASTERED' ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000)),
+      }
+    });
+    srItems.push(srItem);
+  }
+
+  // 4. Memory Match Sessions (18–20 sessions over 30 days)
+  const mmSessionCount = 16 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < mmSessionCount; i++) {
+    const level = Math.min(12, 2 + Math.floor(i / 3) + Math.floor(Math.random() * 2));
+    const accuracy = 55 + Math.min(35, Math.floor(i * 2.5) + Math.floor(Math.random() * 20));
+    const score = Math.round((accuracy / 100) * level * 120);
+    const sessionDate = new Date(Date.now() - (30 - i * 1.8) * 24 * 60 * 60 * 1000);
+    const isAbandoned = randomChance(8);
+
+    await prisma.gameSession.create({
       data: {
         patientUserId: patientId,
         actorUserId: patientId,
         actorRole: 'patient',
-        gameType: game.id,
-        difficultyLevel: 'easy',
+        gameType: GAME_TYPES.MEMORY_MATCH,
         score,
-        levelsPlayed: game.levels,
-        levelsSucceeded: game.levels - 1,
-        completed: true,
-        startedAt: new Date(eventDate.getTime() - 1000 * 60 * 5),
-        completedAt: eventDate,
+        accuracyPercent: accuracy,
+        levelStarted: Math.max(1, level - 1),
+        levelCompleted: isAbandoned ? null : level,
+        highestLevel: level,
+        status: isAbandoned ? 'ABANDONED' : 'COMPLETED',
+        completed: !isAbandoned,
+        quitEarly: isAbandoned,
+        durationSeconds: 120 + Math.floor(Math.random() * 180),
+        startedAt: new Date(sessionDate.getTime() - 1000 * 60 * 5),
+        completedAt: isAbandoned ? null : sessionDate,
+        metadata: { distractorSimilarity: level >= 8 ? 'similar' : level >= 5 ? 'mild' : 'distinct' },
       }
     });
 
     await prisma.analyticsEvent.create({
       data: {
         patientUserId: patientId,
-        eventName: 'game_session_completed',
-        payload: { gameType: game.id, score },
-        occurredAt: eventDate,
+        eventName: isAbandoned ? 'memory_match_session_abandoned' : 'memory_match_session_completed',
+        payload: { level, score, accuracyPercent: accuracy },
+        occurredAt: sessionDate,
+      }
+    });
+  }
+
+  // 5. Spaced Retrieval Sessions (24–28 sessions over 30 days)
+  const srSessionCount = 24 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < srSessionCount; i++) {
+    const accuracy = 60 + Math.min(32, Math.floor(i * 1.5) + Math.floor(Math.random() * 15));
+    const cueUseRate = Math.max(5, 40 - Math.floor(i * 1.2));
+    const score = Math.round((accuracy / 100) * 500);
+    const sessionDate = new Date(Date.now() - (30 - i * 1.2) * 24 * 60 * 60 * 1000);
+    const isAbandoned = randomChance(5);
+
+    await prisma.gameSession.create({
+      data: {
+        patientUserId: patientId,
+        actorUserId: patientId,
+        actorRole: 'patient',
+        gameType: GAME_TYPES.SPACED_RETRIEVAL,
+        score,
+        accuracyPercent: accuracy,
+        status: isAbandoned ? 'ABANDONED' : 'COMPLETED',
+        completed: !isAbandoned,
+        quitEarly: isAbandoned,
+        durationSeconds: 180 + Math.floor(Math.random() * 180),
+        startedAt: new Date(sessionDate.getTime() - 1000 * 60 * 6),
+        completedAt: isAbandoned ? null : sessionDate,
+        metadata: { cueUseRate: cueUseRate / 100, correctWithoutCue: Math.floor(accuracy * 0.7 / 10), correctWithCue: Math.floor(accuracy * 0.3 / 10) },
+      }
+    });
+
+    await prisma.analyticsEvent.create({
+      data: {
+        patientUserId: patientId,
+        eventName: isAbandoned ? 'spaced_retrieval_session_abandoned' : 'spaced_retrieval_session_completed',
+        payload: { score, accuracyPercent: accuracy, cueUseRate },
+        occurredAt: sessionDate,
       }
     });
   }

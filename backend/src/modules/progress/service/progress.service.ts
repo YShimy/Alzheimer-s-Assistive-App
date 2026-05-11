@@ -307,36 +307,36 @@ export class ProgressService {
     const gameScrMap = new Map<string, ChartSeriesData>();
     const gameTierMap = new Map<string, ChartSeriesData>();
     
-    // Game-specific series
-    const safePathScrMap = new Map<string, ChartSeriesData>();
-    const safePathTierMap = new Map<string, ChartSeriesData>();
-    const routineSeqScrMap = new Map<string, ChartSeriesData>();
-    const routineSeqAccMap = new Map<string, ChartSeriesData>();
+    // New game-specific series
+    const memoryMatchScrMap = new Map<string, ChartSeriesData>();
+    const memoryMatchLvlMap = new Map<string, ChartSeriesData>();
+    const spacedRetrievalScrMap = new Map<string, ChartSeriesData>();
+    const spacedRetrievalAccMap = new Map<string, ChartSeriesData>();
 
     dateStrings.forEach(d => {
       remMap.set(d, { date: d, actedCount: 0, scheduledCount: 0, completionRate: 0 });
       chkMap.set(d, { date: d, startedRuns: 0, completedRuns: 0, completionRate: 0 });
       gameScrMap.set(d, { date: d, score: 0 });
       gameTierMap.set(d, { date: d, highestTier: 0 });
-      safePathScrMap.set(d, { date: d, score: 0 });
-      safePathTierMap.set(d, { date: d, highestTier: 0 });
-      routineSeqScrMap.set(d, { date: d, score: 0 });
-      routineSeqAccMap.set(d, { date: d, completionRate: 0 });
+      memoryMatchScrMap.set(d, { date: d, score: 0 });
+      memoryMatchLvlMap.set(d, { date: d, highestTier: 0 });
+      spacedRetrievalScrMap.set(d, { date: d, score: 0 });
+      spacedRetrievalAccMap.set(d, { date: d, completionRate: 0 });
     });
 
-    const [remEvts, chkRuns, gmRuns, safePathRuns, routineSeqRuns] = await Promise.all([
+    const [remEvts, chkRuns, gmRuns, memoryMatchRuns, spacedRetrievalRuns] = await Promise.all([
       prisma.reminderEvent.findMany({ where: { patientUserId: patientId, timestamp: { gte: startWindow } }, select: { timestamp: true, eventType: true } }),
       prisma.checklistRun.findMany({ where: { patientUserId: patientId, createdAt: { gte: startWindow } }, select: { createdAt: true, status: true } }),
       prisma.gameSession.findMany({ where: { patientUserId: patientId, startedAt: { gte: startWindow } }, select: { startedAt: true, score: true, highestTierReached: true, gameType: true } }),
-      // Safe Path specific
+      // Memory Match specific
       prisma.gameSession.findMany({ 
-        where: { patientUserId: patientId, startedAt: { gte: startWindow }, gameType: 'safe_path_memory' }, 
-        select: { startedAt: true, score: true, highestTierReached: true } 
+        where: { patientUserId: patientId, startedAt: { gte: startWindow }, gameType: 'ASSOCIATIVE_MEMORY_MATCH' }, 
+        select: { startedAt: true, score: true, highestLevel: true, accuracyPercent: true } 
       }),
-      // Routine Sequence specific
+      // Spaced Retrieval specific
       prisma.gameSession.findMany({ 
-        where: { patientUserId: patientId, startedAt: { gte: startWindow }, gameType: 'routine_sequence' }, 
-        select: { startedAt: true, score: true, levelResults: true } 
+        where: { patientUserId: patientId, startedAt: { gte: startWindow }, gameType: 'SPACED_RETRIEVAL_ORIENTATION' }, 
+        select: { startedAt: true, score: true, accuracyPercent: true } 
       }),
     ]);
 
@@ -360,10 +360,10 @@ export class ProgressService {
 
     // Score is averaged per day, Tier is max
     const scoreAgg = new Map<string, number[]>();
-    const safePathScoreAgg = new Map<string, number[]>();
-    const safePathTierAgg = new Map<string, number[]>();
-    const routineSeqScoreAgg = new Map<string, number[]>();
-    const routineSeqAccAgg = new Map<string, number[]>();
+    const memoryMatchScoreAgg = new Map<string, number[]>();
+    const memoryMatchLevelAgg = new Map<string, number[]>();
+    const spacedRetrievalScoreAgg = new Map<string, number[]>();
+    const spacedRetrievalAccAgg = new Map<string, number[]>();
     
     gmRuns.forEach(g => {
       const dStr = formatLocalDateStr(g.startedAt, tz);
@@ -376,30 +376,25 @@ export class ProgressService {
       }
     });
     
-    // Safe Path aggregation
-    safePathRuns.forEach(g => {
+    // Memory Match aggregation
+    memoryMatchRuns.forEach(g => {
       const dStr = formatLocalDateStr(g.startedAt, tz);
-      if (!safePathScoreAgg.has(dStr)) safePathScoreAgg.set(dStr, []);
-      if (g.score != null) safePathScoreAgg.get(dStr)!.push(g.score);
-      const bTier = safePathTierMap.get(dStr);
-      if (bTier) {
-        bTier.highestTier = Math.max(bTier.highestTier || 0, g.highestTierReached || 0);
+      if (!memoryMatchScoreAgg.has(dStr)) memoryMatchScoreAgg.set(dStr, []);
+      if (g.score != null) memoryMatchScoreAgg.get(dStr)!.push(g.score);
+      const bLvl = memoryMatchLvlMap.get(dStr);
+      if (bLvl) {
+        bLvl.highestTier = Math.max(bLvl.highestTier || 0, g.highestLevel || 0);
       }
     });
     
-    // Routine Sequence aggregation
-    routineSeqRuns.forEach(g => {
+    // Spaced Retrieval aggregation
+    spacedRetrievalRuns.forEach(g => {
       const dStr = formatLocalDateStr(g.startedAt, tz);
-      if (!routineSeqScoreAgg.has(dStr)) routineSeqScoreAgg.set(dStr, []);
-      if (g.score != null) routineSeqScoreAgg.get(dStr)!.push(g.score);
-      
-      // Calculate accuracy from level results if available
-      const levelResults = g.levelResults as any[] || [];
-      if (levelResults.length > 0) {
-        const accuracies = levelResults.map(lr => (lr.metadata?.accuracy as number) || 0);
-        const avgAcc = accuracies.reduce((a, b) => a + b, 0) / accuracies.length;
-        if (!routineSeqAccAgg.has(dStr)) routineSeqAccAgg.set(dStr, []);
-        routineSeqAccAgg.get(dStr)!.push(avgAcc);
+      if (!spacedRetrievalScoreAgg.has(dStr)) spacedRetrievalScoreAgg.set(dStr, []);
+      if (g.score != null) spacedRetrievalScoreAgg.get(dStr)!.push(g.score);
+      if (g.accuracyPercent != null) {
+        if (!spacedRetrievalAccAgg.has(dStr)) spacedRetrievalAccAgg.set(dStr, []);
+        spacedRetrievalAccAgg.get(dStr)!.push(g.accuracyPercent);
       }
     });
 
@@ -414,19 +409,23 @@ export class ProgressService {
       const scores = scoreAgg.get(d) || [];
       sc.score = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
       
-      // Safe Path series
-      const spScr = safePathScrMap.get(d)!;
-      const spScores = safePathScoreAgg.get(d) || [];
-      spScr.score = spScores.length ? Math.round(spScores.reduce((a,b)=>a+b,0)/spScores.length) : 0;
+      // Memory Match series
+      const mmScr = memoryMatchScrMap.get(d)!;
+      const mmScores = memoryMatchScoreAgg.get(d) || [];
+      mmScr.score = mmScores.length ? Math.round(mmScores.reduce((a,b)=>a+b,0)/mmScores.length) : 0;
       
-      // Routine Sequence series
-      const rsScr = routineSeqScrMap.get(d)!;
-      const rsScores = routineSeqScoreAgg.get(d) || [];
-      rsScr.score = rsScores.length ? Math.round(rsScores.reduce((a,b)=>a+b,0)/rsScores.length) : 0;
+      const mmLvl = memoryMatchLvlMap.get(d)!;
+      const mmLevels = memoryMatchLevelAgg.get(d) || [];
+      mmLvl.highestTier = mmLevels.length ? Math.round(mmLevels.reduce((a,b)=>a+b,0)/mmLevels.length) : 0;
       
-      const rsAcc = routineSeqAccMap.get(d)!;
-      const rsAccuracies = routineSeqAccAgg.get(d) || [];
-      rsAcc.completionRate = rsAccuracies.length ? (rsAccuracies.reduce((a,b)=>a+b,0)/rsAccuracies.length) : 0;
+      // Spaced Retrieval series
+      const srScr = spacedRetrievalScrMap.get(d)!;
+      const srScores = spacedRetrievalScoreAgg.get(d) || [];
+      srScr.score = srScores.length ? Math.round(srScores.reduce((a,b)=>a+b,0)/srScores.length) : 0;
+      
+      const srAcc = spacedRetrievalAccMap.get(d)!;
+      const srAccuracies = spacedRetrievalAccAgg.get(d) || [];
+      srAcc.completionRate = srAccuracies.length ? (srAccuracies.reduce((a,b)=>a+b,0)/srAccuracies.length) : 0;
     });
 
     return {
@@ -434,10 +433,10 @@ export class ProgressService {
       checklistSeries: Array.from(chkMap.values()),
       gameScoreSeries: Array.from(gameScrMap.values()),
       gameTierSeries: Array.from(gameTierMap.values()),
-      safePathScoreSeries: Array.from(safePathScrMap.values()),
-      safePathTierSeries: Array.from(safePathTierMap.values()),
-      routineSequenceScoreSeries: Array.from(routineSeqScrMap.values()),
-      routineSequenceAccuracySeries: Array.from(routineSeqAccMap.values()),
+      memoryMatchScoreSeries: Array.from(memoryMatchScrMap.values()),
+      memoryMatchLevelSeries: Array.from(memoryMatchLvlMap.values()),
+      spacedRetrievalScoreSeries: Array.from(spacedRetrievalScrMap.values()),
+      spacedRetrievalAccuracySeries: Array.from(spacedRetrievalAccMap.values()),
     };
   }
 

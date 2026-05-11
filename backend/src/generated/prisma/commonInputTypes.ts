@@ -491,6 +491,84 @@ export type EnumChecklistRunStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
 }
 
+export type EnumGameSessionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GameSessionStatus | Prisma.EnumGameSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel> | $Enums.GameSessionStatus
+}
+
+export type FloatNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
+}
+
+export type EnumGameSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GameSessionStatus | Prisma.EnumGameSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGameSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.GameSessionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel>
+}
+
+export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type EnumSpacedRetrievalCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpacedRetrievalCategory | Prisma.EnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel> | $Enums.SpacedRetrievalCategory
+}
+
+export type EnumMasteryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MasteryStatus | Prisma.EnumMasteryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel> | $Enums.MasteryStatus
+}
+
+export type EnumSpacedRetrievalCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpacedRetrievalCategory | Prisma.EnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSpacedRetrievalCategoryWithAggregatesFilter<$PrismaModel> | $Enums.SpacedRetrievalCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel>
+}
+
+export type EnumMasteryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MasteryStatus | Prisma.EnumMasteryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMasteryStatusWithAggregatesFilter<$PrismaModel> | $Enums.MasteryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
+}
+
 export type EnumConsentStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
@@ -1010,6 +1088,73 @@ export type NestedEnumChecklistRunStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumChecklistRunStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumGameSessionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GameSessionStatus | Prisma.EnumGameSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel> | $Enums.GameSessionStatus
+}
+
+export type NestedEnumGameSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GameSessionStatus | Prisma.EnumGameSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GameSessionStatus[] | Prisma.ListEnumGameSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGameSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.GameSessionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGameSessionStatusFilter<$PrismaModel>
+}
+
+export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpacedRetrievalCategory | Prisma.EnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel> | $Enums.SpacedRetrievalCategory
+}
+
+export type NestedEnumMasteryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MasteryStatus | Prisma.EnumMasteryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel> | $Enums.MasteryStatus
+}
+
+export type NestedEnumSpacedRetrievalCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SpacedRetrievalCategory | Prisma.EnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SpacedRetrievalCategory[] | Prisma.ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSpacedRetrievalCategoryWithAggregatesFilter<$PrismaModel> | $Enums.SpacedRetrievalCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSpacedRetrievalCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumMasteryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MasteryStatus | Prisma.EnumMasteryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MasteryStatus[] | Prisma.ListEnumMasteryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMasteryStatusWithAggregatesFilter<$PrismaModel> | $Enums.MasteryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumConsentStatusFilter<$PrismaModel = never> = {

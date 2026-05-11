@@ -137,7 +137,6 @@
     "errorLinkFailed": "Failed to link with caregiver",
     "defaultName": "there"
   },
-
   "caregiverHome": {
     "welcomeBack": "Welcome back,",
     "statsLinked": "Linked Patients",
@@ -339,7 +338,7 @@
     "declined": "Needs attention",
     "same": "Same as last week",
     "streak": "day streak",
-    "bestStreak": "Best",
+    "bestStreak": "Best Streak",
     "reminderConsistency": "Reminder Consistency",
     "taskCompletion": "Task Completion",
     "actionsDone": "Done",
@@ -355,7 +354,6 @@
     },
     "days": "days",
     "currentStreak": "Current Streak",
-    "bestStreak": "Best Streak",
     "keepItUp": "Looking great, keep it up!",
     "headerTitle": "Your Progress",
     "headerSubtitle": "Consistent practice helps strengthen your long-term cognitive health.",
@@ -441,42 +439,42 @@
     "sat_short": "Sat"
   },
   "contacts": {
-    "title": "Important People",
-    "priorityTitle": "Priority Contacts",
+    "title": "Contacts",
+    "importBtn": "Import from Phone",
+    "importMoreBtn": "Import More from Phone",
+    "priorityTitle": "Favorites",
     "allTitle": "All Contacts",
-    "searchPlaceholder": "Search contacts...",
-    "noContacts": "No contacts yet",
-    "noContactsMsg": "Import contacts to help you remember important people.",
-    "importBtn": "Manage Contacts",
-    "relation": "Relation",
-    "memo": "Role",
-    "favorites": "Favorites",
-    "bothPriority": "Chosen by both",
-    "myPriority": "My favorites",
-    "caregiverPriority": "Added by caregiver",
-    "otherContacts": "Other contacts",
-    "detailTitle": "Contact Detail",
+    "noContacts": "No Contacts",
+    "noContactsMsg": "Import contacts from your device to quickly call or message your loved ones.",
+    "loading": "Loading your favorite people...",
+    "memo": "Memo",
     "call": "Call",
     "email": "Email",
-    "editContact": "Edit Contact",
     "importTitle": "Import Contacts",
-    "importSearch": "Search device...",
+    "importSearch": "Search contacts...",
     "selectedCount": "{{count}} selected",
-    "confirmImport": "Import Selected"
+    "confirmImport": "Confirm Import",
+    "permissionDeniedTitle": "Permission Denied",
+    "permissionDeniedMsg": "We need access to your contacts to help you import them.",
+    "noSelectionTitle": "No contacts selected",
+    "noSelectionMsg": "Please select at least one contact to import.",
+    "importSuccessTitle": "Success",
+    "importSuccessMsg": "Imported {{count}} contacts successfully.",
+    "importErrorTitle": "Error",
+    "importErrorMsg": "Failed to import contacts. Please try again.",
+    "importLoading": "Reading your contacts..."
   },
   "contactConsent": {
-    "title": "People & Memory Aids",
-    "description": "Sharing your contacts allows your caregiver to help you identify important people with photos, relations, and helpful notes.",
-    "points": [
-      "View names, photos, and roles of people you know.",
-      "Your caregiver can add helpful reminders (e.g., 'Your grandaughter').",
-      "We only sync the contacts you choose to import.",
-      "You remain in control and can stop anytime."
-    ],
-    "grantBtn": "I Agree",
-    "denyBtn": "Not Now",
-    "revokedTitle": "Sharing Paused",
-    "revokedMsg": "Contact sharing is disabled."
+    "title": "Connect Your Loved Ones",
+    "description": "To help you quickly reach your family and friends, we can import them from your device.",
+    "points": {
+      "0": "We only read the contacts you select.",
+      "1": "You can add photos to help recognize them.",
+      "2": "Caregivers can add helpful memos.",
+      "3": "We never share your contacts with anyone."
+    },
+    "grantBtn": "Allow Access",
+    "denyBtn": "Not Now"
   },
   "media": {
     "uploading": "Uploading...",
@@ -593,96 +591,197 @@
       "tip": "Tip: {{hint}}"
     },
     "routines": {
-      "morning-coffee": { "title": "Make Coffee" },
-      "wash-hands": { "title": "Wash Hands" },
-      "getting-ready": { "title": "Get Ready to Go Out" },
-      "prepare-tea": { "title": "Make Tea" },
-      "take-medication": { "title": "Take Medication" },
-      "brush-teeth": { "title": "Brush Teeth" },
-      "make-bed": { "title": "Make the Bed" },
-      "water-plants": { "title": "Water the Plants" },
+      "morning-coffee": {
+        "title": "Make Coffee"
+      },
+      "wash-hands": {
+        "title": "Wash Hands"
+      },
+      "getting-ready": {
+        "title": "Get Ready to Go Out"
+      },
+      "prepare-tea": {
+        "title": "Make Tea"
+      },
+      "take-medication": {
+        "title": "Take Medication"
+      },
+      "brush-teeth": {
+        "title": "Brush Teeth"
+      },
+      "make-bed": {
+        "title": "Make the Bed"
+      },
+      "water-plants": {
+        "title": "Water the Plants"
+      },
       "steps": {
-        "mc-1": { "label": "Fill kettle with water", "hint": "Use fresh cold water" },
-        "mc-2": { "label": "Boil the water", "hint": "Wait for it to bubble" },
-        "mc-3": { "label": "Add coffee to cup", "hint": "One spoonful is enough" },
-        "mc-4": { "label": "Pour hot water", "hint": "Be careful, it is hot" },
-        "mc-5": { "label": "Stir and enjoy", "hint": "Mix well before drinking" },
-        "wh-1": { "label": "Turn on the tap", "hint": "Use warm water" },
-        "wh-2": { "label": "Wet your hands", "hint": "Get them fully wet" },
-        "wh-3": { "label": "Apply soap", "hint": "A small amount is enough" },
-        "wh-4": { "label": "Rub for 20 seconds", "hint": "Sing Happy Birthday twice" },
-        "wh-5": { "label": "Rinse thoroughly", "hint": "Wash all soap away" },
-        "wh-6": { "label": "Dry with towel", "hint": "Pat gently, do not rub" },
-        "gr-1": { "label": "Check the weather", "hint": "Look outside or check phone" },
-        "gr-2": { "label": "Choose appropriate clothes", "hint": "Dress for the weather" },
-        "gr-3": { "label": "Put on shoes", "hint": "Comfortable walking shoes" },
-        "gr-4": { "label": "Check pockets for keys", "hint": "Keys, wallet, phone" },
-        "gr-5": { "label": "Lock the door", "hint": "Turn key until it clicks" },
-        "pt-1": { "label": "Fill kettle with water", "hint": "Fresh cold water" },
-        "pt-2": { "label": "Boil the water", "hint": "Wait for bubbles" },
-        "pt-3": { "label": "Place tea bag in cup", "hint": "One bag per cup" },
-        "pt-4": { "label": "Pour hot water", "hint": "Fill to near the top" },
-        "pt-5": { "label": "Steep for 3 minutes", "hint": "Wait patiently" },
-        "pt-6": { "label": "Remove tea bag", "hint": "Squeeze gently against side" },
-        "tm-1": { "label": "Read the label carefully", "hint": "Check name and dosage" },
-        "tm-2": { "label": "Get a glass of water", "hint": "Room temperature is best" },
-        "tm-3": { "label": "Take the correct dose", "hint": "Count the pills" },
-        "tm-4": { "label": "Swallow with water", "hint": "Drink all the water" },
-        "tm-5": { "label": "Note that you took it", "hint": "Check off or mark time" },
-        "bt-1": { "label": "Wet the toothbrush", "hint": "Run under tap briefly" },
-        "bt-2": { "label": "Apply toothpaste", "hint": "Pea-sized amount" },
-        "bt-3": { "label": "Brush for 2 minutes", "hint": "All sides, top and bottom" },
-        "bt-4": { "label": "Rinse mouth", "hint": "Spit, do not swallow" },
-        "bt-5": { "label": "Rinse toothbrush", "hint": "Clean the brush" },
-        "mb-1": { "label": "Pull up the fitted sheet", "hint": "Tuck under mattress" },
-        "mb-2": { "label": "Spread the top sheet", "hint": "Even on both sides" },
-        "mb-3": { "label": "Add the blanket or duvet", "hint": "Center it nicely" },
-        "mb-4": { "label": "Arrange pillows", "hint": "Fluff and place at head" },
-        "wp-1": { "label": "Check if soil is dry", "hint": "Stick finger an inch down" },
-        "wp-2": { "label": "Fill watering can", "hint": "Room temperature water" },
-        "wp-3": { "label": "Pour slowly at base", "hint": "Avoid getting leaves wet" },
-        "wp-4": { "label": "Let water soak in", "hint": "Wait a moment" },
-        "wp-5": { "label": "Empty excess water", "hint": "Drain the saucer" }
+        "mc-1": {
+          "label": "Fill kettle with water",
+          "hint": "Use fresh cold water"
+        },
+        "mc-2": {
+          "label": "Boil the water",
+          "hint": "Wait for it to bubble"
+        },
+        "mc-3": {
+          "label": "Add coffee to cup",
+          "hint": "One spoonful is enough"
+        },
+        "mc-4": {
+          "label": "Pour hot water",
+          "hint": "Be careful, it is hot"
+        },
+        "mc-5": {
+          "label": "Stir and enjoy",
+          "hint": "Mix well before drinking"
+        },
+        "wh-1": {
+          "label": "Turn on the tap",
+          "hint": "Use warm water"
+        },
+        "wh-2": {
+          "label": "Wet your hands",
+          "hint": "Get them fully wet"
+        },
+        "wh-3": {
+          "label": "Apply soap",
+          "hint": "A small amount is enough"
+        },
+        "wh-4": {
+          "label": "Rub for 20 seconds",
+          "hint": "Sing Happy Birthday twice"
+        },
+        "wh-5": {
+          "label": "Rinse thoroughly",
+          "hint": "Wash all soap away"
+        },
+        "wh-6": {
+          "label": "Dry with towel",
+          "hint": "Pat gently, do not rub"
+        },
+        "gr-1": {
+          "label": "Check the weather",
+          "hint": "Look outside or check phone"
+        },
+        "gr-2": {
+          "label": "Choose appropriate clothes",
+          "hint": "Dress for the weather"
+        },
+        "gr-3": {
+          "label": "Put on shoes",
+          "hint": "Comfortable walking shoes"
+        },
+        "gr-4": {
+          "label": "Check pockets for keys",
+          "hint": "Keys, wallet, phone"
+        },
+        "gr-5": {
+          "label": "Lock the door",
+          "hint": "Turn key until it clicks"
+        },
+        "pt-1": {
+          "label": "Fill kettle with water",
+          "hint": "Fresh cold water"
+        },
+        "pt-2": {
+          "label": "Boil the water",
+          "hint": "Wait for bubbles"
+        },
+        "pt-3": {
+          "label": "Place tea bag in cup",
+          "hint": "One bag per cup"
+        },
+        "pt-4": {
+          "label": "Pour hot water",
+          "hint": "Fill to near the top"
+        },
+        "pt-5": {
+          "label": "Steep for 3 minutes",
+          "hint": "Wait patiently"
+        },
+        "pt-6": {
+          "label": "Remove tea bag",
+          "hint": "Squeeze gently against side"
+        },
+        "tm-1": {
+          "label": "Read the label carefully",
+          "hint": "Check name and dosage"
+        },
+        "tm-2": {
+          "label": "Get a glass of water",
+          "hint": "Room temperature is best"
+        },
+        "tm-3": {
+          "label": "Take the correct dose",
+          "hint": "Count the pills"
+        },
+        "tm-4": {
+          "label": "Swallow with water",
+          "hint": "Drink all the water"
+        },
+        "tm-5": {
+          "label": "Note that you took it",
+          "hint": "Check off or mark time"
+        },
+        "bt-1": {
+          "label": "Wet the toothbrush",
+          "hint": "Run under tap briefly"
+        },
+        "bt-2": {
+          "label": "Apply toothpaste",
+          "hint": "Pea-sized amount"
+        },
+        "bt-3": {
+          "label": "Brush for 2 minutes",
+          "hint": "All sides, top and bottom"
+        },
+        "bt-4": {
+          "label": "Rinse mouth",
+          "hint": "Spit, do not swallow"
+        },
+        "bt-5": {
+          "label": "Rinse toothbrush",
+          "hint": "Clean the brush"
+        },
+        "mb-1": {
+          "label": "Pull up the fitted sheet",
+          "hint": "Tuck under mattress"
+        },
+        "mb-2": {
+          "label": "Spread the top sheet",
+          "hint": "Even on both sides"
+        },
+        "mb-3": {
+          "label": "Add the blanket or duvet",
+          "hint": "Center it nicely"
+        },
+        "mb-4": {
+          "label": "Arrange pillows",
+          "hint": "Fluff and place at head"
+        },
+        "wp-1": {
+          "label": "Check if soil is dry",
+          "hint": "Stick finger an inch down"
+        },
+        "wp-2": {
+          "label": "Fill watering can",
+          "hint": "Room temperature water"
+        },
+        "wp-3": {
+          "label": "Pour slowly at base",
+          "hint": "Avoid getting leaves wet"
+        },
+        "wp-4": {
+          "label": "Let water soak in",
+          "hint": "Wait a moment"
+        },
+        "wp-5": {
+          "label": "Empty excess water",
+          "hint": "Drain the saucer"
+        }
       }
     }
-  },
-  "contacts": {
-    "title": "Contacts",
-    "importBtn": "Import from Phone",
-    "importMoreBtn": "Import More from Phone",
-    "priorityTitle": "Favorites",
-    "allTitle": "All Contacts",
-    "noContacts": "No Contacts",
-    "noContactsMsg": "Import contacts from your device to quickly call or message your loved ones.",
-    "loading": "Loading your favorite people...",
-    "memo": "Memo",
-    "call": "Call",
-    "email": "Email",
-    "importTitle": "Import Contacts",
-    "importSearch": "Search contacts...",
-    "selectedCount": "{{count}} selected",
-    "confirmImport": "Confirm Import",
-    "permissionDeniedTitle": "Permission Denied",
-    "permissionDeniedMsg": "We need access to your contacts to help you import them.",
-    "noSelectionTitle": "No contacts selected",
-    "noSelectionMsg": "Please select at least one contact to import.",
-    "importSuccessTitle": "Success",
-    "importSuccessMsg": "Imported {{count}} contacts successfully.",
-    "importErrorTitle": "Error",
-    "importErrorMsg": "Failed to import contacts. Please try again.",
-    "importLoading": "Reading your contacts..."
-  },
-  "contactConsent": {
-    "title": "Connect Your Loved Ones",
-    "description": "To help you quickly reach your family and friends, we can import them from your device.",
-    "points": {
-      "0": "We only read the contacts you select.",
-      "1": "You can add photos to help recognize them.",
-      "2": "Caregivers can add helpful memos.",
-      "3": "We never share your contacts with anyone."
-    },
-    "grantBtn": "Allow Access",
-    "denyBtn": "Not Now"
   },
   "importantInfo": {
     "title": "Important Information",
@@ -785,5 +884,79 @@
     "archiveMsg": "This export will be hidden from your list. Continue?",
     "archiveConfirm": "Archive",
     "archiveError": "Failed to archive."
+  },
+  "memoryMatch": {
+    "title": "Memory Match",
+    "subtitle": "Practice remembering which item belongs with which place.",
+    "level": "Level {{level}}",
+    "grid": "Grid",
+    "itemsToRemember": "Items to remember",
+    "studyTime": "Study time",
+    "shortWait": "Short wait before recall",
+    "seconds": "{{count}} seconds",
+    "hint": "Look carefully at where each item is placed. You will be asked to find them afterwards.",
+    "startPractice": "Start Practice",
+    "lookCarefully": "Look carefully at each item's position",
+    "imReady": "I'm ready",
+    "almostTime": "Almost time…",
+    "takeBreath": "Take a breath. The recall will begin shortly.",
+    "goodJob": "✓  Good job!",
+    "thatsOkay": "That's okay. Let's continue.",
+    "progress": "{{current}} of {{total}}",
+    "whereWas": "Where was the",
+    "sessionComplete": "Session Complete",
+    "advanceMsg": "Great practice! You're ready for the next level.",
+    "stayMsg": "Nice effort! Let's practice this level again.",
+    "regressMsg": "We'll make the next round a little easier.",
+    "itemsRecalled": "Items recalled",
+    "recalledValue": "{{correct}} of {{total}}",
+    "practiceScore": "Practice score",
+    "accuracy": "Accuracy",
+    "levelLabel": "Level",
+    "practiceAgain": "Practice Again",
+    "done": "Done"
+  },
+  "orientationPractice": {
+    "title": "Orientation Practice",
+    "subtitle": "Practice remembering helpful daily information. Take your time — there's no rush.",
+    "oneQuestion": "• One question at a time",
+    "tapAnswer": "• Tap the answer you think is correct",
+    "helpfulHint": "• A helpful hint is always available",
+    "sessionsTake": "• Sessions take about 5 minutes",
+    "beginPractice": "Begin Practice",
+    "progress": "{{current}} of {{total}}",
+    "imNotSure": "I'm not sure",
+    "showHint": "Show hint",
+    "wellDone": "Well done!",
+    "noWorries": "No worries.",
+    "thatsOkay": "That's okay.",
+    "youRemembered": "You remembered that one.",
+    "answerIs": "The answer is: {{answer}}",
+    "seeResults": "See Results",
+    "nextQuestion": "Next Question",
+    "practiceComplete": "Practice Complete",
+    "rememberedSummary": "You remembered {{correct}} of {{total}} items today.",
+    "withoutHints": " {{count}} without any hints.",
+    "questionsAnswered": "Questions answered",
+    "correct": "Correct",
+    "withHint": "With a hint",
+    "accuracy": "Accuracy",
+    "practiceAgain": "Practice Again",
+    "done": "Done"
+  },
+  "manageFacts": {
+    "title": "Orientation Facts",
+    "subtitle": "Managing for {{name}}",
+    "cancel": "Cancel",
+    "addNew": "+ Add New Fact",
+    "prompt": "Prompt / Question",
+    "correctAnswer": "Correct Answer",
+    "hint": "Hint / Cue (optional)",
+    "wrongAnswers": "Wrong answers, comma-separated (optional)",
+    "update": "Update",
+    "save": "Save",
+    "hintPrefix": "Hint: ",
+    "noFacts": "No active facts yet. Add some to help with orientation practice.",
+    "selectPatient": "Please select a patient first."
   }
 }

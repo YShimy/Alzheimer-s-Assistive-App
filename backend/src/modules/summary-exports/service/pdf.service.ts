@@ -1,5 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
+import path from 'path';
 
 const DISCLAIMER =
   'This summary is generated from app activity and caregiver-entered information. ' +
@@ -25,6 +26,132 @@ type GeneratePdfOptions = {
   rangeStart: Date;
   rangeEnd: Date;
   sections: SectionFlags;
+  language?: 'en' | 'ar';
+};
+
+const DICT = {
+  en: {
+    summary: 'Patient Summary',
+    patient: 'Patient:',
+    caregiver: 'Caregiver:',
+    period: 'Period:',
+    disclaimer: DISCLAIMER,
+    importantInfo: 'Important Information',
+    importantInfoDesc: 'Caregiver-provided information to support daily care and communication.',
+    preferredName: 'Preferred Name',
+    primaryLanguage: 'Primary Language',
+    livingSituation: 'Living Situation',
+    primaryCaregiver: 'Primary Caregiver',
+    caregiverPhone: 'Caregiver Phone',
+    emergencyContact: 'Emergency Contact',
+    emergencyPhone: 'Emergency Phone',
+    doctor: 'Doctor',
+    doctorPhone: 'Doctor Phone',
+    clinicHospital: 'Clinic / Hospital',
+    allergies: 'Allergies (Ref)',
+    medications: 'Medications (Ref)',
+    dietaryNotes: 'Dietary Notes',
+    commTips: 'Communication Tips',
+    calmingStrat: 'Calming Strategies',
+    emergInst: 'Emergency Instructions',
+    remindersSum: 'Reminder Summary',
+    totalReminders: 'Total reminder interactions',
+    completed: 'Completed (Done)',
+    snoozed: 'Snoozed',
+    skipped: 'Skipped',
+    completionRate: 'Completion rate',
+    noReminders: 'No reminder activity in selected range.',
+    routinesSum: 'Routine / Checklist Summary',
+    routinesStarted: 'Routines started',
+    routinesCompleted: 'Routines completed',
+    mostUsedRoutines: 'MOST USED ROUTINES',
+    noRoutines: 'No routine activity in selected range.',
+    cogActivities: 'Cognitive Engagement Activities',
+    cogNote: 'Note: The cognitive engagement section summarizes app-based practice activity. It is not a clinical cognitive assessment and should not be used to diagnose or measure disease progression.',
+    assocMemory: 'Associative Memory Matching',
+    sessionsCompleted: 'Sessions completed',
+    avgScore: 'Average score',
+    avgAccuracy: 'Average accuracy',
+    highestLevel: 'Highest level reached',
+    assocMemoryNote: 'This reflects app-based memory practice activity only.',
+    srPractice: 'Spaced Retrieval Orientation Practice',
+    srNote: 'This reflects app-based orientation practice and caregiver-approved facts only.',
+    historicalData: 'Historical Engagement Data',
+    historicalSessions: 'Historical completed sessions',
+    noEngagement: 'No engagement activity in selected range.',
+    patientRecords: 'Patient Records Uploaded',
+    recordsNote: 'Document file contents are not included. Only metadata is listed.',
+    source: 'Source:',
+    docDate: 'Document date:',
+    uploaded: 'Uploaded:',
+    noRecords: 'No records uploaded in selected range.',
+    timeline: 'Activity Timeline',
+    timelineNote: 'Only the most recent 50 timeline entries are shown.',
+    generated: 'Generated',
+    page: 'Page',
+    of: 'of'
+  },
+  ar: {
+    summary: 'ملخص المريض',
+    patient: 'المريض:',
+    caregiver: 'مقدم الرعاية:',
+    period: 'الفترة:',
+    disclaimer: 'يتم إنشاء هذا الملخص من نشاط التطبيق والمعلومات التي يدخلها مقدم الرعاية. الغرض منه هو تنظيم وتسهيل التواصل لمقدم الرعاية فقط، ولا يُعد تشخيصًا طبيًا أو تقييمًا سريريًا.',
+    importantInfo: 'معلومات هامة',
+    importantInfoDesc: 'المعلومات المقدمة من مقدم الرعاية لدعم الرعاية اليومية والتواصل.',
+    preferredName: 'الاسم المفضل',
+    primaryLanguage: 'اللغة الأساسية',
+    livingSituation: 'الحالة المعيشية',
+    primaryCaregiver: 'مقدم الرعاية الأساسي',
+    caregiverPhone: 'هاتف مقدم الرعاية',
+    emergencyContact: 'جهة اتصال للطوارئ',
+    emergencyPhone: 'هاتف الطوارئ',
+    doctor: 'الطبيب',
+    doctorPhone: 'هاتف الطبيب',
+    clinicHospital: 'العيادة / المستشفى',
+    allergies: 'الحساسية (مرجع)',
+    medications: 'الأدوية (مرجع)',
+    dietaryNotes: 'ملاحظات غذائية',
+    commTips: 'نصائح للتواصل',
+    calmingStrat: 'استراتيجيات التهدئة',
+    emergInst: 'تعليمات الطوارئ',
+    remindersSum: 'ملخص التذكيرات',
+    totalReminders: 'إجمالي تفاعلات التذكير',
+    completed: 'مكتمل (تم)',
+    snoozed: 'تم تأجيله',
+    skipped: 'تم تخطيه',
+    completionRate: 'معدل الإنجاز',
+    noReminders: 'لا يوجد نشاط تذكير في النطاق المحدد.',
+    routinesSum: 'ملخص الروتين / القوائم',
+    routinesStarted: 'الروتينات التي بدأت',
+    routinesCompleted: 'الروتينات المكتملة',
+    mostUsedRoutines: 'الروتينات الأكثر استخداماً',
+    noRoutines: 'لا يوجد نشاط روتيني في النطاق المحدد.',
+    cogActivities: 'أنشطة المشاركة المعرفية',
+    cogNote: 'ملاحظة: قسم المشاركة المعرفية يلخص نشاط الممارسة القائم على التطبيق. إنه ليس تقييماً معرفياً سريرياً ولا ينبغي استخدامه لتشخيص أو قياس تطور المرض.',
+    assocMemory: 'مطابقة الذاكرة الترابطية',
+    sessionsCompleted: 'الجلسات المكتملة',
+    avgScore: 'متوسط الدرجات',
+    avgAccuracy: 'متوسط الدقة',
+    highestLevel: 'أعلى مستوى تم الوصول إليه',
+    assocMemoryNote: 'هذا يعكس نشاط ممارسة الذاكرة القائم على التطبيق فقط.',
+    srPractice: 'ممارسة التوجيه بالاسترجاع المتباعد',
+    srNote: 'هذا يعكس ممارسة التوجيه القائم على التطبيق والحقائق المعتمدة من مقدم الرعاية فقط.',
+    historicalData: 'بيانات المشاركة التاريخية',
+    historicalSessions: 'الجلسات التاريخية المكتملة',
+    noEngagement: 'لا يوجد نشاط مشاركة في النطاق المحدد.',
+    patientRecords: 'سجلات المريض المرفوعة',
+    recordsNote: 'محتويات ملف المستند غير مدرجة. يتم سرد البيانات الوصفية فقط.',
+    source: 'المصدر:',
+    docDate: 'تاريخ المستند:',
+    uploaded: 'تم الرفع:',
+    noRecords: 'لا توجد سجلات مرفوعة في النطاق المحدد.',
+    timeline: 'الجدول الزمني للأنشطة',
+    timelineNote: 'يتم عرض أحدث 50 إدخالًا فقط في الجدول الزمني.',
+    generated: 'تم الإنشاء',
+    page: 'صفحة',
+    of: 'من'
+  }
 };
 
 // ─── Theme Tokens (Cognitive Sanctuary) ───────────────────────────────────────
@@ -61,28 +188,37 @@ function pct(n: number): string {
 
 function writeSectionHeader(doc: InstanceType<typeof PDFDocument>, title: string) {
   doc.moveDown(2);
+  const isAr = title.match(/[\u0600-\u06FF]/);
+  const fontName = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
   doc.fillColor(theme.primary)
      .fontSize(16)
-     .font('Helvetica-Bold')
-     .text(title);
+     .font(fontName)
+     .text(title, { align: isAr ? 'right' : 'left' });
   
   // No-line structural philosophy: Just spacing and color for hierarchy
   doc.moveDown(0.5);
-  doc.fillColor(theme.text).font('Helvetica').fontSize(11);
+  doc.fillColor(theme.text).font(isAr ? 'Arabic' : 'Helvetica').fontSize(11);
 }
 
-function writeField(doc: InstanceType<typeof PDFDocument>, label: string, value?: string | null) {
+function writeField(doc: InstanceType<typeof PDFDocument>, label: string, value?: string | null, isAr: boolean = false) {
   if (!value) return;
   // Editorial layout: Label in muted bold, value in regular
-  doc.font('Helvetica-Bold').fillColor(theme.text_variant).fontSize(10).text(`${label.toUpperCase()}`, { continued: false });
+  const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
+  const fontReg = isAr ? 'Arabic' : 'Helvetica';
+  
+  doc.font(fontBold).fillColor(theme.text_variant).fontSize(10).text(`${label.toUpperCase()}`, { continued: false, align: isAr ? 'right' : 'left' });
   doc.moveDown(0.3);
-  doc.font('Helvetica').fillColor(theme.text).fontSize(11).text(value);
+  doc.font(fontReg).fillColor(theme.text).fontSize(11).text(value, { align: isAr ? 'right' : 'left', features: ['rtla'] });
   doc.moveDown(1);
 }
 
-function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, value: string | number) {
-  doc.font('Helvetica').fillColor(theme.text_variant).fontSize(11).text(`${label}: `, { continued: true });
-  doc.font('Helvetica-Bold').fillColor(theme.text).text(String(value));
+function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, value: string | number, isAr: boolean = false) {
+  const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
+  const fontReg = isAr ? 'Arabic' : 'Helvetica';
+  const displayVal = isAr ? ` :${value}` : `: ${value}`;
+
+  doc.font(fontReg).fillColor(theme.text_variant).fontSize(11).text(label, { continued: true, align: isAr ? 'right' : 'left' });
+  doc.font(fontBold).fillColor(theme.text).text(displayVal);
 }
 
 // ─── Main generator ───────────────────────────────────────────────────────────
@@ -90,8 +226,10 @@ function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, valu
 export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promise<Buffer> {
   const {
     patientId, caregiverId, patientName, caregiverName,
-    rangeStart, rangeEnd, sections,
+    rangeStart, rangeEnd, sections, language = 'en'
   } = opts;
+
+  const t = DICT[language];
 
   // ── Fetch all needed data ─────────────────────────────────────────────────
   const [
@@ -120,7 +258,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     sections.games
       ? prisma.gameSession.findMany({
           where: { patientUserId: patientId, startedAt: { gte: rangeStart, lte: rangeEnd } },
-          select: { gameType: true, score: true, completed: true, levelsSucceeded: true, highestTierReached: true, startedAt: true },
+          select: { gameType: true, score: true, completed: true, status: true, levelsSucceeded: true, highestTierReached: true, highestLevel: true, accuracyPercent: true, startedAt: true },
         })
       : Promise.resolve([]),
     sections.patientRecords
@@ -139,12 +277,27 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         })
       : Promise.resolve([]),
   ]);
-
-  // ── Build PDF ─────────────────────────────────────────────────────────────
   return new Promise((resolve, reject) => {
     // Add page buffers so we can easily add footers if needed, and nice margins
     const doc = new PDFDocument({ margin: 60, size: 'A4', bufferPages: true });
+    
+    // Register Arabic fonts
+    try {
+      const regularFontPath = path.join(process.cwd(), 'src', 'assets', 'fonts', 'NotoSansArabic-Regular.ttf');
+      const boldFontPath = path.join(process.cwd(), 'src', 'assets', 'fonts', 'NotoSansArabic-Bold.ttf');
+      doc.registerFont('Arabic', regularFontPath);
+      doc.registerFont('Arabic-Bold', boldFontPath);
+    } catch (e) {
+      console.warn('Could not register Arabic fonts, falling back', e);
+      doc.registerFont('Arabic', 'Helvetica');
+      doc.registerFont('Arabic-Bold', 'Helvetica-Bold');
+    }
+
     const chunks: Buffer[] = [];
+    const isAr = language === 'ar';
+    const align = isAr ? 'right' : 'left';
+    const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
+    const fontReg = isAr ? 'Arabic' : 'Helvetica';
 
     doc.on('data', (chunk: Buffer) => chunks.push(chunk));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
@@ -155,27 +308,34 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     // ── Cover / Header ─────────────────────────────────────────────────────────────
     doc.fillColor(theme.primary)
       .fontSize(28)
-      .font('Helvetica-Bold')
-      .text('Patient Summary');
+      .font(fontBold)
+      .text(t.summary, { align });
 
     doc.fillColor(theme.text_variant)
       .fontSize(12)
-      .font('Helvetica')
-      .text(`${APP_NAME} • ${formatDate(new Date())}`);
+      .font(fontReg)
+      .text(`${APP_NAME} • ${formatDate(new Date())}`, { align });
 
     doc.moveDown(2);
 
     // Metadata block
     let metaY = doc.y;
     doc.rect(doc.page.margins.left, metaY, W, 80).fill(theme.surface);
-    doc.fillColor(theme.text).fontSize(11).font('Helvetica');
+    doc.fillColor(theme.text).fontSize(11).font(fontReg);
     
     let textY = metaY + 16;
     const leftX = doc.page.margins.left + 20;
     
-    doc.text(`Patient:`, leftX, textY, { continued: true }).font('Helvetica-Bold').text(` ${patientName}`);
-    doc.font('Helvetica').text(`Caregiver:`, leftX, textY + 20, { continued: true }).font('Helvetica-Bold').text(` ${caregiverName}`);
-    doc.font('Helvetica').text(`Period:`, leftX, textY + 40, { continued: true }).font('Helvetica-Bold').text(` ${formatDate(rangeStart)} – ${formatDate(rangeEnd)}`);
+    // For RTL, we would ideally layout differently, but we'll just align left/right based on `align`
+    if (isAr) {
+      doc.text(t.patient, leftX, textY, { continued: true, align }).font(fontBold).text(` ${patientName}`);
+      doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true, align }).font(fontBold).text(` ${caregiverName}`);
+      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true, align }).font(fontBold).text(` ${formatDate(rangeStart)} – ${formatDate(rangeEnd)}`);
+    } else {
+      doc.text(t.patient, leftX, textY, { continued: true }).font(fontBold).text(` ${patientName}`);
+      doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true }).font(fontBold).text(` ${caregiverName}`);
+      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true }).font(fontBold).text(` ${formatDate(rangeStart)} – ${formatDate(rangeEnd)}`);
+    }
 
     doc.x = doc.page.margins.left;
     doc.y = metaY + 96; // Move cursor past the metadata block
@@ -183,8 +343,8 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     // Disclaimer block
     let discY = doc.y;
     doc.rect(doc.page.margins.left, discY, W, 50).fill(theme.surface_container);
-    doc.fillColor(theme.text_variant).fontSize(9).font('Helvetica');
-    doc.text(DISCLAIMER, leftX, discY + 14, { width: W - 40, align: 'left' });
+    doc.fillColor(theme.text_variant).fontSize(9).font(fontReg);
+    doc.text(t.disclaimer, leftX, discY + 14, { width: W - 40, align });
 
     doc.x = doc.page.margins.left;
     doc.y = discY + 66; // Move cursor past the disclaimer block
@@ -193,33 +353,33 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
     // ── Important Information ──────────────────────────────────────────────
     if (sections.importantInfo && importantInfo) {
-      writeSectionHeader(doc, `${sectionNum++}. Important Information`);
-      doc.font('Helvetica').fontSize(10)
+      writeSectionHeader(doc, `${sectionNum++}. ${t.importantInfo}`);
+      doc.font(fontReg).fontSize(10)
         .fillColor(theme.text_variant)
-        .text('Caregiver-provided information to support daily care and communication.');
+        .text(t.importantInfoDesc, { align });
       doc.moveDown(1.5);
 
-      writeField(doc, 'Preferred Name', importantInfo.preferredName);
-      writeField(doc, 'Primary Language', importantInfo.primaryLanguage);
-      writeField(doc, 'Living Situation', importantInfo.livingSituation);
-      writeField(doc, 'Primary Caregiver', importantInfo.primaryCaregiverName);
-      writeField(doc, 'Caregiver Phone', importantInfo.primaryCaregiverPhone);
-      writeField(doc, 'Emergency Contact', importantInfo.emergencyContactName);
-      writeField(doc, 'Emergency Phone', importantInfo.emergencyContactPhone);
-      writeField(doc, 'Doctor', importantInfo.doctorName);
-      writeField(doc, 'Doctor Phone', importantInfo.doctorPhone);
-      writeField(doc, 'Clinic / Hospital', importantInfo.clinicOrHospitalName);
-      writeField(doc, 'Allergies (Ref)', importantInfo.allergies);
-      writeField(doc, 'Medications (Ref)', importantInfo.currentMedicationSummary);
-      writeField(doc, 'Dietary Notes', importantInfo.dietaryNotes);
-      writeField(doc, 'Communication Tips', importantInfo.communicationTips);
-      writeField(doc, 'Calming Strategies', importantInfo.calmingStrategies);
-      writeField(doc, 'Emergency Instructions', importantInfo.emergencyInstructions);
+      writeField(doc, t.preferredName, importantInfo.preferredName, isAr);
+      writeField(doc, t.primaryLanguage, importantInfo.primaryLanguage, isAr);
+      writeField(doc, t.livingSituation, importantInfo.livingSituation, isAr);
+      writeField(doc, t.primaryCaregiver, importantInfo.primaryCaregiverName, isAr);
+      writeField(doc, t.caregiverPhone, importantInfo.primaryCaregiverPhone, isAr);
+      writeField(doc, t.emergencyContact, importantInfo.emergencyContactName, isAr);
+      writeField(doc, t.emergencyPhone, importantInfo.emergencyContactPhone, isAr);
+      writeField(doc, t.doctor, importantInfo.doctorName, isAr);
+      writeField(doc, t.doctorPhone, importantInfo.doctorPhone, isAr);
+      writeField(doc, t.clinicHospital, importantInfo.clinicOrHospitalName, isAr);
+      writeField(doc, t.allergies, importantInfo.allergies, isAr);
+      writeField(doc, t.medications, importantInfo.currentMedicationSummary, isAr);
+      writeField(doc, t.dietaryNotes, importantInfo.dietaryNotes, isAr);
+      writeField(doc, t.commTips, importantInfo.communicationTips, isAr);
+      writeField(doc, t.calmingStrat, importantInfo.calmingStrategies, isAr);
+      writeField(doc, t.emergInst, importantInfo.emergencyInstructions, isAr);
     }
 
     // ── Reminders ─────────────────────────────────────────────────────────
     if (sections.reminders && reminderStats.length > 0) {
-      writeSectionHeader(doc, `${sectionNum++}. Reminder Summary`);
+      writeSectionHeader(doc, `${sectionNum++}. ${t.remindersSum}`);
 
       const done = reminderStats.filter(e => e.eventType === 'DONE').length;
       const skipped = reminderStats.filter(e => e.eventType === 'SKIPPED').length;
@@ -228,26 +388,26 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const total = fired || done + skipped + snoozed;
       const rate = total > 0 ? done / total : 0;
 
-      writeStatRow(doc, 'Total reminder interactions', reminderStats.length);
-      writeStatRow(doc, 'Completed (Done)', done);
-      writeStatRow(doc, 'Snoozed', snoozed);
-      writeStatRow(doc, 'Skipped', skipped);
-      writeStatRow(doc, 'Completion rate', pct(rate));
+      writeStatRow(doc, t.totalReminders, reminderStats.length, isAr);
+      writeStatRow(doc, t.completed, done, isAr);
+      writeStatRow(doc, t.snoozed, snoozed, isAr);
+      writeStatRow(doc, t.skipped, skipped, isAr);
+      writeStatRow(doc, t.completionRate, pct(rate), isAr);
     } else if (sections.reminders) {
-      writeSectionHeader(doc, `${sectionNum++}. Reminder Summary`);
-      doc.fillColor(theme.text_variant).text('No reminder activity in selected range.');
+      writeSectionHeader(doc, `${sectionNum++}. ${t.remindersSum}`);
+      doc.fillColor(theme.text_variant).font(fontReg).text(t.noReminders, { align });
     }
 
     // ── Checklists ────────────────────────────────────────────────────────
     if (sections.checklists && checklistStats.length > 0) {
-      writeSectionHeader(doc, `${sectionNum++}. Routine / Checklist Summary`);
+      writeSectionHeader(doc, `${sectionNum++}. ${t.routinesSum}`);
 
       const completed = checklistStats.filter(r => r.status === 'COMPLETED').length;
       const rate = checklistStats.length > 0 ? completed / checklistStats.length : 0;
 
-      writeStatRow(doc, 'Routines started', checklistStats.length);
-      writeStatRow(doc, 'Routines completed', completed);
-      writeStatRow(doc, 'Completion rate', pct(rate));
+      writeStatRow(doc, t.routinesStarted, checklistStats.length, isAr);
+      writeStatRow(doc, t.routinesCompleted, completed, isAr);
+      writeStatRow(doc, t.completionRate, pct(rate), isAr);
 
       // Most used templates
       const templateCounts = new Map<string, number>();
@@ -258,77 +418,117 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const sorted = [...templateCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
       if (sorted.length > 0) {
         doc.moveDown(1);
-        doc.font('Helvetica-Bold').fillColor(theme.text_variant).fontSize(10).text('MOST USED ROUTINES');
+        doc.font(fontBold).fillColor(theme.text_variant).fontSize(10).text(t.mostUsedRoutines, { align });
         doc.moveDown(0.3);
-        doc.font('Helvetica').fillColor(theme.text).fontSize(11);
-        sorted.forEach(([title, count]) => doc.text(`• ${title}: ${count} time(s)`));
+        doc.font(fontReg).fillColor(theme.text).fontSize(11);
+        sorted.forEach(([title, count]) => doc.text(`• ${title}: ${count} time(s)`, { align }));
       }
     } else if (sections.checklists) {
-      writeSectionHeader(doc, `${sectionNum++}. Routine / Checklist Summary`);
-      doc.fillColor(theme.text_variant).text('No routine activity in selected range.');
+      writeSectionHeader(doc, `${sectionNum++}. ${t.routinesSum}`);
+      doc.fillColor(theme.text_variant).font(fontReg).text(t.noRoutines, { align });
     }
 
-    // ── Games ─────────────────────────────────────────────────────────────
+    // ── Cognitive Engagement Activities ──────────────────────────────────
     if (sections.games && gameStats.length > 0) {
-      writeSectionHeader(doc, `${sectionNum++}. Engagement Activities Summary`);
+      writeSectionHeader(doc, `${sectionNum++}. ${t.cogActivities}`);
       doc.font('Helvetica').fontSize(9)
         .fillColor(theme.text_variant)
-        .text('Note: Engagement data reflects app activity only and does not represent a clinical assessment.');
+        .text(t.cogNote);
       doc.moveDown(1.5);
 
-      const completedSessions = gameStats.filter(g => g.completed).length;
-      const scores = gameStats.map(g => g.score ?? 0).filter(s => s > 0);
-      const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+      const mmStats = gameStats.filter(g => g.gameType === 'ASSOCIATIVE_MEMORY_MATCH');
+      const srStats = gameStats.filter(g => g.gameType === 'SPACED_RETRIEVAL_ORIENTATION');
+      const legacyStats = gameStats.filter(g => g.gameType !== 'ASSOCIATIVE_MEMORY_MATCH' && g.gameType !== 'SPACED_RETRIEVAL_ORIENTATION');
 
-      writeStatRow(doc, 'Total sessions', gameStats.length);
-      writeStatRow(doc, 'Completed sessions', completedSessions);
-      if (avgScore > 0) writeStatRow(doc, 'Average score', avgScore);
+      // Memory Match subsection
+      if (mmStats.length > 0) {
+        doc.font('Helvetica-Bold').fillColor(theme.text).fontSize(11).text(t.assocMemory);
+        doc.moveDown(0.5);
+        const mmCompleted = mmStats.filter(g => g.completed || g.status === 'COMPLETED').length;
+        const mmScores = mmStats.map(g => g.score ?? 0).filter(s => s > 0);
+        const mmAvgScore = mmScores.length > 0 ? Math.round(mmScores.reduce((a, b) => a + b, 0) / mmScores.length) : 0;
+        const mmAccuracies = mmStats.map(g => g.accuracyPercent ?? 0).filter(a => a > 0);
+        const mmAvgAccuracy = mmAccuracies.length > 0 ? Math.round(mmAccuracies.reduce((a, b) => a + b, 0) / mmAccuracies.length) : 0;
+        const mmMaxLevel = Math.max(...mmStats.map(g => g.highestLevel ?? g.highestTierReached ?? 0));
 
-      const maxTier = Math.max(...gameStats.map(g => g.highestTierReached ?? 0));
-      if (maxTier > 0) writeStatRow(doc, 'Highest difficulty tier reached', maxTier);
+        writeStatRow(doc, t.sessionsCompleted, mmCompleted);
+        writeStatRow(doc, t.avgScore, mmAvgScore);
+        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${mmAvgAccuracy}%`);
+        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, mmMaxLevel);
+        doc.font('Helvetica').fontSize(9).fillColor(theme.text_variant)
+          .text(t.assocMemoryNote);
+        doc.moveDown(1);
+      }
+
+      // Spaced Retrieval subsection
+      if (srStats.length > 0) {
+        doc.font(fontBold).fillColor(theme.text).fontSize(11).text(t.srPractice, { align });
+        doc.moveDown(0.5);
+        const srCompleted = srStats.filter(g => g.completed || g.status === 'COMPLETED').length;
+        const srScores = srStats.map(g => g.score ?? 0).filter(s => s > 0);
+        const srAvgScore = srScores.length > 0 ? Math.round(srScores.reduce((a, b) => a + b, 0) / srScores.length) : 0;
+        const srAccuracies = srStats.map(g => g.accuracyPercent ?? 0).filter(a => a > 0);
+        const srAvgAccuracy = srAccuracies.length > 0 ? Math.round(srAccuracies.reduce((a, b) => a + b, 0) / srAccuracies.length) : 0;
+
+        writeStatRow(doc, t.sessionsCompleted, srCompleted, isAr);
+        writeStatRow(doc, t.avgScore, srAvgScore, isAr);
+        if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${srAvgAccuracy}%`, isAr);
+        doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
+          .text(t.srNote, { align });
+        doc.moveDown(1);
+      }
+
+      // Legacy stats (hidden from new UI but included in PDF if historical data exists)
+      if (legacyStats.length > 0) {
+        doc.font(fontBold).fillColor(theme.text).fontSize(11).text(t.historicalData, { align });
+        doc.moveDown(0.5);
+        const legacyCompleted = legacyStats.filter(g => g.completed).length;
+        writeStatRow(doc, t.historicalSessions, legacyCompleted, isAr);
+        doc.moveDown(1);
+      }
     } else if (sections.games) {
-      writeSectionHeader(doc, `${sectionNum++}. Engagement Activities Summary`);
-      doc.fillColor(theme.text_variant).text('No engagement activity in selected range.');
+      writeSectionHeader(doc, `${sectionNum++}. ${t.cogActivities}`);
+      doc.fillColor(theme.text_variant).font(fontReg).text(t.noEngagement, { align });
     }
 
     // ── Patient Records ───────────────────────────────────────────────────
     if (sections.patientRecords && documents.length > 0) {
-      writeSectionHeader(doc, `${sectionNum++}. Patient Records Uploaded`);
-      doc.font('Helvetica').fontSize(9)
+      writeSectionHeader(doc, `${sectionNum++}. ${t.patientRecords}`);
+      doc.font(fontReg).fontSize(9)
         .fillColor(theme.text_variant)
-        .text('Document file contents are not included. Only metadata is listed.');
+        .text(t.recordsNote, { align });
       doc.moveDown(1.5);
 
       documents.forEach(d => {
-        doc.font('Helvetica-Bold').fillColor(theme.text).fontSize(11).text(d.title, { continued: true });
-        doc.font('Helvetica').fillColor(theme.text_variant).text(`  |  ${d.category}`);
+        doc.font(fontBold).fillColor(theme.text).fontSize(11).text(d.title, { continued: true, align });
+        doc.font(fontReg).fillColor(theme.text_variant).text(`  |  ${d.category}`, { align: 'left' }); // kept left for the continued portion
         doc.moveDown(0.2);
         
-        doc.font('Helvetica').fillColor(theme.text).fontSize(10);
-        if (d.sourceName) doc.text(`Source: ${d.sourceName}`);
-        if (d.documentDate) doc.text(`Document date: ${formatDate(d.documentDate)}`);
-        doc.text(`Uploaded: ${formatDate(d.createdAt)}`);
+        doc.font(fontReg).fillColor(theme.text).fontSize(10);
+        if (d.sourceName) doc.text(`${t.source} ${d.sourceName}`, { align });
+        if (d.documentDate) doc.text(`${t.docDate} ${formatDate(d.documentDate)}`, { align });
+        doc.text(`${t.uploaded} ${formatDate(d.createdAt)}`, { align });
         doc.moveDown(1);
       });
     } else if (sections.patientRecords) {
-      writeSectionHeader(doc, `${sectionNum++}. Patient Records Uploaded`);
-      doc.fillColor(theme.text_variant).text('No records uploaded in selected range.');
+      writeSectionHeader(doc, `${sectionNum++}. ${t.patientRecords}`);
+      doc.fillColor(theme.text_variant).font(fontReg).text(t.noRecords, { align });
     }
 
     // ── Timeline ──────────────────────────────────────────────────────────
     if (sections.timeline && timelineEvents.length > 0) {
-      writeSectionHeader(doc, `${sectionNum++}. Activity Timeline`);
+      writeSectionHeader(doc, `${sectionNum++}. ${t.timeline}`);
       if (timelineEvents.length === 50) {
-        doc.font('Helvetica').fontSize(9)
+        doc.font(fontReg).fontSize(9)
           .fillColor(theme.text_variant)
-          .text('Only the most recent 50 timeline entries are shown.');
+          .text(t.timelineNote, { align });
         doc.moveDown(1.5);
       }
 
       timelineEvents.forEach(ev => {
         const evLabel = ev.eventName.replace(/_/g, ' ');
-        doc.font('Helvetica-Bold').fillColor(theme.text).fontSize(10).text(`${formatDateTime(ev.occurredAt)}`, { continued: true });
-        doc.font('Helvetica').fillColor(theme.text_variant).text(`  —  ${evLabel}` + (ev.actorRole ? ` (${ev.actorRole})` : ''));
+        doc.font(fontBold).fillColor(theme.text).fontSize(10).text(`${formatDateTime(ev.occurredAt)}`, { continued: true, align });
+        doc.font(fontReg).fillColor(theme.text_variant).text(`  —  ${evLabel}` + (ev.actorRole ? ` (${ev.actorRole})` : ''), { align: 'left' });
         doc.moveDown(0.5);
       });
     }
@@ -348,10 +548,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
       doc
         .fontSize(8)
-        .font('Helvetica')
+        .font(fontReg)
         .fillColor(theme.text_variant)
         .text(
-          `${APP_NAME} • Generated ${formatDateTime(new Date())} • Page ${i + 1} of ${pages.count}`,
+          `${APP_NAME} • ${t.generated} ${formatDateTime(new Date())} • ${t.page} ${i + 1} ${t.of} ${pages.count}`,
           60,
           range,
           { align: 'center', width: W },

@@ -105,6 +105,8 @@ export default function CaregiverLayout() {
       <Tabs.Screen name="important-info" options={{ href: null }} />
       {/* Export Summary PDF — hidden from tab bar */}
       <Tabs.Screen name="export-summary" options={{ href: null }} />
+      {/* Manage SR Items — hidden from tab bar */}
+      <Tabs.Screen name="manage-sr-items" options={{ href: null }} />
     </Tabs>
   );
 }

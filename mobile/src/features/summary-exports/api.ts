@@ -19,6 +19,7 @@ export type CreateExportInput = {
   rangePreset: 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'CUSTOM';
   startDate?: string;
   endDate?: string;
+  language?: 'en' | 'ar';
   sections?: {
     importantInfo?: boolean;
     reminders?: boolean;

@@ -47,6 +47,7 @@ export default function ExportSummaryScreen() {
   const isRTL = i18n.language === 'ar';
 
   const [preset, setPreset] = useState<RangePreset>('LAST_30_DAYS');
+  const [exportLang, setExportLang] = useState<'en' | 'ar'>(i18n.language === 'ar' ? 'ar' : 'en');
   const [sections, setSections] = useState<Required<Sections>>({ ...DEFAULT_SECTIONS });
   const [generating, setGenerating] = useState(false);
   const [lastExportUrl, setLastExportUrl] = useState<string | null>(null);
@@ -73,7 +74,7 @@ export default function ExportSummaryScreen() {
     setGenerating(true);
     setLastExportUrl(null);
     try {
-      const input: CreateExportInput = { rangePreset: preset, sections };
+      const input: CreateExportInput = { rangePreset: preset, sections, language: exportLang };
       const result = await summaryExportsApi.create(selectedPatientId, input);
       setLastExportUrl(result.downloadUrl);
       setPreviousExports(prev => [result.export, ...prev]);
@@ -166,6 +167,29 @@ export default function ExportSummaryScreen() {
               </Text>
             </Pressable>
           ))}
+        </View>
+
+        {/* Language Selection */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>{t('summaryExport.language', 'Export Language')}</Text>
+          <View style={[styles.langRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Pressable
+              style={[styles.langOption, exportLang === 'en' && styles.langOptionSelected]}
+              onPress={() => setExportLang('en')}
+            >
+              <Text style={[styles.langOptionText, exportLang === 'en' && styles.langOptionTextSelected]}>
+                English
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.langOption, exportLang === 'ar' && styles.langOptionSelected]}
+              onPress={() => setExportLang('ar')}
+            >
+              <Text style={[styles.langOptionText, exportLang === 'ar' && styles.langOptionTextSelected]}>
+                العربية
+              </Text>
+            </Pressable>
+          </View>
         </View>
 
         {/* Sections */}
@@ -336,6 +360,32 @@ const styles = StyleSheet.create({
   presetLabelSelected: {
     fontFamily: typography.family.label,
     color: colors.secondary.main,
+  },
+  langRow: {
+    gap: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  langOption: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.outline_variant,
+    backgroundColor: colors.surface,
+  },
+  langOptionSelected: {
+    borderColor: colors.secondary.main,
+    backgroundColor: colors.secondary_container,
+  },
+  langOptionText: {
+    fontFamily: typography.family.body,
+    fontSize: typography.size.base,
+    color: colors.on_surface_variant,
+  },
+  langOptionTextSelected: {
+    fontFamily: typography.family.label,
+    color: colors.on_secondary_container,
   },
   switchRow: {
     alignItems: 'center',

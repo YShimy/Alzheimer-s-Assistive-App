@@ -1,13 +1,16 @@
 /**
  * Patient Games Tab — Entry point to cognitive games.
- * Lists available games and links to the Safe Path Memory game.
+ *
+ * Replaced old Safe Path Memory and Routine Sequence with:
+ * - Associative Memory Matching (Memory Match)
+ * - Spaced Retrieval Orientation Practice (Orientation Practice)
  */
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { ScreenContainer, AppCard, Icon } from '@/src/shared/ui';
-import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
+import { ScreenContainer, AppCard } from '@/src/shared/ui';
+import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
 
@@ -15,73 +18,71 @@ export default function GamesScreen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const handleOpenSafePath = () => {
+  const openMemoryMatch = () => {
     eventLogger.log({
       eventName: EventNames.GAME_OPENED,
       screenName: 'GamesScreen',
-      payload: { gameType: 'safe_path_memory' },
+      payload: { gameType: 'ASSOCIATIVE_MEMORY_MATCH' },
     });
-    router.push('/(patient)/safe-path-game' as any);
+    router.push('/(patient)/memory-match-game' as any);
   };
 
-  const handleOpenRoutineSequence = () => {
+  const openOrientationPractice = () => {
     eventLogger.log({
       eventName: EventNames.GAME_OPENED,
       screenName: 'GamesScreen',
-      payload: { gameType: 'routine_sequence' },
+      payload: { gameType: 'SPACED_RETRIEVAL_ORIENTATION' },
     });
-    router.push('/(patient)/routine-sequence-game' as any);
+    router.push('/(patient)/orientation-practice' as any);
   };
 
   return (
     <ScreenContainer>
-      <Text style={styles.sectionTitle}>{t('games.title')}</Text>
+      <Text style={styles.sectionTitle}>{t('games.title', 'Cognitive Games')}</Text>
       <Text style={styles.sectionSubtitle}>
-        {t('games.subtitle')}
+        {t('games.subtitle', 'Practice your memory and daily orientation in a supportive way.')}
       </Text>
 
-      <Pressable onPress={handleOpenSafePath} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
+      {/* Memory Match Card */}
+      <Pressable onPress={openMemoryMatch} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
         <AppCard style={styles.gameCard}>
           <View style={styles.gameCardContent}>
             <View style={[styles.gameIconContainer, { backgroundColor: colors.primary[50] }]}>
-              <Ionicons name="map-outline" size={32} color={colors.primary[500]} />
+              <Ionicons name="grid-outline" size={32} color={colors.primary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>{t('games.safePath.title')}</Text>
+              <Text style={styles.gameTitle}>{t('games.memoryMatch.title', 'Memory Match')}</Text>
               <Text style={styles.gameDescription}>
-                {t('games.safePath.description')}
+                {t('games.memoryMatch.description', 'Practice remembering which item belongs with which place.')}
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label={t('games.tags.memory')} color={colors.primary[500]} />
-            <Tag label={t('games.tags.spatial')} color={colors.secondary[500]} />
-            <Tag label={t('games.tags.adaptive')} color={colors.warning.main} />
+            <Tag label={t('games.memoryMatch.recommended', '3×/week recommended')} color={colors.primary[500]} />
           </View>
         </AppCard>
       </Pressable>
 
-      <Pressable onPress={handleOpenRoutineSequence} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
+      {/* Orientation Practice Card */}
+      <Pressable onPress={openOrientationPractice} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
         <AppCard style={styles.gameCard}>
           <View style={styles.gameCardContent}>
             <View style={[styles.gameIconContainer, { backgroundColor: colors.secondary[50] }]}>
-              <Ionicons name="list-outline" size={32} color={colors.secondary[500]} />
+              <Ionicons name="help-circle-outline" size={32} color={colors.secondary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>{t('games.routineSequence.title')}</Text>
+              <Text style={styles.gameTitle}>{t('games.orientationPractice.title', 'Orientation Practice')}</Text>
               <Text style={styles.gameDescription}>
-                {t('games.routineSequence.description')}
+                {t('games.orientationPractice.description', 'Practice helpful daily information.')}
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label={t('games.tags.sequencing')} color={colors.secondary[500]} />
-            <Tag label={t('games.tags.daily')} color={colors.success.main} />
-            <Tag label={t('games.tags.supportive')} color={colors.primary[500]} />
+            <Tag label={t('games.orientationPractice.recommended', 'Daily practice')} color={colors.secondary[500]} />
           </View>
         </AppCard>
       </Pressable>
@@ -153,14 +154,5 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: typography.size.xs,
     fontWeight: '600',
-  },
-  comingSoon: {
-    alignItems: 'center',
-    paddingVertical: spacing['3xl'],
-    gap: spacing.md,
-  },
-  comingSoonText: {
-    fontSize: typography.size.sm,
-    color: colors.neutral[400],
   },
 });

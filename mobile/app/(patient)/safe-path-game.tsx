@@ -1,9 +1,14 @@
 /**
- * Safe Path Memory — Game Route
- *
- * This route file renders the SafePathGameScreen component.
- * The actual game logic lives in src/features/games/safePath/.
+ * @deprecated Safe Path Memory game has been replaced by Memory Match.
+ * This route redirects to the new Memory Match game.
  */
-import SafePathGameScreen from '@/src/features/games/safePath/screens/SafePathGameScreen';
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
 
-export default SafePathGameScreen;
+export default function SafePathRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace('/(patient)/memory-match-game' as any);
+  }, []);
+  return null;
+}

@@ -92,6 +92,16 @@ export type GameSession = Prisma.GameSessionModel
  */
 export type GameLevelResult = Prisma.GameLevelResultModel
 /**
+ * Model GameItemResult
+ * 
+ */
+export type GameItemResult = Prisma.GameItemResultModel
+/**
+ * Model SpacedRetrievalItem
+ * 
+ */
+export type SpacedRetrievalItem = Prisma.SpacedRetrievalItemModel
+/**
  * Model AnalyticsEvent
  * 
  */

@@ -77,11 +77,11 @@ export interface ProgressChartsResponse {
   checklistSeries: ChartSeriesData[];
   gameScoreSeries: ChartSeriesData[];
   gameTierSeries: ChartSeriesData[];
-  // Game-specific series
-  safePathScoreSeries: ChartSeriesData[];
-  safePathTierSeries: ChartSeriesData[];
-  routineSequenceScoreSeries: ChartSeriesData[];
-  routineSequenceAccuracySeries: ChartSeriesData[];
+  // New game-specific series
+  memoryMatchScoreSeries: ChartSeriesData[];
+  memoryMatchLevelSeries: ChartSeriesData[];
+  spacedRetrievalScoreSeries: ChartSeriesData[];
+  spacedRetrievalAccuracySeries: ChartSeriesData[];
 }
 
 export interface CategoryMetric {
@@ -149,14 +149,20 @@ export interface WeeklyProgressResponse {
 
 export interface GameProgressSummary {
   gameType: string;
-  sessionsPlayed: number;
-  bestScore: number;
-  latestScore: number;
-  averageScore: number;
-  highestTierEver: number;
-  lastPlayedAt: string | null;
+  summary: {
+    sessionsPlayed: number;
+    bestScore: number;
+    latestScore: number;
+    averageScore: number;
+    highestLevelEver: number;
+    lastPlayedAt: string | null;
+    averageAccuracyPercent: number;
+    completedSessions: number;
+    abandonedSessions: number;
+  };
   scoreSeries: Array<{ date: string; score: number }>;
-  tierSeries?: Array<{ date: string; highestTier: number }>;
+  accuracySeries: Array<{ date: string; accuracyPercent: number }>;
+  levelSeries: Array<{ date: string; highestLevel: number }>;
   comparison: {
     deltaVsPreviousSession: number;
     deltaVsBest: number;

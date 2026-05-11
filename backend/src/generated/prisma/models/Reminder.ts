@@ -48,6 +48,7 @@ export type ReminderMinAggregateOutputType = {
   priority: $Enums.PriorityLevel | null
   nativeAlarmEnabled: boolean | null
   reminderType: $Enums.ReminderType | null
+  gameType: string | null
   visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean | null
@@ -72,6 +73,7 @@ export type ReminderMaxAggregateOutputType = {
   priority: $Enums.PriorityLevel | null
   nativeAlarmEnabled: boolean | null
   reminderType: $Enums.ReminderType | null
+  gameType: string | null
   visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean | null
@@ -98,6 +100,7 @@ export type ReminderCountAggregateOutputType = {
   priority: number
   nativeAlarmEnabled: number
   reminderType: number
+  gameType: number
   visualCueAssetId: number
   linkedChecklistTemplateId: number
   snoozeEnabled: number
@@ -134,6 +137,7 @@ export type ReminderMinAggregateInputType = {
   priority?: true
   nativeAlarmEnabled?: true
   reminderType?: true
+  gameType?: true
   visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
@@ -158,6 +162,7 @@ export type ReminderMaxAggregateInputType = {
   priority?: true
   nativeAlarmEnabled?: true
   reminderType?: true
+  gameType?: true
   visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
@@ -184,6 +189,7 @@ export type ReminderCountAggregateInputType = {
   priority?: true
   nativeAlarmEnabled?: true
   reminderType?: true
+  gameType?: true
   visualCueAssetId?: true
   linkedChecklistTemplateId?: true
   snoozeEnabled?: true
@@ -297,6 +303,7 @@ export type ReminderGroupByOutputType = {
   priority: $Enums.PriorityLevel
   nativeAlarmEnabled: boolean
   reminderType: $Enums.ReminderType
+  gameType: string | null
   visualCueAssetId: string | null
   linkedChecklistTemplateId: string | null
   snoozeEnabled: boolean
@@ -346,6 +353,7 @@ export type ReminderWhereInput = {
   priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  gameType?: Prisma.StringNullableFilter<"Reminder"> | string | null
   visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
@@ -378,6 +386,7 @@ export type ReminderOrderByWithRelationInput = {
   priority?: Prisma.SortOrder
   nativeAlarmEnabled?: Prisma.SortOrder
   reminderType?: Prisma.SortOrder
+  gameType?: Prisma.SortOrderInput | Prisma.SortOrder
   visualCueAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
@@ -413,6 +422,7 @@ export type ReminderWhereUniqueInput = Prisma.AtLeast<{
   priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  gameType?: Prisma.StringNullableFilter<"Reminder"> | string | null
   visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
@@ -445,6 +455,7 @@ export type ReminderOrderByWithAggregationInput = {
   priority?: Prisma.SortOrder
   nativeAlarmEnabled?: Prisma.SortOrder
   reminderType?: Prisma.SortOrder
+  gameType?: Prisma.SortOrderInput | Prisma.SortOrder
   visualCueAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
@@ -479,6 +490,7 @@ export type ReminderScalarWhereWithAggregatesInput = {
   priority?: Prisma.EnumPriorityLevelWithAggregatesFilter<"Reminder"> | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolWithAggregatesFilter<"Reminder"> | boolean
   reminderType?: Prisma.EnumReminderTypeWithAggregatesFilter<"Reminder"> | $Enums.ReminderType
+  gameType?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
   visualCueAssetId?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableWithAggregatesFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolWithAggregatesFilter<"Reminder"> | boolean
@@ -504,6 +516,7 @@ export type ReminderCreateInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -532,6 +545,7 @@ export type ReminderUncheckedCreateInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -558,6 +572,7 @@ export type ReminderUpdateInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -586,6 +601,7 @@ export type ReminderUncheckedUpdateInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -613,6 +629,7 @@ export type ReminderCreateManyInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -638,6 +655,7 @@ export type ReminderUpdateManyMutationInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -660,6 +678,7 @@ export type ReminderUncheckedUpdateManyInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -704,6 +723,7 @@ export type ReminderCountOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   nativeAlarmEnabled?: Prisma.SortOrder
   reminderType?: Prisma.SortOrder
+  gameType?: Prisma.SortOrder
   visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
@@ -733,6 +753,7 @@ export type ReminderMaxOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   nativeAlarmEnabled?: Prisma.SortOrder
   reminderType?: Prisma.SortOrder
+  gameType?: Prisma.SortOrder
   visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
@@ -757,6 +778,7 @@ export type ReminderMinOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   nativeAlarmEnabled?: Prisma.SortOrder
   reminderType?: Prisma.SortOrder
+  gameType?: Prisma.SortOrder
   visualCueAssetId?: Prisma.SortOrder
   linkedChecklistTemplateId?: Prisma.SortOrder
   snoozeEnabled?: Prisma.SortOrder
@@ -1037,6 +1059,7 @@ export type ReminderCreateWithoutPatientInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1063,6 +1086,7 @@ export type ReminderUncheckedCreateWithoutPatientInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1099,6 +1123,7 @@ export type ReminderCreateWithoutCreatedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1126,6 +1151,7 @@ export type ReminderUncheckedCreateWithoutCreatedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1161,6 +1187,7 @@ export type ReminderCreateWithoutLastEditedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1188,6 +1215,7 @@ export type ReminderUncheckedCreateWithoutLastEditedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1243,6 +1271,7 @@ export type ReminderScalarWhereInput = {
   priority?: Prisma.EnumPriorityLevelFilter<"Reminder"> | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
   reminderType?: Prisma.EnumReminderTypeFilter<"Reminder"> | $Enums.ReminderType
+  gameType?: Prisma.StringNullableFilter<"Reminder"> | string | null
   visualCueAssetId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   linkedChecklistTemplateId?: Prisma.StringNullableFilter<"Reminder"> | string | null
   snoozeEnabled?: Prisma.BoolFilter<"Reminder"> | boolean
@@ -1300,6 +1329,7 @@ export type ReminderCreateWithoutEventsInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1327,6 +1357,7 @@ export type ReminderUncheckedCreateWithoutEventsInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1368,6 +1399,7 @@ export type ReminderUpdateWithoutEventsInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1395,6 +1427,7 @@ export type ReminderUncheckedUpdateWithoutEventsInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1420,6 +1453,7 @@ export type ReminderCreateWithoutLinkedChecklistInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1447,6 +1481,7 @@ export type ReminderUncheckedCreateWithoutLinkedChecklistInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1498,6 +1533,7 @@ export type ReminderCreateWithoutVisualCueAssetInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
   isActive?: boolean
@@ -1525,6 +1561,7 @@ export type ReminderUncheckedCreateWithoutVisualCueAssetInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1576,6 +1613,7 @@ export type ReminderCreateManyPatientInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1602,6 +1640,7 @@ export type ReminderCreateManyCreatedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1627,6 +1666,7 @@ export type ReminderCreateManyLastEditedByInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
@@ -1651,6 +1691,7 @@ export type ReminderUpdateWithoutPatientInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1677,6 +1718,7 @@ export type ReminderUncheckedUpdateWithoutPatientInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1703,6 +1745,7 @@ export type ReminderUncheckedUpdateManyWithoutPatientInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1728,6 +1771,7 @@ export type ReminderUpdateWithoutCreatedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1755,6 +1799,7 @@ export type ReminderUncheckedUpdateWithoutCreatedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1781,6 +1826,7 @@ export type ReminderUncheckedUpdateManyWithoutCreatedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1805,6 +1851,7 @@ export type ReminderUpdateWithoutLastEditedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1832,6 +1879,7 @@ export type ReminderUncheckedUpdateWithoutLastEditedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1858,6 +1906,7 @@ export type ReminderUncheckedUpdateManyWithoutLastEditedByInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1883,6 +1932,7 @@ export type ReminderCreateManyLinkedChecklistInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   visualCueAssetId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -1907,6 +1957,7 @@ export type ReminderUpdateWithoutLinkedChecklistInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1934,6 +1985,7 @@ export type ReminderUncheckedUpdateWithoutLinkedChecklistInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1960,6 +2012,7 @@ export type ReminderUncheckedUpdateManyWithoutLinkedChecklistInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visualCueAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1985,6 +2038,7 @@ export type ReminderCreateManyVisualCueAssetInput = {
   priority?: $Enums.PriorityLevel
   nativeAlarmEnabled?: boolean
   reminderType?: $Enums.ReminderType
+  gameType?: string | null
   linkedChecklistTemplateId?: string | null
   snoozeEnabled?: boolean
   defaultSnoozeMinutes?: number
@@ -2009,6 +2063,7 @@ export type ReminderUpdateWithoutVisualCueAssetInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2036,6 +2091,7 @@ export type ReminderUncheckedUpdateWithoutVisualCueAssetInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2062,6 +2118,7 @@ export type ReminderUncheckedUpdateManyWithoutVisualCueAssetInput = {
   priority?: Prisma.EnumPriorityLevelFieldUpdateOperationsInput | $Enums.PriorityLevel
   nativeAlarmEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reminderType?: Prisma.EnumReminderTypeFieldUpdateOperationsInput | $Enums.ReminderType
+  gameType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedChecklistTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snoozeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   defaultSnoozeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2118,6 +2175,7 @@ export type ReminderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   priority?: boolean
   nativeAlarmEnabled?: boolean
   reminderType?: boolean
+  gameType?: boolean
   visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
@@ -2151,6 +2209,7 @@ export type ReminderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   priority?: boolean
   nativeAlarmEnabled?: boolean
   reminderType?: boolean
+  gameType?: boolean
   visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
@@ -2182,6 +2241,7 @@ export type ReminderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   priority?: boolean
   nativeAlarmEnabled?: boolean
   reminderType?: boolean
+  gameType?: boolean
   visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
@@ -2213,6 +2273,7 @@ export type ReminderSelectScalar = {
   priority?: boolean
   nativeAlarmEnabled?: boolean
   reminderType?: boolean
+  gameType?: boolean
   visualCueAssetId?: boolean
   linkedChecklistTemplateId?: boolean
   snoozeEnabled?: boolean
@@ -2225,7 +2286,7 @@ export type ReminderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "title" | "category" | "scheduledTime" | "repeatRule" | "startDate" | "endDate" | "daysOfWeek" | "description" | "priority" | "nativeAlarmEnabled" | "reminderType" | "visualCueAssetId" | "linkedChecklistTemplateId" | "snoozeEnabled" | "defaultSnoozeMinutes" | "isActive" | "archivedAt" | "createdByUserId" | "lastEditedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["reminder"]>
+export type ReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientUserId" | "title" | "category" | "scheduledTime" | "repeatRule" | "startDate" | "endDate" | "daysOfWeek" | "description" | "priority" | "nativeAlarmEnabled" | "reminderType" | "gameType" | "visualCueAssetId" | "linkedChecklistTemplateId" | "snoozeEnabled" | "defaultSnoozeMinutes" | "isActive" | "archivedAt" | "createdByUserId" | "lastEditedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["reminder"]>
 export type ReminderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2274,6 +2335,7 @@ export type $ReminderPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     priority: $Enums.PriorityLevel
     nativeAlarmEnabled: boolean
     reminderType: $Enums.ReminderType
+    gameType: string | null
     visualCueAssetId: string | null
     linkedChecklistTemplateId: string | null
     snoozeEnabled: boolean
@@ -2726,6 +2788,7 @@ export interface ReminderFieldRefs {
   readonly priority: Prisma.FieldRef<"Reminder", 'PriorityLevel'>
   readonly nativeAlarmEnabled: Prisma.FieldRef<"Reminder", 'Boolean'>
   readonly reminderType: Prisma.FieldRef<"Reminder", 'ReminderType'>
+  readonly gameType: Prisma.FieldRef<"Reminder", 'String'>
   readonly visualCueAssetId: Prisma.FieldRef<"Reminder", 'String'>
   readonly linkedChecklistTemplateId: Prisma.FieldRef<"Reminder", 'String'>
   readonly snoozeEnabled: Prisma.FieldRef<"Reminder", 'Boolean'>

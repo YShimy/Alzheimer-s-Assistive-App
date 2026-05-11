@@ -38,6 +38,7 @@ type CreateExportInput = {
     patientRecords?: boolean;
     timeline?: boolean;
   };
+  language?: 'en' | 'ar';
 };
 
 function computeRange(input: CreateExportInput): { start: Date; end: Date } {
@@ -107,6 +108,7 @@ export const summaryExportService = {
       rangeStart: start,
       rangeEnd: end,
       sections,
+      language: input.language,
     });
 
     // Upload to Supabase Storage

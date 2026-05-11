@@ -1,0 +1,369 @@
+/**
+ * Orientation Practice — Route
+ * Spaced Retrieval / Orientation Practice game.
+ * Inspired by Smith et al. 2024 and Han et al. 2017.
+ */
+import React, { useEffect, useState } from 'react';
+import {
+  View, Text, StyleSheet, TouchableOpacity, ScrollView,
+  ActivityIndicator, SafeAreaView, Animated,
+} from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { useSpacedRetrievalStore } from '@/src/features/games/spacedRetrieval/store';
+import {
+  buildQuestions, computeSessionScore,
+  type SRItem, type PracticeQuestion,
+} from '@/src/features/games/spacedRetrieval/engine';
+import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
+import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
+
+const DEFAULT_ITEMS: SRItem[] = [
+  { id: 'def1', prompt: 'What day of the week is it today?', correctAnswer: new Date().toLocaleDateString('en-US', { weekday: 'long' }), cueText: 'Think about what you did this morning.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def2', prompt: 'What month are we currently in?', correctAnswer: new Date().toLocaleDateString('en-US', { month: 'long' }), cueText: 'Look at a calendar or your phone.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def3', prompt: 'Where can you find your daily reminders?', correctAnswer: 'In the Reminders section of the app', cueText: 'Tap the alarm icon at the bottom.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def4', prompt: 'What should you do if you feel unwell or need help?', correctAnswer: 'Contact your caregiver or call for help', cueText: 'Your caregiver\'s number is in your contacts.', category: 'SAFETY_SUPPORT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def5', prompt: 'What is the name of your primary caregiver?', correctAnswer: 'My primary caregiver', cueText: 'The person who helps you with this app.', category: 'CAREGIVER', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def6', prompt: 'What year is it?', correctAnswer: new Date().getFullYear().toString(), cueText: 'Think of the current calendar year.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def7', prompt: 'What season are we currently in?', correctAnswer: 'The current season', cueText: 'Look outside at the weather or the trees.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def8', prompt: 'What city do you live in?', correctAnswer: 'My home city', cueText: 'The city where your house is located.', category: 'ORIENTATION_PLACE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def9', prompt: 'Where are your emergency contacts located in the app?', correctAnswer: 'In the Contacts section', cueText: 'Look for the people icon at the bottom of the screen.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def10', prompt: 'What do you normally do first thing in the morning?', correctAnswer: 'My morning routine', cueText: 'Think about breakfast or getting ready.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def11', prompt: 'What time is your main meal of the day usually?', correctAnswer: 'My usual meal time', cueText: 'Think about lunch or dinner time.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def12', prompt: 'Where should you check your daily tasks?', correctAnswer: 'In the Checklist section of the app', cueText: 'Look for the clipboard icon.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def13', prompt: 'What is your own phone number?', correctAnswer: 'My phone number', cueText: 'The number people use to call you.', category: 'OTHER', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def14', prompt: 'What is your address?', correctAnswer: 'My home address', cueText: 'The street you live on.', category: 'ORIENTATION_PLACE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def15', prompt: 'What should you do before going to sleep?', correctAnswer: 'My evening routine', cueText: 'Think about locking doors or brushing teeth.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+];
+
+// ─── Main Screen ─────────────────────────────────────────────────────────────
+export default function OrientationPracticeScreen() {
+  const store = useSpacedRetrievalStore();
+
+  useEffect(() => {
+    store.reset();
+  }, []);
+
+  if (store.phase === 'intro') return <IntroScreen />;
+  if (store.phase === 'question') return <QuestionScreen />;
+  if (store.phase === 'feedback') return <FeedbackScreen />;
+  if (store.phase === 'result') return <ResultScreen />;
+  return null;
+}
+
+// ─── Intro ────────────────────────────────────────────────────────────────────
+function IntroScreen() {
+  const { t } = useTranslation();
+  const store = useSpacedRetrievalStore();
+  const params = useLocalSearchParams<{ reminderId?: string }>();
+  const [loading, setLoading] = useState(false);
+
+  const handleStart = async () => {
+    setLoading(true);
+    try {
+      // Try fetching patient's SR items from backend
+      let srItems: SRItem[] = [];
+      try {
+        const res = await spacedRetrievalApi.listItems('me', true);
+        srItems = (res.items ?? []).map((i: any) => ({
+          id: i.id,
+          prompt: i.prompt,
+          correctAnswer: i.correctAnswer,
+          acceptableAnswers: i.acceptableAnswers ?? [],
+          distractors: i.distractors ?? [],
+          cueText: i.cueText ?? null,
+          category: i.category,
+          active: i.active,
+          currentIntervalStep: i.currentIntervalStep ?? 0,
+          masteryStatus: i.masteryStatus ?? 'NEW',
+        }));
+      } catch {
+        srItems = DEFAULT_ITEMS;
+      }
+      if (srItems.length === 0) srItems = DEFAULT_ITEMS;
+
+      const sessionRes = await gamesApi.startSession({
+        gameType: 'SPACED_RETRIEVAL_ORIENTATION',
+        reminderId: params.reminderId,
+      });
+      const sessionId = sessionRes.session?.id ?? `local-${Date.now()}`;
+      const questions = buildQuestions(srItems, 4);
+      store.startSession(questions, sessionId);
+    } catch {
+      const questions = buildQuestions(DEFAULT_ITEMS, 4);
+      store.startSession(questions, `local-${Date.now()}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView style={s.safeArea}>
+      <ScrollView contentContainerStyle={s.introContainer}>
+        <View style={s.introIcon}>
+          <Ionicons name="help-circle-outline" size={56} color={colors.secondary[500]} />
+        </View>
+        <Text style={s.introTitle}>{t('orientationPractice.title', 'Orientation Practice')}</Text>
+        <Text style={s.introSubtitle}>
+          {t('orientationPractice.subtitle', "Practice remembering helpful daily information. Take your time — there's no rush.")}
+        </Text>
+        <View style={s.introInfoCard}>
+          <Text style={s.introInfoText}>{t('orientationPractice.oneQuestion', '• One question at a time')}</Text>
+          <Text style={s.introInfoText}>{t('orientationPractice.tapAnswer', '• Tap the answer you think is correct')}</Text>
+          <Text style={s.introInfoText}>{t('orientationPractice.helpfulHint', '• A helpful hint is always available')}</Text>
+          <Text style={s.introInfoText}>{t('orientationPractice.sessionsTake', '• Sessions take about 5 minutes')}</Text>
+        </View>
+        <TouchableOpacity style={[s.startBtn, { backgroundColor: colors.secondary[500] }]} onPress={handleStart} disabled={loading} activeOpacity={0.85}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.startBtnText}>{t('orientationPractice.beginPractice', 'Begin Practice')}</Text>}
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+// ─── Question Screen ──────────────────────────────────────────────────────────
+function QuestionScreen() {
+  const { t } = useTranslation();
+  const store = useSpacedRetrievalStore();
+  const question = store.questions[store.currentQuestionIndex];
+  const [showCue, setShowCue] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const total = store.questions.length;
+  const current = store.currentQuestionIndex + 1;
+
+  if (!question) return null;
+
+  const handleSelect = (choice: string) => {
+    if (selected) return;
+    const unsureText = t('orientationPractice.imNotSure', "I'm not sure");
+    const isUnsure = choice === unsureText || choice === "I'm not sure";
+    const isCorrect = !isUnsure && (
+      choice === question.correctAnswer ||
+      (question.choices.includes(choice) && choice === question.correctAnswer)
+    );
+    setSelected(choice);
+    setTimeout(() => {
+      store.answer(isCorrect, showCue, isUnsure);
+      store.setPhase('feedback');
+    }, 400);
+  };
+
+  const unsureText = t('orientationPractice.imNotSure', "I'm not sure");
+
+  return (
+    <SafeAreaView style={s.safeArea}>
+      <View style={s.questionHeader}>
+        <View style={s.progressBar}>
+          <View style={[s.progressFill, { width: `${(current / total) * 100}%` as any }]} />
+        </View>
+        <Text style={s.progressText}>{t('orientationPractice.progress', { current, total })}</Text>
+      </View>
+
+      <ScrollView contentContainerStyle={s.questionBody}>
+        <View style={s.questionCard}>
+          <Ionicons name="help-circle-outline" size={32} color={colors.secondary[400]} style={{ marginBottom: spacing.md }} />
+          <Text style={s.questionText}>{question.prompt}</Text>
+        </View>
+
+        {showCue && question.cueText && (
+          <View style={s.cueCard}>
+            <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
+            <Text style={s.cueText}>{question.cueText}</Text>
+          </View>
+        )}
+
+        <View style={s.choicesContainer}>
+          {question.choices.map((choice, i) => (
+            <TouchableOpacity
+              key={i}
+              style={[
+                s.choiceBtn,
+                selected === choice && { backgroundColor: colors.primary[100], borderColor: colors.primary[400] },
+              ]}
+              onPress={() => handleSelect(choice)}
+              disabled={!!selected}
+              activeOpacity={0.8}
+            >
+              <Text style={[s.choiceText, selected === choice && { color: colors.primary[700] ?? colors.primary[500] }]}>{choice}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[s.choiceBtn, s.unsureBtn]}
+            onPress={() => handleSelect(unsureText)}
+            disabled={!!selected}
+            activeOpacity={0.8}
+          >
+            <Text style={s.unsureBtnText}>{unsureText}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {!showCue && question.cueText && !selected && (
+          <TouchableOpacity style={s.cueToggle} onPress={() => setShowCue(true)} activeOpacity={0.7}>
+            <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
+            <Text style={s.cueToggleText}>{t('orientationPractice.showHint', 'Show hint')}</Text>
+          </TouchableOpacity>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+// ─── Feedback Screen ──────────────────────────────────────────────────────────
+function FeedbackScreen() {
+  const { t } = useTranslation();
+  const store = useSpacedRetrievalStore();
+  const lastResult = store.results[store.results.length - 1];
+  const question = store.questions[store.currentQuestionIndex];
+  const isCorrect = lastResult?.correct ?? false;
+  const isUnsure = lastResult?.unsure ?? false;
+
+  const goNext = () => {
+    if (store.currentQuestionIndex + 1 >= store.questions.length) {
+      const score = computeSessionScore(store.results);
+      store.finish(score);
+      // Submit
+      gamesApi.completeSpacedRetrieval(store.sessionId!, {
+        score: score.score,
+        accuracyPercent: score.accuracyPercent,
+        status: 'COMPLETED',
+        durationSeconds: Math.round((Date.now() - store.startedAt) / 1000),
+        metadata: { cueUseRate: score.cueUseRate / 100, correctWithoutCue: score.correctWithoutCue, correctWithCue: score.correctWithCue },
+        itemResults: store.questions.map((q, i) => {
+          const r = store.results[i];
+          return {
+            itemIndex: i,
+            prompt: q.prompt,
+            correct: r?.correct ?? false,
+            usedCue: r?.usedCue ?? false,
+            correctAnswer: q.correctAnswer,
+          };
+        }),
+      }).catch(() => {});
+    } else {
+      store.nextQuestion();
+    }
+  };
+
+  return (
+    <SafeAreaView style={s.safeArea}>
+      <View style={s.feedbackContainer}>
+        <View style={[s.feedbackBadge, { backgroundColor: isCorrect ? colors.success.main + '20' : colors.warning.main + '20' }]}>
+          <Ionicons
+            name={isCorrect ? 'checkmark-circle' : isUnsure ? 'help-circle' : 'refresh-circle'}
+            size={48}
+            color={isCorrect ? colors.success.main : colors.warning.main}
+          />
+        </View>
+        <Text style={s.feedbackHeading}>
+          {isCorrect ? t('orientationPractice.wellDone', 'Well done!') : isUnsure ? t('orientationPractice.noWorries', 'No worries.') : t('orientationPractice.thatsOkay', "That's okay.")}
+        </Text>
+        <Text style={s.feedbackBody}>
+          {isCorrect
+            ? t('orientationPractice.youRemembered', 'You remembered that one.')
+            : t('orientationPractice.answerIs', { answer: question?.correctAnswer })}
+        </Text>
+        {!isCorrect && question?.cueText && (
+          <View style={s.cueCard}>
+            <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
+            <Text style={s.cueText}>{question.cueText}</Text>
+          </View>
+        )}
+        <TouchableOpacity style={s.nextBtn} onPress={goNext} activeOpacity={0.85}>
+          <Text style={s.nextBtnText}>
+            {store.currentQuestionIndex + 1 >= store.questions.length ? t('orientationPractice.seeResults', 'See Results') : t('orientationPractice.nextQuestion', 'Next Question')}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+// ─── Result Screen ────────────────────────────────────────────────────────────
+function ResultScreen() {
+  const { t } = useTranslation();
+  const store = useSpacedRetrievalStore();
+  const router = useRouter();
+  const score = store.score!;
+  const total = store.questions.length;
+
+  return (
+    <SafeAreaView style={s.safeArea}>
+      <ScrollView contentContainerStyle={s.introContainer}>
+        <View style={[s.introIcon, { backgroundColor: colors.secondary[50] }]}>
+          <Ionicons name="ribbon-outline" size={56} color={colors.secondary[500]} />
+        </View>
+        <Text style={s.introTitle}>{t('orientationPractice.practiceComplete', 'Practice Complete')}</Text>
+        <Text style={s.introSubtitle}>
+          {t('orientationPractice.rememberedSummary', { correct: score.correctWithoutCue + score.correctWithCue, total })}
+          {score.correctWithoutCue > 0 ? t('orientationPractice.withoutHints', { count: score.correctWithoutCue }) : ''}
+        </Text>
+
+        <View style={s.resultCard}>
+          <SRStatRow label={t('orientationPractice.questionsAnswered', 'Questions answered')} value={`${total}`} />
+          <SRStatRow label={t('orientationPractice.correct', 'Correct')} value={`${score.correctWithoutCue + score.correctWithCue}`} />
+          <SRStatRow label={t('orientationPractice.withHint', 'With a hint')} value={`${score.correctWithCue}`} />
+          <SRStatRow label={t('orientationPractice.accuracy', 'Accuracy')} value={`${Math.round(score.accuracyPercent)}%`} />
+        </View>
+
+        <TouchableOpacity style={[s.startBtn, { backgroundColor: colors.secondary[500] }]} onPress={() => { store.reset(); }} activeOpacity={0.85}>
+          <Text style={s.startBtnText}>{t('orientationPractice.practiceAgain', 'Practice Again')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={s.exitBtn} onPress={() => router.back()} activeOpacity={0.85}>
+          <Text style={s.exitBtnText}>{t('orientationPractice.done', 'Done')}</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function SRStatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={s.statRow}>
+      <Text style={s.statLabel}>{label}</Text>
+      <Text style={s.statValue}>{value}</Text>
+    </View>
+  );
+}
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
+const s = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: colors.background ?? '#f9f9f7' },
+  introContainer: { padding: spacing.xl, alignItems: 'center', paddingBottom: 48 },
+  introIcon: { width: 96, height: 96, borderRadius: 48, backgroundColor: colors.secondary[50], alignItems: 'center', justifyContent: 'center', marginBottom: spacing.lg },
+  introTitle: { fontSize: 26, fontWeight: '700', color: colors.neutral[800], marginBottom: spacing.sm },
+  introSubtitle: { fontSize: 15, color: colors.neutral[500], textAlign: 'center', lineHeight: 22, marginBottom: spacing.lg },
+  introInfoCard: { width: '100%', backgroundColor: colors.surface ?? '#f0f0ee', borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm, marginBottom: spacing.xl },
+  introInfoText: { fontSize: 14, color: colors.neutral[600], lineHeight: 22 },
+  startBtn: { paddingVertical: 16, paddingHorizontal: 40, borderRadius: radius.lg, alignItems: 'center', width: '100%', marginBottom: spacing.md },
+  startBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  exitBtn: { paddingVertical: 14, alignItems: 'center', width: '100%' },
+  exitBtnText: { fontSize: 16, color: colors.neutral[500] },
+  questionHeader: { padding: spacing.lg, paddingBottom: spacing.sm },
+  progressBar: { height: 6, backgroundColor: colors.neutral[200], borderRadius: 3, overflow: 'hidden', marginBottom: 4 },
+  progressFill: { height: '100%', backgroundColor: colors.secondary[400] ?? colors.primary[400], borderRadius: 3 },
+  progressText: { fontSize: 12, color: colors.neutral[400], textAlign: 'right' },
+  questionBody: { padding: spacing.lg, paddingTop: 0, gap: spacing.lg },
+  questionCard: { backgroundColor: '#fff', borderRadius: radius.xl ?? radius.lg, padding: spacing.xl, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+  questionText: { fontSize: 20, fontWeight: '600', color: colors.neutral[800], textAlign: 'center', lineHeight: 28 },
+  cueCard: { flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.warning.main + '15', borderRadius: radius.md, padding: spacing.md, alignItems: 'flex-start' },
+  cueText: { flex: 1, fontSize: 14, color: colors.neutral[700], lineHeight: 20 },
+  choicesContainer: { gap: spacing.md },
+  choiceBtn: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: colors.neutral[200], borderRadius: radius.lg, paddingVertical: 16, paddingHorizontal: 20, minHeight: 56 },
+  choiceText: { fontSize: 16, color: colors.neutral[800], textAlign: 'center' },
+  unsureBtn: { borderColor: colors.neutral[300], backgroundColor: colors.neutral[50] },
+  unsureBtnText: { fontSize: 15, color: colors.neutral[500], textAlign: 'center' },
+  cueToggle: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, paddingVertical: spacing.sm },
+  cueToggleText: { fontSize: 14, color: colors.warning.main, fontWeight: '500' },
+  feedbackContainer: { flex: 1, padding: spacing.xl, alignItems: 'center', justifyContent: 'center', gap: spacing.lg },
+  feedbackBadge: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.sm },
+  feedbackHeading: { fontSize: 22, fontWeight: '700', color: colors.neutral[800] },
+  feedbackBody: { fontSize: 16, color: colors.neutral[600], textAlign: 'center', lineHeight: 24 },
+  nextBtn: { backgroundColor: colors.secondary[500] ?? colors.primary[500], paddingVertical: 16, paddingHorizontal: 40, borderRadius: radius.lg, alignItems: 'center', width: '100%', marginTop: spacing.lg },
+  nextBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  resultCard: { width: '100%', backgroundColor: colors.surface ?? '#f0f0ee', borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md, marginBottom: spacing.xl },
+  statRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  statLabel: { fontSize: 15, color: colors.neutral[600] },
+  statValue: { fontSize: 15, fontWeight: '700', color: colors.neutral[800] },
+});

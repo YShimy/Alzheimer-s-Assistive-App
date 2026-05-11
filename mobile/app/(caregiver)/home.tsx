@@ -151,6 +151,16 @@ export default function CaregiverHomeScreen() {
                 <Icon name="people-circle-outline" size={16} color={colors.secondary[600]} />
                 <Text style={styles.actionBtnText}>{t('caregiverHome.contacts')}</Text>
               </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => {
+                  selectPatient(link.patientUserId!, link.patient?.displayName ?? 'Patient');
+                  router.push('/(caregiver)/manage-sr-items' as any);
+                }}
+              >
+                <Icon name="help-circle-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.facts', 'Facts')}</Text>
+              </Pressable>
             </View>
           </AppCard>
         ))
@@ -224,6 +234,7 @@ const styles = StyleSheet.create({
   patientEmail: { fontSize: typography.size.sm, color: colors.neutral[500] },
   actionRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.sm,
     borderTopWidth: 1,
     borderTopColor: colors.neutral[100],

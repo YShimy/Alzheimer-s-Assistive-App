@@ -35,6 +35,7 @@ enum ReminderCategory {
 enum ReminderType {
   SIMPLE
   GUIDED
+  GAME_SESSION
 }
 
 enum PriorityLevel {
@@ -103,6 +104,37 @@ enum NotificationType {
   SYSTEM
 }
 
+// ─── Game Enums ───────────────────────────────────────
+
+enum GameType {
+  ASSOCIATIVE_MEMORY_MATCH
+  SPACED_RETRIEVAL_ORIENTATION
+}
+
+enum GameSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum SpacedRetrievalCategory {
+  ORIENTATION_DATE
+  ORIENTATION_PLACE
+  CAREGIVER
+  DAILY_ROUTINE
+  APP_NAVIGATION
+  SAFETY_SUPPORT
+  OTHER
+}
+
+enum MasteryStatus {
+  NEW
+  LEARNING
+  STRENGTHENING
+  MASTERED
+  NEEDS_REVIEW
+}
+
 // ─── Models ───────────────────────────────────────────
 
 model User {
@@ -158,6 +190,10 @@ model User {
   // Summary Exports
   patientSummaryExports    PatientSummaryExport[] @relation("PatientSummaryExports")
   generatedSummaryExports  PatientSummaryExport[] @relation("GeneratedSummaryExports")
+
+  // Spaced Retrieval items
+  spacedRetrievalItems    SpacedRetrievalItem[] @relation("PatientSRItems")
+  createdSRItems          SpacedRetrievalItem[] @relation("CreatedSRItems")
 
   // Notification system
   devices       Device[]       @relation("UserDevices")
@@ -287,7 +323,10 @@ model Reminder {
   
   // Redesigned: reminder type (simple vs guided)
   reminderType                ReminderType     @default(SIMPLE)
-  
+
+  // Game session reminders
+  gameType                    String?
+
   // Redesigned: optional visual cue for reminder
   visualCueAssetId            String?
   
@@ -410,30 +449,44 @@ model GameSession {
   id                String   @id @default(uuid())
   patientUserId     String
   gameType          String
+
+  // Legacy fields kept for migration safety
   difficultyLevel   String   @default("easy")
-  startedAt         DateTime @default(now())
-  completedAt       DateTime?
-  durationSeconds   Int?
-  score             Int?
   highestTierReached Int?
   levelsPlayed      Int      @default(0)
   levelsSucceeded   Int      @default(0)
   levelsFailed      Int      @default(0)
   completed         Boolean  @default(false)
   quitEarly         Boolean  @default(false)
+
+  // New unified fields
+  status            GameSessionStatus @default(IN_PROGRESS)
+  score             Int?
+  accuracyPercent   Float?
+  levelStarted      Int?
+  levelCompleted    Int?
+  highestLevel      Int?
+  durationSeconds   Int?
+  reminderId        String?
+  caregiverId       String?
+
+  startedAt         DateTime @default(now())
+  completedAt       DateTime?
   actorUserId       String
   actorRole         String   // "patient" | "caregiver"
   source            String   @default("home")
   metadata          Json?    // optional structured details
   createdAt         DateTime @default(now())
 
-  patient    User              @relation("PatientGames", fields: [patientUserId], references: [id])
-  actor      User              @relation("ActorGames", fields: [actorUserId], references: [id])
+  patient      User              @relation("PatientGames", fields: [patientUserId], references: [id])
+  actor        User              @relation("ActorGames", fields: [actorUserId], references: [id])
   levelResults GameLevelResult[]
+  itemResults  GameItemResult[]
 
   @@index([patientUserId])
   @@index([gameType])
   @@index([startedAt])
+  @@index([patientUserId, gameType, completedAt])
   @@map("game_sessions")
 }
 
@@ -461,6 +514,63 @@ model GameLevelResult {
   @@index([sessionId])
   @@index([difficultyTier])
   @@map("game_level_results")
+}
+
+// Generic per-item result for both new games
+model GameItemResult {
+  id               String   @id @default(uuid())
+  sessionId        String
+  itemIndex        Int
+  prompt           String?
+  correct          Boolean
+  firstTryCorrect  Boolean  @default(false)
+  usedCue          Boolean  @default(false)
+  responseTimeMs   Int?
+  attempts         Int      @default(1)
+  selectedAnswer   String?
+  correctAnswer    String?
+  metadata         Json?
+  createdAt        DateTime @default(now())
+
+  session GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("game_item_results")
+}
+
+// Spaced Retrieval items managed by caregivers
+model SpacedRetrievalItem {
+  id                     String                  @id @default(uuid())
+  patientId              String
+  createdByUserId        String
+  prompt                 String
+  correctAnswer          String
+  acceptableAnswers      Json?
+  distractors            Json?
+  cueText                String?
+  category               SpacedRetrievalCategory @default(OTHER)
+  active                 Boolean                 @default(true)
+  currentIntervalStep    Int                     @default(0)
+  currentIntervalSeconds Int                     @default(0)
+  masteryStatus          MasteryStatus           @default(NEW)
+  consecutiveCorrect     Int                     @default(0)
+  consecutiveIncorrect   Int                     @default(0)
+  totalAttempts          Int                     @default(0)
+  correctAttempts        Int                     @default(0)
+  lastPracticedAt        DateTime?
+  nextDueAt              DateTime?
+  archivedAt             DateTime?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  patient   User @relation("PatientSRItems", fields: [patientId], references: [id])
+  createdBy User @relation("CreatedSRItems", fields: [createdByUserId], references: [id])
+
+  @@index([patientId])
+  @@index([patientId, active])
+  @@index([nextDueAt])
+  @@index([category])
+  @@map("spaced_retrieval_items")
 }
 
 model AnalyticsEvent {

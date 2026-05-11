@@ -394,6 +394,8 @@ export const ModelName = {
   ChecklistRun: 'ChecklistRun',
   GameSession: 'GameSession',
   GameLevelResult: 'GameLevelResult',
+  GameItemResult: 'GameItemResult',
+  SpacedRetrievalItem: 'SpacedRetrievalItem',
   AnalyticsEvent: 'AnalyticsEvent',
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
@@ -419,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset" | "patientImportantInfo" | "patientSummaryExport" | "device" | "notification" | "pushTicket"
+    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "gameItemResult" | "spacedRetrievalItem" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset" | "patientImportantInfo" | "patientSummaryExport" | "device" | "notification" | "pushTicket"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1160,6 +1162,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GameLevelResultCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GameLevelResultCountAggregateOutputType> | number
+        }
+      }
+    }
+    GameItemResult: {
+      payload: Prisma.$GameItemResultPayload<ExtArgs>
+      fields: Prisma.GameItemResultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GameItemResultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GameItemResultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        findFirst: {
+          args: Prisma.GameItemResultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GameItemResultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        findMany: {
+          args: Prisma.GameItemResultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>[]
+        }
+        create: {
+          args: Prisma.GameItemResultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        createMany: {
+          args: Prisma.GameItemResultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GameItemResultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>[]
+        }
+        delete: {
+          args: Prisma.GameItemResultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        update: {
+          args: Prisma.GameItemResultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        deleteMany: {
+          args: Prisma.GameItemResultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GameItemResultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GameItemResultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>[]
+        }
+        upsert: {
+          args: Prisma.GameItemResultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameItemResultPayload>
+        }
+        aggregate: {
+          args: Prisma.GameItemResultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGameItemResult>
+        }
+        groupBy: {
+          args: Prisma.GameItemResultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameItemResultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GameItemResultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameItemResultCountAggregateOutputType> | number
+        }
+      }
+    }
+    SpacedRetrievalItem: {
+      payload: Prisma.$SpacedRetrievalItemPayload<ExtArgs>
+      fields: Prisma.SpacedRetrievalItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SpacedRetrievalItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SpacedRetrievalItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        findFirst: {
+          args: Prisma.SpacedRetrievalItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SpacedRetrievalItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        findMany: {
+          args: Prisma.SpacedRetrievalItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>[]
+        }
+        create: {
+          args: Prisma.SpacedRetrievalItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        createMany: {
+          args: Prisma.SpacedRetrievalItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SpacedRetrievalItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>[]
+        }
+        delete: {
+          args: Prisma.SpacedRetrievalItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        update: {
+          args: Prisma.SpacedRetrievalItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.SpacedRetrievalItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SpacedRetrievalItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SpacedRetrievalItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.SpacedRetrievalItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpacedRetrievalItemPayload>
+        }
+        aggregate: {
+          args: Prisma.SpacedRetrievalItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSpacedRetrievalItem>
+        }
+        groupBy: {
+          args: Prisma.SpacedRetrievalItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SpacedRetrievalItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SpacedRetrievalItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SpacedRetrievalItemCountAggregateOutputType> | number
         }
       }
     }
@@ -2038,6 +2188,7 @@ export const ReminderScalarFieldEnum = {
   priority: 'priority',
   nativeAlarmEnabled: 'nativeAlarmEnabled',
   reminderType: 'reminderType',
+  gameType: 'gameType',
   visualCueAssetId: 'visualCueAssetId',
   linkedChecklistTemplateId: 'linkedChecklistTemplateId',
   snoozeEnabled: 'snoozeEnabled',
@@ -2121,16 +2272,23 @@ export const GameSessionScalarFieldEnum = {
   patientUserId: 'patientUserId',
   gameType: 'gameType',
   difficultyLevel: 'difficultyLevel',
-  startedAt: 'startedAt',
-  completedAt: 'completedAt',
-  durationSeconds: 'durationSeconds',
-  score: 'score',
   highestTierReached: 'highestTierReached',
   levelsPlayed: 'levelsPlayed',
   levelsSucceeded: 'levelsSucceeded',
   levelsFailed: 'levelsFailed',
   completed: 'completed',
   quitEarly: 'quitEarly',
+  status: 'status',
+  score: 'score',
+  accuracyPercent: 'accuracyPercent',
+  levelStarted: 'levelStarted',
+  levelCompleted: 'levelCompleted',
+  highestLevel: 'highestLevel',
+  durationSeconds: 'durationSeconds',
+  reminderId: 'reminderId',
+  caregiverId: 'caregiverId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
   actorUserId: 'actorUserId',
   actorRole: 'actorRole',
   source: 'source',
@@ -2162,6 +2320,53 @@ export const GameLevelResultScalarFieldEnum = {
 } as const
 
 export type GameLevelResultScalarFieldEnum = (typeof GameLevelResultScalarFieldEnum)[keyof typeof GameLevelResultScalarFieldEnum]
+
+
+export const GameItemResultScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  itemIndex: 'itemIndex',
+  prompt: 'prompt',
+  correct: 'correct',
+  firstTryCorrect: 'firstTryCorrect',
+  usedCue: 'usedCue',
+  responseTimeMs: 'responseTimeMs',
+  attempts: 'attempts',
+  selectedAnswer: 'selectedAnswer',
+  correctAnswer: 'correctAnswer',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type GameItemResultScalarFieldEnum = (typeof GameItemResultScalarFieldEnum)[keyof typeof GameItemResultScalarFieldEnum]
+
+
+export const SpacedRetrievalItemScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  createdByUserId: 'createdByUserId',
+  prompt: 'prompt',
+  correctAnswer: 'correctAnswer',
+  acceptableAnswers: 'acceptableAnswers',
+  distractors: 'distractors',
+  cueText: 'cueText',
+  category: 'category',
+  active: 'active',
+  currentIntervalStep: 'currentIntervalStep',
+  currentIntervalSeconds: 'currentIntervalSeconds',
+  masteryStatus: 'masteryStatus',
+  consecutiveCorrect: 'consecutiveCorrect',
+  consecutiveIncorrect: 'consecutiveIncorrect',
+  totalAttempts: 'totalAttempts',
+  correctAttempts: 'correctAttempts',
+  lastPracticedAt: 'lastPracticedAt',
+  nextDueAt: 'nextDueAt',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SpacedRetrievalItemScalarFieldEnum = (typeof SpacedRetrievalItemScalarFieldEnum)[keyof typeof SpacedRetrievalItemScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {
@@ -2632,6 +2837,62 @@ export type ListEnumChecklistRunStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
+ * Reference to a field of type 'GameSessionStatus'
+ */
+export type EnumGameSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GameSessionStatus[]'
+ */
+export type ListEnumGameSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameSessionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SpacedRetrievalCategory'
+ */
+export type EnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpacedRetrievalCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'SpacedRetrievalCategory[]'
+ */
+export type ListEnumSpacedRetrievalCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpacedRetrievalCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MasteryStatus'
+ */
+export type EnumMasteryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MasteryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MasteryStatus[]'
+ */
+export type ListEnumMasteryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MasteryStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ConsentStatus'
  */
 export type EnumConsentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConsentStatus'>
@@ -2698,20 +2959,6 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -2819,6 +3066,8 @@ export type GlobalOmitConfig = {
   checklistRun?: Prisma.ChecklistRunOmit
   gameSession?: Prisma.GameSessionOmit
   gameLevelResult?: Prisma.GameLevelResultOmit
+  gameItemResult?: Prisma.GameItemResultOmit
+  spacedRetrievalItem?: Prisma.SpacedRetrievalItemOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
   contactSupportConsent?: Prisma.ContactSupportConsentOmit
   patientContact?: Prisma.PatientContactOmit

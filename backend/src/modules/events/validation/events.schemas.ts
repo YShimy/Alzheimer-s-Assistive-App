@@ -36,7 +36,28 @@ export const ALLOWED_EVENT_NAMES = [
   'game_instructions_viewed',
   'game_session_started',
   'game_progress_chart_viewed',
-  // ─── Safe Path Memory Game ───────────────────────────────
+  // ─── Associative Memory Match ────────────────────────────
+  'memory_match_study_started',
+  'memory_match_recall_started',
+  'memory_match_answered',
+  'memory_match_session_completed',
+  'memory_match_session_abandoned',
+  'memory_match_level_advanced',
+  'memory_match_level_regressed',
+  // ─── Spaced Retrieval Orientation Practice ───────────────
+  'spaced_retrieval_session_started',
+  'spaced_retrieval_question_shown',
+  'spaced_retrieval_answered',
+  'spaced_retrieval_cue_used',
+  'spaced_retrieval_session_completed',
+  'spaced_retrieval_session_abandoned',
+  'spaced_retrieval_item_created',
+  'spaced_retrieval_item_updated',
+  'spaced_retrieval_item_archived',
+  'sr_item_mastered',
+  'sr_item_needs_review',
+  'game_reminder_completed',
+  // ─── Legacy (deprecated — kept for analytics continuity) ─
   'level_preview_started',
   'level_started',
   'level_completed',
@@ -47,7 +68,6 @@ export const ALLOWED_EVENT_NAMES = [
   'session_resumed',
   'session_completed',
   'session_abandoned',
-  // ─── Routine Sequence Builder Game ───────────────────────
   'routine_sequence_instructions_viewed',
   'routine_sequence_session_started',
   'routine_sequence_study_viewed',

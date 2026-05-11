@@ -32,10 +32,28 @@ export const EventNames = {
   SYNC_FAILED: 'sync_failed',
   NOTIFICATION_SCHEDULE_FAILED: 'notification_schedule_failed',
 
-  // ─── Safe Path Memory Game Events ─────────────────────────
+  // ─── Associative Memory Match Game Events ─────────────────
   GAME_OPENED: 'game_opened',
   GAME_INSTRUCTIONS_VIEWED: 'game_instructions_viewed',
   GAME_SESSION_STARTED: 'game_session_started',
+  MEMORY_MATCH_STUDY_STARTED: 'memory_match_study_started',
+  MEMORY_MATCH_RECALL_STARTED: 'memory_match_recall_started',
+  MEMORY_MATCH_ANSWERED: 'memory_match_answered',
+  MEMORY_MATCH_SESSION_COMPLETED: 'memory_match_session_completed',
+  MEMORY_MATCH_SESSION_ABANDONED: 'memory_match_session_abandoned',
+
+  // ─── Spaced Retrieval Orientation Practice Events ─────────
+  SPACED_RETRIEVAL_SESSION_STARTED: 'spaced_retrieval_session_started',
+  SPACED_RETRIEVAL_QUESTION_SHOWN: 'spaced_retrieval_question_shown',
+  SPACED_RETRIEVAL_ANSWERED: 'spaced_retrieval_answered',
+  SPACED_RETRIEVAL_CUE_USED: 'spaced_retrieval_cue_used',
+  SPACED_RETRIEVAL_SESSION_COMPLETED: 'spaced_retrieval_session_completed',
+  SPACED_RETRIEVAL_SESSION_ABANDONED: 'spaced_retrieval_session_abandoned',
+  SPACED_RETRIEVAL_ITEM_CREATED: 'spaced_retrieval_item_created',
+  SPACED_RETRIEVAL_ITEM_UPDATED: 'spaced_retrieval_item_updated',
+  SPACED_RETRIEVAL_ITEM_ARCHIVED: 'spaced_retrieval_item_archived',
+
+  // ─── Deprecated old game events (kept for analytics continuity) ──
   LEVEL_PREVIEW_STARTED: 'level_preview_started',
   LEVEL_STARTED: 'level_started',
   TILE_SELECTED: 'tile_selected',
@@ -47,8 +65,6 @@ export const EventNames = {
   SESSION_COMPLETED: 'session_completed',
   SESSION_ABANDONED: 'session_abandoned',
   GAME_PROGRESS_CHART_VIEWED: 'game_progress_chart_viewed',
-
-  // ─── Routine Sequence Builder Game Events ───────────────────
   ROUTINE_SEQUENCE_INSTRUCTIONS_VIEWED: 'routine_sequence_instructions_viewed',
   ROUTINE_SEQUENCE_SESSION_STARTED: 'routine_sequence_session_started',
   ROUTINE_SEQUENCE_STUDY_VIEWED: 'routine_sequence_study_viewed',

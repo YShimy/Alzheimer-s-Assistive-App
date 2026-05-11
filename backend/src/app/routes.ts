@@ -7,6 +7,7 @@ import { carelinksRouter } from '../modules/carelinks/router.js';
 import { remindersRouter, reminderDirectRouter } from '../modules/reminders/router.js';
 import { checklistsRouter, checklistDirectRouter } from '../modules/checklists/router.js';
 import { gamesRouter } from '../modules/games/router.js';
+import { spacedRetrievalRouter } from '../modules/spaced-retrieval/router.js';
 import { eventsRouter } from '../modules/events/router.js';
 import { progressRouter } from '../modules/progress/router.js';
 import { syncRouter } from '../modules/sync/router.js';
@@ -45,8 +46,11 @@ export function registerRoutes(app: Router): void {
   // Checklists - patient-scoped routes
   app.use('/api/patients', checklistsRouter);
 
-  // Games (stub)
+  // Games
   app.use('/api/games', gamesRouter);
+
+  // Spaced Retrieval items (patient-scoped)
+  app.use('/api/patients', spacedRetrievalRouter);
 
   // Events (stub)
   app.use('/api/events', eventsRouter);
