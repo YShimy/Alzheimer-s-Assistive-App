@@ -38,7 +38,7 @@ import type { ChecklistTemplate } from '@/src/features/checklists/types';
 const CATEGORIES = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const PRIORITIES: PriorityLevel[] = ['normal', 'high', 'critical'];
-const REMINDER_TYPES: ReminderType[] = ['simple', 'guided'];
+const REMINDER_TYPES: ReminderType[] = ['simple', 'guided', 'game_session'];
 
 type FormMode = 'create' | 'edit';
 
@@ -55,6 +55,7 @@ interface ReminderForm {
   priority: PriorityLevel;
   reminderType: ReminderType;
   linkedChecklistTemplateId: string;
+  gameType: string;
   nativeAlarmEnabled: boolean;
 }
 
@@ -72,6 +73,7 @@ function emptyForm(): ReminderForm {
     priority: 'normal',
     reminderType: 'simple',
     linkedChecklistTemplateId: '',
+    gameType: 'ASSOCIATIVE_MEMORY_MATCH',
     nativeAlarmEnabled: false,
   };
 }
@@ -90,6 +92,7 @@ function formFromReminder(r: Reminder): ReminderForm {
     priority: r.priority ?? 'normal',
     reminderType: r.reminderType ?? 'simple',
     linkedChecklistTemplateId: r.linkedChecklistTemplateId ?? '',
+    gameType: r.gameType ?? 'ASSOCIATIVE_MEMORY_MATCH',
     nativeAlarmEnabled: r.nativeAlarmEnabled ?? false,
   };
 }
@@ -179,6 +182,7 @@ export default function CaregiverRemindersScreen() {
     priority: form.priority,
     reminderType: form.reminderType,
     linkedChecklistTemplateId: form.linkedChecklistTemplateId || undefined,
+    gameType: form.reminderType === 'game_session' ? form.gameType : undefined,
     // Only send nativeAlarmEnabled when priority is critical
     nativeAlarmEnabled: form.priority === 'critical' ? form.nativeAlarmEnabled : false,
   });
@@ -430,7 +434,7 @@ export default function CaregiverRemindersScreen() {
                     onPress={() => setForm((f) => ({ ...f, reminderType: type }))}
                   >
                     <Icon 
-                      name={type === 'guided' ? 'list-outline' : 'checkmark-circle-outline'} 
+                      name={type === 'guided' ? 'list-outline' : type === 'game_session' ? 'game-controller-outline' : 'checkmark-circle-outline'} 
                       size={18} 
                       color={form.reminderType === type ? '#fff' : colors.neutral[600]} 
                     />
@@ -438,7 +442,7 @@ export default function CaregiverRemindersScreen() {
                       {t(`patientReminders.${type}`)}
                     </Text>
                     <Text style={styles.typeChipDesc}>
-                      {type === 'guided' ? t('patientReminders.guidedDesc') : t('patientReminders.simpleDesc')}
+                      {type === 'guided' ? t('patientReminders.guidedDesc') : type === 'game_session' ? t('patientReminders.game_sessionDesc') : t('patientReminders.simpleDesc')}
                     </Text>
                   </Pressable>
                 ))}
@@ -471,6 +475,42 @@ export default function CaregiverRemindersScreen() {
                 <Text style={styles.guidedHelper}>{t('caregiverReminders.checklistHelp')}</Text>
               </View>
             )}
+
+            {/* Game Selection for game_session reminders */}
+            {form.reminderType === 'game_session' && (
+              <View style={[styles.fieldGroup, styles.guidedSection]}>
+                <Text style={styles.fieldLabel}>{t('patientReminders.linkedGame')}</Text>
+                <View style={{ gap: spacing.sm }}>
+                  <TouchableOpacity
+                    style={[
+                      styles.checklistSelector,
+                      form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
+                    ]}
+                    onPress={() => setForm(f => ({ ...f, gameType: 'ASSOCIATIVE_MEMORY_MATCH' }))}
+                  >
+                    <Icon name="albums-outline" size={24} color={form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? colors.primary[500] : colors.neutral[500]} />
+                    <Text style={[styles.checklistPlaceholder, form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && { color: colors.primary[700], fontWeight: '600' }]}>
+                      {t('patientReminders.gameMemoryMatch')}
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={[
+                      styles.checklistSelector,
+                      form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
+                    ]}
+                    onPress={() => setForm(f => ({ ...f, gameType: 'SPACED_RETRIEVAL_ORIENTATION' }))}
+                  >
+                    <Icon name="compass-outline" size={24} color={form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' ? colors.primary[500] : colors.neutral[500]} />
+                    <Text style={[styles.checklistPlaceholder, form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' && { color: colors.primary[700], fontWeight: '600' }]}>
+                      {t('patientReminders.gameOrientation')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.guidedHelper}>{t('patientReminders.gameHelp')}</Text>
+              </View>
+            )}
+
 
             {/* Time + Date row */}
             <View style={styles.rowFields}>
@@ -772,11 +812,11 @@ function CaregiverReminderCard({
   return (
     <AppCard style={StyleSheet.flatten([styles.reminderCard, isHighPriority && styles.highPriorityCard])}>
       <View style={styles.cardHeader}>
-        <View style={[styles.iconBadge, isGuided && styles.guidedBadge]}>
+        <View style={[styles.iconBadge, isGuided && styles.guidedBadge, reminder.reminderType === 'game_session' && { backgroundColor: colors.primary[100] }]}>
           <Icon 
-            name={isGuided ? 'list-outline' : getCategoryIcon(reminder.category) as any} 
+            name={isGuided ? 'list-outline' : reminder.reminderType === 'game_session' ? 'game-controller-outline' : getCategoryIcon(reminder.category) as any} 
             size={22} 
-            color={isGuided ? colors.warning.main : colors.secondary[500]} 
+            color={isGuided ? colors.warning.main : reminder.reminderType === 'game_session' ? colors.primary[600] : colors.secondary[500]} 
           />
         </View>
         <View style={styles.cardInfo}>
@@ -796,6 +836,9 @@ function CaregiverReminderCard({
             {isGuided && (
               <Text style={styles.guidedIndicator}> · {t('patientReminders.guided')}</Text>
             )}
+            {reminder.reminderType === 'game_session' && (
+              <Text style={[styles.guidedIndicator, { color: colors.primary[600] }]}> · {t('patientReminders.game_session')}</Text>
+            )}
           </Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
             <Text style={styles.cardDays}>
@@ -808,6 +851,16 @@ function CaregiverReminderCard({
               <Icon name="list-outline" size={12} color={colors.primary[500]} />
               <Text style={styles.checklistText}>
                 {reminder.linkedChecklist.title} · {reminder.linkedChecklist.stepCount} {t('patientReminders.steps')}
+              </Text>
+            </View>
+          )}
+          
+          {/* Linked Game Info */}
+          {reminder.reminderType === 'game_session' && reminder.gameType && (
+            <View style={styles.checklistInfo}>
+              <Icon name="game-controller-outline" size={12} color={colors.primary[500]} />
+              <Text style={styles.checklistText}>
+                {reminder.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? t('patientReminders.gameMemoryMatch') : t('patientReminders.gameOrientation')}
               </Text>
             </View>
           )}

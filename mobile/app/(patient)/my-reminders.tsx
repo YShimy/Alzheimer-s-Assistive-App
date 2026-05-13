@@ -55,6 +55,32 @@ export default function PatientRemindersScreen() {
     async (id: string, action: 'done' | 'snooze' | 'skip' | 'start_now') => {
       const reminder = reminders.find((r) => r.id === id);
 
+      // For game sessions, mark as done and navigate to the game
+      if (action === 'start_now' && reminder?.reminderType === 'game_session') {
+        setRunLoading(true);
+        try {
+          // Record action 'done' for the reminder
+          await submit(id, 'done');
+          eventLogger.log({
+            eventName: EventNames.REMINDER_DONE,
+            screenName: 'PatientRemindersScreen',
+            source: 'game_start_now',
+            payload: { reminderId: id, gameType: reminder.gameType },
+          });
+          // Navigate to the appropriate game
+          if (reminder.gameType === 'SPACED_RETRIEVAL_ORIENTATION') {
+            router.push('/(patient)/orientation-practice');
+          } else {
+            router.push('/(patient)/memory-match-game');
+          }
+        } catch (err: any) {
+          Alert.alert(t('common.error'), err.message || t('patientReminders.failedToComplete'));
+        } finally {
+          setRunLoading(false);
+        }
+        return;
+      }
+
       // For guided reminders with start_now, open checklist execution
       if (action === 'start_now' && reminder?.reminderType === 'guided' && reminder.linkedChecklist?.id) {
         setRunLoading(true);
@@ -243,8 +269,8 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
       {/* Clickable Header & Body */}
       <Pressable onPress={onPress} accessibilityRole="button">
         <View style={styles.cardHeader}>
-          <View style={[styles.categoryBadge, isGuided && styles.guidedBadge]}>
-            <Icon name={isGuided ? 'list-outline' : getCategoryIcon(reminder.category)} size={20} color={isGuided ? colors.warning.main : colors.primary[500]} />
+          <View style={[styles.categoryBadge, isGuided && styles.guidedBadge, reminder.reminderType === 'game_session' && { backgroundColor: colors.primary[100] }]}>
+            <Icon name={isGuided ? 'list-outline' : reminder.reminderType === 'game_session' ? 'game-controller-outline' : getCategoryIcon(reminder.category)} size={20} color={isGuided ? colors.warning.main : reminder.reminderType === 'game_session' ? colors.primary[600] : colors.primary[500]} />
           </View>
           <View style={styles.cardInfo}>
             <View style={styles.titleRow}>
@@ -265,8 +291,8 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
               <Text style={styles.cardCategory}>{t(`categories.${reminder.category}`, { defaultValue: reminder.category })}</Text>
               {/* Reminder Type Badge */}
               <Text style={styles.dot}>·</Text>
-              <Text style={[styles.cardCategory, isGuided && styles.guidedText]}>
-                {isGuided ? t('patientReminders.guided') : t('patientReminders.simple')}
+              <Text style={[styles.cardCategory, isGuided && styles.guidedText, reminder.reminderType === 'game_session' && { color: colors.primary[600] }]}>
+                {isGuided ? t('patientReminders.guided') : reminder.reminderType === 'game_session' ? t('patientReminders.game_session') : t('patientReminders.simple')}
               </Text>
             </View>
             {/* Linked Checklist Info for Guided Reminders */}
@@ -275,6 +301,15 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
                 <Icon name="list-outline" size={12} color={colors.primary[500]} />
                 <Text style={styles.checklistText}>
                   {reminder.linkedChecklist.title} · {Intl.NumberFormat(i18n.language).format(reminder.linkedChecklist.stepCount)} {reminder.linkedChecklist.stepCount === 1 ? t('patientChecklists.step') : t('patientChecklists.steps')}
+                </Text>
+              </View>
+            )}
+            {/* Linked Game Info */}
+            {reminder.reminderType === 'game_session' && reminder.gameType && (
+              <View style={styles.checklistInfo}>
+                <Icon name="game-controller-outline" size={12} color={colors.primary[500]} />
+                <Text style={styles.checklistText}>
+                  {reminder.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? t('patientReminders.gameMemoryMatch') : t('patientReminders.gameOrientation')}
                 </Text>
               </View>
             )}
@@ -301,6 +336,31 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
         <View style={styles.actionRow}>
           <ActionButton
             label={t('patientReminders.startNow')}
+            icon="play-circle"
+            color={colors.primary[500]}
+            bg={colors.primary[50]}
+            onPress={() => onAction(reminder.id, 'start_now')}
+          />
+          <ActionButton
+            label={t('patientReminders.snooze')}
+            icon="time-outline"
+            color={colors.warning.main}
+            bg={colors.warning.light}
+            onPress={() => onAction(reminder.id, 'snooze')}
+          />
+          <ActionButton
+            label={t('patientReminders.skip')}
+            icon="close-circle-outline"
+            color={colors.neutral[500]}
+            bg={colors.neutral[100]}
+            onPress={() => onAction(reminder.id, 'skip')}
+          />
+        </View>
+      ) : reminder.reminderType === 'game_session' ? (
+        // Game Session Reminder: Play Game, Snooze, Skip
+        <View style={styles.actionRow}>
+          <ActionButton
+            label={t('patientReminders.game_session')}
             icon="play-circle"
             color={colors.primary[500]}
             bg={colors.primary[50]}
@@ -423,6 +483,14 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
                 icon="repeat-outline"
                 label={t('patientReminders.repeats')}
                 value={reminder.daysOfWeek.map((d) => days[d]).join(', ')}
+              />
+            )}
+            
+            {reminder.reminderType === 'game_session' && reminder.gameType && (
+              <DetailRow
+                icon="game-controller-outline"
+                label={t('patientReminders.linkedGame')}
+                value={reminder.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? t('patientReminders.gameMemoryMatch') : t('patientReminders.gameOrientation')}
               />
             )}
           </View>

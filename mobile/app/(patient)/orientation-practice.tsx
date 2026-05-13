@@ -19,22 +19,11 @@ import {
 import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 
-const DEFAULT_ITEMS: SRItem[] = [
-  { id: 'def1', prompt: 'What day of the week is it today?', correctAnswer: new Date().toLocaleDateString('en-US', { weekday: 'long' }), cueText: 'Think about what you did this morning.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def2', prompt: 'What month are we currently in?', correctAnswer: new Date().toLocaleDateString('en-US', { month: 'long' }), cueText: 'Look at a calendar or your phone.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def3', prompt: 'Where can you find your daily reminders?', correctAnswer: 'In the Reminders section of the app', cueText: 'Tap the alarm icon at the bottom.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def4', prompt: 'What should you do if you feel unwell or need help?', correctAnswer: 'Contact your caregiver or call for help', cueText: 'Your caregiver\'s number is in your contacts.', category: 'SAFETY_SUPPORT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def5', prompt: 'What is the name of your primary caregiver?', correctAnswer: 'My primary caregiver', cueText: 'The person who helps you with this app.', category: 'CAREGIVER', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def6', prompt: 'What year is it?', correctAnswer: new Date().getFullYear().toString(), cueText: 'Think of the current calendar year.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def7', prompt: 'What season are we currently in?', correctAnswer: 'The current season', cueText: 'Look outside at the weather or the trees.', category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def8', prompt: 'What city do you live in?', correctAnswer: 'My home city', cueText: 'The city where your house is located.', category: 'ORIENTATION_PLACE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def9', prompt: 'Where are your emergency contacts located in the app?', correctAnswer: 'In the Contacts section', cueText: 'Look for the people icon at the bottom of the screen.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def10', prompt: 'What do you normally do first thing in the morning?', correctAnswer: 'My morning routine', cueText: 'Think about breakfast or getting ready.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def11', prompt: 'What time is your main meal of the day usually?', correctAnswer: 'My usual meal time', cueText: 'Think about lunch or dinner time.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def12', prompt: 'Where should you check your daily tasks?', correctAnswer: 'In the Checklist section of the app', cueText: 'Look for the clipboard icon.', category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def13', prompt: 'What is your own phone number?', correctAnswer: 'My phone number', cueText: 'The number people use to call you.', category: 'OTHER', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def14', prompt: 'What is your address?', correctAnswer: 'My home address', cueText: 'The street you live on.', category: 'ORIENTATION_PLACE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def15', prompt: 'What should you do before going to sleep?', correctAnswer: 'My evening routine', cueText: 'Think about locking doors or brushing teeth.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+const getDefaultItems = (t: any): SRItem[] => [
+  { id: 'def1', prompt: t('orientationPractice.defaults.def1.prompt', 'What day of the week is it today?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { weekday: 'long' }), cueText: t('orientationPractice.defaults.def1.cue', 'Think about what you did this morning.'), category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def2', prompt: t('orientationPractice.defaults.def2.prompt', 'What month are we currently in?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { month: 'long' }), cueText: t('orientationPractice.defaults.def2.cue', 'Look at a calendar or your phone.'), category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def3', prompt: t('orientationPractice.defaults.def3.prompt', 'Where can you find your daily reminders?'), correctAnswer: t('orientationPractice.defaults.def3.answer', 'In the Reminders section of the app'), cueText: t('orientationPractice.defaults.def3.cue', 'Tap the alarm icon at the bottom.'), category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def4', prompt: t('orientationPractice.defaults.def4.prompt', 'What should you do if you feel unwell or need help?'), correctAnswer: t('orientationPractice.defaults.def4.answer', 'Contact your caregiver or call for help'), cueText: t('orientationPractice.defaults.def4.cue', "Your caregiver's number is in your contacts."), category: 'SAFETY_SUPPORT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
 ];
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────
@@ -79,9 +68,9 @@ function IntroScreen() {
           masteryStatus: i.masteryStatus ?? 'NEW',
         }));
       } catch {
-        srItems = DEFAULT_ITEMS;
+        srItems = getDefaultItems(t);
       }
-      if (srItems.length === 0) srItems = DEFAULT_ITEMS;
+      if (srItems.length === 0) srItems = getDefaultItems(t);
 
       const sessionRes = await gamesApi.startSession({
         gameType: 'SPACED_RETRIEVAL_ORIENTATION',
@@ -91,7 +80,7 @@ function IntroScreen() {
       const questions = buildQuestions(srItems, 4);
       store.startSession(questions, sessionId);
     } catch {
-      const questions = buildQuestions(DEFAULT_ITEMS, 4);
+      const questions = buildQuestions(getDefaultItems(t), 4);
       store.startSession(questions, `local-${Date.now()}`);
     } finally {
       setLoading(false);
@@ -343,7 +332,7 @@ const s = StyleSheet.create({
   questionHeader: { padding: spacing.lg, paddingBottom: spacing.sm },
   progressBar: { height: 6, backgroundColor: colors.neutral[200], borderRadius: 3, overflow: 'hidden', marginBottom: 4 },
   progressFill: { height: '100%', backgroundColor: colors.secondary[400] ?? colors.primary[400], borderRadius: 3 },
-  progressText: { fontSize: 12, color: colors.neutral[400], textAlign: 'right' },
+  progressText: { fontSize: 12, color: colors.neutral[400], alignSelf: 'flex-end' },
   questionBody: { padding: spacing.lg, paddingTop: 0, gap: spacing.lg },
   questionCard: { backgroundColor: '#fff', borderRadius: radius.xl ?? radius.lg, padding: spacing.xl, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
   questionText: { fontSize: 20, fontWeight: '600', color: colors.neutral[800], textAlign: 'center', lineHeight: 28 },

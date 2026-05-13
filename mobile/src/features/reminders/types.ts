@@ -1,6 +1,6 @@
 /** Reminders feature types - Redesigned for simple vs guided reminders */
 
-export type ReminderType = 'simple' | 'guided';
+export type ReminderType = 'simple' | 'guided' | 'game_session';
 export type PriorityLevel = 'normal' | 'high' | 'critical';
 
 export interface LinkedChecklistSummary {
@@ -34,6 +34,8 @@ export interface Reminder {
   // Redesigned: linked checklist for guided reminders
   linkedChecklistTemplateId: string | null;
   linkedChecklist?: LinkedChecklistSummary | null;
+  // Game session linked
+  gameType: string | null;
   // Redesigned: optional visual cue
   visualCueAssetId: string | null;
   visualCue?: VisualCueSummary | null;
@@ -63,6 +65,8 @@ export interface CreateReminderInput {
   reminderType?: ReminderType;
   // Redesigned: linked checklist for guided reminders
   linkedChecklistTemplateId?: string;
+  // Game session linked
+  gameType?: string;
   // Redesigned: optional visual cue
   visualCueAssetId?: string;
   snoozeEnabled?: boolean;

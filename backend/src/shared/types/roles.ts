@@ -94,6 +94,7 @@ export function toPrismaPriorityLevel(api: string): string {
 export const ReminderTypeApi = {
   SIMPLE: 'simple',
   GUIDED: 'guided',
+  GAME_SESSION: 'game_session',
 } as const;
 
 export type ReminderTypeApiValue = (typeof ReminderTypeApi)[keyof typeof ReminderTypeApi];

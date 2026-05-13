@@ -55,6 +55,8 @@ function toReminderResponse(r: any): ReminderResponse {
     // Redesigned: visual cue
     visualCueAssetId: r.visualCueAssetId ?? null,
     visualCue: buildVisualCueSummary(r),
+    // Game session type
+    gameType: r.gameType ?? null,
     snoozeEnabled: r.snoozeEnabled,
     defaultSnoozeMinutes: r.defaultSnoozeMinutes,
     // Native alarm flag
@@ -133,6 +135,7 @@ export const remindersService = {
       // Redesigned: visual cue
       visualCueAssetId: input.visualCueAssetId,
       linkedChecklistTemplateId: input.linkedChecklistTemplateId,
+      gameType: input.gameType,
       snoozeEnabled: input.snoozeEnabled ?? true,
       defaultSnoozeMinutes: input.defaultSnoozeMinutes ?? 10,
       nativeAlarmEnabled: input.nativeAlarmEnabled ?? false,
@@ -174,6 +177,7 @@ export const remindersService = {
     // Redesigned: visual cue
     if (input.visualCueAssetId !== undefined) updateData.visualCueAssetId = input.visualCueAssetId;
     if (input.linkedChecklistTemplateId !== undefined) updateData.linkedChecklistTemplateId = input.linkedChecklistTemplateId;
+    if (input.gameType !== undefined) updateData.gameType = input.gameType;
     if (input.snoozeEnabled !== undefined) updateData.snoozeEnabled = input.snoozeEnabled;
     if (input.defaultSnoozeMinutes !== undefined) updateData.defaultSnoozeMinutes = input.defaultSnoozeMinutes;
     if (input.nativeAlarmEnabled !== undefined) updateData.nativeAlarmEnabled = input.nativeAlarmEnabled;

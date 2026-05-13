@@ -299,7 +299,9 @@ function RecallScreen() {
 
       <View style={s.recallHeader}>
         <Text style={s.recallProgress}>{t('memoryMatch.progress', { current: currentIdx + 1, total: questions.length })}</Text>
-        <Text style={s.recallPrompt}>{t('memoryMatch.whereWas', 'Where was the')} <Text style={s.recallItemName}>{question.targetItem.label}</Text>?</Text>
+        <Text style={s.recallPrompt}>
+          {t('memoryMatch.whereWasPrompt', { item: question.targetItem.label, defaultValue: `Where was the ${question.targetItem.label}?` })}
+        </Text>
         <View style={s.recallEmoji}>
           <Text style={s.targetEmoji}>{question.targetItem.emoji}</Text>
         </View>
@@ -430,7 +432,7 @@ const s = StyleSheet.create({
   studyHeaderText: { fontSize: 16, color: colors.neutral[600], textAlign: 'center', marginBottom: spacing.md },
   timerBar: { height: 6, backgroundColor: colors.neutral[200], borderRadius: 3, overflow: 'hidden', marginBottom: 4 },
   timerFill: { height: '100%', backgroundColor: colors.primary[400], borderRadius: 3 },
-  timerText: { fontSize: 13, color: colors.neutral[500], textAlign: 'right' },
+  timerText: { fontSize: 13, color: colors.neutral[500], alignSelf: 'flex-end' },
   gridWrapper: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   grid: {},
   gridCell: { borderWidth: 1, borderColor: colors.neutral[200], backgroundColor: colors.surface ?? '#f9f9f7', alignItems: 'center', justifyContent: 'center', gap: 2 },

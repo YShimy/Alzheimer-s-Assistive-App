@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 
 const reminderCategories = ['medication', 'appointment', 'task', 'hydration', 'meal', 'call', 'custom'] as const;
 const priorityLevels = ['normal', 'high', 'critical'] as const;
-const reminderTypes = ['simple', 'guided'] as const;
+const reminderTypes = ['simple', 'guided', 'game_session'] as const;
 
 export const createReminderSchema = z.object({
   title: z.string().min(1).max(200),
@@ -24,6 +24,8 @@ export const createReminderSchema = z.object({
   defaultSnoozeMinutes: z.number().int().min(1).max(120).default(10),
   // Native phone alarm (critical priority only)
   nativeAlarmEnabled: z.boolean().default(false),
+  // Game session type
+  gameType: z.string().optional(),
 });
 
 export const updateReminderSchema = z.object({
@@ -47,6 +49,8 @@ export const updateReminderSchema = z.object({
   isActive: z.boolean().optional(),
   // Native phone alarm (critical priority only)
   nativeAlarmEnabled: z.boolean().optional(),
+  // Game session type
+  gameType: z.string().nullable().optional(),
 });
 
 export const patientIdParam = z.object({

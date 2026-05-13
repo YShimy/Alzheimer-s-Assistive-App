@@ -294,6 +294,12 @@
     "guided": "Step by step",
     "simpleDesc": "One-tap complete",
     "guidedDesc": "Step-by-step with checklist",
+    "game_session": "Play Game",
+    "game_sessionDesc": "Interactive cognitive game",
+    "linkedGame": "Selected Game",
+    "gameMemoryMatch": "Memory Match",
+    "gameOrientation": "Orientation Practice",
+    "gameHelp": "Select the game the patient will play.",
     "priority": "Priority",
     "priorityNormal": "Normal",
     "priorityHigh": "High",
@@ -903,7 +909,7 @@
     "goodJob": "✓  Good job!",
     "thatsOkay": "That's okay. Let's continue.",
     "progress": "{{current}} of {{total}}",
-    "whereWas": "Where was the",
+    "whereWasPrompt": "Where was the {{item}}?",
     "sessionComplete": "Session Complete",
     "advanceMsg": "Great practice! You're ready for the next level.",
     "stayMsg": "Nice effort! Let's practice this level again.",
@@ -914,7 +920,8 @@
     "accuracy": "Accuracy",
     "levelLabel": "Level",
     "practiceAgain": "Practice Again",
-    "done": "Done"
+    "done": "Done",
+    "recommended": "3×/week recommended"
   },
   "orientationPractice": {
     "title": "Orientation Practice",
@@ -942,7 +949,29 @@
     "withHint": "With a hint",
     "accuracy": "Accuracy",
     "practiceAgain": "Practice Again",
-    "done": "Done"
+    "done": "Done",
+    "recommended": "Daily practice",
+    "locale": "en-US",
+    "defaults": {
+      "def1": {
+        "prompt": "What day of the week is it today?",
+        "cue": "Think about what you did this morning."
+      },
+      "def2": {
+        "prompt": "What month are we currently in?",
+        "cue": "Look at a calendar or your phone."
+      },
+      "def3": {
+        "prompt": "Where can you find your daily reminders?",
+        "answer": "In the Reminders section of the app",
+        "cue": "Tap the alarm icon at the bottom."
+      },
+      "def4": {
+        "prompt": "What should you do if you feel unwell or need help?",
+        "answer": "Contact your caregiver or call for help",
+        "cue": "Your caregiver's number is in your contacts."
+      }
+    }
   },
   "manageFacts": {
     "title": "Orientation Facts",

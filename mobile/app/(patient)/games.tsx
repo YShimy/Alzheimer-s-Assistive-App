@@ -5,7 +5,7 @@
  * - Associative Memory Matching (Memory Match)
  * - Spaced Retrieval Orientation Practice (Orientation Practice)
  */
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, I18nManager } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
@@ -51,16 +51,16 @@ export default function GamesScreen() {
               <Ionicons name="grid-outline" size={32} color={colors.primary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>{t('games.memoryMatch.title', 'Memory Match')}</Text>
+              <Text style={styles.gameTitle}>{t('memoryMatch.title', 'Memory Match')}</Text>
               <Text style={styles.gameDescription}>
-                {t('games.memoryMatch.description', 'Practice remembering which item belongs with which place.')}
+                {t('memoryMatch.subtitle', 'Practice remembering which item belongs with which place.')}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
+            <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label={t('games.memoryMatch.recommended', '3×/week recommended')} color={colors.primary[500]} />
+            <Tag label={t('memoryMatch.recommended', '3×/week recommended')} color={colors.primary[500]} />
           </View>
         </AppCard>
       </Pressable>
@@ -73,16 +73,16 @@ export default function GamesScreen() {
               <Ionicons name="help-circle-outline" size={32} color={colors.secondary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>{t('games.orientationPractice.title', 'Orientation Practice')}</Text>
+              <Text style={styles.gameTitle}>{t('orientationPractice.title', 'Orientation Practice')}</Text>
               <Text style={styles.gameDescription}>
-                {t('games.orientationPractice.description', 'Practice helpful daily information.')}
+                {t('orientationPractice.subtitle', 'Practice remembering helpful daily information. Take your time — there\'s no rush.')}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color={colors.neutral[400]} />
+            <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label={t('games.orientationPractice.recommended', 'Daily practice')} color={colors.secondary[500]} />
+            <Tag label={t('orientationPractice.recommended', 'Daily practice')} color={colors.secondary[500]} />
           </View>
         </AppCard>
       </Pressable>
