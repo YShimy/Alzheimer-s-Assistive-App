@@ -58,6 +58,7 @@ export const remindersRepo = {
     reminderType?: any; // ReminderType enum
     visualCueAssetId?: string;
     linkedChecklistTemplateId?: string;
+    gameType?: string;
     snoozeEnabled: boolean;
     defaultSnoozeMinutes: number;
     nativeAlarmEnabled?: boolean;
@@ -82,6 +83,7 @@ export const remindersRepo = {
         // Redesigned: visual cue
         visualCueAssetId: data.visualCueAssetId ?? undefined,
         linkedChecklistTemplateId: data.linkedChecklistTemplateId ?? undefined,
+        gameType: data.gameType ?? undefined,
         snoozeEnabled: data.snoozeEnabled,
         defaultSnoozeMinutes: data.defaultSnoozeMinutes,
         nativeAlarmEnabled: data.nativeAlarmEnabled ?? false,

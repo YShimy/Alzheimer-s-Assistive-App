@@ -1,7 +1,8 @@
 /**
  * Orientation Practice — Route
- * Spaced Retrieval / Orientation Practice game.
- * Inspired by Smith et al. 2024 and Han et al. 2017.
+ * Spaced Retrieval / Personal Orientation Practice game.
+ * Evidence-informed reality orientation and spaced retrieval training.
+ * Citations: Savulich et al., 2017; Han et al., 2017; Smith et al., 2024.
  */
 import React, { useEffect, useState } from 'react';
 import {
@@ -13,17 +14,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useSpacedRetrievalStore } from '@/src/features/games/spacedRetrieval/store';
 import {
-  buildQuestions, computeSessionScore,
-  type SRItem, type PracticeQuestion,
+  buildQuestions, computeSessionScore, processAnswer,
+  type SRItem, type PracticeQuestion, type SupportLevel,
 } from '@/src/features/games/spacedRetrieval/engine';
 import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 
 const getDefaultItems = (t: any): SRItem[] => [
-  { id: 'def1', prompt: t('orientationPractice.defaults.def1.prompt', 'What day of the week is it today?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { weekday: 'long' }), cueText: t('orientationPractice.defaults.def1.cue', 'Think about what you did this morning.'), category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def2', prompt: t('orientationPractice.defaults.def2.prompt', 'What month are we currently in?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { month: 'long' }), cueText: t('orientationPractice.defaults.def2.cue', 'Look at a calendar or your phone.'), category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def1', prompt: t('orientationPractice.defaults.def1.prompt', 'What day of the week is it today?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { weekday: 'long' }), cueText: t('orientationPractice.defaults.def1.cue', 'Think about what you did this morning.'), category: 'TIME_ORIENTATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def2', prompt: t('orientationPractice.defaults.def2.prompt', 'What month are we currently in?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { month: 'long' }), cueText: t('orientationPractice.defaults.def2.cue', 'Look at a calendar or your phone.'), category: 'TIME_ORIENTATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
   { id: 'def3', prompt: t('orientationPractice.defaults.def3.prompt', 'Where can you find your daily reminders?'), correctAnswer: t('orientationPractice.defaults.def3.answer', 'In the Reminders section of the app'), cueText: t('orientationPractice.defaults.def3.cue', 'Tap the alarm icon at the bottom.'), category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def4', prompt: t('orientationPractice.defaults.def4.prompt', 'What should you do if you feel unwell or need help?'), correctAnswer: t('orientationPractice.defaults.def4.answer', 'Contact your caregiver or call for help'), cueText: t('orientationPractice.defaults.def4.cue', "Your caregiver's number is in your contacts."), category: 'SAFETY_SUPPORT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
+  { id: 'def4', prompt: t('orientationPractice.defaults.def4.prompt', 'What should you do if you feel unwell or need help?'), correctAnswer: t('orientationPractice.defaults.def4.answer', 'Contact your caregiver or call for help'), cueText: t('orientationPractice.defaults.def4.cue', "Your caregiver's number is in your contacts."), category: 'SUPPORT_FACT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
 ];
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────
@@ -51,11 +52,26 @@ function IntroScreen() {
   const handleStart = async () => {
     setLoading(true);
     try {
-      // Try fetching patient's SR items from backend
+      // Fetch patient items & settings from backend
       let srItems: SRItem[] = [];
+      let supportLevel: SupportLevel = 'GUIDED_SUPPORT';
+      let enabledFamilies: string[] | undefined = undefined;
+      let maxQs = 6;
+
       try {
-        const res = await spacedRetrievalApi.listItems('me', true);
-        srItems = (res.items ?? []).map((i: any) => ({
+        const [itemsRes, settingsRes] = await Promise.all([
+          spacedRetrievalApi.listItems('me', true),
+          spacedRetrievalApi.getSettings('me'),
+        ]);
+
+        const fetchedSettings = settingsRes.settings;
+        if (fetchedSettings) {
+          if (fetchedSettings.supportLevel) supportLevel = fetchedSettings.supportLevel;
+          if (fetchedSettings.enabledFamilies) enabledFamilies = fetchedSettings.enabledFamilies;
+          if (fetchedSettings.maxQuestionsPerSession) maxQs = fetchedSettings.maxQuestionsPerSession;
+        }
+
+        srItems = (itemsRes.items ?? []).map((i: any) => ({
           id: i.id,
           prompt: i.prompt,
           correctAnswer: i.correctAnswer,
@@ -66,21 +82,25 @@ function IntroScreen() {
           active: i.active,
           currentIntervalStep: i.currentIntervalStep ?? 0,
           masteryStatus: i.masteryStatus ?? 'NEW',
+          patientVisible: i.patientVisible ?? true,
+          supportLevelOverride: i.supportLevelOverride ?? null,
         }));
       } catch {
         srItems = getDefaultItems(t);
       }
+
       if (srItems.length === 0) srItems = getDefaultItems(t);
 
       const sessionRes = await gamesApi.startSession({
-        gameType: 'SPACED_RETRIEVAL_ORIENTATION',
+        gameType: 'PERSONAL_ORIENTATION_PRACTICE',
         reminderId: params.reminderId,
       });
       const sessionId = sessionRes.session?.id ?? `local-${Date.now()}`;
-      const questions = buildQuestions(srItems, 4);
+      
+      const questions = buildQuestions(srItems, supportLevel, enabledFamilies, maxQs);
       store.startSession(questions, sessionId);
     } catch {
-      const questions = buildQuestions(getDefaultItems(t), 4);
+      const questions = buildQuestions(getDefaultItems(t), 'GUIDED_SUPPORT');
       store.startSession(questions, `local-${Date.now()}`);
     } finally {
       setLoading(false);
@@ -91,9 +111,9 @@ function IntroScreen() {
     <SafeAreaView style={s.safeArea}>
       <ScrollView contentContainerStyle={s.introContainer}>
         <View style={s.introIcon}>
-          <Ionicons name="help-circle-outline" size={56} color={colors.secondary[500]} />
+          <Ionicons name="people-outline" size={56} color={colors.secondary[500]} />
         </View>
-        <Text style={s.introTitle}>{t('orientationPractice.title', 'Orientation Practice')}</Text>
+        <Text style={s.introTitle}>{t('orientationPractice.title', 'Personal Orientation Practice')}</Text>
         <Text style={s.introSubtitle}>
           {t('orientationPractice.subtitle', "Practice remembering helpful daily information. Take your time — there's no rush.")}
         </Text>
@@ -101,7 +121,7 @@ function IntroScreen() {
           <Text style={s.introInfoText}>{t('orientationPractice.oneQuestion', '• One question at a time')}</Text>
           <Text style={s.introInfoText}>{t('orientationPractice.tapAnswer', '• Tap the answer you think is correct')}</Text>
           <Text style={s.introInfoText}>{t('orientationPractice.helpfulHint', '• A helpful hint is always available')}</Text>
-          <Text style={s.introInfoText}>{t('orientationPractice.sessionsTake', '• Sessions take about 5 minutes')}</Text>
+          <Text style={s.introInfoText}>{t('orientationPractice.sessionsTake', '• Gentle, stress-free daily practice')}</Text>
         </View>
         <TouchableOpacity style={[s.startBtn, { backgroundColor: colors.secondary[500] }]} onPress={handleStart} disabled={loading} activeOpacity={0.85}>
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.startBtnText}>{t('orientationPractice.beginPractice', 'Begin Practice')}</Text>}
@@ -134,7 +154,7 @@ function QuestionScreen() {
     );
     setSelected(choice);
     setTimeout(() => {
-      store.answer(isCorrect, showCue, isUnsure);
+      store.answer(isCorrect, showCue, isUnsure, question);
       store.setPhase('feedback');
     }, 400);
   };
@@ -191,7 +211,7 @@ function QuestionScreen() {
         {!showCue && question.cueText && !selected && (
           <TouchableOpacity style={s.cueToggle} onPress={() => setShowCue(true)} activeOpacity={0.7}>
             <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
-            <Text style={s.cueToggleText}>{t('orientationPractice.showHint', 'Show hint')}</Text>
+            <Text style={s.cueToggleText}>{t('orientationPractice.showHint', 'Show helpful hint')}</Text>
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -217,15 +237,16 @@ function FeedbackScreen() {
         score: score.score,
         accuracyPercent: score.accuracyPercent,
         status: 'COMPLETED',
-        durationSeconds: Math.round((Date.now() - store.startedAt) / 1000),
-        metadata: { cueUseRate: score.cueUseRate / 100, correctWithoutCue: score.correctWithoutCue, correctWithCue: score.correctWithCue },
+        durationSeconds: Math.max(15, Math.round((Date.now() - store.startedAt) / 1000)),
+        metadata: { cueUseRate: score.cueUseRate / 100, correctWithoutCue: score.correctWithoutCue, correctWithCue: score.correctWithCue, levelReached: score.levelReached },
         itemResults: store.questions.map((q, i) => {
           const r = store.results[i];
           return {
-            itemIndex: i,
+            itemId: q.itemId,
             prompt: q.prompt,
             correct: r?.correct ?? false,
             usedCue: r?.usedCue ?? false,
+            unsure: r?.unsure ?? false,
             correctAnswer: q.correctAnswer,
           };
         }),
@@ -250,7 +271,7 @@ function FeedbackScreen() {
         </Text>
         <Text style={s.feedbackBody}>
           {isCorrect
-            ? t('orientationPractice.youRemembered', 'You remembered that one.')
+            ? t('orientationPractice.youRemembered', 'You remembered that one without any trouble.')
             : t('orientationPractice.answerIs', { answer: question?.correctAnswer })}
         </Text>
         {!isCorrect && question?.cueText && (
@@ -261,7 +282,7 @@ function FeedbackScreen() {
         )}
         <TouchableOpacity style={s.nextBtn} onPress={goNext} activeOpacity={0.85}>
           <Text style={s.nextBtnText}>
-            {store.currentQuestionIndex + 1 >= store.questions.length ? t('orientationPractice.seeResults', 'See Results') : t('orientationPractice.nextQuestion', 'Next Question')}
+            {store.currentQuestionIndex + 1 >= store.questions.length ? t('orientationPractice.seeResults', 'See Practice Summary') : t('orientationPractice.nextQuestion', 'Next Question')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -291,9 +312,9 @@ function ResultScreen() {
 
         <View style={s.resultCard}>
           <SRStatRow label={t('orientationPractice.questionsAnswered', 'Questions answered')} value={`${total}`} />
-          <SRStatRow label={t('orientationPractice.correct', 'Correct')} value={`${score.correctWithoutCue + score.correctWithCue}`} />
-          <SRStatRow label={t('orientationPractice.withHint', 'With a hint')} value={`${score.correctWithCue}`} />
-          <SRStatRow label={t('orientationPractice.accuracy', 'Accuracy')} value={`${Math.round(score.accuracyPercent)}%`} />
+          <SRStatRow label={t('orientationPractice.correct', 'Remembered correctly')} value={`${score.correctWithoutCue + score.correctWithCue}`} />
+          <SRStatRow label={t('orientationPractice.withHint', 'Needed a hint')} value={`${score.correctWithCue}`} />
+          <SRStatRow label={t('orientationPractice.levelReached', 'Practice Level')} value={`Level ${score.levelReached}`} />
         </View>
 
         <TouchableOpacity style={[s.startBtn, { backgroundColor: colors.secondary[500] }]} onPress={() => { store.reset(); }} activeOpacity={0.85}>
@@ -321,7 +342,7 @@ const s = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background ?? '#f9f9f7' },
   introContainer: { padding: spacing.xl, alignItems: 'center', paddingBottom: 48 },
   introIcon: { width: 96, height: 96, borderRadius: 48, backgroundColor: colors.secondary[50], alignItems: 'center', justifyContent: 'center', marginBottom: spacing.lg },
-  introTitle: { fontSize: 26, fontWeight: '700', color: colors.neutral[800], marginBottom: spacing.sm },
+  introTitle: { fontSize: 26, fontWeight: '700', color: colors.neutral[800], marginBottom: spacing.sm, textAlign: 'center' },
   introSubtitle: { fontSize: 15, color: colors.neutral[500], textAlign: 'center', lineHeight: 22, marginBottom: spacing.lg },
   introInfoCard: { width: '100%', backgroundColor: colors.surface ?? '#f0f0ee', borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm, marginBottom: spacing.xl },
   introInfoText: { fontSize: 14, color: colors.neutral[600], lineHeight: 22 },

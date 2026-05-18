@@ -159,6 +159,11 @@ export interface CreateSRItemDto {
   distractors?: string[];
   cueText?: string;
   category: string;
+  linkedContactId?: string;
+  supportRole?: string;
+  sensitive?: boolean;
+  patientVisible?: boolean;
+  supportLevelOverride?: string;
 }
 
 export interface UpdateSRItemDto {
@@ -169,6 +174,11 @@ export interface UpdateSRItemDto {
   cueText?: string;
   category?: string;
   active?: boolean;
+  linkedContactId?: string | null;
+  supportRole?: string | null;
+  sensitive?: boolean;
+  patientVisible?: boolean;
+  supportLevelOverride?: string | null;
 }
 
 export interface SRItemResponse {
@@ -181,6 +191,11 @@ export interface SRItemResponse {
   cueText: string | null;
   category: string;
   active: boolean;
+  linkedContactId?: string | null;
+  supportRole?: string | null;
+  sensitive?: boolean;
+  patientVisible?: boolean;
+  supportLevelOverride?: string | null;
   masteryStatus: string;
   currentIntervalStep: number;
   nextDueAt: string | null;

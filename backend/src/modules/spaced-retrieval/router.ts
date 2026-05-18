@@ -31,3 +31,15 @@ spacedRetrievalRouter.delete(
   careLinkGuard('canEditReminders'),
   srController.archiveItem,
 );
+
+spacedRetrievalRouter.get(
+  '/:patientId/spaced-retrieval/settings',
+  careLinkGuard('canViewProgress'),
+  srController.getSettings,
+);
+
+spacedRetrievalRouter.put(
+  '/:patientId/spaced-retrieval/settings',
+  careLinkGuard('canEditReminders'),
+  srController.upsertSettings,
+);

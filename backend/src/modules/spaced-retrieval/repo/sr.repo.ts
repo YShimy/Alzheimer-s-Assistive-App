@@ -29,6 +29,11 @@ export class SpacedRetrievalRepo {
     distractors?: any;
     cueText?: string;
     category?: string;
+    linkedContactId?: string;
+    supportRole?: string;
+    sensitive?: boolean;
+    patientVisible?: boolean;
+    supportLevelOverride?: string;
   }) {
     return prisma.spacedRetrievalItem.create({
       data: {
@@ -40,6 +45,11 @@ export class SpacedRetrievalRepo {
         distractors: data.distractors ?? [],
         cueText: data.cueText ?? null,
         category: data.category as any,
+        linkedContactId: data.linkedContactId ?? null,
+        supportRole: data.supportRole ?? null,
+        sensitive: data.sensitive ?? false,
+        patientVisible: data.patientVisible ?? true,
+        supportLevelOverride: data.supportLevelOverride ?? null,
       },
     });
   }
@@ -59,8 +69,17 @@ export class SpacedRetrievalRepo {
     consecutiveIncorrect: number;
     totalAttempts: number;
     correctAttempts: number;
+    correctWithoutCue: number;
+    correctWithCue: number;
+    unsureAttempts: number;
+    incorrectAttempts: number;
     lastPracticedAt: Date;
     archivedAt: Date | null;
+    linkedContactId: string | null;
+    supportRole: string | null;
+    sensitive: boolean;
+    patientVisible: boolean;
+    supportLevelOverride: string | null;
   }>) {
     const updateData: any = { ...data };
     if (data.category) updateData.category = data.category as any;
@@ -85,6 +104,48 @@ export class SpacedRetrievalRepo {
       _count: { id: true },
     });
     return results;
+  }
+
+  async getSettings(patientId: string) {
+    let settings = await prisma.personalOrientationSettings.findUnique({
+      where: { patientId },
+    });
+    if (!settings) {
+      settings = await prisma.personalOrientationSettings.create({
+        data: {
+          patientId,
+          supportLevel: 'GUIDED_SUPPORT',
+          weeklyTargetSessions: 5,
+          enabledFamilies: ['TIME_ORIENTATION', 'PLACE_ORIENTATION', 'ROUTINE_ORIENTATION', 'APP_NAVIGATION', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+          includePeopleWithoutPhotos: false,
+          includeSensitiveContacts: false,
+          maxQuestionsPerSession: 6,
+          cueStyle: 'button',
+          allowMaintenanceItems: true,
+        },
+      });
+    }
+    return settings;
+  }
+
+  async upsertSettings(patientId: string, updatedByUserId: string, data: any) {
+    const updateData: any = { ...data, updatedByUserId };
+    return prisma.personalOrientationSettings.upsert({
+      where: { patientId },
+      update: updateData,
+      create: {
+        patientId,
+        updatedByUserId,
+        supportLevel: data.supportLevel ?? 'GUIDED_SUPPORT',
+        weeklyTargetSessions: data.weeklyTargetSessions ?? 5,
+        enabledFamilies: data.enabledFamilies ?? ['TIME_ORIENTATION', 'PLACE_ORIENTATION', 'ROUTINE_ORIENTATION', 'APP_NAVIGATION', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+        includePeopleWithoutPhotos: data.includePeopleWithoutPhotos ?? false,
+        includeSensitiveContacts: data.includeSensitiveContacts ?? false,
+        maxQuestionsPerSession: data.maxQuestionsPerSession ?? 6,
+        cueStyle: data.cueStyle ?? 'button',
+        allowMaintenanceItems: data.allowMaintenanceItems ?? true,
+      },
+    });
   }
 }
 

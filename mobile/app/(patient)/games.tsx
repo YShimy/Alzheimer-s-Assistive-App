@@ -31,7 +31,7 @@ export default function GamesScreen() {
     eventLogger.log({
       eventName: EventNames.GAME_OPENED,
       screenName: 'GamesScreen',
-      payload: { gameType: 'SPACED_RETRIEVAL_ORIENTATION' },
+      payload: { gameType: 'PERSONAL_ORIENTATION_PRACTICE' },
     });
     router.push('/(patient)/orientation-practice' as any);
   };
@@ -65,24 +65,24 @@ export default function GamesScreen() {
         </AppCard>
       </Pressable>
 
-      {/* Orientation Practice Card */}
+      {/* My Day & People Card */}
       <Pressable onPress={openOrientationPractice} style={({ pressed }) => [pressed && { opacity: 0.9 }]}>
         <AppCard style={styles.gameCard}>
           <View style={styles.gameCardContent}>
             <View style={[styles.gameIconContainer, { backgroundColor: colors.secondary[50] }]}>
-              <Ionicons name="help-circle-outline" size={32} color={colors.secondary[500]} />
+              <Ionicons name="people-outline" size={32} color={colors.secondary[500]} />
             </View>
             <View style={styles.gameCardText}>
-              <Text style={styles.gameTitle}>{t('orientationPractice.title', 'Orientation Practice')}</Text>
+              <Text style={styles.gameTitle}>{t('myDayPeople.title', 'My Day & People')}</Text>
               <Text style={styles.gameDescription}>
-                {t('orientationPractice.subtitle', 'Practice remembering helpful daily information. Take your time — there\'s no rush.')}
+                {t('myDayPeople.subtitle', 'Practice today\'s information, routines, and familiar people.')}
               </Text>
             </View>
             <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={24} color={colors.neutral[400]} />
           </View>
 
           <View style={styles.gameTags}>
-            <Tag label={t('orientationPractice.recommended', 'Daily practice')} color={colors.secondary[500]} />
+            <Tag label={t('myDayPeople.recommended', 'Daily practice')} color={colors.secondary[500]} />
           </View>
         </AppCard>
       </Pressable>

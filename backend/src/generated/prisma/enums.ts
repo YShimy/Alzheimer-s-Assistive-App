@@ -129,7 +129,8 @@ export type NotificationType = (typeof NotificationType)[keyof typeof Notificati
 
 export const GameType = {
   ASSOCIATIVE_MEMORY_MATCH: 'ASSOCIATIVE_MEMORY_MATCH',
-  SPACED_RETRIEVAL_ORIENTATION: 'SPACED_RETRIEVAL_ORIENTATION'
+  SPACED_RETRIEVAL_ORIENTATION: 'SPACED_RETRIEVAL_ORIENTATION',
+  PERSONAL_ORIENTATION_PRACTICE: 'PERSONAL_ORIENTATION_PRACTICE'
 } as const
 
 export type GameType = (typeof GameType)[keyof typeof GameType]
@@ -151,10 +152,21 @@ export const SpacedRetrievalCategory = {
   DAILY_ROUTINE: 'DAILY_ROUTINE',
   APP_NAVIGATION: 'APP_NAVIGATION',
   SAFETY_SUPPORT: 'SAFETY_SUPPORT',
+  PEOPLE_RECOGNITION: 'PEOPLE_RECOGNITION',
+  SUPPORT_FACT: 'SUPPORT_FACT',
   OTHER: 'OTHER'
 } as const
 
 export type SpacedRetrievalCategory = (typeof SpacedRetrievalCategory)[keyof typeof SpacedRetrievalCategory]
+
+
+export const SupportLevel = {
+  LIGHT_SUPPORT: 'LIGHT_SUPPORT',
+  GUIDED_SUPPORT: 'GUIDED_SUPPORT',
+  HIGH_SUPPORT: 'HIGH_SUPPORT'
+} as const
+
+export type SupportLevel = (typeof SupportLevel)[keyof typeof SupportLevel]
 
 
 export const MasteryStatus = {

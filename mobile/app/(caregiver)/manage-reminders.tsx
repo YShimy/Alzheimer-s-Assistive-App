@@ -497,12 +497,12 @@ export default function CaregiverRemindersScreen() {
                   <TouchableOpacity
                     style={[
                       styles.checklistSelector,
-                      form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
+                      form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
                     ]}
-                    onPress={() => setForm(f => ({ ...f, gameType: 'SPACED_RETRIEVAL_ORIENTATION' }))}
+                    onPress={() => setForm(f => ({ ...f, gameType: 'PERSONAL_ORIENTATION_PRACTICE' }))}
                   >
-                    <Icon name="compass-outline" size={24} color={form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' ? colors.primary[500] : colors.neutral[500]} />
-                    <Text style={[styles.checklistPlaceholder, form.gameType === 'SPACED_RETRIEVAL_ORIENTATION' && { color: colors.primary[700], fontWeight: '600' }]}>
+                    <Icon name="people-outline" size={24} color={form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' ? colors.primary[500] : colors.neutral[500]} />
+                    <Text style={[styles.checklistPlaceholder, form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && { color: colors.primary[700], fontWeight: '600' }]}>
                       {t('patientReminders.gameOrientation')}
                     </Text>
                   </TouchableOpacity>

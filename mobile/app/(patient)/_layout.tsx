@@ -125,7 +125,7 @@ export default function PatientLayout() {
         name="orientation-practice"
         options={{
           href: null,
-          headerTitle: 'Orientation Practice',
+          headerTitle: t('myDayPeople.title', 'My Day & People'),
         }}
       />
       <Tabs.Screen

@@ -16,7 +16,8 @@ type FieldDef = { key: keyof ImportantInfoData; label: string; multiline?: boole
 
 type Section = { titleKey: string; defaultTitle: string; warning?: string; fields: FieldDef[] };
 
-function getSections(t: (key: string, fallback?: string) => string): Section[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getSections(t: any): Section[] {
   return [
     {
       titleKey: 'importantInfo.section.basic', defaultTitle: 'Basic Support Info',

@@ -396,6 +396,7 @@ export const ModelName = {
   GameLevelResult: 'GameLevelResult',
   GameItemResult: 'GameItemResult',
   SpacedRetrievalItem: 'SpacedRetrievalItem',
+  PersonalOrientationSettings: 'PersonalOrientationSettings',
   AnalyticsEvent: 'AnalyticsEvent',
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "gameItemResult" | "spacedRetrievalItem" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset" | "patientImportantInfo" | "patientSummaryExport" | "device" | "notification" | "pushTicket"
+    modelProps: "user" | "patientDocument" | "emailVerification" | "careLink" | "reminder" | "reminderEvent" | "checklistTemplate" | "checklistRun" | "gameSession" | "gameLevelResult" | "gameItemResult" | "spacedRetrievalItem" | "personalOrientationSettings" | "analyticsEvent" | "contactSupportConsent" | "patientContact" | "contactMemo" | "mediaAsset" | "patientImportantInfo" | "patientSummaryExport" | "device" | "notification" | "pushTicket"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1310,6 +1311,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SpacedRetrievalItemCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SpacedRetrievalItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    PersonalOrientationSettings: {
+      payload: Prisma.$PersonalOrientationSettingsPayload<ExtArgs>
+      fields: Prisma.PersonalOrientationSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PersonalOrientationSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PersonalOrientationSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.PersonalOrientationSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PersonalOrientationSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.PersonalOrientationSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.PersonalOrientationSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.PersonalOrientationSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PersonalOrientationSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.PersonalOrientationSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        update: {
+          args: Prisma.PersonalOrientationSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.PersonalOrientationSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PersonalOrientationSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PersonalOrientationSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.PersonalOrientationSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalOrientationSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.PersonalOrientationSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePersonalOrientationSettings>
+        }
+        groupBy: {
+          args: Prisma.PersonalOrientationSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PersonalOrientationSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PersonalOrientationSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PersonalOrientationSettingsCountAggregateOutputType> | number
         }
       }
     }
@@ -2352,6 +2427,11 @@ export const SpacedRetrievalItemScalarFieldEnum = {
   cueText: 'cueText',
   category: 'category',
   active: 'active',
+  linkedContactId: 'linkedContactId',
+  supportRole: 'supportRole',
+  sensitive: 'sensitive',
+  patientVisible: 'patientVisible',
+  supportLevelOverride: 'supportLevelOverride',
   currentIntervalStep: 'currentIntervalStep',
   currentIntervalSeconds: 'currentIntervalSeconds',
   masteryStatus: 'masteryStatus',
@@ -2359,6 +2439,10 @@ export const SpacedRetrievalItemScalarFieldEnum = {
   consecutiveIncorrect: 'consecutiveIncorrect',
   totalAttempts: 'totalAttempts',
   correctAttempts: 'correctAttempts',
+  correctWithoutCue: 'correctWithoutCue',
+  correctWithCue: 'correctWithCue',
+  unsureAttempts: 'unsureAttempts',
+  incorrectAttempts: 'incorrectAttempts',
   lastPracticedAt: 'lastPracticedAt',
   nextDueAt: 'nextDueAt',
   archivedAt: 'archivedAt',
@@ -2367,6 +2451,25 @@ export const SpacedRetrievalItemScalarFieldEnum = {
 } as const
 
 export type SpacedRetrievalItemScalarFieldEnum = (typeof SpacedRetrievalItemScalarFieldEnum)[keyof typeof SpacedRetrievalItemScalarFieldEnum]
+
+
+export const PersonalOrientationSettingsScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  supportLevel: 'supportLevel',
+  weeklyTargetSessions: 'weeklyTargetSessions',
+  enabledFamilies: 'enabledFamilies',
+  includePeopleWithoutPhotos: 'includePeopleWithoutPhotos',
+  includeSensitiveContacts: 'includeSensitiveContacts',
+  maxQuestionsPerSession: 'maxQuestionsPerSession',
+  cueStyle: 'cueStyle',
+  allowMaintenanceItems: 'allowMaintenanceItems',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedByUserId: 'updatedByUserId'
+} as const
+
+export type PersonalOrientationSettingsScalarFieldEnum = (typeof PersonalOrientationSettingsScalarFieldEnum)[keyof typeof PersonalOrientationSettingsScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {
@@ -2430,6 +2533,11 @@ export const ContactMemoScalarFieldEnum = {
   shortMemo: 'shortMemo',
   photoAssetId: 'photoAssetId',
   isArchived: 'isArchived',
+  includeInGame: 'includeInGame',
+  isSensitive: 'isSensitive',
+  supportRole: 'supportRole',
+  safePatientNote: 'safePatientNote',
+  preferredName: 'preferredName',
   patientFavorite: 'patientFavorite',
   caregiverFavorite: 'caregiverFavorite',
   patientPriorityRank: 'patientPriorityRank',
@@ -2893,6 +3001,20 @@ export type ListEnumMasteryStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'SupportLevel'
+ */
+export type EnumSupportLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'SupportLevel[]'
+ */
+export type ListEnumSupportLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportLevel[]'>
+    
+
+
+/**
  * Reference to a field of type 'ConsentStatus'
  */
 export type EnumConsentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConsentStatus'>
@@ -3068,6 +3190,7 @@ export type GlobalOmitConfig = {
   gameLevelResult?: Prisma.GameLevelResultOmit
   gameItemResult?: Prisma.GameItemResultOmit
   spacedRetrievalItem?: Prisma.SpacedRetrievalItemOmit
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
   contactSupportConsent?: Prisma.ContactSupportConsentOmit
   patientContact?: Prisma.PatientContactOmit

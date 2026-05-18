@@ -158,8 +158,8 @@ export default function CaregiverHomeScreen() {
                   router.push('/(caregiver)/manage-sr-items' as any);
                 }}
               >
-                <Icon name="help-circle-outline" size={16} color={colors.secondary[600]} />
-                <Text style={styles.actionBtnText}>{t('caregiverHome.facts', 'Facts')}</Text>
+                <Icon name="people-outline" size={16} color={colors.secondary[600]} />
+                <Text style={styles.actionBtnText}>{t('caregiverHome.facts', 'My Day & People')}</Text>
               </Pressable>
             </View>
           </AppCard>

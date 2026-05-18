@@ -72,7 +72,7 @@ export class GamesController {
 
     const session = await gamesService.completeSession(sessionId, {
       ...dto,
-      gameType: 'SPACED_RETRIEVAL_ORIENTATION',
+      gameType: 'PERSONAL_ORIENTATION_PRACTICE',
       status: dto.quitEarly ? 'ABANDONED' : 'COMPLETED',
     });
 

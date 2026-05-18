@@ -78,6 +78,11 @@ export type GameItemResult = Prisma.GameItemResultModel
  */
 export type SpacedRetrievalItem = Prisma.SpacedRetrievalItemModel
 /**
+ * Model PersonalOrientationSettings
+ * 
+ */
+export type PersonalOrientationSettings = Prisma.PersonalOrientationSettingsModel
+/**
  * Model AnalyticsEvent
  * 
  */

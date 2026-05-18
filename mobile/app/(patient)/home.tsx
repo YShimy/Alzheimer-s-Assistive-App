@@ -177,8 +177,15 @@ export default function PatientHomeScreen() {
           icon="people-outline"
           title={t('contacts.title')}
           color={colors.error.main}
-          bgColor={colors.error_container}
+          bgColor={colors.error.light}
           onPress={() => router.push('/(patient)/contacts')}
+        />
+        <QuickCard
+          icon="game-controller-outline"
+          title={t('patientHome.games', 'Games')}
+          color={colors.primary.main}
+          bgColor={colors.primary_container}
+          onPress={() => router.push('/(patient)/games')}
         />
         <QuickCard
           icon="information-circle-outline"

@@ -421,6 +421,29 @@ export default function CaregiverProgressScreen() {
           </View>
         )}
         
+        {/* MY DAY & PEOPLE PROGRESS */}
+        <AppCard
+          style={[styles.section, { marginBottom: spacing.md }]}
+          onPress={() => router.push('/(caregiver)/manage-sr-items' as any)}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.secondary_container, alignItems: 'center', justifyContent: 'center', marginEnd: spacing.md }}>
+              <Icon name="people-outline" size={24} color={colors.secondary[600]} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: typography.family.title, fontSize: typography.size.base, color: colors.on_surface }}>
+                {t('myDayPeople.titleCaregiver', 'Personalized Orientation Practice')}
+              </Text>
+              <Text style={{ fontFamily: typography.family.body, fontSize: typography.size.sm, color: colors.on_surface_variant, marginTop: 2 }}>
+                {t('myDayPeople.subtitleCaregiver', 'Manage practice items, topics, and patient support levels.')}
+              </Text>
+            </View>
+            <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+              <Icon name="chevron-forward" size={20} color={colors.outline_variant} />
+            </View>
+          </View>
+        </AppCard>
+
         <View style={styles.bottomGap} />
       </ScrollView>
     </ScreenContainer>

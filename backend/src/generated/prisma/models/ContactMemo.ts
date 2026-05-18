@@ -45,6 +45,11 @@ export type ContactMemoMinAggregateOutputType = {
   shortMemo: string | null
   photoAssetId: string | null
   isArchived: boolean | null
+  includeInGame: boolean | null
+  isSensitive: boolean | null
+  supportRole: string | null
+  safePatientNote: string | null
+  preferredName: string | null
   patientFavorite: boolean | null
   caregiverFavorite: boolean | null
   patientPriorityRank: number | null
@@ -62,6 +67,11 @@ export type ContactMemoMaxAggregateOutputType = {
   shortMemo: string | null
   photoAssetId: string | null
   isArchived: boolean | null
+  includeInGame: boolean | null
+  isSensitive: boolean | null
+  supportRole: string | null
+  safePatientNote: string | null
+  preferredName: string | null
   patientFavorite: boolean | null
   caregiverFavorite: boolean | null
   patientPriorityRank: number | null
@@ -79,6 +89,11 @@ export type ContactMemoCountAggregateOutputType = {
   shortMemo: number
   photoAssetId: number
   isArchived: number
+  includeInGame: number
+  isSensitive: number
+  supportRole: number
+  safePatientNote: number
+  preferredName: number
   patientFavorite: number
   caregiverFavorite: number
   patientPriorityRank: number
@@ -108,6 +123,11 @@ export type ContactMemoMinAggregateInputType = {
   shortMemo?: true
   photoAssetId?: true
   isArchived?: true
+  includeInGame?: true
+  isSensitive?: true
+  supportRole?: true
+  safePatientNote?: true
+  preferredName?: true
   patientFavorite?: true
   caregiverFavorite?: true
   patientPriorityRank?: true
@@ -125,6 +145,11 @@ export type ContactMemoMaxAggregateInputType = {
   shortMemo?: true
   photoAssetId?: true
   isArchived?: true
+  includeInGame?: true
+  isSensitive?: true
+  supportRole?: true
+  safePatientNote?: true
+  preferredName?: true
   patientFavorite?: true
   caregiverFavorite?: true
   patientPriorityRank?: true
@@ -142,6 +167,11 @@ export type ContactMemoCountAggregateInputType = {
   shortMemo?: true
   photoAssetId?: true
   isArchived?: true
+  includeInGame?: true
+  isSensitive?: true
+  supportRole?: true
+  safePatientNote?: true
+  preferredName?: true
   patientFavorite?: true
   caregiverFavorite?: true
   patientPriorityRank?: true
@@ -246,6 +276,11 @@ export type ContactMemoGroupByOutputType = {
   shortMemo: string | null
   photoAssetId: string | null
   isArchived: boolean
+  includeInGame: boolean
+  isSensitive: boolean
+  supportRole: string | null
+  safePatientNote: string | null
+  preferredName: string | null
   patientFavorite: boolean
   caregiverFavorite: boolean
   patientPriorityRank: number | null
@@ -286,6 +321,11 @@ export type ContactMemoWhereInput = {
   shortMemo?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   photoAssetId?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   isArchived?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  includeInGame?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  isSensitive?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  supportRole?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  safePatientNote?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   patientFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   caregiverFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   patientPriorityRank?: Prisma.IntNullableFilter<"ContactMemo"> | number | null
@@ -306,6 +346,11 @@ export type ContactMemoOrderByWithRelationInput = {
   shortMemo?: Prisma.SortOrderInput | Prisma.SortOrder
   photoAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  includeInGame?: Prisma.SortOrder
+  isSensitive?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
+  safePatientNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   patientFavorite?: Prisma.SortOrder
   caregiverFavorite?: Prisma.SortOrder
   patientPriorityRank?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -329,6 +374,11 @@ export type ContactMemoWhereUniqueInput = Prisma.AtLeast<{
   shortMemo?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   photoAssetId?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   isArchived?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  includeInGame?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  isSensitive?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  supportRole?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  safePatientNote?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   patientFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   caregiverFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   patientPriorityRank?: Prisma.IntNullableFilter<"ContactMemo"> | number | null
@@ -349,6 +399,11 @@ export type ContactMemoOrderByWithAggregationInput = {
   shortMemo?: Prisma.SortOrderInput | Prisma.SortOrder
   photoAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  includeInGame?: Prisma.SortOrder
+  isSensitive?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
+  safePatientNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   patientFavorite?: Prisma.SortOrder
   caregiverFavorite?: Prisma.SortOrder
   patientPriorityRank?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -374,6 +429,11 @@ export type ContactMemoScalarWhereWithAggregatesInput = {
   shortMemo?: Prisma.StringNullableWithAggregatesFilter<"ContactMemo"> | string | null
   photoAssetId?: Prisma.StringNullableWithAggregatesFilter<"ContactMemo"> | string | null
   isArchived?: Prisma.BoolWithAggregatesFilter<"ContactMemo"> | boolean
+  includeInGame?: Prisma.BoolWithAggregatesFilter<"ContactMemo"> | boolean
+  isSensitive?: Prisma.BoolWithAggregatesFilter<"ContactMemo"> | boolean
+  supportRole?: Prisma.StringNullableWithAggregatesFilter<"ContactMemo"> | string | null
+  safePatientNote?: Prisma.StringNullableWithAggregatesFilter<"ContactMemo"> | string | null
+  preferredName?: Prisma.StringNullableWithAggregatesFilter<"ContactMemo"> | string | null
   patientFavorite?: Prisma.BoolWithAggregatesFilter<"ContactMemo"> | boolean
   caregiverFavorite?: Prisma.BoolWithAggregatesFilter<"ContactMemo"> | boolean
   patientPriorityRank?: Prisma.IntNullableWithAggregatesFilter<"ContactMemo"> | number | null
@@ -388,6 +448,11 @@ export type ContactMemoCreateInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -408,6 +473,11 @@ export type ContactMemoUncheckedCreateInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -422,6 +492,11 @@ export type ContactMemoUpdateInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -442,6 +517,11 @@ export type ContactMemoUncheckedUpdateInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -459,6 +539,11 @@ export type ContactMemoCreateManyInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -473,6 +558,11 @@ export type ContactMemoUpdateManyMutationInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -490,6 +580,11 @@ export type ContactMemoUncheckedUpdateManyInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -517,6 +612,11 @@ export type ContactMemoCountOrderByAggregateInput = {
   shortMemo?: Prisma.SortOrder
   photoAssetId?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  includeInGame?: Prisma.SortOrder
+  isSensitive?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  safePatientNote?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   patientFavorite?: Prisma.SortOrder
   caregiverFavorite?: Prisma.SortOrder
   patientPriorityRank?: Prisma.SortOrder
@@ -539,6 +639,11 @@ export type ContactMemoMaxOrderByAggregateInput = {
   shortMemo?: Prisma.SortOrder
   photoAssetId?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  includeInGame?: Prisma.SortOrder
+  isSensitive?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  safePatientNote?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   patientFavorite?: Prisma.SortOrder
   caregiverFavorite?: Prisma.SortOrder
   patientPriorityRank?: Prisma.SortOrder
@@ -556,6 +661,11 @@ export type ContactMemoMinOrderByAggregateInput = {
   shortMemo?: Prisma.SortOrder
   photoAssetId?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  includeInGame?: Prisma.SortOrder
+  isSensitive?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  safePatientNote?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   patientFavorite?: Prisma.SortOrder
   caregiverFavorite?: Prisma.SortOrder
   patientPriorityRank?: Prisma.SortOrder
@@ -701,6 +811,11 @@ export type ContactMemoCreateWithoutCreatedByInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -719,6 +834,11 @@ export type ContactMemoUncheckedCreateWithoutCreatedByInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -765,6 +885,11 @@ export type ContactMemoScalarWhereInput = {
   shortMemo?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   photoAssetId?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   isArchived?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  includeInGame?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  isSensitive?: Prisma.BoolFilter<"ContactMemo"> | boolean
+  supportRole?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  safePatientNote?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"ContactMemo"> | string | null
   patientFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   caregiverFavorite?: Prisma.BoolFilter<"ContactMemo"> | boolean
   patientPriorityRank?: Prisma.IntNullableFilter<"ContactMemo"> | number | null
@@ -779,6 +904,11 @@ export type ContactMemoCreateWithoutContactInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -797,6 +927,11 @@ export type ContactMemoUncheckedCreateWithoutContactInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -837,6 +972,11 @@ export type ContactMemoCreateWithoutPhotoAssetInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -855,6 +995,11 @@ export type ContactMemoUncheckedCreateWithoutPhotoAssetInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -897,6 +1042,11 @@ export type ContactMemoCreateManyCreatedByInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -911,6 +1061,11 @@ export type ContactMemoUpdateWithoutCreatedByInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -929,6 +1084,11 @@ export type ContactMemoUncheckedUpdateWithoutCreatedByInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -945,6 +1105,11 @@ export type ContactMemoUncheckedUpdateManyWithoutCreatedByInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -961,6 +1126,11 @@ export type ContactMemoCreateManyContactInput = {
   shortMemo?: string | null
   photoAssetId?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -975,6 +1145,11 @@ export type ContactMemoUpdateWithoutContactInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -993,6 +1168,11 @@ export type ContactMemoUncheckedUpdateWithoutContactInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1009,6 +1189,11 @@ export type ContactMemoUncheckedUpdateManyWithoutContactInput = {
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1025,6 +1210,11 @@ export type ContactMemoCreateManyPhotoAssetInput = {
   relationLabel?: string | null
   shortMemo?: string | null
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: string | null
+  safePatientNote?: string | null
+  preferredName?: string | null
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: number | null
@@ -1039,6 +1229,11 @@ export type ContactMemoUpdateWithoutPhotoAssetInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1057,6 +1252,11 @@ export type ContactMemoUncheckedUpdateWithoutPhotoAssetInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1073,6 +1273,11 @@ export type ContactMemoUncheckedUpdateManyWithoutPhotoAssetInput = {
   relationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   shortMemo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  includeInGame?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  safePatientNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   patientFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   caregiverFavorite?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientPriorityRank?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1092,6 +1297,11 @@ export type ContactMemoSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   shortMemo?: boolean
   photoAssetId?: boolean
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: boolean
+  safePatientNote?: boolean
+  preferredName?: boolean
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: boolean
@@ -1112,6 +1322,11 @@ export type ContactMemoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   shortMemo?: boolean
   photoAssetId?: boolean
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: boolean
+  safePatientNote?: boolean
+  preferredName?: boolean
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: boolean
@@ -1132,6 +1347,11 @@ export type ContactMemoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   shortMemo?: boolean
   photoAssetId?: boolean
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: boolean
+  safePatientNote?: boolean
+  preferredName?: boolean
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: boolean
@@ -1152,6 +1372,11 @@ export type ContactMemoSelectScalar = {
   shortMemo?: boolean
   photoAssetId?: boolean
   isArchived?: boolean
+  includeInGame?: boolean
+  isSensitive?: boolean
+  supportRole?: boolean
+  safePatientNote?: boolean
+  preferredName?: boolean
   patientFavorite?: boolean
   caregiverFavorite?: boolean
   patientPriorityRank?: boolean
@@ -1160,7 +1385,7 @@ export type ContactMemoSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ContactMemoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientContactId" | "patientUserId" | "createdByUserId" | "relationLabel" | "shortMemo" | "photoAssetId" | "isArchived" | "patientFavorite" | "caregiverFavorite" | "patientPriorityRank" | "caregiverPriorityRank" | "createdAt" | "updatedAt", ExtArgs["result"]["contactMemo"]>
+export type ContactMemoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientContactId" | "patientUserId" | "createdByUserId" | "relationLabel" | "shortMemo" | "photoAssetId" | "isArchived" | "includeInGame" | "isSensitive" | "supportRole" | "safePatientNote" | "preferredName" | "patientFavorite" | "caregiverFavorite" | "patientPriorityRank" | "caregiverPriorityRank" | "createdAt" | "updatedAt", ExtArgs["result"]["contactMemo"]>
 export type ContactMemoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.PatientContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1193,6 +1418,11 @@ export type $ContactMemoPayload<ExtArgs extends runtime.Types.Extensions.Interna
     shortMemo: string | null
     photoAssetId: string | null
     isArchived: boolean
+    includeInGame: boolean
+    isSensitive: boolean
+    supportRole: string | null
+    safePatientNote: string | null
+    preferredName: string | null
     patientFavorite: boolean
     caregiverFavorite: boolean
     patientPriorityRank: number | null
@@ -1633,6 +1863,11 @@ export interface ContactMemoFieldRefs {
   readonly shortMemo: Prisma.FieldRef<"ContactMemo", 'String'>
   readonly photoAssetId: Prisma.FieldRef<"ContactMemo", 'String'>
   readonly isArchived: Prisma.FieldRef<"ContactMemo", 'Boolean'>
+  readonly includeInGame: Prisma.FieldRef<"ContactMemo", 'Boolean'>
+  readonly isSensitive: Prisma.FieldRef<"ContactMemo", 'Boolean'>
+  readonly supportRole: Prisma.FieldRef<"ContactMemo", 'String'>
+  readonly safePatientNote: Prisma.FieldRef<"ContactMemo", 'String'>
+  readonly preferredName: Prisma.FieldRef<"ContactMemo", 'String'>
   readonly patientFavorite: Prisma.FieldRef<"ContactMemo", 'Boolean'>
   readonly caregiverFavorite: Prisma.FieldRef<"ContactMemo", 'Boolean'>
   readonly patientPriorityRank: Prisma.FieldRef<"ContactMemo", 'Int'>

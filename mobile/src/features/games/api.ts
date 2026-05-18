@@ -50,14 +50,22 @@ export const spacedRetrievalApi = {
     apiClient.get<{ items: any[] }>(`/patients/${patientId}/spaced-retrieval/items?activeOnly=${activeOnly}`),
 
   /** Create an SR item */
-  createItem: (patientId: string, body: { prompt: string; correctAnswer: string; acceptableAnswers?: string[]; distractors?: string[]; cueText?: string; category: string }) =>
+  createItem: (patientId: string, body: { prompt: string; correctAnswer: string; acceptableAnswers?: string[]; distractors?: string[]; cueText?: string; category: string; linkedContactId?: string; supportRole?: string; sensitive?: boolean; patientVisible?: boolean; supportLevelOverride?: string }) =>
     apiClient.post<{ item: any }>(`/patients/${patientId}/spaced-retrieval/items`, body),
 
   /** Update an SR item */
-  updateItem: (patientId: string, itemId: string, body: Partial<{ prompt: string; correctAnswer: string; acceptableAnswers: string[]; distractors: string[]; cueText: string; category: string; active: boolean }>) =>
+  updateItem: (patientId: string, itemId: string, body: Partial<{ prompt: string; correctAnswer: string; acceptableAnswers: string[]; distractors: string[]; cueText: string; category: string; active: boolean; linkedContactId: string | null; supportRole: string | null; sensitive: boolean; patientVisible: boolean; supportLevelOverride: string | null }>) =>
     apiClient.patch<{ item: any }>(`/patients/${patientId}/spaced-retrieval/items/${itemId}`, body),
 
   /** Archive an SR item */
   archiveItem: (patientId: string, itemId: string) =>
     apiClient.delete<{ item: any }>(`/patients/${patientId}/spaced-retrieval/items/${itemId}`),
+
+  /** Get SR settings */
+  getSettings: (patientId: string) =>
+    apiClient.get<{ settings: any }>(`/patients/${patientId}/spaced-retrieval/settings`),
+
+  /** Upsert SR settings */
+  upsertSettings: (patientId: string, body: any) =>
+    apiClient.put<{ settings: any }>(`/patients/${patientId}/spaced-retrieval/settings`, body),
 };

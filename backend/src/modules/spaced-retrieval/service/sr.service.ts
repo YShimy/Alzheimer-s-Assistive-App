@@ -15,6 +15,11 @@ function toResponse(item: any): SRItemResponse {
     cueText: item.cueText,
     category: item.category,
     active: item.active,
+    linkedContactId: item.linkedContactId,
+    supportRole: item.supportRole,
+    sensitive: item.sensitive,
+    patientVisible: item.patientVisible,
+    supportLevelOverride: item.supportLevelOverride,
     masteryStatus: item.masteryStatus,
     currentIntervalStep: item.currentIntervalStep,
     nextDueAt: item.nextDueAt?.toISOString() ?? null,
@@ -40,6 +45,11 @@ export class SpacedRetrievalService {
       distractors: dto.distractors,
       cueText: dto.cueText,
       category: dto.category,
+      linkedContactId: dto.linkedContactId,
+      supportRole: dto.supportRole,
+      sensitive: dto.sensitive,
+      patientVisible: dto.patientVisible,
+      supportLevelOverride: dto.supportLevelOverride,
     });
     return toResponse(item);
   }
@@ -56,6 +66,11 @@ export class SpacedRetrievalService {
       cueText: dto.cueText,
       category: dto.category,
       active: dto.active,
+      linkedContactId: dto.linkedContactId,
+      supportRole: dto.supportRole,
+      sensitive: dto.sensitive,
+      patientVisible: dto.patientVisible,
+      supportLevelOverride: dto.supportLevelOverride,
     });
     return toResponse(item);
   }
@@ -67,6 +82,14 @@ export class SpacedRetrievalService {
 
   async getMasteryCounts(patientId: string) {
     return srRepo.getMasteryCounts(patientId);
+  }
+
+  async getSettings(patientId: string) {
+    return srRepo.getSettings(patientId);
+  }
+
+  async upsertSettings(patientId: string, updatedByUserId: string, data: any) {
+    return srRepo.upsertSettings(patientId, updatedByUserId, data);
   }
 }
 

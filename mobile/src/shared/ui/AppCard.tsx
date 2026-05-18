@@ -1,9 +1,9 @@
-import { View, Pressable, Text, StyleSheet, type ViewStyle } from 'react-native';
+import { View, Pressable, Text, StyleSheet, type ViewStyle, type StyleProp } from 'react-native';
 import { colors, spacing, radius, shadows, typography } from '../../infrastructure/theme/tokens';
 
 interface AppCardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   onPress?: () => void;
   title?: string;
   subtitle?: string;

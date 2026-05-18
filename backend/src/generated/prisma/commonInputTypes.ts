@@ -569,6 +569,23 @@ export type EnumMasteryStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
 }
 
+export type EnumSupportLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportLevel | Prisma.EnumSupportLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel> | $Enums.SupportLevel
+}
+
+export type EnumSupportLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportLevel | Prisma.EnumSupportLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportLevelWithAggregatesFilter<$PrismaModel> | $Enums.SupportLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel>
+}
+
 export type EnumConsentStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ConsentStatus | Prisma.EnumConsentStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ConsentStatus[] | Prisma.ListEnumConsentStatusFieldRefInput<$PrismaModel>
@@ -1155,6 +1172,23 @@ export type NestedEnumMasteryStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMasteryStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSupportLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportLevel | Prisma.EnumSupportLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel> | $Enums.SupportLevel
+}
+
+export type NestedEnumSupportLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportLevel | Prisma.EnumSupportLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportLevel[] | Prisma.ListEnumSupportLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportLevelWithAggregatesFilter<$PrismaModel> | $Enums.SupportLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSupportLevelFilter<$PrismaModel>
 }
 
 export type NestedEnumConsentStatusFilter<$PrismaModel = never> = {

@@ -51,6 +51,27 @@ export class SpacedRetrievalController {
     const item = await srService.archiveItem(itemId);
     res.json({ item });
   };
+
+  /**
+   * GET /api/patients/:patientId/spaced-retrieval/settings
+   */
+  getSettings = async (req: Request, res: Response) => {
+    const raw = req.params.patientId as string;
+    const patientId = raw === 'me' ? req.user!.userId : raw;
+    const settings = await srService.getSettings(patientId);
+    res.json({ settings });
+  };
+
+  /**
+   * PUT /api/patients/:patientId/spaced-retrieval/settings
+   */
+  upsertSettings = async (req: Request, res: Response) => {
+    const user = req.user!;
+    const raw = req.params.patientId as string;
+    const patientId = raw === 'me' ? user.userId : raw;
+    const settings = await srService.upsertSettings(patientId, user.userId, req.body);
+    res.json({ settings });
+  };
 }
 
 export const srController = new SpacedRetrievalController();

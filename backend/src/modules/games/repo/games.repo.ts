@@ -96,10 +96,11 @@ export class GamesRepo {
   }
 
   async getSessionsByPatient(patientUserId: string, gameType?: string, limit = 30) {
+    const isSpaced = gameType === 'SPACED_RETRIEVAL_ORIENTATION' || gameType === 'PERSONAL_ORIENTATION_PRACTICE';
     return prisma.gameSession.findMany({
       where: {
         patientUserId,
-        ...(gameType ? { gameType } : {}),
+        ...(gameType ? (isSpaced ? { gameType: { in: ['SPACED_RETRIEVAL_ORIENTATION', 'PERSONAL_ORIENTATION_PRACTICE'] } } : { gameType }) : {}),
       },
       orderBy: { startedAt: 'desc' },
       take: limit,
@@ -108,8 +109,12 @@ export class GamesRepo {
   }
 
   async getProgressData(patientUserId: string, gameType: string) {
+    const isSpaced = gameType === 'SPACED_RETRIEVAL_ORIENTATION' || gameType === 'PERSONAL_ORIENTATION_PRACTICE';
     return prisma.gameSession.findMany({
-      where: { patientUserId, gameType },
+      where: {
+        patientUserId,
+        ...(isSpaced ? { gameType: { in: ['SPACED_RETRIEVAL_ORIENTATION', 'PERSONAL_ORIENTATION_PRACTICE'] } } : { gameType }),
+      },
       orderBy: { startedAt: 'asc' },
       select: {
         id: true,

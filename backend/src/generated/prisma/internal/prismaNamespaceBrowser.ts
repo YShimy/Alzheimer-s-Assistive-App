@@ -63,6 +63,7 @@ export const ModelName = {
   GameLevelResult: 'GameLevelResult',
   GameItemResult: 'GameItemResult',
   SpacedRetrievalItem: 'SpacedRetrievalItem',
+  PersonalOrientationSettings: 'PersonalOrientationSettings',
   AnalyticsEvent: 'AnalyticsEvent',
   ContactSupportConsent: 'ContactSupportConsent',
   PatientContact: 'PatientContact',
@@ -351,6 +352,11 @@ export const SpacedRetrievalItemScalarFieldEnum = {
   cueText: 'cueText',
   category: 'category',
   active: 'active',
+  linkedContactId: 'linkedContactId',
+  supportRole: 'supportRole',
+  sensitive: 'sensitive',
+  patientVisible: 'patientVisible',
+  supportLevelOverride: 'supportLevelOverride',
   currentIntervalStep: 'currentIntervalStep',
   currentIntervalSeconds: 'currentIntervalSeconds',
   masteryStatus: 'masteryStatus',
@@ -358,6 +364,10 @@ export const SpacedRetrievalItemScalarFieldEnum = {
   consecutiveIncorrect: 'consecutiveIncorrect',
   totalAttempts: 'totalAttempts',
   correctAttempts: 'correctAttempts',
+  correctWithoutCue: 'correctWithoutCue',
+  correctWithCue: 'correctWithCue',
+  unsureAttempts: 'unsureAttempts',
+  incorrectAttempts: 'incorrectAttempts',
   lastPracticedAt: 'lastPracticedAt',
   nextDueAt: 'nextDueAt',
   archivedAt: 'archivedAt',
@@ -366,6 +376,25 @@ export const SpacedRetrievalItemScalarFieldEnum = {
 } as const
 
 export type SpacedRetrievalItemScalarFieldEnum = (typeof SpacedRetrievalItemScalarFieldEnum)[keyof typeof SpacedRetrievalItemScalarFieldEnum]
+
+
+export const PersonalOrientationSettingsScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  supportLevel: 'supportLevel',
+  weeklyTargetSessions: 'weeklyTargetSessions',
+  enabledFamilies: 'enabledFamilies',
+  includePeopleWithoutPhotos: 'includePeopleWithoutPhotos',
+  includeSensitiveContacts: 'includeSensitiveContacts',
+  maxQuestionsPerSession: 'maxQuestionsPerSession',
+  cueStyle: 'cueStyle',
+  allowMaintenanceItems: 'allowMaintenanceItems',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedByUserId: 'updatedByUserId'
+} as const
+
+export type PersonalOrientationSettingsScalarFieldEnum = (typeof PersonalOrientationSettingsScalarFieldEnum)[keyof typeof PersonalOrientationSettingsScalarFieldEnum]
 
 
 export const AnalyticsEventScalarFieldEnum = {
@@ -429,6 +458,11 @@ export const ContactMemoScalarFieldEnum = {
   shortMemo: 'shortMemo',
   photoAssetId: 'photoAssetId',
   isArchived: 'isArchived',
+  includeInGame: 'includeInGame',
+  isSensitive: 'isSensitive',
+  supportRole: 'supportRole',
+  safePatientNote: 'safePatientNote',
+  preferredName: 'preferredName',
   patientFavorite: 'patientFavorite',
   caregiverFavorite: 'caregiverFavorite',
   patientPriorityRank: 'patientPriorityRank',

@@ -1,6 +1,6 @@
 /** Reminders module types - Redesigned for simple vs guided reminders */
 
-export type ReminderType = 'simple' | 'guided';
+export type ReminderType = 'simple' | 'guided' | 'game_session';
 export type PriorityLevel = 'normal' | 'high' | 'critical';
 
 export interface LinkedChecklistSummary {
@@ -37,6 +37,7 @@ export interface ReminderResponse {
   // Redesigned: optional visual cue
   visualCueAssetId: string | null;
   visualCue?: VisualCueSummary | null;
+  gameType?: string | null;
   snoozeEnabled: boolean;
   defaultSnoozeMinutes: number;
   nativeAlarmEnabled: boolean;

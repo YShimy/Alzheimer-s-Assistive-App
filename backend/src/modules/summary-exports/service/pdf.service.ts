@@ -437,8 +437,8 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       doc.moveDown(1.5);
 
       const mmStats = gameStats.filter(g => g.gameType === 'ASSOCIATIVE_MEMORY_MATCH');
-      const srStats = gameStats.filter(g => g.gameType === 'SPACED_RETRIEVAL_ORIENTATION');
-      const legacyStats = gameStats.filter(g => g.gameType !== 'ASSOCIATIVE_MEMORY_MATCH' && g.gameType !== 'SPACED_RETRIEVAL_ORIENTATION');
+      const srStats = gameStats.filter(g => g.gameType === 'SPACED_RETRIEVAL_ORIENTATION' || g.gameType === 'PERSONAL_ORIENTATION_PRACTICE');
+      const legacyStats = gameStats.filter(g => g.gameType !== 'ASSOCIATIVE_MEMORY_MATCH' && g.gameType !== 'SPACED_RETRIEVAL_ORIENTATION' && g.gameType !== 'PERSONAL_ORIENTATION_PRACTICE');
 
       // Memory Match subsection
       if (mmStats.length > 0) {

@@ -279,10 +279,10 @@ export default function CaregiverChecklistScreen() {
     }
   };
 
-  const handleArchive = (t: ChecklistTemplate) => {
+  const handleArchive = (template: ChecklistTemplate) => {
     Alert.alert(
       t('caregiverChecklists.archiveAlert'),
-      t('caregiverChecklists.archiveConfirm', { title: t.title }),
+      t('caregiverChecklists.archiveConfirm', { title: template.title }),
       [
         { text: t('common.cancel'), style: 'cancel' },
         {
@@ -363,7 +363,7 @@ export default function CaregiverChecklistScreen() {
             <TemplateCard
               template={item}
               onEdit={() => openEdit(item)}
-              onArchive={() => handleArchive(item)}
+          onArchive={() => handleArchive(item)}
             />
           )}
           ListFooterComponent={
@@ -687,6 +687,7 @@ const styles = StyleSheet.create({
   cardInfo: { flex: 1 },
   cardTitle: { fontSize: typography.size.base, fontWeight: '700', color: colors.neutral[900] },
   cardMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  cardStat: { fontSize: typography.size.xs, color: colors.neutral[500], flexDirection: 'row', alignItems: 'center' },
   cardMetaText: { fontSize: typography.size.xs, color: colors.neutral[500] },
   dot: { fontSize: typography.size.xs, color: colors.neutral[400] },
   cardDesc: { fontSize: typography.size.sm, color: colors.neutral[600], lineHeight: 20 },

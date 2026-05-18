@@ -33,6 +33,10 @@ export type SpacedRetrievalItemAvgAggregateOutputType = {
   consecutiveIncorrect: number | null
   totalAttempts: number | null
   correctAttempts: number | null
+  correctWithoutCue: number | null
+  correctWithCue: number | null
+  unsureAttempts: number | null
+  incorrectAttempts: number | null
 }
 
 export type SpacedRetrievalItemSumAggregateOutputType = {
@@ -42,6 +46,10 @@ export type SpacedRetrievalItemSumAggregateOutputType = {
   consecutiveIncorrect: number | null
   totalAttempts: number | null
   correctAttempts: number | null
+  correctWithoutCue: number | null
+  correctWithCue: number | null
+  unsureAttempts: number | null
+  incorrectAttempts: number | null
 }
 
 export type SpacedRetrievalItemMinAggregateOutputType = {
@@ -53,6 +61,11 @@ export type SpacedRetrievalItemMinAggregateOutputType = {
   cueText: string | null
   category: $Enums.SpacedRetrievalCategory | null
   active: boolean | null
+  linkedContactId: string | null
+  supportRole: string | null
+  sensitive: boolean | null
+  patientVisible: boolean | null
+  supportLevelOverride: string | null
   currentIntervalStep: number | null
   currentIntervalSeconds: number | null
   masteryStatus: $Enums.MasteryStatus | null
@@ -60,6 +73,10 @@ export type SpacedRetrievalItemMinAggregateOutputType = {
   consecutiveIncorrect: number | null
   totalAttempts: number | null
   correctAttempts: number | null
+  correctWithoutCue: number | null
+  correctWithCue: number | null
+  unsureAttempts: number | null
+  incorrectAttempts: number | null
   lastPracticedAt: Date | null
   nextDueAt: Date | null
   archivedAt: Date | null
@@ -76,6 +93,11 @@ export type SpacedRetrievalItemMaxAggregateOutputType = {
   cueText: string | null
   category: $Enums.SpacedRetrievalCategory | null
   active: boolean | null
+  linkedContactId: string | null
+  supportRole: string | null
+  sensitive: boolean | null
+  patientVisible: boolean | null
+  supportLevelOverride: string | null
   currentIntervalStep: number | null
   currentIntervalSeconds: number | null
   masteryStatus: $Enums.MasteryStatus | null
@@ -83,6 +105,10 @@ export type SpacedRetrievalItemMaxAggregateOutputType = {
   consecutiveIncorrect: number | null
   totalAttempts: number | null
   correctAttempts: number | null
+  correctWithoutCue: number | null
+  correctWithCue: number | null
+  unsureAttempts: number | null
+  incorrectAttempts: number | null
   lastPracticedAt: Date | null
   nextDueAt: Date | null
   archivedAt: Date | null
@@ -101,6 +127,11 @@ export type SpacedRetrievalItemCountAggregateOutputType = {
   cueText: number
   category: number
   active: number
+  linkedContactId: number
+  supportRole: number
+  sensitive: number
+  patientVisible: number
+  supportLevelOverride: number
   currentIntervalStep: number
   currentIntervalSeconds: number
   masteryStatus: number
@@ -108,6 +139,10 @@ export type SpacedRetrievalItemCountAggregateOutputType = {
   consecutiveIncorrect: number
   totalAttempts: number
   correctAttempts: number
+  correctWithoutCue: number
+  correctWithCue: number
+  unsureAttempts: number
+  incorrectAttempts: number
   lastPracticedAt: number
   nextDueAt: number
   archivedAt: number
@@ -124,6 +159,10 @@ export type SpacedRetrievalItemAvgAggregateInputType = {
   consecutiveIncorrect?: true
   totalAttempts?: true
   correctAttempts?: true
+  correctWithoutCue?: true
+  correctWithCue?: true
+  unsureAttempts?: true
+  incorrectAttempts?: true
 }
 
 export type SpacedRetrievalItemSumAggregateInputType = {
@@ -133,6 +172,10 @@ export type SpacedRetrievalItemSumAggregateInputType = {
   consecutiveIncorrect?: true
   totalAttempts?: true
   correctAttempts?: true
+  correctWithoutCue?: true
+  correctWithCue?: true
+  unsureAttempts?: true
+  incorrectAttempts?: true
 }
 
 export type SpacedRetrievalItemMinAggregateInputType = {
@@ -144,6 +187,11 @@ export type SpacedRetrievalItemMinAggregateInputType = {
   cueText?: true
   category?: true
   active?: true
+  linkedContactId?: true
+  supportRole?: true
+  sensitive?: true
+  patientVisible?: true
+  supportLevelOverride?: true
   currentIntervalStep?: true
   currentIntervalSeconds?: true
   masteryStatus?: true
@@ -151,6 +199,10 @@ export type SpacedRetrievalItemMinAggregateInputType = {
   consecutiveIncorrect?: true
   totalAttempts?: true
   correctAttempts?: true
+  correctWithoutCue?: true
+  correctWithCue?: true
+  unsureAttempts?: true
+  incorrectAttempts?: true
   lastPracticedAt?: true
   nextDueAt?: true
   archivedAt?: true
@@ -167,6 +219,11 @@ export type SpacedRetrievalItemMaxAggregateInputType = {
   cueText?: true
   category?: true
   active?: true
+  linkedContactId?: true
+  supportRole?: true
+  sensitive?: true
+  patientVisible?: true
+  supportLevelOverride?: true
   currentIntervalStep?: true
   currentIntervalSeconds?: true
   masteryStatus?: true
@@ -174,6 +231,10 @@ export type SpacedRetrievalItemMaxAggregateInputType = {
   consecutiveIncorrect?: true
   totalAttempts?: true
   correctAttempts?: true
+  correctWithoutCue?: true
+  correctWithCue?: true
+  unsureAttempts?: true
+  incorrectAttempts?: true
   lastPracticedAt?: true
   nextDueAt?: true
   archivedAt?: true
@@ -192,6 +253,11 @@ export type SpacedRetrievalItemCountAggregateInputType = {
   cueText?: true
   category?: true
   active?: true
+  linkedContactId?: true
+  supportRole?: true
+  sensitive?: true
+  patientVisible?: true
+  supportLevelOverride?: true
   currentIntervalStep?: true
   currentIntervalSeconds?: true
   masteryStatus?: true
@@ -199,6 +265,10 @@ export type SpacedRetrievalItemCountAggregateInputType = {
   consecutiveIncorrect?: true
   totalAttempts?: true
   correctAttempts?: true
+  correctWithoutCue?: true
+  correctWithCue?: true
+  unsureAttempts?: true
+  incorrectAttempts?: true
   lastPracticedAt?: true
   nextDueAt?: true
   archivedAt?: true
@@ -304,6 +374,11 @@ export type SpacedRetrievalItemGroupByOutputType = {
   cueText: string | null
   category: $Enums.SpacedRetrievalCategory
   active: boolean
+  linkedContactId: string | null
+  supportRole: string | null
+  sensitive: boolean
+  patientVisible: boolean
+  supportLevelOverride: string | null
   currentIntervalStep: number
   currentIntervalSeconds: number
   masteryStatus: $Enums.MasteryStatus
@@ -311,6 +386,10 @@ export type SpacedRetrievalItemGroupByOutputType = {
   consecutiveIncorrect: number
   totalAttempts: number
   correctAttempts: number
+  correctWithoutCue: number
+  correctWithCue: number
+  unsureAttempts: number
+  incorrectAttempts: number
   lastPracticedAt: Date | null
   nextDueAt: Date | null
   archivedAt: Date | null
@@ -352,6 +431,11 @@ export type SpacedRetrievalItemWhereInput = {
   cueText?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  supportLevelOverride?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   currentIntervalStep?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   currentIntervalSeconds?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   masteryStatus?: Prisma.EnumMasteryStatusFilter<"SpacedRetrievalItem"> | $Enums.MasteryStatus
@@ -359,6 +443,10 @@ export type SpacedRetrievalItemWhereInput = {
   consecutiveIncorrect?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   totalAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   correctAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithoutCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  unsureAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  incorrectAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   lastPracticedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   nextDueAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
@@ -379,6 +467,11 @@ export type SpacedRetrievalItemOrderByWithRelationInput = {
   cueText?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  linkedContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
+  sensitive?: Prisma.SortOrder
+  patientVisible?: Prisma.SortOrder
+  supportLevelOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   currentIntervalStep?: Prisma.SortOrder
   currentIntervalSeconds?: Prisma.SortOrder
   masteryStatus?: Prisma.SortOrder
@@ -386,6 +479,10 @@ export type SpacedRetrievalItemOrderByWithRelationInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
   lastPracticedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -409,6 +506,11 @@ export type SpacedRetrievalItemWhereUniqueInput = Prisma.AtLeast<{
   cueText?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  supportLevelOverride?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   currentIntervalStep?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   currentIntervalSeconds?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   masteryStatus?: Prisma.EnumMasteryStatusFilter<"SpacedRetrievalItem"> | $Enums.MasteryStatus
@@ -416,6 +518,10 @@ export type SpacedRetrievalItemWhereUniqueInput = Prisma.AtLeast<{
   consecutiveIncorrect?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   totalAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   correctAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithoutCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  unsureAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  incorrectAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   lastPracticedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   nextDueAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
@@ -436,6 +542,11 @@ export type SpacedRetrievalItemOrderByWithAggregationInput = {
   cueText?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  linkedContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
+  sensitive?: Prisma.SortOrder
+  patientVisible?: Prisma.SortOrder
+  supportLevelOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   currentIntervalStep?: Prisma.SortOrder
   currentIntervalSeconds?: Prisma.SortOrder
   masteryStatus?: Prisma.SortOrder
@@ -443,6 +554,10 @@ export type SpacedRetrievalItemOrderByWithAggregationInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
   lastPracticedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -469,6 +584,11 @@ export type SpacedRetrievalItemScalarWhereWithAggregatesInput = {
   cueText?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryWithAggregatesFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
+  linkedContactId?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
+  supportRole?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
+  sensitive?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
+  patientVisible?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
+  supportLevelOverride?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
   currentIntervalStep?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
   currentIntervalSeconds?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
   masteryStatus?: Prisma.EnumMasteryStatusWithAggregatesFilter<"SpacedRetrievalItem"> | $Enums.MasteryStatus
@@ -476,6 +596,10 @@ export type SpacedRetrievalItemScalarWhereWithAggregatesInput = {
   consecutiveIncorrect?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
   totalAttempts?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
   correctAttempts?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
+  correctWithoutCue?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
+  correctWithCue?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
+  unsureAttempts?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
+  incorrectAttempts?: Prisma.IntWithAggregatesFilter<"SpacedRetrievalItem"> | number
   lastPracticedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SpacedRetrievalItem"> | Date | string | null
   nextDueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SpacedRetrievalItem"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SpacedRetrievalItem"> | Date | string | null
@@ -492,6 +616,11 @@ export type SpacedRetrievalItemCreateInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -499,6 +628,10 @@ export type SpacedRetrievalItemCreateInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -519,6 +652,11 @@ export type SpacedRetrievalItemUncheckedCreateInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -526,6 +664,10 @@ export type SpacedRetrievalItemUncheckedCreateInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -542,6 +684,11 @@ export type SpacedRetrievalItemUpdateInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -549,6 +696,10 @@ export type SpacedRetrievalItemUpdateInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -569,6 +720,11 @@ export type SpacedRetrievalItemUncheckedUpdateInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -576,6 +732,10 @@ export type SpacedRetrievalItemUncheckedUpdateInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -594,6 +754,11 @@ export type SpacedRetrievalItemCreateManyInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -601,6 +766,10 @@ export type SpacedRetrievalItemCreateManyInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -617,6 +786,11 @@ export type SpacedRetrievalItemUpdateManyMutationInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -624,6 +798,10 @@ export type SpacedRetrievalItemUpdateManyMutationInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -642,6 +820,11 @@ export type SpacedRetrievalItemUncheckedUpdateManyInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -649,6 +832,10 @@ export type SpacedRetrievalItemUncheckedUpdateManyInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -677,6 +864,11 @@ export type SpacedRetrievalItemCountOrderByAggregateInput = {
   cueText?: Prisma.SortOrder
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  linkedContactId?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  sensitive?: Prisma.SortOrder
+  patientVisible?: Prisma.SortOrder
+  supportLevelOverride?: Prisma.SortOrder
   currentIntervalStep?: Prisma.SortOrder
   currentIntervalSeconds?: Prisma.SortOrder
   masteryStatus?: Prisma.SortOrder
@@ -684,6 +876,10 @@ export type SpacedRetrievalItemCountOrderByAggregateInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
   lastPracticedAt?: Prisma.SortOrder
   nextDueAt?: Prisma.SortOrder
   archivedAt?: Prisma.SortOrder
@@ -698,6 +894,10 @@ export type SpacedRetrievalItemAvgOrderByAggregateInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
 }
 
 export type SpacedRetrievalItemMaxOrderByAggregateInput = {
@@ -709,6 +909,11 @@ export type SpacedRetrievalItemMaxOrderByAggregateInput = {
   cueText?: Prisma.SortOrder
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  linkedContactId?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  sensitive?: Prisma.SortOrder
+  patientVisible?: Prisma.SortOrder
+  supportLevelOverride?: Prisma.SortOrder
   currentIntervalStep?: Prisma.SortOrder
   currentIntervalSeconds?: Prisma.SortOrder
   masteryStatus?: Prisma.SortOrder
@@ -716,6 +921,10 @@ export type SpacedRetrievalItemMaxOrderByAggregateInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
   lastPracticedAt?: Prisma.SortOrder
   nextDueAt?: Prisma.SortOrder
   archivedAt?: Prisma.SortOrder
@@ -732,6 +941,11 @@ export type SpacedRetrievalItemMinOrderByAggregateInput = {
   cueText?: Prisma.SortOrder
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  linkedContactId?: Prisma.SortOrder
+  supportRole?: Prisma.SortOrder
+  sensitive?: Prisma.SortOrder
+  patientVisible?: Prisma.SortOrder
+  supportLevelOverride?: Prisma.SortOrder
   currentIntervalStep?: Prisma.SortOrder
   currentIntervalSeconds?: Prisma.SortOrder
   masteryStatus?: Prisma.SortOrder
@@ -739,6 +953,10 @@ export type SpacedRetrievalItemMinOrderByAggregateInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
   lastPracticedAt?: Prisma.SortOrder
   nextDueAt?: Prisma.SortOrder
   archivedAt?: Prisma.SortOrder
@@ -753,6 +971,10 @@ export type SpacedRetrievalItemSumOrderByAggregateInput = {
   consecutiveIncorrect?: Prisma.SortOrder
   totalAttempts?: Prisma.SortOrder
   correctAttempts?: Prisma.SortOrder
+  correctWithoutCue?: Prisma.SortOrder
+  correctWithCue?: Prisma.SortOrder
+  unsureAttempts?: Prisma.SortOrder
+  incorrectAttempts?: Prisma.SortOrder
 }
 
 export type SpacedRetrievalItemCreateNestedManyWithoutPatientInput = {
@@ -856,6 +1078,11 @@ export type SpacedRetrievalItemCreateWithoutPatientInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -863,6 +1090,10 @@ export type SpacedRetrievalItemCreateWithoutPatientInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -881,6 +1112,11 @@ export type SpacedRetrievalItemUncheckedCreateWithoutPatientInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -888,6 +1124,10 @@ export type SpacedRetrievalItemUncheckedCreateWithoutPatientInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -914,6 +1154,11 @@ export type SpacedRetrievalItemCreateWithoutCreatedByInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -921,6 +1166,10 @@ export type SpacedRetrievalItemCreateWithoutCreatedByInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -939,6 +1188,11 @@ export type SpacedRetrievalItemUncheckedCreateWithoutCreatedByInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -946,6 +1200,10 @@ export type SpacedRetrievalItemUncheckedCreateWithoutCreatedByInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -993,6 +1251,11 @@ export type SpacedRetrievalItemScalarWhereInput = {
   cueText?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
+  supportLevelOverride?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   currentIntervalStep?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   currentIntervalSeconds?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   masteryStatus?: Prisma.EnumMasteryStatusFilter<"SpacedRetrievalItem"> | $Enums.MasteryStatus
@@ -1000,6 +1263,10 @@ export type SpacedRetrievalItemScalarWhereInput = {
   consecutiveIncorrect?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   totalAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   correctAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithoutCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  correctWithCue?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  unsureAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
+  incorrectAttempts?: Prisma.IntFilter<"SpacedRetrievalItem"> | number
   lastPracticedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   nextDueAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
   archivedAt?: Prisma.DateTimeNullableFilter<"SpacedRetrievalItem"> | Date | string | null
@@ -1033,6 +1300,11 @@ export type SpacedRetrievalItemCreateManyPatientInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -1040,6 +1312,10 @@ export type SpacedRetrievalItemCreateManyPatientInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -1057,6 +1333,11 @@ export type SpacedRetrievalItemCreateManyCreatedByInput = {
   cueText?: string | null
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
   currentIntervalStep?: number
   currentIntervalSeconds?: number
   masteryStatus?: $Enums.MasteryStatus
@@ -1064,6 +1345,10 @@ export type SpacedRetrievalItemCreateManyCreatedByInput = {
   consecutiveIncorrect?: number
   totalAttempts?: number
   correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
   lastPracticedAt?: Date | string | null
   nextDueAt?: Date | string | null
   archivedAt?: Date | string | null
@@ -1080,6 +1365,11 @@ export type SpacedRetrievalItemUpdateWithoutPatientInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1087,6 +1377,10 @@ export type SpacedRetrievalItemUpdateWithoutPatientInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1105,6 +1399,11 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutPatientInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1112,6 +1411,10 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutPatientInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1129,6 +1432,11 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutPatientInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1136,6 +1444,10 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutPatientInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1152,6 +1464,11 @@ export type SpacedRetrievalItemUpdateWithoutCreatedByInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1159,6 +1476,10 @@ export type SpacedRetrievalItemUpdateWithoutCreatedByInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1177,6 +1498,11 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutCreatedByInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1184,6 +1510,10 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutCreatedByInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1201,6 +1531,11 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByInput = {
   cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
   currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
   masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
@@ -1208,6 +1543,10 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByInput = {
   consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
   totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1228,6 +1567,11 @@ export type SpacedRetrievalItemSelect<ExtArgs extends runtime.Types.Extensions.I
   cueText?: boolean
   category?: boolean
   active?: boolean
+  linkedContactId?: boolean
+  supportRole?: boolean
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: boolean
   currentIntervalStep?: boolean
   currentIntervalSeconds?: boolean
   masteryStatus?: boolean
@@ -1235,6 +1579,10 @@ export type SpacedRetrievalItemSelect<ExtArgs extends runtime.Types.Extensions.I
   consecutiveIncorrect?: boolean
   totalAttempts?: boolean
   correctAttempts?: boolean
+  correctWithoutCue?: boolean
+  correctWithCue?: boolean
+  unsureAttempts?: boolean
+  incorrectAttempts?: boolean
   lastPracticedAt?: boolean
   nextDueAt?: boolean
   archivedAt?: boolean
@@ -1255,6 +1603,11 @@ export type SpacedRetrievalItemSelectCreateManyAndReturn<ExtArgs extends runtime
   cueText?: boolean
   category?: boolean
   active?: boolean
+  linkedContactId?: boolean
+  supportRole?: boolean
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: boolean
   currentIntervalStep?: boolean
   currentIntervalSeconds?: boolean
   masteryStatus?: boolean
@@ -1262,6 +1615,10 @@ export type SpacedRetrievalItemSelectCreateManyAndReturn<ExtArgs extends runtime
   consecutiveIncorrect?: boolean
   totalAttempts?: boolean
   correctAttempts?: boolean
+  correctWithoutCue?: boolean
+  correctWithCue?: boolean
+  unsureAttempts?: boolean
+  incorrectAttempts?: boolean
   lastPracticedAt?: boolean
   nextDueAt?: boolean
   archivedAt?: boolean
@@ -1282,6 +1639,11 @@ export type SpacedRetrievalItemSelectUpdateManyAndReturn<ExtArgs extends runtime
   cueText?: boolean
   category?: boolean
   active?: boolean
+  linkedContactId?: boolean
+  supportRole?: boolean
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: boolean
   currentIntervalStep?: boolean
   currentIntervalSeconds?: boolean
   masteryStatus?: boolean
@@ -1289,6 +1651,10 @@ export type SpacedRetrievalItemSelectUpdateManyAndReturn<ExtArgs extends runtime
   consecutiveIncorrect?: boolean
   totalAttempts?: boolean
   correctAttempts?: boolean
+  correctWithoutCue?: boolean
+  correctWithCue?: boolean
+  unsureAttempts?: boolean
+  incorrectAttempts?: boolean
   lastPracticedAt?: boolean
   nextDueAt?: boolean
   archivedAt?: boolean
@@ -1309,6 +1675,11 @@ export type SpacedRetrievalItemSelectScalar = {
   cueText?: boolean
   category?: boolean
   active?: boolean
+  linkedContactId?: boolean
+  supportRole?: boolean
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: boolean
   currentIntervalStep?: boolean
   currentIntervalSeconds?: boolean
   masteryStatus?: boolean
@@ -1316,6 +1687,10 @@ export type SpacedRetrievalItemSelectScalar = {
   consecutiveIncorrect?: boolean
   totalAttempts?: boolean
   correctAttempts?: boolean
+  correctWithoutCue?: boolean
+  correctWithCue?: boolean
+  unsureAttempts?: boolean
+  incorrectAttempts?: boolean
   lastPracticedAt?: boolean
   nextDueAt?: boolean
   archivedAt?: boolean
@@ -1323,7 +1698,7 @@ export type SpacedRetrievalItemSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SpacedRetrievalItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "createdByUserId" | "prompt" | "correctAnswer" | "acceptableAnswers" | "distractors" | "cueText" | "category" | "active" | "currentIntervalStep" | "currentIntervalSeconds" | "masteryStatus" | "consecutiveCorrect" | "consecutiveIncorrect" | "totalAttempts" | "correctAttempts" | "lastPracticedAt" | "nextDueAt" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["spacedRetrievalItem"]>
+export type SpacedRetrievalItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "createdByUserId" | "prompt" | "correctAnswer" | "acceptableAnswers" | "distractors" | "cueText" | "category" | "active" | "linkedContactId" | "supportRole" | "sensitive" | "patientVisible" | "supportLevelOverride" | "currentIntervalStep" | "currentIntervalSeconds" | "masteryStatus" | "consecutiveCorrect" | "consecutiveIncorrect" | "totalAttempts" | "correctAttempts" | "correctWithoutCue" | "correctWithCue" | "unsureAttempts" | "incorrectAttempts" | "lastPracticedAt" | "nextDueAt" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["spacedRetrievalItem"]>
 export type SpacedRetrievalItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1354,6 +1729,11 @@ export type $SpacedRetrievalItemPayload<ExtArgs extends runtime.Types.Extensions
     cueText: string | null
     category: $Enums.SpacedRetrievalCategory
     active: boolean
+    linkedContactId: string | null
+    supportRole: string | null
+    sensitive: boolean
+    patientVisible: boolean
+    supportLevelOverride: string | null
     currentIntervalStep: number
     currentIntervalSeconds: number
     masteryStatus: $Enums.MasteryStatus
@@ -1361,6 +1741,10 @@ export type $SpacedRetrievalItemPayload<ExtArgs extends runtime.Types.Extensions
     consecutiveIncorrect: number
     totalAttempts: number
     correctAttempts: number
+    correctWithoutCue: number
+    correctWithCue: number
+    unsureAttempts: number
+    incorrectAttempts: number
     lastPracticedAt: Date | null
     nextDueAt: Date | null
     archivedAt: Date | null
@@ -1801,6 +2185,11 @@ export interface SpacedRetrievalItemFieldRefs {
   readonly cueText: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
   readonly category: Prisma.FieldRef<"SpacedRetrievalItem", 'SpacedRetrievalCategory'>
   readonly active: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
+  readonly linkedContactId: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
+  readonly supportRole: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
+  readonly sensitive: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
+  readonly patientVisible: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
+  readonly supportLevelOverride: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
   readonly currentIntervalStep: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
   readonly currentIntervalSeconds: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
   readonly masteryStatus: Prisma.FieldRef<"SpacedRetrievalItem", 'MasteryStatus'>
@@ -1808,6 +2197,10 @@ export interface SpacedRetrievalItemFieldRefs {
   readonly consecutiveIncorrect: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
   readonly totalAttempts: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
   readonly correctAttempts: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
+  readonly correctWithoutCue: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
+  readonly correctWithCue: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
+  readonly unsureAttempts: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
+  readonly incorrectAttempts: Prisma.FieldRef<"SpacedRetrievalItem", 'Int'>
   readonly lastPracticedAt: Prisma.FieldRef<"SpacedRetrievalItem", 'DateTime'>
   readonly nextDueAt: Prisma.FieldRef<"SpacedRetrievalItem", 'DateTime'>
   readonly archivedAt: Prisma.FieldRef<"SpacedRetrievalItem", 'DateTime'>

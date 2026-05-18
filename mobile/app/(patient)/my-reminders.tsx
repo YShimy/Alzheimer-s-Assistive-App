@@ -68,7 +68,7 @@ export default function PatientRemindersScreen() {
             payload: { reminderId: id, gameType: reminder.gameType },
           });
           // Navigate to the appropriate game
-          if (reminder.gameType === 'SPACED_RETRIEVAL_ORIENTATION') {
+          if (reminder.gameType === 'PERSONAL_ORIENTATION_PRACTICE' || reminder.gameType === 'SPACED_RETRIEVAL_ORIENTATION') {
             router.push('/(patient)/orientation-practice');
           } else {
             router.push('/(patient)/memory-match-game');

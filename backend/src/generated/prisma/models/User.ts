@@ -338,6 +338,8 @@ export type UserWhereInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportListRelationFilter
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemListRelationFilter
   createdSRItems?: Prisma.SpacedRetrievalItemListRelationFilter
+  personalOrientationSettings?: Prisma.XOR<Prisma.PersonalOrientationSettingsNullableScalarRelationFilter, Prisma.PersonalOrientationSettingsWhereInput> | null
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
 }
@@ -390,6 +392,8 @@ export type UserOrderByWithRelationInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportOrderByRelationAggregateInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemOrderByRelationAggregateInput
   createdSRItems?: Prisma.SpacedRetrievalItemOrderByRelationAggregateInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsOrderByWithRelationInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsOrderByRelationAggregateInput
   devices?: Prisma.DeviceOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
@@ -445,6 +449,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   generatedSummaryExports?: Prisma.PatientSummaryExportListRelationFilter
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemListRelationFilter
   createdSRItems?: Prisma.SpacedRetrievalItemListRelationFilter
+  personalOrientationSettings?: Prisma.XOR<Prisma.PersonalOrientationSettingsNullableScalarRelationFilter, Prisma.PersonalOrientationSettingsWhereInput> | null
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "googleId" | "email">
@@ -545,6 +551,8 @@ export type UserCreateInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -597,6 +605,8 @@ export type UserUncheckedCreateInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -649,6 +659,8 @@ export type UserUpdateInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -701,6 +713,8 @@ export type UserUncheckedUpdateInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1141,6 +1155,36 @@ export type UserUpdateOneRequiredWithoutCreatedSRItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedSRItemsInput, Prisma.UserUpdateWithoutCreatedSRItemsInput>, Prisma.UserUncheckedUpdateWithoutCreatedSRItemsInput>
 }
 
+export type UserCreateNestedOneWithoutPersonalOrientationSettingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedCreateWithoutPersonalOrientationSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPersonalOrientationSettingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedPOSettingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedCreateWithoutUpdatedPOSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedPOSettingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPersonalOrientationSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedCreateWithoutPersonalOrientationSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPersonalOrientationSettingsInput
+  upsert?: Prisma.UserUpsertWithoutPersonalOrientationSettingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPersonalOrientationSettingsInput, Prisma.UserUpdateWithoutPersonalOrientationSettingsInput>, Prisma.UserUncheckedUpdateWithoutPersonalOrientationSettingsInput>
+}
+
+export type UserUpdateOneWithoutUpdatedPOSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedCreateWithoutUpdatedPOSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedPOSettingsInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedPOSettingsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedPOSettingsInput, Prisma.UserUpdateWithoutUpdatedPOSettingsInput>, Prisma.UserUncheckedUpdateWithoutUpdatedPOSettingsInput>
+}
+
 export type UserCreateNestedOneWithoutAnalyticsEventsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAnalyticsEventsInput, Prisma.UserUncheckedCreateWithoutAnalyticsEventsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAnalyticsEventsInput
@@ -1378,6 +1422,8 @@ export type UserCreateWithoutPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -1429,6 +1475,8 @@ export type UserUncheckedCreateWithoutPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1485,6 +1533,8 @@ export type UserCreateWithoutUploadedPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -1536,6 +1586,8 @@ export type UserUncheckedCreateWithoutUploadedPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1603,6 +1655,8 @@ export type UserUpdateWithoutPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -1654,6 +1708,8 @@ export type UserUncheckedUpdateWithoutPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1716,6 +1772,8 @@ export type UserUpdateWithoutUploadedPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -1767,6 +1825,8 @@ export type UserUncheckedUpdateWithoutUploadedPatientDocumentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1818,6 +1878,8 @@ export type UserCreateWithoutCaregiverLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -1869,6 +1931,8 @@ export type UserUncheckedCreateWithoutCaregiverLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1925,6 +1989,8 @@ export type UserCreateWithoutPatientLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -1976,6 +2042,8 @@ export type UserUncheckedCreateWithoutPatientLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2032,6 +2100,8 @@ export type UserCreateWithoutInvitedCareLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -2083,6 +2153,8 @@ export type UserUncheckedCreateWithoutInvitedCareLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2150,6 +2222,8 @@ export type UserUpdateWithoutCaregiverLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -2201,6 +2275,8 @@ export type UserUncheckedUpdateWithoutCaregiverLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2263,6 +2339,8 @@ export type UserUpdateWithoutPatientLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -2314,6 +2392,8 @@ export type UserUncheckedUpdateWithoutPatientLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2376,6 +2456,8 @@ export type UserUpdateWithoutInvitedCareLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -2427,6 +2509,8 @@ export type UserUncheckedUpdateWithoutInvitedCareLinksInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2478,6 +2562,8 @@ export type UserCreateWithoutPatientRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -2529,6 +2615,8 @@ export type UserUncheckedCreateWithoutPatientRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2585,6 +2673,8 @@ export type UserCreateWithoutCreatedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -2636,6 +2726,8 @@ export type UserUncheckedCreateWithoutCreatedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2692,6 +2784,8 @@ export type UserCreateWithoutEditedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -2743,6 +2837,8 @@ export type UserUncheckedCreateWithoutEditedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2810,6 +2906,8 @@ export type UserUpdateWithoutPatientRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -2861,6 +2959,8 @@ export type UserUncheckedUpdateWithoutPatientRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2923,6 +3023,8 @@ export type UserUpdateWithoutCreatedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -2974,6 +3076,8 @@ export type UserUncheckedUpdateWithoutCreatedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3036,6 +3140,8 @@ export type UserUpdateWithoutEditedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -3087,6 +3193,8 @@ export type UserUncheckedUpdateWithoutEditedRemindersInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3138,6 +3246,8 @@ export type UserCreateWithoutReminderEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -3189,6 +3299,8 @@ export type UserUncheckedCreateWithoutReminderEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3245,6 +3357,8 @@ export type UserCreateWithoutActorEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -3296,6 +3410,8 @@ export type UserUncheckedCreateWithoutActorEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3363,6 +3479,8 @@ export type UserUpdateWithoutReminderEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -3414,6 +3532,8 @@ export type UserUncheckedUpdateWithoutReminderEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3476,6 +3596,8 @@ export type UserUpdateWithoutActorEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -3527,6 +3649,8 @@ export type UserUncheckedUpdateWithoutActorEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3578,6 +3702,8 @@ export type UserCreateWithoutChecklistTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -3629,6 +3755,8 @@ export type UserUncheckedCreateWithoutChecklistTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3685,6 +3813,8 @@ export type UserCreateWithoutCreatedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -3736,6 +3866,8 @@ export type UserUncheckedCreateWithoutCreatedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3792,6 +3924,8 @@ export type UserCreateWithoutEditedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -3843,6 +3977,8 @@ export type UserUncheckedCreateWithoutEditedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3910,6 +4046,8 @@ export type UserUpdateWithoutChecklistTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -3961,6 +4099,8 @@ export type UserUncheckedUpdateWithoutChecklistTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4023,6 +4163,8 @@ export type UserUpdateWithoutCreatedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -4074,6 +4216,8 @@ export type UserUncheckedUpdateWithoutCreatedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4136,6 +4280,8 @@ export type UserUpdateWithoutEditedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -4187,6 +4333,8 @@ export type UserUncheckedUpdateWithoutEditedTemplatesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4238,6 +4386,8 @@ export type UserCreateWithoutChecklistRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -4289,6 +4439,8 @@ export type UserUncheckedCreateWithoutChecklistRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4345,6 +4497,8 @@ export type UserCreateWithoutActorRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -4396,6 +4550,8 @@ export type UserUncheckedCreateWithoutActorRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4463,6 +4619,8 @@ export type UserUpdateWithoutChecklistRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -4514,6 +4672,8 @@ export type UserUncheckedUpdateWithoutChecklistRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4576,6 +4736,8 @@ export type UserUpdateWithoutActorRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -4627,6 +4789,8 @@ export type UserUncheckedUpdateWithoutActorRunsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4678,6 +4842,8 @@ export type UserCreateWithoutGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -4729,6 +4895,8 @@ export type UserUncheckedCreateWithoutGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4785,6 +4953,8 @@ export type UserCreateWithoutActorGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -4836,6 +5006,8 @@ export type UserUncheckedCreateWithoutActorGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4903,6 +5075,8 @@ export type UserUpdateWithoutGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -4954,6 +5128,8 @@ export type UserUncheckedUpdateWithoutGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5016,6 +5192,8 @@ export type UserUpdateWithoutActorGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -5067,6 +5245,8 @@ export type UserUncheckedUpdateWithoutActorGameSessionsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5118,6 +5298,8 @@ export type UserCreateWithoutSpacedRetrievalItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutPatientInput
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -5169,6 +5351,8 @@ export type UserUncheckedCreateWithoutSpacedRetrievalItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutPatientInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5225,6 +5409,8 @@ export type UserCreateWithoutCreatedSRItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutPatientInput
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -5276,6 +5462,8 @@ export type UserUncheckedCreateWithoutCreatedSRItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutPatientInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5343,6 +5531,8 @@ export type UserUpdateWithoutSpacedRetrievalItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutPatientNestedInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -5394,6 +5584,8 @@ export type UserUncheckedUpdateWithoutSpacedRetrievalItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutPatientNestedInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5456,6 +5648,8 @@ export type UserUpdateWithoutCreatedSRItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutPatientNestedInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -5507,6 +5701,464 @@ export type UserUncheckedUpdateWithoutCreatedSRItemsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutPatientNestedInput
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
+  devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPersonalOrientationSettingsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
+  importantInfo?: Prisma.PatientImportantInfoCreateNestedOneWithoutPatientInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoCreateNestedManyWithoutUpdatedByInput
+  patientSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutPatientInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
+  createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
+  devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPersonalOrientationSettingsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  importantInfo?: Prisma.PatientImportantInfoUncheckedCreateNestedOneWithoutPatientInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUncheckedCreateNestedManyWithoutUpdatedByInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutPatientInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
+  devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPersonalOrientationSettingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedCreateWithoutPersonalOrientationSettingsInput>
+}
+
+export type UserCreateWithoutUpdatedPOSettingsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentCreateNestedManyWithoutUploadedByInput
+  importantInfo?: Prisma.PatientImportantInfoCreateNestedOneWithoutPatientInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoCreateNestedManyWithoutUpdatedByInput
+  patientSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutPatientInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
+  createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedPOSettingsInput = {
+  id?: string
+  googleId?: string | null
+  email: string
+  passwordHash?: string | null
+  displayName: string
+  age?: number | null
+  role?: $Enums.UserRole
+  language?: string
+  timezone?: string
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: string
+  pushToken?: string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutCaregiverInput
+  patientLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutPatientInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedCreateNestedManyWithoutInvitedByInput
+  patientReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutPatientInput
+  createdReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutCreatedByInput
+  editedReminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutLastEditedByInput
+  reminderEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutPatientInput
+  actorEvents?: Prisma.ReminderEventUncheckedCreateNestedManyWithoutActorInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutPatientInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedCreateNestedManyWithoutEditedByInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutPatientInput
+  actorRuns?: Prisma.ChecklistRunUncheckedCreateNestedManyWithoutActorInput
+  gameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutPatientInput
+  actorGameSessions?: Prisma.GameSessionUncheckedCreateNestedManyWithoutActorInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPatientInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutActorInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedCreateNestedManyWithoutPatientInput
+  patientContacts?: Prisma.PatientContactUncheckedCreateNestedManyWithoutPatientInput
+  createdMemos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutCreatedByInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutUploadedByInput
+  ownedAssets?: Prisma.MediaAssetUncheckedCreateNestedManyWithoutOwnerInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutPatientInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  importantInfo?: Prisma.PatientImportantInfoUncheckedCreateNestedOneWithoutPatientInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUncheckedCreateNestedManyWithoutUpdatedByInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutPatientInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedPOSettingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedCreateWithoutUpdatedPOSettingsInput>
+}
+
+export type UserUpsertWithoutPersonalOrientationSettingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedUpdateWithoutPersonalOrientationSettingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedCreateWithoutPersonalOrientationSettingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPersonalOrientationSettingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPersonalOrientationSettingsInput, Prisma.UserUncheckedUpdateWithoutPersonalOrientationSettingsInput>
+}
+
+export type UserUpdateWithoutPersonalOrientationSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
+  importantInfo?: Prisma.PatientImportantInfoUpdateOneWithoutPatientNestedInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUpdateManyWithoutUpdatedByNestedInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutPatientNestedInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
+  devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPersonalOrientationSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUncheckedUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUncheckedUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  importantInfo?: Prisma.PatientImportantInfoUncheckedUpdateOneWithoutPatientNestedInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUncheckedUpdateManyWithoutUpdatedByNestedInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutPatientNestedInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
+  devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutUpdatedPOSettingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedUpdateWithoutUpdatedPOSettingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedCreateWithoutUpdatedPOSettingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedPOSettingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedPOSettingsInput, Prisma.UserUncheckedUpdateWithoutUpdatedPOSettingsInput>
+}
+
+export type UserUpdateWithoutUpdatedPOSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUpdateManyWithoutUploadedByNestedInput
+  importantInfo?: Prisma.PatientImportantInfoUpdateOneWithoutPatientNestedInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUpdateManyWithoutUpdatedByNestedInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutPatientNestedInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedPOSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accessibilitySettings?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  preferredNotificationMode?: Prisma.StringFieldUpdateOperationsInput | string
+  pushToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  caregiverLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutCaregiverNestedInput
+  patientLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutPatientNestedInput
+  invitedCareLinks?: Prisma.CareLinkUncheckedUpdateManyWithoutInvitedByNestedInput
+  patientReminders?: Prisma.ReminderUncheckedUpdateManyWithoutPatientNestedInput
+  createdReminders?: Prisma.ReminderUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedReminders?: Prisma.ReminderUncheckedUpdateManyWithoutLastEditedByNestedInput
+  reminderEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorEvents?: Prisma.ReminderEventUncheckedUpdateManyWithoutActorNestedInput
+  checklistTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutPatientNestedInput
+  createdTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  editedTemplates?: Prisma.ChecklistTemplateUncheckedUpdateManyWithoutEditedByNestedInput
+  checklistRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutPatientNestedInput
+  actorRuns?: Prisma.ChecklistRunUncheckedUpdateManyWithoutActorNestedInput
+  gameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutPatientNestedInput
+  actorGameSessions?: Prisma.GameSessionUncheckedUpdateManyWithoutActorNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPatientNestedInput
+  actorAnalytics?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutActorNestedInput
+  contactConsents?: Prisma.ContactSupportConsentUncheckedUpdateManyWithoutPatientNestedInput
+  patientContacts?: Prisma.PatientContactUncheckedUpdateManyWithoutPatientNestedInput
+  createdMemos?: Prisma.ContactMemoUncheckedUpdateManyWithoutCreatedByNestedInput
+  uploadedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutUploadedByNestedInput
+  ownedAssets?: Prisma.MediaAssetUncheckedUpdateManyWithoutOwnerNestedInput
+  patientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutPatientNestedInput
+  uploadedPatientDocuments?: Prisma.PatientDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  importantInfo?: Prisma.PatientImportantInfoUncheckedUpdateOneWithoutPatientNestedInput
+  updatedImportantInfoCards?: Prisma.PatientImportantInfoUncheckedUpdateManyWithoutUpdatedByNestedInput
+  patientSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutPatientNestedInput
+  generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
+  spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
+  createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5558,6 +6210,8 @@ export type UserCreateWithoutAnalyticsEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -5609,6 +6263,8 @@ export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5665,6 +6321,8 @@ export type UserCreateWithoutActorAnalyticsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -5716,6 +6374,8 @@ export type UserUncheckedCreateWithoutActorAnalyticsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5783,6 +6443,8 @@ export type UserUpdateWithoutAnalyticsEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -5834,6 +6496,8 @@ export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5896,6 +6560,8 @@ export type UserUpdateWithoutActorAnalyticsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -5947,6 +6613,8 @@ export type UserUncheckedUpdateWithoutActorAnalyticsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5998,6 +6666,8 @@ export type UserCreateWithoutContactConsentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -6049,6 +6719,8 @@ export type UserUncheckedCreateWithoutContactConsentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6116,6 +6788,8 @@ export type UserUpdateWithoutContactConsentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -6167,6 +6841,8 @@ export type UserUncheckedUpdateWithoutContactConsentsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6218,6 +6894,8 @@ export type UserCreateWithoutPatientContactsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -6269,6 +6947,8 @@ export type UserUncheckedCreateWithoutPatientContactsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6336,6 +7016,8 @@ export type UserUpdateWithoutPatientContactsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -6387,6 +7069,8 @@ export type UserUncheckedUpdateWithoutPatientContactsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6438,6 +7122,8 @@ export type UserCreateWithoutCreatedMemosInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -6489,6 +7175,8 @@ export type UserUncheckedCreateWithoutCreatedMemosInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6556,6 +7244,8 @@ export type UserUpdateWithoutCreatedMemosInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -6607,6 +7297,8 @@ export type UserUncheckedUpdateWithoutCreatedMemosInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6658,6 +7350,8 @@ export type UserCreateWithoutOwnedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -6709,6 +7403,8 @@ export type UserUncheckedCreateWithoutOwnedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6765,6 +7461,8 @@ export type UserCreateWithoutUploadedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -6816,6 +7514,8 @@ export type UserUncheckedCreateWithoutUploadedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6883,6 +7583,8 @@ export type UserUpdateWithoutOwnedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -6934,6 +7636,8 @@ export type UserUncheckedUpdateWithoutOwnedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6996,6 +7700,8 @@ export type UserUpdateWithoutUploadedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -7047,6 +7753,8 @@ export type UserUncheckedUpdateWithoutUploadedAssetsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7098,6 +7806,8 @@ export type UserCreateWithoutImportantInfoInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -7149,6 +7859,8 @@ export type UserUncheckedCreateWithoutImportantInfoInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7205,6 +7917,8 @@ export type UserCreateWithoutUpdatedImportantInfoCardsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -7256,6 +7970,8 @@ export type UserUncheckedCreateWithoutUpdatedImportantInfoCardsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7323,6 +8039,8 @@ export type UserUpdateWithoutImportantInfoInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -7374,6 +8092,8 @@ export type UserUncheckedUpdateWithoutImportantInfoInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7436,6 +8156,8 @@ export type UserUpdateWithoutUpdatedImportantInfoCardsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -7487,6 +8209,8 @@ export type UserUncheckedUpdateWithoutUpdatedImportantInfoCardsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7538,6 +8262,8 @@ export type UserCreateWithoutPatientSummaryExportsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -7589,6 +8315,8 @@ export type UserUncheckedCreateWithoutPatientSummaryExportsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7645,6 +8373,8 @@ export type UserCreateWithoutGeneratedSummaryExportsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutPatientInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
@@ -7696,6 +8426,8 @@ export type UserUncheckedCreateWithoutGeneratedSummaryExportsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutPatientInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7763,6 +8495,8 @@ export type UserUpdateWithoutPatientSummaryExportsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -7814,6 +8548,8 @@ export type UserUncheckedUpdateWithoutPatientSummaryExportsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7876,6 +8612,8 @@ export type UserUpdateWithoutGeneratedSummaryExportsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutPatientNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
@@ -7927,6 +8665,8 @@ export type UserUncheckedUpdateWithoutGeneratedSummaryExportsInput = {
   patientSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutPatientNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7979,6 +8719,8 @@ export type UserCreateWithoutDevicesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
@@ -8030,6 +8772,8 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -8097,6 +8841,8 @@ export type UserUpdateWithoutDevicesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
@@ -8148,6 +8894,8 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -8199,6 +8947,8 @@ export type UserCreateWithoutNotificationsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceCreateNestedManyWithoutUserInput
 }
 
@@ -8250,6 +9000,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedCreateNestedManyWithoutGeneratedByInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutPatientInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutCreatedByInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedOneWithoutPatientInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedCreateNestedManyWithoutUpdatedByInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -8317,6 +9069,8 @@ export type UserUpdateWithoutNotificationsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutUserNestedInput
 }
 
@@ -8368,6 +9122,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   generatedSummaryExports?: Prisma.PatientSummaryExportUncheckedUpdateManyWithoutGeneratedByNestedInput
   spacedRetrievalItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutPatientNestedInput
   createdSRItems?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByNestedInput
+  personalOrientationSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateOneWithoutPatientNestedInput
+  updatedPOSettings?: Prisma.PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -8406,6 +9162,7 @@ export type UserCountOutputType = {
   generatedSummaryExports: number
   spacedRetrievalItems: number
   createdSRItems: number
+  updatedPOSettings: number
   devices: number
   notifications: number
 }
@@ -8440,6 +9197,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   generatedSummaryExports?: boolean | UserCountOutputTypeCountGeneratedSummaryExportsArgs
   spacedRetrievalItems?: boolean | UserCountOutputTypeCountSpacedRetrievalItemsArgs
   createdSRItems?: boolean | UserCountOutputTypeCountCreatedSRItemsArgs
+  updatedPOSettings?: boolean | UserCountOutputTypeCountUpdatedPOSettingsArgs
   devices?: boolean | UserCountOutputTypeCountDevicesArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
@@ -8660,6 +9418,13 @@ export type UserCountOutputTypeCountCreatedSRItemsArgs<ExtArgs extends runtime.T
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountUpdatedPOSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PersonalOrientationSettingsWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DeviceWhereInput
 }
@@ -8720,6 +9485,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   generatedSummaryExports?: boolean | Prisma.User$generatedSummaryExportsArgs<ExtArgs>
   spacedRetrievalItems?: boolean | Prisma.User$spacedRetrievalItemsArgs<ExtArgs>
   createdSRItems?: boolean | Prisma.User$createdSRItemsArgs<ExtArgs>
+  personalOrientationSettings?: boolean | Prisma.User$personalOrientationSettingsArgs<ExtArgs>
+  updatedPOSettings?: boolean | Prisma.User$updatedPOSettingsArgs<ExtArgs>
   devices?: boolean | Prisma.User$devicesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -8817,6 +9584,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   generatedSummaryExports?: boolean | Prisma.User$generatedSummaryExportsArgs<ExtArgs>
   spacedRetrievalItems?: boolean | Prisma.User$spacedRetrievalItemsArgs<ExtArgs>
   createdSRItems?: boolean | Prisma.User$createdSRItemsArgs<ExtArgs>
+  personalOrientationSettings?: boolean | Prisma.User$personalOrientationSettingsArgs<ExtArgs>
+  updatedPOSettings?: boolean | Prisma.User$updatedPOSettingsArgs<ExtArgs>
   devices?: boolean | Prisma.User$devicesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -8857,6 +9626,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     generatedSummaryExports: Prisma.$PatientSummaryExportPayload<ExtArgs>[]
     spacedRetrievalItems: Prisma.$SpacedRetrievalItemPayload<ExtArgs>[]
     createdSRItems: Prisma.$SpacedRetrievalItemPayload<ExtArgs>[]
+    personalOrientationSettings: Prisma.$PersonalOrientationSettingsPayload<ExtArgs> | null
+    updatedPOSettings: Prisma.$PersonalOrientationSettingsPayload<ExtArgs>[]
     devices: Prisma.$DevicePayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
@@ -9302,6 +10073,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   generatedSummaryExports<T extends Prisma.User$generatedSummaryExportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$generatedSummaryExportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PatientSummaryExportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   spacedRetrievalItems<T extends Prisma.User$spacedRetrievalItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$spacedRetrievalItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpacedRetrievalItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdSRItems<T extends Prisma.User$createdSRItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdSRItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpacedRetrievalItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  personalOrientationSettings<T extends Prisma.User$personalOrientationSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$personalOrientationSettingsArgs<ExtArgs>>): Prisma.Prisma__PersonalOrientationSettingsClient<runtime.Types.Result.GetResult<Prisma.$PersonalOrientationSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  updatedPOSettings<T extends Prisma.User$updatedPOSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedPOSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PersonalOrientationSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   devices<T extends Prisma.User$devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -10455,6 +11228,49 @@ export type User$createdSRItemsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.SpacedRetrievalItemScalarFieldEnum | Prisma.SpacedRetrievalItemScalarFieldEnum[]
+}
+
+/**
+ * User.personalOrientationSettings
+ */
+export type User$personalOrientationSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PersonalOrientationSettings
+   */
+  select?: Prisma.PersonalOrientationSettingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PersonalOrientationSettings
+   */
+  omit?: Prisma.PersonalOrientationSettingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PersonalOrientationSettingsInclude<ExtArgs> | null
+  where?: Prisma.PersonalOrientationSettingsWhereInput
+}
+
+/**
+ * User.updatedPOSettings
+ */
+export type User$updatedPOSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PersonalOrientationSettings
+   */
+  select?: Prisma.PersonalOrientationSettingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PersonalOrientationSettings
+   */
+  omit?: Prisma.PersonalOrientationSettingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PersonalOrientationSettingsInclude<ExtArgs> | null
+  where?: Prisma.PersonalOrientationSettingsWhereInput
+  orderBy?: Prisma.PersonalOrientationSettingsOrderByWithRelationInput | Prisma.PersonalOrientationSettingsOrderByWithRelationInput[]
+  cursor?: Prisma.PersonalOrientationSettingsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PersonalOrientationSettingsScalarFieldEnum | Prisma.PersonalOrientationSettingsScalarFieldEnum[]
 }
 
 /**

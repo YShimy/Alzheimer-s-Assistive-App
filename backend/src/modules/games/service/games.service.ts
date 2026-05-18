@@ -21,13 +21,13 @@ const ACTIVE_GAMES: ActiveGame[] = [
     iconName: 'grid-outline',
   },
   {
-    gameType: 'SPACED_RETRIEVAL_ORIENTATION',
-    displayName: 'Spaced Retrieval Orientation Practice',
-    patientDisplayName: 'Orientation Practice',
-    description: 'Practice remembering helpful daily information.',
+    gameType: 'PERSONAL_ORIENTATION_PRACTICE',
+    displayName: 'Personalized Orientation Practice',
+    patientDisplayName: 'My Day & People',
+    description: 'Practice remembering helpful daily information and familiar people.',
     recommendedFrequency: 'Daily',
     targetSessionsPerWeek: 7,
-    iconName: 'help-circle-outline',
+    iconName: 'people-outline',
   },
 ];
 
@@ -165,7 +165,8 @@ export class GamesService {
   }
 
   async getSpacedRetrievalProgress(patientId: string): Promise<SpacedRetrievalProgress> {
-    const sessions = await gamesRepo.getProgressData(patientId, 'SPACED_RETRIEVAL_ORIENTATION');
+    // Support both legacy and new gameType values for backward compat
+    const sessions = await gamesRepo.getProgressData(patientId, 'PERSONAL_ORIENTATION_PRACTICE');
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const weeklyCompleted = sessions.filter(
       (s) => s.startedAt >= weekStart && (s.status === 'COMPLETED' || s.completed),

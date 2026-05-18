@@ -6,18 +6,25 @@ import type { PracticeQuestion, SessionScore } from './engine';
 
 export type SRPhase = 'intro' | 'question' | 'feedback' | 'result';
 
+interface AnswerLog {
+  correct: boolean;
+  usedCue: boolean;
+  unsure: boolean;
+  item?: any;
+}
+
 interface SRState {
   phase: SRPhase;
   questions: PracticeQuestion[];
   currentQuestionIndex: number;
-  results: { correct: boolean; usedCue: boolean; unsure: boolean }[];
+  results: AnswerLog[];
   sessionId: string | null;
   startedAt: number;
   score: SessionScore | null;
 
   startSession: (questions: PracticeQuestion[], sessionId: string) => void;
   setPhase: (phase: SRPhase) => void;
-  answer: (correct: boolean, usedCue: boolean, unsure: boolean) => void;
+  answer: (correct: boolean, usedCue: boolean, unsure: boolean, item?: any) => void;
   nextQuestion: () => void;
   finish: (score: SessionScore) => void;
   reset: () => void;
@@ -51,9 +58,9 @@ export const useSpacedRetrievalStore = create<SRState>((set) => ({
 
   setPhase: (phase) => set({ phase }),
 
-  answer: (correct, usedCue, unsure) =>
+  answer: (correct, usedCue, unsure, item) =>
     set((state) => ({
-      results: [...state.results, { correct, usedCue, unsure }],
+      results: [...state.results, { correct, usedCue, unsure, item }],
     })),
 
   nextQuestion: () =>

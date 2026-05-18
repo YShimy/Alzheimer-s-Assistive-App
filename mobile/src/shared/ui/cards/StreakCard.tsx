@@ -9,6 +9,7 @@ interface StreakCardProps {
   title: string;
   icon: string;
   data: StreakData;
+  color?: string;
 }
 export function StreakCard({ title, icon, data, color = colors.primary[500] }: StreakCardProps) {
   const { t, i18n } = useTranslation();

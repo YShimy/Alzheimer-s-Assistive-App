@@ -109,6 +109,7 @@ enum NotificationType {
 enum GameType {
   ASSOCIATIVE_MEMORY_MATCH
   SPACED_RETRIEVAL_ORIENTATION
+  PERSONAL_ORIENTATION_PRACTICE
 }
 
 enum GameSessionStatus {
@@ -124,7 +125,15 @@ enum SpacedRetrievalCategory {
   DAILY_ROUTINE
   APP_NAVIGATION
   SAFETY_SUPPORT
+  PEOPLE_RECOGNITION
+  SUPPORT_FACT
   OTHER
+}
+
+enum SupportLevel {
+  LIGHT_SUPPORT
+  GUIDED_SUPPORT
+  HIGH_SUPPORT
 }
 
 enum MasteryStatus {
@@ -194,6 +203,10 @@ model User {
   // Spaced Retrieval items
   spacedRetrievalItems    SpacedRetrievalItem[] @relation("PatientSRItems")
   createdSRItems          SpacedRetrievalItem[] @relation("CreatedSRItems")
+
+  // Personal Orientation Settings
+  personalOrientationSettings PersonalOrientationSettings? @relation("PatientPOSettings")
+  updatedPOSettings          PersonalOrientationSettings[] @relation("UpdatedPOSettings")
 
   // Notification system
   devices       Device[]       @relation("UserDevices")
@@ -550,6 +563,11 @@ model SpacedRetrievalItem {
   cueText                String?
   category               SpacedRetrievalCategory @default(OTHER)
   active                 Boolean                 @default(true)
+  linkedContactId        String?
+  supportRole            String?
+  sensitive              Boolean                 @default(false)
+  patientVisible         Boolean                 @default(true)
+  supportLevelOverride   String?
   currentIntervalStep    Int                     @default(0)
   currentIntervalSeconds Int                     @default(0)
   masteryStatus          MasteryStatus           @default(NEW)
@@ -557,6 +575,10 @@ model SpacedRetrievalItem {
   consecutiveIncorrect   Int                     @default(0)
   totalAttempts          Int                     @default(0)
   correctAttempts        Int                     @default(0)
+  correctWithoutCue      Int                     @default(0)
+  correctWithCue         Int                     @default(0)
+  unsureAttempts         Int                     @default(0)
+  incorrectAttempts      Int                     @default(0)
   lastPracticedAt        DateTime?
   nextDueAt              DateTime?
   archivedAt             DateTime?
@@ -571,6 +593,27 @@ model SpacedRetrievalItem {
   @@index([nextDueAt])
   @@index([category])
   @@map("spaced_retrieval_items")
+}
+
+model PersonalOrientationSettings {
+  id                         String       @id @default(uuid())
+  patientId                  String       @unique
+  supportLevel               SupportLevel @default(GUIDED_SUPPORT)
+  weeklyTargetSessions       Int          @default(5)
+  enabledFamilies            Json?        // array of enabled question families
+  includePeopleWithoutPhotos Boolean      @default(false)
+  includeSensitiveContacts   Boolean      @default(false)
+  maxQuestionsPerSession     Int?         @default(6)
+  cueStyle                   String?      @default("button")
+  allowMaintenanceItems      Boolean      @default(true)
+  createdAt                  DateTime     @default(now())
+  updatedAt                  DateTime     @updatedAt
+  updatedByUserId            String?
+
+  patient   User  @relation("PatientPOSettings", fields: [patientId], references: [id])
+  updatedBy User? @relation("UpdatedPOSettings", fields: [updatedByUserId], references: [id])
+
+  @@map("personal_orientation_settings")
 }
 
 model AnalyticsEvent {
@@ -663,6 +706,12 @@ model ContactMemo {
   photoAssetId          String?
   isArchived            Boolean  @default(false)
   
+  includeInGame         Boolean  @default(true)
+  isSensitive           Boolean  @default(false)
+  supportRole           String?
+  safePatientNote       String?
+  preferredName         String?
+
   patientFavorite       Boolean  @default(false)
   caregiverFavorite     Boolean  @default(false)
   patientPriorityRank   Int?

@@ -81,7 +81,7 @@ const PATIENTS = [
 // Game types for the new evidence-informed games
 const GAME_TYPES = {
   MEMORY_MATCH: 'ASSOCIATIVE_MEMORY_MATCH',
-  SPACED_RETRIEVAL: 'SPACED_RETRIEVAL_ORIENTATION',
+  SPACED_RETRIEVAL: 'PERSONAL_ORIENTATION_PRACTICE', // My Day & People
 } as const;
 
 function randomDateWithinLast(days: number): Date {
@@ -113,6 +113,7 @@ async function cleanDemoData() {
     prisma.gameLevelResult.deleteMany({ where: { session: { patientUserId: { in: demoUserIds } } } }),
     (prisma as any).gameItemResult?.deleteMany({ where: { session: { patientUserId: { in: demoUserIds } } } }),
     (prisma as any).spacedRetrievalItem?.deleteMany({ where: { patientId: { in: demoUserIds } } }),
+    (prisma as any).personalOrientationSettings?.deleteMany({ where: { patientId: { in: demoUserIds } } }),
     prisma.gameSession.deleteMany({ where: { patientUserId: { in: demoUserIds } } }),
     prisma.patientDocument.deleteMany({ where: { patientId: { in: demoUserIds } } }),
     prisma.patientImportantInfo.deleteMany({ where: { patientId: { in: demoUserIds } } }),
@@ -277,10 +278,11 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
       title: 'Memory Match Practice',
       category: ReminderCategory.TASK,
       priority: PriorityLevel.NORMAL,
-      reminderType: ReminderType.SIMPLE,
+      reminderType: ReminderType.GAME_SESSION,
+      gameType: 'ASSOCIATIVE_MEMORY_MATCH',
       scheduledTime: '10:00',
       startDate: thirtyDaysAgo,
-      notes: 'Time for your Memory Match practice session.',
+      description: 'Time for your Memory Match practice session.',
     }
   });
 
@@ -289,13 +291,14 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
       patientUserId: patientId,
       createdByUserId: caregiverId,
       lastEditedByUserId: caregiverId,
-      title: 'Daily Orientation Practice',
+      title: 'My Day & People Practice',
       category: ReminderCategory.TASK,
       priority: PriorityLevel.NORMAL,
-      reminderType: ReminderType.SIMPLE,
+      reminderType: ReminderType.GAME_SESSION,
+      gameType: 'PERSONAL_ORIENTATION_PRACTICE',
       scheduledTime: '09:00',
       startDate: thirtyDaysAgo,
-      notes: 'Practice your daily orientation questions.',
+      description: 'Practice your My Day & People daily orientation questions.',
     }
   });
 
@@ -509,11 +512,12 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
 
   // 6. Contacts
   const contacts = [
-    { name: caregiverName, label: 'Primary Caregiver' },
-    { name: 'Dr. Sameh', label: 'Doctor / Clinic' },
-    { name: 'Amira (Neighbor)', label: 'Neighbor' }
+    { name: caregiverName, label: 'Primary Caregiver', role: 'Helps with daily app reminders and medicine', include: true, isSens: false, note: 'Spouse/Primary Caregiver', prefName: caregiverName.split(' ')[0] },
+    { name: 'Dr. Sameh', label: 'Doctor / Clinic', role: 'Checks your memory and health every month', include: true, isSens: false, note: 'Primary Physician', prefName: 'Dr. Sameh' },
+    { name: 'Amira (Neighbor)', label: 'Neighbor', role: 'Helps when caregiver is out', include: true, isSens: false, note: 'Helpful neighbor', prefName: 'Amira' }
   ];
 
+  const seededContacts = [];
   for (const c of contacts) {
     const pc = await prisma.patientContact.create({
       data: {
@@ -531,6 +535,111 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
         relationLabel: c.label,
         shortMemo: 'Familiar contact for demo purposes.',
         patientFavorite: true,
+        includeInGame: c.include,
+        isSensitive: c.isSens,
+        supportRole: c.role,
+        safePatientNote: c.note,
+        preferredName: c.prefName,
+      }
+    });
+    seededContacts.push(pc);
+  }
+
+  // 7. Personal Orientation Settings
+  await prisma.personalOrientationSettings.create({
+    data: {
+      patientId,
+      updatedByUserId: caregiverId,
+      supportLevel: 'GUIDED_SUPPORT',
+      weeklyTargetSessions: 7,
+      enabledFamilies: ['TIME_ORIENTATION', 'PLACE_ORIENTATION', 'ROUTINE_ORIENTATION', 'APP_NAVIGATION', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+      includePeopleWithoutPhotos: true,
+      includeSensitiveContacts: false,
+      maxQuestionsPerSession: 6,
+      cueStyle: 'button',
+      allowMaintenanceItems: true,
+    }
+  });
+
+  // 8. Spaced Retrieval Items (Enriched with People Recognition & Support Facts)
+  const srItemsDataEnriched = [
+    { prompt: 'What day is it today?', correctAnswer: new Date().toLocaleDateString('en-US', { weekday: 'long' }), cueText: 'Think about what you did this morning.', category: 'ORIENTATION_DATE', masteryStatus: 'LEARNING', intervalStep: 2, correctWithoutCue: 4, correctWithCue: 2, unsureAttempts: 1, incorrectAttempts: 0 },
+    { prompt: 'What month are we in?', correctAnswer: new Date().toLocaleDateString('en-US', { month: 'long' }), cueText: 'Look at a calendar or your phone.', category: 'ORIENTATION_DATE', masteryStatus: 'STRENGTHENING', intervalStep: 4, correctWithoutCue: 8, correctWithCue: 1, unsureAttempts: 0, incorrectAttempts: 0 },
+    { prompt: 'What year is it?', correctAnswer: String(new Date().getFullYear()), cueText: null, category: 'ORIENTATION_DATE', masteryStatus: 'MASTERED', intervalStep: 5, correctWithoutCue: 12, correctWithCue: 0, unsureAttempts: 0, incorrectAttempts: 0 },
+    { prompt: 'Where can you find your daily reminders?', correctAnswer: 'In the Reminders section of the app', cueText: 'Tap the alarm icon at the bottom of the screen.', category: 'APP_NAVIGATION', masteryStatus: 'LEARNING', intervalStep: 1, correctWithoutCue: 3, correctWithCue: 3, unsureAttempts: 1, incorrectAttempts: 1 },
+    { prompt: 'What is the name of your primary caregiver?', correctAnswer: caregiverName.split(' ')[0] ?? 'Your caregiver', cueText: 'Their name is listed in your Contacts section.', category: 'PEOPLE_RECOGNITION', masteryStatus: 'MASTERED', intervalStep: 5, linkedContactId: seededContacts[0]?.id, supportRole: 'Primary Caregiver', correctWithoutCue: 15, correctWithCue: 1, unsureAttempts: 0, incorrectAttempts: 0 },
+    { prompt: 'Who is Dr. Sameh?', correctAnswer: 'Your Doctor', cueText: 'He checks your health every month.', category: 'PEOPLE_RECOGNITION', masteryStatus: 'STRENGTHENING', intervalStep: 4, linkedContactId: seededContacts[1]?.id, supportRole: 'Doctor / Clinic', correctWithoutCue: 7, correctWithCue: 2, unsureAttempts: 1, incorrectAttempts: 0 },
+    { prompt: 'What is your morning routine after breakfast?', correctAnswer: 'Check reminders, then follow the morning checklist', cueText: 'Check the morning checklist in the app.', category: 'DAILY_ROUTINE', masteryStatus: 'NEW', intervalStep: 0, correctWithoutCue: 1, correctWithCue: 1, unsureAttempts: 2, incorrectAttempts: 1 },
+    { prompt: 'Where do you live?', correctAnswer: 'Cairo, Egypt', cueText: 'Your home city.', category: 'ORIENTATION_PLACE', masteryStatus: 'MASTERED', intervalStep: 5, correctWithoutCue: 14, correctWithCue: 0, unsureAttempts: 0, incorrectAttempts: 0 },
+    { prompt: 'Who helps you with daily medicine reminders?', correctAnswer: caregiverName.split(' ')[0] ?? 'Your caregiver', cueText: 'Your primary caregiver.', category: 'SUPPORT_FACT', masteryStatus: 'MASTERED', intervalStep: 5, linkedContactId: seededContacts[0]?.id, supportRole: 'Primary Caregiver', correctWithoutCue: 10, correctWithCue: 1, unsureAttempts: 0, incorrectAttempts: 0 },
+  ];
+
+  const srItemsEnriched = [];
+  for (const item of srItemsDataEnriched) {
+    const now = new Date();
+    const totalAttempts = item.correctWithoutCue + item.correctWithCue + item.unsureAttempts + item.incorrectAttempts;
+    const correctAttempts = item.correctWithoutCue + item.correctWithCue;
+    const srItem = await (prisma as any).spacedRetrievalItem.create({
+      data: {
+        patientId,
+        createdByUserId: caregiverId,
+        prompt: item.prompt,
+        correctAnswer: item.correctAnswer,
+        cueText: item.cueText,
+        category: item.category,
+        linkedContactId: item.linkedContactId ?? null,
+        supportRole: item.supportRole ?? null,
+        sensitive: false,
+        patientVisible: true,
+        masteryStatus: item.masteryStatus,
+        currentIntervalStep: item.intervalStep,
+        currentIntervalSeconds: [0,15,30,60,120,300,600][Math.min(item.intervalStep, 6)] ?? 0,
+        active: true,
+        totalAttempts,
+        correctAttempts,
+        correctWithoutCue: item.correctWithoutCue,
+        correctWithCue: item.correctWithCue,
+        unsureAttempts: item.unsureAttempts,
+        incorrectAttempts: item.incorrectAttempts,
+        lastPracticedAt: randomDateWithinLast(3),
+        nextDueAt: new Date(now.getTime() + (item.masteryStatus === 'MASTERED' ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000)),
+      }
+    });
+    srItemsEnriched.push(srItem);
+  }
+
+  // 9. Personal Orientation Practice Game Sessions (20–25 sessions over 30 days)
+  const popSessionCount = 20 + Math.floor(Math.random() * 6);
+  for (let i = 0; i < popSessionCount; i++) {
+    const accuracy = 65 + Math.min(30, Math.floor(i * 1.5) + Math.floor(Math.random() * 15));
+    const score = Math.round((accuracy / 100) * 600);
+    const sessionDate = new Date(Date.now() - (30 - i * 1.2) * 24 * 60 * 60 * 1000);
+    const isAbandoned = randomChance(5);
+
+    await prisma.gameSession.create({
+      data: {
+        patientUserId: patientId,
+        actorUserId: patientId,
+        actorRole: 'patient',
+        gameType: 'PERSONAL_ORIENTATION_PRACTICE',
+        score,
+        accuracyPercent: accuracy,
+        status: isAbandoned ? 'ABANDONED' : 'COMPLETED',
+        completed: !isAbandoned,
+        quitEarly: isAbandoned,
+        durationSeconds: 150 + Math.floor(Math.random() * 180),
+        startedAt: new Date(sessionDate.getTime() - 1000 * 60 * 5),
+        completedAt: isAbandoned ? null : sessionDate,
+        metadata: { supportLevel: 'GUIDED_SUPPORT', correctWithoutCue: Math.floor(accuracy * 0.75 / 10), correctWithCue: Math.floor(accuracy * 0.25 / 10) },
+      }
+    });
+
+    await prisma.analyticsEvent.create({
+      data: {
+        patientUserId: patientId,
+        eventName: isAbandoned ? 'personal_orientation_session_abandoned' : 'personal_orientation_session_completed',
+        payload: { score, accuracyPercent: accuracy, supportLevel: 'GUIDED_SUPPORT' },
+        occurredAt: sessionDate,
       }
     });
   }
