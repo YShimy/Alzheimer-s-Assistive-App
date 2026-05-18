@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
-import path from 'path';
+import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
 
 const DISCLAIMER =
   'This summary is generated from app activity and caregiver-entered information. ' +
@@ -68,14 +68,14 @@ const DICT = {
     noRoutines: 'No routine activity in selected range.',
     cogActivities: 'Cognitive Engagement Activities',
     cogNote: 'Note: The cognitive engagement section summarizes app-based practice activity. It is not a clinical cognitive assessment and should not be used to diagnose or measure disease progression.',
-    assocMemory: 'Associative Memory Matching',
+    assocMemory: 'Memory Match',
     sessionsCompleted: 'Sessions completed',
     avgScore: 'Average score',
     avgAccuracy: 'Average accuracy',
     highestLevel: 'Highest level reached',
-    assocMemoryNote: 'This reflects app-based memory practice activity only.',
-    srPractice: 'Spaced Retrieval Orientation Practice',
-    srNote: 'This reflects app-based orientation practice and caregiver-approved facts only.',
+    assocMemoryNote: 'This reflects app-based paired-association memory practice activity only.',
+    srPractice: 'My Day & People',
+    srNote: 'This reflects app-based daily orientation and personal recognition practice only.',
     historicalData: 'Historical Engagement Data',
     historicalSessions: 'Historical completed sessions',
     noEngagement: 'No engagement activity in selected range.',
@@ -129,14 +129,14 @@ const DICT = {
     noRoutines: 'لا يوجد نشاط روتيني في النطاق المحدد.',
     cogActivities: 'أنشطة المشاركة المعرفية',
     cogNote: 'ملاحظة: قسم المشاركة المعرفية يلخص نشاط الممارسة القائم على التطبيق. إنه ليس تقييماً معرفياً سريرياً ولا ينبغي استخدامه لتشخيص أو قياس تطور المرض.',
-    assocMemory: 'مطابقة الذاكرة الترابطية',
+    assocMemory: 'مطابقة الذاكرة',
     sessionsCompleted: 'الجلسات المكتملة',
     avgScore: 'متوسط الدرجات',
     avgAccuracy: 'متوسط الدقة',
     highestLevel: 'أعلى مستوى تم الوصول إليه',
-    assocMemoryNote: 'هذا يعكس نشاط ممارسة الذاكرة القائم على التطبيق فقط.',
-    srPractice: 'ممارسة التوجيه بالاسترجاع المتباعد',
-    srNote: 'هذا يعكس ممارسة التوجيه القائم على التطبيق والحقائق المعتمدة من مقدم الرعاية فقط.',
+    assocMemoryNote: 'هذا يعكس نشاط ممارسة الذاكرة الترابطية القائم على التطبيق فقط.',
+    srPractice: 'يومي وأشخاصي',
+    srNote: 'هذا يعكس ممارسة التوجيه اليومي والتعرف الشخصي القائم على التطبيق فقط.',
     historicalData: 'بيانات المشاركة التاريخية',
     historicalSessions: 'الجلسات التاريخية المكتملة',
     noEngagement: 'لا يوجد نشاط مشاركة في النطاق المحدد.',
@@ -281,12 +281,12 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     // Add page buffers so we can easily add footers if needed, and nice margins
     const doc = new PDFDocument({ margin: 60, size: 'A4', bufferPages: true });
     
-    // Register Arabic fonts
+    // Register Arabic fonts from embedded base64 (works on Vercel serverless)
     try {
-      const regularFontPath = path.join(process.cwd(), 'src', 'assets', 'fonts', 'NotoSansArabic-Regular.ttf');
-      const boldFontPath = path.join(process.cwd(), 'src', 'assets', 'fonts', 'NotoSansArabic-Bold.ttf');
-      doc.registerFont('Arabic', regularFontPath);
-      doc.registerFont('Arabic-Bold', boldFontPath);
+      const regularBuf = Buffer.from(NOTO_ARABIC_REGULAR_B64, 'base64');
+      const boldBuf = Buffer.from(NOTO_ARABIC_BOLD_B64, 'base64');
+      doc.registerFont('Arabic', regularBuf);
+      doc.registerFont('Arabic-Bold', boldBuf);
     } catch (e) {
       console.warn('Could not register Arabic fonts, falling back', e);
       doc.registerFont('Arabic', 'Helvetica');
@@ -442,7 +442,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
       // Memory Match subsection
       if (mmStats.length > 0) {
-        doc.font('Helvetica-Bold').fillColor(theme.text).fontSize(11).text(t.assocMemory);
+        doc.font(fontBold).fillColor(theme.text).fontSize(11).text(t.assocMemory, { align });
         doc.moveDown(0.5);
         const mmCompleted = mmStats.filter(g => g.completed || g.status === 'COMPLETED').length;
         const mmScores = mmStats.map(g => g.score ?? 0).filter(s => s > 0);
@@ -451,12 +451,12 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const mmAvgAccuracy = mmAccuracies.length > 0 ? Math.round(mmAccuracies.reduce((a, b) => a + b, 0) / mmAccuracies.length) : 0;
         const mmMaxLevel = Math.max(...mmStats.map(g => g.highestLevel ?? g.highestTierReached ?? 0));
 
-        writeStatRow(doc, t.sessionsCompleted, mmCompleted);
-        writeStatRow(doc, t.avgScore, mmAvgScore);
-        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${mmAvgAccuracy}%`);
-        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, mmMaxLevel);
-        doc.font('Helvetica').fontSize(9).fillColor(theme.text_variant)
-          .text(t.assocMemoryNote);
+        writeStatRow(doc, t.sessionsCompleted, mmCompleted, isAr);
+        writeStatRow(doc, t.avgScore, mmAvgScore, isAr);
+        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${mmAvgAccuracy}%`, isAr);
+        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, mmMaxLevel, isAr);
+        doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
+          .text(t.assocMemoryNote, { align });
         doc.moveDown(1);
       }
 
