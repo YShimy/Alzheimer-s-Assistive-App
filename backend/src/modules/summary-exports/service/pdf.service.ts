@@ -195,12 +195,12 @@ const theme = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+function formatDate(d: Date, isAr: boolean = false): string {
+  return d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-function formatDateTime(d: Date): string {
-  return d.toLocaleString('en-US', {
+function formatDateTime(d: Date, isAr: boolean = false): string {
+  return d.toLocaleString(isAr ? 'ar-EG' : 'en-US', {
     year: 'numeric', month: 'short', day: 'numeric',
     hour: '2-digit', minute: '2-digit',
   });
@@ -308,12 +308,19 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     const doc = new PDFDocument({ margin: 60, size: 'A4', bufferPages: true });
     
     const isAr = language === 'ar';
+    let inTextOverride = false;
     const originalText = doc.text.bind(doc);
     (doc as any).text = function() {
+      if (inTextOverride) {
+        return originalText.apply(doc, arguments as any);
+      }
+      inTextOverride = true;
       if (arguments.length > 0 && typeof arguments[0] === 'string') {
         arguments[0] = shapeArabic(arguments[0], isAr);
       }
-      return originalText.apply(doc, arguments as any);
+      const result = originalText.apply(doc, arguments as any);
+      inTextOverride = false;
+      return result;
     };
 
     // Register Arabic fonts from embedded base64 (works on Vercel serverless)
@@ -348,7 +355,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     doc.fillColor(theme.text_variant)
       .fontSize(12)
       .font(fontReg)
-      .text(`${APP_NAME} • ${formatDate(new Date())}`, { align });
+      .text(`${APP_NAME} • ${formatDate(new Date(), isAr)}`, { align });
 
     doc.moveDown(2);
 
@@ -364,11 +371,11 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     if (isAr) {
       doc.text(t.patient, leftX, textY, { continued: true, align }).font(fontBold).text(` ${patientName}`);
       doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true, align }).font(fontBold).text(` ${caregiverName}`);
-      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true, align }).font(fontBold).text(` ${formatDate(rangeStart)} – ${formatDate(rangeEnd)}`);
+      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true, align }).font(fontBold).text(` ${formatDate(rangeStart, isAr)} – ${formatDate(rangeEnd, isAr)}`);
     } else {
       doc.text(t.patient, leftX, textY, { continued: true }).font(fontBold).text(` ${patientName}`);
       doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true }).font(fontBold).text(` ${caregiverName}`);
-      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true }).font(fontBold).text(` ${formatDate(rangeStart)} – ${formatDate(rangeEnd)}`);
+      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true }).font(fontBold).text(` ${formatDate(rangeStart, isAr)} – ${formatDate(rangeEnd, isAr)}`);
     }
 
     doc.x = doc.page.margins.left;
@@ -540,8 +547,8 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         
         doc.font(fontReg).fillColor(theme.text).fontSize(10);
         if (d.sourceName) doc.text(`${t.source} ${d.sourceName}`, { align });
-        if (d.documentDate) doc.text(`${t.docDate} ${formatDate(d.documentDate)}`, { align });
-        doc.text(`${t.uploaded} ${formatDate(d.createdAt)}`, { align });
+        if (d.documentDate) doc.text(`${t.docDate} ${formatDate(d.documentDate, isAr)}`, { align });
+        doc.text(`${t.uploaded} ${formatDate(d.createdAt, isAr)}`, { align });
         doc.moveDown(1);
       });
     } else if (sections.patientRecords) {
@@ -561,7 +568,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
       timelineEvents.forEach(ev => {
         const evLabel = ev.eventName.replace(/_/g, ' ');
-        doc.font(fontBold).fillColor(theme.text).fontSize(10).text(`${formatDateTime(ev.occurredAt)}`, { continued: true, align });
+        doc.font(fontBold).fillColor(theme.text).fontSize(10).text(`${formatDateTime(ev.occurredAt, isAr)}`, { continued: true, align });
         doc.font(fontReg).fillColor(theme.text_variant).text(`  —  ${evLabel}` + (ev.actorRole ? ` (${ev.actorRole})` : ''), { align: 'left' });
         doc.moveDown(0.5);
       });
@@ -585,7 +592,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         .font(fontReg)
         .fillColor(theme.text_variant)
         .text(
-          `${APP_NAME} • ${t.generated} ${formatDateTime(new Date())} • ${t.page} ${i + 1} ${t.of} ${pages.count}`,
+          `${APP_NAME} • ${t.generated} ${formatDateTime(new Date(), isAr)} • ${t.page} ${i + 1} ${t.of} ${pages.count}`,
           60,
           range,
           { align: 'center', width: W },
