@@ -1,7 +1,7 @@
 import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
 import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
-import ArabicReshaper from 'arabic-reshaper';
+import { shapeArabicText } from 'naqqash';
 import bidiFactory from 'bidi-js';
 
 const bidi = bidiFactory();
@@ -11,7 +11,7 @@ function shapeArabic(text: string | null | undefined, isAr: boolean): string {
   let arText = text.replace(/\d+/g, (match) => {
     return new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match));
   });
-  arText = ArabicReshaper.convertArabic(arText);
+  arText = shapeArabicText(arText);
   const levels = bidi.getEmbeddingLevels(arText, 'rtl');
   const flips = bidi.getReorderSegments(arText, levels);
   const mirrored = bidi.getMirroredCharactersMap(arText, levels);
