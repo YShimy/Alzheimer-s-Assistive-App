@@ -1,6 +1,32 @@
 import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
 import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
+import ArabicReshaper from 'arabic-reshaper';
+import bidiFactory from 'bidi-js';
+
+const bidi = bidiFactory();
+
+function shapeArabic(text: string | null | undefined, isAr: boolean): string {
+  if (!isAr || !text) return text || '';
+  let arText = text.replace(/\d+/g, (match) => {
+    return new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match));
+  });
+  arText = ArabicReshaper.convertArabic(arText);
+  const levels = bidi.getEmbeddingLevels(arText, 'rtl');
+  const flips = bidi.getReorderSegments(arText, levels);
+  const mirrored = bidi.getMirroredCharactersMap(arText, levels);
+  let chars = Array.from(arText);
+  if (mirrored.size > 0) {
+    for (const [index, char] of mirrored.entries()) {
+      chars[index] = char;
+    }
+  }
+  flips.forEach(([start, end]) => {
+    const slice = chars.slice(start, end + 1).reverse();
+    chars.splice(start, slice.length, ...slice);
+  });
+  return chars.join('');
+}
 
 const DISCLAIMER =
   'This summary is generated from app activity and caregiver-entered information. ' +
@@ -281,6 +307,15 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     // Add page buffers so we can easily add footers if needed, and nice margins
     const doc = new PDFDocument({ margin: 60, size: 'A4', bufferPages: true });
     
+    const isAr = language === 'ar';
+    const originalText = doc.text.bind(doc);
+    (doc as any).text = function() {
+      if (arguments.length > 0 && typeof arguments[0] === 'string') {
+        arguments[0] = shapeArabic(arguments[0], isAr);
+      }
+      return originalText.apply(doc, arguments as any);
+    };
+
     // Register Arabic fonts from embedded base64 (works on Vercel serverless)
     try {
       const regularBuf = Buffer.from(NOTO_ARABIC_REGULAR_B64, 'base64');
@@ -294,7 +329,6 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     }
 
     const chunks: Buffer[] = [];
-    const isAr = language === 'ar';
     const align = isAr ? 'right' : 'left';
     const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
     const fontReg = isAr ? 'Arabic' : 'Helvetica';
