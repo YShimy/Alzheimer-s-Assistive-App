@@ -6,11 +6,13 @@ import bidiFactory from 'bidi-js';
 
 const bidi = bidiFactory();
 
-function shapeArabic(text: string | null | undefined, isAr: boolean): string {
+function shapeArabic(text: string | null | undefined, isAr: boolean, convertDigits = true): string {
   if (!isAr || !text) return text || '';
-  let arText = text.replace(/\d+/g, (match) => {
-    return new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match));
-  });
+  let arText = convertDigits
+    ? text.replace(/\d+/g, (match) =>
+        new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match))
+      )
+    : text;
   arText = shapeArabicText(arText);
   const levels = bidi.getEmbeddingLevels(arText, 'rtl');
   const flips = bidi.getReorderSegments(arText, levels);
@@ -228,23 +230,29 @@ function writeSectionHeader(doc: InstanceType<typeof PDFDocument>, title: string
 
 function writeField(doc: InstanceType<typeof PDFDocument>, label: string, value?: string | null, isAr: boolean = false) {
   if (!value) return;
-  // Editorial layout: Label in muted bold, value in regular
   const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
   const fontReg = isAr ? 'Arabic' : 'Helvetica';
-  
-  doc.font(fontBold).fillColor(theme.text_variant).fontSize(10).text(`${label.toUpperCase()}`, { continued: false, align: isAr ? 'right' : 'left' });
+  // Avoid toUpperCase on Arabic (no-op but safe), keep for Latin
+  const labelDisplay = isAr ? label : label.toUpperCase();
+  doc.font(fontBold).fillColor(theme.text_variant).fontSize(10).text(labelDisplay, { align: isAr ? 'right' : 'left' });
   doc.moveDown(0.3);
-  doc.font(fontReg).fillColor(theme.text).fontSize(11).text(value, { align: isAr ? 'right' : 'left', features: ['rtla'] });
+  doc.font(fontReg).fillColor(theme.text).fontSize(11).text(value, { align: isAr ? 'right' : 'left' });
   doc.moveDown(1);
 }
 
 function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, value: string | number, isAr: boolean = false) {
   const fontBold = isAr ? 'Arabic-Bold' : 'Helvetica-Bold';
   const fontReg = isAr ? 'Arabic' : 'Helvetica';
-  const displayVal = isAr ? ` :${value}` : `: ${value}`;
 
-  doc.font(fontReg).fillColor(theme.text_variant).fontSize(11).text(label, { continued: true, align: isAr ? 'right' : 'left' });
-  doc.font(fontBold).fillColor(theme.text).text(displayVal);
+  if (isAr) {
+    // For RTL: render as a single shaped line "label : value" right-aligned.
+    // Using continued:true in RTL causes PDFKit to lay out text LTR, so we combine into one call.
+    const combined = `${label} : ${value}`;
+    doc.font(fontBold).fillColor(theme.text).fontSize(11).text(combined, { align: 'right' });
+  } else {
+    doc.font(fontReg).fillColor(theme.text_variant).fontSize(11).text(label, { continued: true, align: 'left' });
+    doc.font(fontBold).fillColor(theme.text).text(`: ${value}`);
+  }
 }
 
 // ─── Main generator ───────────────────────────────────────────────────────────
@@ -366,12 +374,13 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     
     let textY = metaY + 16;
     const leftX = doc.page.margins.left + 20;
-    
-    // For RTL, we would ideally layout differently, but we'll just align left/right based on `align`
+    const textW = W - 40;
+
     if (isAr) {
-      doc.text(t.patient, leftX, textY, { continued: true, align }).font(fontBold).text(` ${patientName}`);
-      doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true, align }).font(fontBold).text(` ${caregiverName}`);
-      doc.font(fontReg).text(t.period, leftX, textY + 40, { continued: true, align }).font(fontBold).text(` ${formatDate(rangeStart, isAr)} – ${formatDate(rangeEnd, isAr)}`);
+      // RTL: avoid continued:true — render each line as a single right-aligned string
+      doc.font(fontBold).text(`${t.patient} ${patientName}`, leftX, textY, { width: textW, align: 'right' });
+      doc.font(fontBold).text(`${t.caregiver} ${caregiverName}`, leftX, textY + 20, { width: textW, align: 'right' });
+      doc.font(fontBold).text(`${t.period} ${formatDate(rangeStart, isAr)} – ${formatDate(rangeEnd, isAr)}`, leftX, textY + 40, { width: textW, align: 'right' });
     } else {
       doc.text(t.patient, leftX, textY, { continued: true }).font(fontBold).text(` ${patientName}`);
       doc.font(fontReg).text(t.caregiver, leftX, textY + 20, { continued: true }).font(fontBold).text(` ${caregiverName}`);
@@ -472,9 +481,9 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     // ── Cognitive Engagement Activities ──────────────────────────────────
     if (sections.games && gameStats.length > 0) {
       writeSectionHeader(doc, `${sectionNum++}. ${t.cogActivities}`);
-      doc.font('Helvetica').fontSize(9)
+      doc.font(fontReg).fontSize(9)
         .fillColor(theme.text_variant)
-        .text(t.cogNote);
+        .text(t.cogNote, { align });
       doc.moveDown(1.5);
 
       const mmStats = gameStats.filter(g => g.gameType === 'ASSOCIATIVE_MEMORY_MATCH');
@@ -541,10 +550,15 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       doc.moveDown(1.5);
 
       documents.forEach(d => {
-        doc.font(fontBold).fillColor(theme.text).fontSize(11).text(d.title, { continued: true, align });
-        doc.font(fontReg).fillColor(theme.text_variant).text(`  |  ${d.category}`, { align: 'left' }); // kept left for the continued portion
+        if (isAr) {
+          // RTL: avoid continued:true, render title and category on same line via combined string
+          doc.font(fontBold).fillColor(theme.text).fontSize(11).text(`${d.title}  |  ${d.category}`, { align: 'right' });
+        } else {
+          doc.font(fontBold).fillColor(theme.text).fontSize(11).text(d.title, { continued: true, align: 'left' });
+          doc.font(fontReg).fillColor(theme.text_variant).text(`  |  ${d.category}`);
+        }
         doc.moveDown(0.2);
-        
+
         doc.font(fontReg).fillColor(theme.text).fontSize(10);
         if (d.sourceName) doc.text(`${t.source} ${d.sourceName}`, { align });
         if (d.documentDate) doc.text(`${t.docDate} ${formatDate(d.documentDate, isAr)}`, { align });
@@ -568,8 +582,15 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
 
       timelineEvents.forEach(ev => {
         const evLabel = ev.eventName.replace(/_/g, ' ');
-        doc.font(fontBold).fillColor(theme.text).fontSize(10).text(`${formatDateTime(ev.occurredAt, isAr)}`, { continued: true, align });
-        doc.font(fontReg).fillColor(theme.text_variant).text(`  —  ${evLabel}` + (ev.actorRole ? ` (${ev.actorRole})` : ''), { align: 'left' });
+        if (isAr) {
+          // RTL: render datetime and label on same line without continued:true
+          const actorPart = ev.actorRole ? ` (${ev.actorRole})` : '';
+          doc.font(fontBold).fillColor(theme.text).fontSize(10)
+            .text(`${formatDateTime(ev.occurredAt, isAr)}  —  ${evLabel}${actorPart}`, { align: 'right' });
+        } else {
+          doc.font(fontBold).fillColor(theme.text).fontSize(10).text(formatDateTime(ev.occurredAt, isAr), { continued: true, align: 'left' });
+          doc.font(fontReg).fillColor(theme.text_variant).text(`  —  ${evLabel}` + (ev.actorRole ? ` (${ev.actorRole})` : ''));
+        }
         doc.moveDown(0.5);
       });
     }
