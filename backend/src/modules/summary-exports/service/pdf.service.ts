@@ -14,20 +14,34 @@ function shapeArabic(text: string | null | undefined, isAr: boolean, convertDigi
       )
     : text;
   arText = shapeArabicText(arText);
-  const levels = bidi.getEmbeddingLevels(arText, 'rtl');
-  const flips = bidi.getReorderSegments(arText, levels);
-  const mirrored = bidi.getMirroredCharactersMap(arText, levels);
+  // Use bidi-js to compute the visual reordering for PDFKit (which renders LTR).
+  // getReorderSegments returns ranges that must be reversed in-place to produce
+  // the correct visual order when the string is drawn left-to-right.
+  const embeddingLevels = bidi.getEmbeddingLevels(arText, 'rtl');
+  const flips = bidi.getReorderSegments(arText, embeddingLevels);
+  const mirrored = bidi.getMirroredCharactersMap(arText, embeddingLevels);
   let chars = Array.from(arText);
+  // Apply mirrored characters (e.g. parentheses swap in RTL context)
   if (mirrored.size > 0) {
     for (const [index, char] of mirrored.entries()) {
       chars[index] = char;
     }
   }
-  flips.forEach(([start, end]) => {
+  // Apply segment reversals. Process from rightmost to leftmost so that
+  // splicing doesn't shift indices of earlier segments.
+  const sortedFlips = [...flips].sort((a, b) => b[0] - a[0]);
+  sortedFlips.forEach(([start, end]) => {
     const slice = chars.slice(start, end + 1).reverse();
     chars.splice(start, slice.length, ...slice);
   });
-  return chars.join('');
+  let result = chars.join('');
+  // If bidi-js returned no segments to flip (can happen when the entire string
+  // is a single RTL run), the shaped text is still in logical order and we need
+  // to reverse the whole string so PDFKit draws it correctly right-to-left.
+  if (flips.length === 0 && /[\u0600-\u06FF\uFE70-\uFEFF]/.test(result)) {
+    result = Array.from(result).reverse().join('');
+  }
+  return result;
 }
 
 const DISCLAIMER =
@@ -318,15 +332,41 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     const isAr = language === 'ar';
     let inTextOverride = false;
     const originalText = doc.text.bind(doc);
-    (doc as any).text = function() {
+    (doc as any).text = function(...args: any[]) {
       if (inTextOverride) {
-        return originalText.apply(doc, arguments as any);
+        return originalText.apply(doc, args as any);
       }
       inTextOverride = true;
-      if (arguments.length > 0 && typeof arguments[0] === 'string') {
-        arguments[0] = shapeArabic(arguments[0], isAr);
+      // Shape Arabic text using naqqash + bidi-js for correct visual ordering
+      if (args.length > 0 && typeof args[0] === 'string') {
+        args[0] = shapeArabic(args[0], isAr);
       }
-      const result = originalText.apply(doc, arguments as any);
+      // Disable PDFKit's OpenType features for Arabic text to prevent fontkit
+      // from re-shaping/re-ordering our already-processed text.
+      // PDFKit's fontkit would otherwise apply GSUB features (init, medi, fina,
+      // rlig, liga, calt) which conflict with naqqash's manual shaping.
+      if (isAr) {
+        // Find or create the options argument and set features to empty
+        // doc.text(str), doc.text(str, opts), doc.text(str, x, y), doc.text(str, x, y, opts)
+        if (args.length === 1) {
+          args.push({ features: [] });
+        } else if (args.length === 2 && typeof args[1] === 'object' && args[1] !== null) {
+          args[1] = { ...args[1], features: [] };
+        } else if (args.length === 3 && typeof args[1] === 'number') {
+          args.push({ features: [] });
+        } else if (args.length >= 4 && typeof args[1] === 'number' && typeof args[3] === 'object' && args[3] !== null) {
+          args[3] = { ...args[3], features: [] };
+        } else if (args.length >= 2) {
+          // Fallback: if last arg is object, add features; otherwise push new opts
+          const last = args[args.length - 1];
+          if (typeof last === 'object' && last !== null && !Array.isArray(last)) {
+            args[args.length - 1] = { ...last, features: [] };
+          } else {
+            args.push({ features: [] });
+          }
+        }
+      }
+      const result = originalText.apply(doc, args as any);
       inTextOverride = false;
       return result;
     };
