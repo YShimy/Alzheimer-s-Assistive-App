@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Cognitive Sanctuary",
-    "slug": "cognitive-sanctuary",
+    "name": "MemoCare",
+    "slug": "memocare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "cognitive-sanctuary",
+    "scheme": "memocare",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "android": {

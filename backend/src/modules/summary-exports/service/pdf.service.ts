@@ -49,7 +49,7 @@ const DISCLAIMER =
   'It is intended for caregiver organization and communication support only and is not a ' +
   'medical diagnosis or clinical assessment.';
 
-const APP_NAME = 'Cognitive Support App';
+const APP_NAME = 'MemoCare';
 
 type SectionFlags = {
   importantInfo?: boolean;

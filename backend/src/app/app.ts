@@ -37,7 +37,7 @@ export function createApp() {
   app.get('/health', (_req, res) => {
     res.status(200).json({
       status: 'ok',
-      service: 'cognitive-support-backend',
+      service: 'memocare-backend',
       timestamp: new Date().toISOString(),
     });
   });
@@ -45,7 +45,7 @@ export function createApp() {
   app.get('/api/health', (_req, res) => {
     res.status(200).json({
       status: 'ok',
-      service: 'cognitive-support-backend',
+      service: 'memocare-backend',
       timestamp: new Date().toISOString(),
     });
   });

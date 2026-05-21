@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
+import { MemoCareLogo } from '@/src/shared/ui/MemoCareLogo';
 import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
@@ -171,7 +172,7 @@ export default function LoginScreen() {
           {/* Logo */}
           <View style={styles.logoContainer}>
             <View style={styles.logoCircle}>
-              <Icon name="heart-outline" size={40} color={colors.primary[500]} />
+              <MemoCareLogo size={52} />
             </View>
             <Text style={styles.title}>{t('auth.appTitle')}</Text>
             <Text style={styles.subtitle}>{t('auth.appSubtitle')}</Text>
@@ -257,13 +258,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing['3xl'],
   },
   logoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     backgroundColor: colors.primary[100],
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.lg,
+    borderWidth: 2,
+    borderColor: colors.primary[200],
   },
   title: {
     fontSize: typography.size['3xl'],

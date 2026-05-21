@@ -45,7 +45,7 @@ export async function sendMail(options: SendMailOptions): Promise<boolean> {
   try {
     const transport = getTransporter();
     const info = await transport.sendMail({
-      from: `"Cognitive Support" <${env.MAIL_FROM}>`,
+      from: `"MemoCare" <${env.MAIL_FROM}>`,
       to: options.to,
       subject: options.subject,
       html: options.html,
@@ -80,7 +80,7 @@ export async function sendVerificationCodeEmail(
   code: string,
   expiresInMinutes: number = 10,
 ): Promise<boolean> {
-  const subject = 'Your Verification Code — Cognitive Support';
+  const subject = 'Your Verification Code — MemoCare';
 
   const html = `
 <!DOCTYPE html>
@@ -92,7 +92,8 @@ export async function sendVerificationCodeEmail(
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9f9f7; margin: 0; padding: 0; }
     .container { max-width: 480px; margin: 40px auto; background: #ffffff; border-radius: 16px; padding: 40px 32px; }
     .logo { text-align: center; margin-bottom: 24px; }
-    .logo-circle { display: inline-block; width: 56px; height: 56px; border-radius: 50%; background: #bae3f8; line-height: 56px; font-size: 28px; }
+    .logo-circle { display: inline-block; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #bae3f8, #3d6476); line-height: 56px; font-size: 26px; color: #ffffff; font-weight: 700; font-family: 'Segoe UI', Roboto, sans-serif; }
+    .brand-name { display: block; margin-top: 8px; font-size: 18px; font-weight: 700; color: #3d6476; letter-spacing: 1px; }
     h1 { color: #2f3332; font-size: 22px; text-align: center; margin-bottom: 8px; font-weight: 600; }
     .subtitle { color: #5c605e; font-size: 15px; text-align: center; margin-bottom: 32px; }
     .code-box { background: #f3f4f2; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px; }
@@ -103,7 +104,7 @@ export async function sendVerificationCodeEmail(
 </head>
 <body>
   <div class="container">
-    <div class="logo"><div class="logo-circle">❤️</div></div>
+    <div class="logo"><div class="logo-circle">M</div><span class="brand-name">MemoCare</span></div>
     <h1>Verification Code</h1>
     <p class="subtitle">Enter this code in the app to verify your email address.</p>
     <div class="code-box">
