@@ -62,6 +62,8 @@ export type SpacedRetrievalItemMinAggregateOutputType = {
   category: $Enums.SpacedRetrievalCategory | null
   active: boolean | null
   linkedContactId: string | null
+  imageAssetId: string | null
+  clueImageAssetId: string | null
   supportRole: string | null
   sensitive: boolean | null
   patientVisible: boolean | null
@@ -94,6 +96,8 @@ export type SpacedRetrievalItemMaxAggregateOutputType = {
   category: $Enums.SpacedRetrievalCategory | null
   active: boolean | null
   linkedContactId: string | null
+  imageAssetId: string | null
+  clueImageAssetId: string | null
   supportRole: string | null
   sensitive: boolean | null
   patientVisible: boolean | null
@@ -128,6 +132,8 @@ export type SpacedRetrievalItemCountAggregateOutputType = {
   category: number
   active: number
   linkedContactId: number
+  imageAssetId: number
+  clueImageAssetId: number
   supportRole: number
   sensitive: number
   patientVisible: number
@@ -188,6 +194,8 @@ export type SpacedRetrievalItemMinAggregateInputType = {
   category?: true
   active?: true
   linkedContactId?: true
+  imageAssetId?: true
+  clueImageAssetId?: true
   supportRole?: true
   sensitive?: true
   patientVisible?: true
@@ -220,6 +228,8 @@ export type SpacedRetrievalItemMaxAggregateInputType = {
   category?: true
   active?: true
   linkedContactId?: true
+  imageAssetId?: true
+  clueImageAssetId?: true
   supportRole?: true
   sensitive?: true
   patientVisible?: true
@@ -254,6 +264,8 @@ export type SpacedRetrievalItemCountAggregateInputType = {
   category?: true
   active?: true
   linkedContactId?: true
+  imageAssetId?: true
+  clueImageAssetId?: true
   supportRole?: true
   sensitive?: true
   patientVisible?: true
@@ -375,6 +387,8 @@ export type SpacedRetrievalItemGroupByOutputType = {
   category: $Enums.SpacedRetrievalCategory
   active: boolean
   linkedContactId: string | null
+  imageAssetId: string | null
+  clueImageAssetId: string | null
   supportRole: string | null
   sensitive: boolean
   patientVisible: boolean
@@ -432,6 +446,8 @@ export type SpacedRetrievalItemWhereInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  imageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  clueImageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
@@ -454,6 +470,8 @@ export type SpacedRetrievalItemWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"SpacedRetrievalItem"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  imageAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
+  clueImageAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
 }
 
 export type SpacedRetrievalItemOrderByWithRelationInput = {
@@ -468,6 +486,8 @@ export type SpacedRetrievalItemOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
   linkedContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
+  clueImageAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
   sensitive?: Prisma.SortOrder
   patientVisible?: Prisma.SortOrder
@@ -490,6 +510,8 @@ export type SpacedRetrievalItemOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   patient?: Prisma.UserOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  imageAsset?: Prisma.MediaAssetOrderByWithRelationInput
+  clueImageAsset?: Prisma.MediaAssetOrderByWithRelationInput
 }
 
 export type SpacedRetrievalItemWhereUniqueInput = Prisma.AtLeast<{
@@ -507,6 +529,8 @@ export type SpacedRetrievalItemWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  imageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  clueImageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
@@ -529,6 +553,8 @@ export type SpacedRetrievalItemWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"SpacedRetrievalItem"> | Date | string
   patient?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  imageAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
+  clueImageAsset?: Prisma.XOR<Prisma.MediaAssetNullableScalarRelationFilter, Prisma.MediaAssetWhereInput> | null
 }, "id">
 
 export type SpacedRetrievalItemOrderByWithAggregationInput = {
@@ -543,6 +569,8 @@ export type SpacedRetrievalItemOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
   linkedContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
+  clueImageAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   supportRole?: Prisma.SortOrderInput | Prisma.SortOrder
   sensitive?: Prisma.SortOrder
   patientVisible?: Prisma.SortOrder
@@ -585,6 +613,8 @@ export type SpacedRetrievalItemScalarWhereWithAggregatesInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryWithAggregatesFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
   linkedContactId?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
+  imageAssetId?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
+  clueImageAssetId?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
   supportRole?: Prisma.StringNullableWithAggregatesFilter<"SpacedRetrievalItem"> | string | null
   sensitive?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
   patientVisible?: Prisma.BoolWithAggregatesFilter<"SpacedRetrievalItem"> | boolean
@@ -639,6 +669,8 @@ export type SpacedRetrievalItemCreateInput = {
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutSpacedRetrievalItemsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSRItemsInput
+  imageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemImagesInput
+  clueImageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemClueImagesInput
 }
 
 export type SpacedRetrievalItemUncheckedCreateInput = {
@@ -653,6 +685,8 @@ export type SpacedRetrievalItemUncheckedCreateInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -707,6 +741,8 @@ export type SpacedRetrievalItemUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutSpacedRetrievalItemsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSRItemsNestedInput
+  imageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemImagesNestedInput
+  clueImageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemClueImagesNestedInput
 }
 
 export type SpacedRetrievalItemUncheckedUpdateInput = {
@@ -721,6 +757,8 @@ export type SpacedRetrievalItemUncheckedUpdateInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -755,6 +793,8 @@ export type SpacedRetrievalItemCreateManyInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -821,6 +861,8 @@ export type SpacedRetrievalItemUncheckedUpdateManyInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -865,6 +907,8 @@ export type SpacedRetrievalItemCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
   linkedContactId?: Prisma.SortOrder
+  imageAssetId?: Prisma.SortOrder
+  clueImageAssetId?: Prisma.SortOrder
   supportRole?: Prisma.SortOrder
   sensitive?: Prisma.SortOrder
   patientVisible?: Prisma.SortOrder
@@ -910,6 +954,8 @@ export type SpacedRetrievalItemMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
   linkedContactId?: Prisma.SortOrder
+  imageAssetId?: Prisma.SortOrder
+  clueImageAssetId?: Prisma.SortOrder
   supportRole?: Prisma.SortOrder
   sensitive?: Prisma.SortOrder
   patientVisible?: Prisma.SortOrder
@@ -942,6 +988,8 @@ export type SpacedRetrievalItemMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   active?: Prisma.SortOrder
   linkedContactId?: Prisma.SortOrder
+  imageAssetId?: Prisma.SortOrder
+  clueImageAssetId?: Prisma.SortOrder
   supportRole?: Prisma.SortOrder
   sensitive?: Prisma.SortOrder
   patientVisible?: Prisma.SortOrder
@@ -1069,6 +1117,90 @@ export type EnumMasteryStatusFieldUpdateOperationsInput = {
   set?: $Enums.MasteryStatus
 }
 
+export type SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyImageAssetInputEnvelope
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+}
+
+export type SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyClueImageAssetInputEnvelope
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+}
+
+export type SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyImageAssetInputEnvelope
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+}
+
+export type SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyClueImageAssetInputEnvelope
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+}
+
+export type SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput[]
+  upsert?: Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyImageAssetInputEnvelope
+  set?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  disconnect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  delete?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  update?: Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutImageAssetInput[]
+  updateMany?: Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutImageAssetInput[]
+  deleteMany?: Prisma.SpacedRetrievalItemScalarWhereInput | Prisma.SpacedRetrievalItemScalarWhereInput[]
+}
+
+export type SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput[]
+  upsert?: Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutClueImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyClueImageAssetInputEnvelope
+  set?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  disconnect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  delete?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  update?: Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutClueImageAssetInput[]
+  updateMany?: Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutClueImageAssetInput[]
+  deleteMany?: Prisma.SpacedRetrievalItemScalarWhereInput | Prisma.SpacedRetrievalItemScalarWhereInput[]
+}
+
+export type SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput[]
+  upsert?: Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyImageAssetInputEnvelope
+  set?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  disconnect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  delete?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  update?: Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutImageAssetInput[]
+  updateMany?: Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutImageAssetInput | Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutImageAssetInput[]
+  deleteMany?: Prisma.SpacedRetrievalItemScalarWhereInput | Prisma.SpacedRetrievalItemScalarWhereInput[]
+}
+
+export type SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput> | Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput[] | Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput[]
+  connectOrCreate?: Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput[]
+  upsert?: Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpsertWithWhereUniqueWithoutClueImageAssetInput[]
+  createMany?: Prisma.SpacedRetrievalItemCreateManyClueImageAssetInputEnvelope
+  set?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  disconnect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  delete?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  connect?: Prisma.SpacedRetrievalItemWhereUniqueInput | Prisma.SpacedRetrievalItemWhereUniqueInput[]
+  update?: Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpdateWithWhereUniqueWithoutClueImageAssetInput[]
+  updateMany?: Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutClueImageAssetInput | Prisma.SpacedRetrievalItemUpdateManyWithWhereWithoutClueImageAssetInput[]
+  deleteMany?: Prisma.SpacedRetrievalItemScalarWhereInput | Prisma.SpacedRetrievalItemScalarWhereInput[]
+}
+
 export type SpacedRetrievalItemCreateWithoutPatientInput = {
   id?: string
   prompt: string
@@ -1100,6 +1232,8 @@ export type SpacedRetrievalItemCreateWithoutPatientInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSRItemsInput
+  imageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemImagesInput
+  clueImageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemClueImagesInput
 }
 
 export type SpacedRetrievalItemUncheckedCreateWithoutPatientInput = {
@@ -1113,6 +1247,8 @@ export type SpacedRetrievalItemUncheckedCreateWithoutPatientInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -1176,6 +1312,8 @@ export type SpacedRetrievalItemCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutSpacedRetrievalItemsInput
+  imageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemImagesInput
+  clueImageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemClueImagesInput
 }
 
 export type SpacedRetrievalItemUncheckedCreateWithoutCreatedByInput = {
@@ -1189,6 +1327,8 @@ export type SpacedRetrievalItemUncheckedCreateWithoutCreatedByInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -1252,6 +1392,8 @@ export type SpacedRetrievalItemScalarWhereInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFilter<"SpacedRetrievalItem"> | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   linkedContactId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  imageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
+  clueImageAssetId?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   supportRole?: Prisma.StringNullableFilter<"SpacedRetrievalItem"> | string | null
   sensitive?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
   patientVisible?: Prisma.BoolFilter<"SpacedRetrievalItem"> | boolean
@@ -1290,6 +1432,198 @@ export type SpacedRetrievalItemUpdateManyWithWhereWithoutCreatedByInput = {
   data: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateManyMutationInput, Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByInput>
 }
 
+export type SpacedRetrievalItemCreateWithoutImageAssetInput = {
+  id?: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  patient: Prisma.UserCreateNestedOneWithoutSpacedRetrievalItemsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedSRItemsInput
+  clueImageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemClueImagesInput
+}
+
+export type SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput = {
+  id?: string
+  patientId: string
+  createdByUserId: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  clueImageAssetId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SpacedRetrievalItemCreateOrConnectWithoutImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput>
+}
+
+export type SpacedRetrievalItemCreateManyImageAssetInputEnvelope = {
+  data: Prisma.SpacedRetrievalItemCreateManyImageAssetInput | Prisma.SpacedRetrievalItemCreateManyImageAssetInput[]
+  skipDuplicates?: boolean
+}
+
+export type SpacedRetrievalItemCreateWithoutClueImageAssetInput = {
+  id?: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  patient: Prisma.UserCreateNestedOneWithoutSpacedRetrievalItemsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedSRItemsInput
+  imageAsset?: Prisma.MediaAssetCreateNestedOneWithoutSrItemImagesInput
+}
+
+export type SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput = {
+  id?: string
+  patientId: string
+  createdByUserId: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  imageAssetId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SpacedRetrievalItemCreateOrConnectWithoutClueImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput>
+}
+
+export type SpacedRetrievalItemCreateManyClueImageAssetInputEnvelope = {
+  data: Prisma.SpacedRetrievalItemCreateManyClueImageAssetInput | Prisma.SpacedRetrievalItemCreateManyClueImageAssetInput[]
+  skipDuplicates?: boolean
+}
+
+export type SpacedRetrievalItemUpsertWithWhereUniqueWithoutImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedUpdateWithoutImageAssetInput>
+  create: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutImageAssetInput>
+}
+
+export type SpacedRetrievalItemUpdateWithWhereUniqueWithoutImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  data: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateWithoutImageAssetInput, Prisma.SpacedRetrievalItemUncheckedUpdateWithoutImageAssetInput>
+}
+
+export type SpacedRetrievalItemUpdateManyWithWhereWithoutImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemScalarWhereInput
+  data: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateManyMutationInput, Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetInput>
+}
+
+export type SpacedRetrievalItemUpsertWithWhereUniqueWithoutClueImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedUpdateWithoutClueImageAssetInput>
+  create: Prisma.XOR<Prisma.SpacedRetrievalItemCreateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedCreateWithoutClueImageAssetInput>
+}
+
+export type SpacedRetrievalItemUpdateWithWhereUniqueWithoutClueImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemWhereUniqueInput
+  data: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateWithoutClueImageAssetInput, Prisma.SpacedRetrievalItemUncheckedUpdateWithoutClueImageAssetInput>
+}
+
+export type SpacedRetrievalItemUpdateManyWithWhereWithoutClueImageAssetInput = {
+  where: Prisma.SpacedRetrievalItemScalarWhereInput
+  data: Prisma.XOR<Prisma.SpacedRetrievalItemUpdateManyMutationInput, Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetInput>
+}
+
 export type SpacedRetrievalItemCreateManyPatientInput = {
   id?: string
   createdByUserId: string
@@ -1301,6 +1635,8 @@ export type SpacedRetrievalItemCreateManyPatientInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -1334,6 +1670,8 @@ export type SpacedRetrievalItemCreateManyCreatedByInput = {
   category?: $Enums.SpacedRetrievalCategory
   active?: boolean
   linkedContactId?: string | null
+  imageAssetId?: string | null
+  clueImageAssetId?: string | null
   supportRole?: string | null
   sensitive?: boolean
   patientVisible?: boolean
@@ -1387,6 +1725,8 @@ export type SpacedRetrievalItemUpdateWithoutPatientInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSRItemsNestedInput
+  imageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemImagesNestedInput
+  clueImageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemClueImagesNestedInput
 }
 
 export type SpacedRetrievalItemUncheckedUpdateWithoutPatientInput = {
@@ -1400,6 +1740,8 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutPatientInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1433,6 +1775,8 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutPatientInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1486,6 +1830,8 @@ export type SpacedRetrievalItemUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutSpacedRetrievalItemsNestedInput
+  imageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemImagesNestedInput
+  clueImageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemClueImagesNestedInput
 }
 
 export type SpacedRetrievalItemUncheckedUpdateWithoutCreatedByInput = {
@@ -1499,6 +1845,8 @@ export type SpacedRetrievalItemUncheckedUpdateWithoutCreatedByInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1532,6 +1880,288 @@ export type SpacedRetrievalItemUncheckedUpdateManyWithoutCreatedByInput = {
   category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SpacedRetrievalItemCreateManyImageAssetInput = {
+  id?: string
+  patientId: string
+  createdByUserId: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  clueImageAssetId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SpacedRetrievalItemCreateManyClueImageAssetInput = {
+  id?: string
+  patientId: string
+  createdByUserId: string
+  prompt: string
+  correctAnswer: string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: string | null
+  category?: $Enums.SpacedRetrievalCategory
+  active?: boolean
+  linkedContactId?: string | null
+  imageAssetId?: string | null
+  supportRole?: string | null
+  sensitive?: boolean
+  patientVisible?: boolean
+  supportLevelOverride?: string | null
+  currentIntervalStep?: number
+  currentIntervalSeconds?: number
+  masteryStatus?: $Enums.MasteryStatus
+  consecutiveCorrect?: number
+  consecutiveIncorrect?: number
+  totalAttempts?: number
+  correctAttempts?: number
+  correctWithoutCue?: number
+  correctWithCue?: number
+  unsureAttempts?: number
+  incorrectAttempts?: number
+  lastPracticedAt?: Date | string | null
+  nextDueAt?: Date | string | null
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SpacedRetrievalItemUpdateWithoutImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  patient?: Prisma.UserUpdateOneRequiredWithoutSpacedRetrievalItemsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSRItemsNestedInput
+  clueImageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemClueImagesNestedInput
+}
+
+export type SpacedRetrievalItemUncheckedUpdateWithoutImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clueImageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SpacedRetrievalItemUpdateWithoutClueImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  patient?: Prisma.UserUpdateOneRequiredWithoutSpacedRetrievalItemsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSRItemsNestedInput
+  imageAsset?: Prisma.MediaAssetUpdateOneWithoutSrItemImagesNestedInput
+}
+
+export type SpacedRetrievalItemUncheckedUpdateWithoutClueImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  supportLevelOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentIntervalStep?: Prisma.IntFieldUpdateOperationsInput | number
+  currentIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  masteryStatus?: Prisma.EnumMasteryStatusFieldUpdateOperationsInput | $Enums.MasteryStatus
+  consecutiveCorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  consecutiveIncorrect?: Prisma.IntFieldUpdateOperationsInput | number
+  totalAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithoutCue?: Prisma.IntFieldUpdateOperationsInput | number
+  correctWithCue?: Prisma.IntFieldUpdateOperationsInput | number
+  unsureAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  incorrectAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastPracticedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  correctAnswer?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptableAnswers?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  distractors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cueText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSpacedRetrievalCategoryFieldUpdateOperationsInput | $Enums.SpacedRetrievalCategory
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  linkedContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageAssetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supportRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sensitive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   patientVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1568,6 +2198,8 @@ export type SpacedRetrievalItemSelect<ExtArgs extends runtime.Types.Extensions.I
   category?: boolean
   active?: boolean
   linkedContactId?: boolean
+  imageAssetId?: boolean
+  clueImageAssetId?: boolean
   supportRole?: boolean
   sensitive?: boolean
   patientVisible?: boolean
@@ -1590,6 +2222,8 @@ export type SpacedRetrievalItemSelect<ExtArgs extends runtime.Types.Extensions.I
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }, ExtArgs["result"]["spacedRetrievalItem"]>
 
 export type SpacedRetrievalItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1604,6 +2238,8 @@ export type SpacedRetrievalItemSelectCreateManyAndReturn<ExtArgs extends runtime
   category?: boolean
   active?: boolean
   linkedContactId?: boolean
+  imageAssetId?: boolean
+  clueImageAssetId?: boolean
   supportRole?: boolean
   sensitive?: boolean
   patientVisible?: boolean
@@ -1626,6 +2262,8 @@ export type SpacedRetrievalItemSelectCreateManyAndReturn<ExtArgs extends runtime
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }, ExtArgs["result"]["spacedRetrievalItem"]>
 
 export type SpacedRetrievalItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1640,6 +2278,8 @@ export type SpacedRetrievalItemSelectUpdateManyAndReturn<ExtArgs extends runtime
   category?: boolean
   active?: boolean
   linkedContactId?: boolean
+  imageAssetId?: boolean
+  clueImageAssetId?: boolean
   supportRole?: boolean
   sensitive?: boolean
   patientVisible?: boolean
@@ -1662,6 +2302,8 @@ export type SpacedRetrievalItemSelectUpdateManyAndReturn<ExtArgs extends runtime
   updatedAt?: boolean
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }, ExtArgs["result"]["spacedRetrievalItem"]>
 
 export type SpacedRetrievalItemSelectScalar = {
@@ -1676,6 +2318,8 @@ export type SpacedRetrievalItemSelectScalar = {
   category?: boolean
   active?: boolean
   linkedContactId?: boolean
+  imageAssetId?: boolean
+  clueImageAssetId?: boolean
   supportRole?: boolean
   sensitive?: boolean
   patientVisible?: boolean
@@ -1698,18 +2342,24 @@ export type SpacedRetrievalItemSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SpacedRetrievalItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "createdByUserId" | "prompt" | "correctAnswer" | "acceptableAnswers" | "distractors" | "cueText" | "category" | "active" | "linkedContactId" | "supportRole" | "sensitive" | "patientVisible" | "supportLevelOverride" | "currentIntervalStep" | "currentIntervalSeconds" | "masteryStatus" | "consecutiveCorrect" | "consecutiveIncorrect" | "totalAttempts" | "correctAttempts" | "correctWithoutCue" | "correctWithCue" | "unsureAttempts" | "incorrectAttempts" | "lastPracticedAt" | "nextDueAt" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["spacedRetrievalItem"]>
+export type SpacedRetrievalItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "createdByUserId" | "prompt" | "correctAnswer" | "acceptableAnswers" | "distractors" | "cueText" | "category" | "active" | "linkedContactId" | "imageAssetId" | "clueImageAssetId" | "supportRole" | "sensitive" | "patientVisible" | "supportLevelOverride" | "currentIntervalStep" | "currentIntervalSeconds" | "masteryStatus" | "consecutiveCorrect" | "consecutiveIncorrect" | "totalAttempts" | "correctAttempts" | "correctWithoutCue" | "correctWithCue" | "unsureAttempts" | "incorrectAttempts" | "lastPracticedAt" | "nextDueAt" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["spacedRetrievalItem"]>
 export type SpacedRetrievalItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }
 export type SpacedRetrievalItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }
 export type SpacedRetrievalItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  imageAsset?: boolean | Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>
+  clueImageAsset?: boolean | Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>
 }
 
 export type $SpacedRetrievalItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1717,6 +2367,8 @@ export type $SpacedRetrievalItemPayload<ExtArgs extends runtime.Types.Extensions
   objects: {
     patient: Prisma.$UserPayload<ExtArgs>
     createdBy: Prisma.$UserPayload<ExtArgs>
+    imageAsset: Prisma.$MediaAssetPayload<ExtArgs> | null
+    clueImageAsset: Prisma.$MediaAssetPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1730,6 +2382,8 @@ export type $SpacedRetrievalItemPayload<ExtArgs extends runtime.Types.Extensions
     category: $Enums.SpacedRetrievalCategory
     active: boolean
     linkedContactId: string | null
+    imageAssetId: string | null
+    clueImageAssetId: string | null
     supportRole: string | null
     sensitive: boolean
     patientVisible: boolean
@@ -2146,6 +2800,8 @@ export interface Prisma__SpacedRetrievalItemClient<T, Null = never, ExtArgs exte
   readonly [Symbol.toStringTag]: "PrismaPromise"
   patient<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  imageAsset<T extends Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SpacedRetrievalItem$imageAssetArgs<ExtArgs>>): Prisma.Prisma__MediaAssetClient<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  clueImageAsset<T extends Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SpacedRetrievalItem$clueImageAssetArgs<ExtArgs>>): Prisma.Prisma__MediaAssetClient<runtime.Types.Result.GetResult<Prisma.$MediaAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2186,6 +2842,8 @@ export interface SpacedRetrievalItemFieldRefs {
   readonly category: Prisma.FieldRef<"SpacedRetrievalItem", 'SpacedRetrievalCategory'>
   readonly active: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
   readonly linkedContactId: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
+  readonly imageAssetId: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
+  readonly clueImageAssetId: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
   readonly supportRole: Prisma.FieldRef<"SpacedRetrievalItem", 'String'>
   readonly sensitive: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
   readonly patientVisible: Prisma.FieldRef<"SpacedRetrievalItem", 'Boolean'>
@@ -2604,6 +3262,44 @@ export type SpacedRetrievalItemDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many SpacedRetrievalItems to delete.
    */
   limit?: number
+}
+
+/**
+ * SpacedRetrievalItem.imageAsset
+ */
+export type SpacedRetrievalItem$imageAssetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MediaAsset
+   */
+  select?: Prisma.MediaAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MediaAsset
+   */
+  omit?: Prisma.MediaAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MediaAssetInclude<ExtArgs> | null
+  where?: Prisma.MediaAssetWhereInput
+}
+
+/**
+ * SpacedRetrievalItem.clueImageAsset
+ */
+export type SpacedRetrievalItem$clueImageAssetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MediaAsset
+   */
+  select?: Prisma.MediaAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MediaAsset
+   */
+  omit?: Prisma.MediaAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MediaAssetInclude<ExtArgs> | null
+  where?: Prisma.MediaAssetWhereInput
 }
 
 /**

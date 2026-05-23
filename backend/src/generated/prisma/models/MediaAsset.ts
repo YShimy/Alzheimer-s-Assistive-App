@@ -300,6 +300,8 @@ export type MediaAssetWhereInput = {
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memos?: Prisma.ContactMemoListRelationFilter
   reminders?: Prisma.ReminderListRelationFilter
+  srItemImages?: Prisma.SpacedRetrievalItemListRelationFilter
+  srItemClueImages?: Prisma.SpacedRetrievalItemListRelationFilter
 }
 
 export type MediaAssetOrderByWithRelationInput = {
@@ -321,6 +323,8 @@ export type MediaAssetOrderByWithRelationInput = {
   uploadedBy?: Prisma.UserOrderByWithRelationInput
   memos?: Prisma.ContactMemoOrderByRelationAggregateInput
   reminders?: Prisma.ReminderOrderByRelationAggregateInput
+  srItemImages?: Prisma.SpacedRetrievalItemOrderByRelationAggregateInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemOrderByRelationAggregateInput
 }
 
 export type MediaAssetWhereUniqueInput = Prisma.AtLeast<{
@@ -345,6 +349,8 @@ export type MediaAssetWhereUniqueInput = Prisma.AtLeast<{
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memos?: Prisma.ContactMemoListRelationFilter
   reminders?: Prisma.ReminderListRelationFilter
+  srItemImages?: Prisma.SpacedRetrievalItemListRelationFilter
+  srItemClueImages?: Prisma.SpacedRetrievalItemListRelationFilter
 }, "id">
 
 export type MediaAssetOrderByWithAggregationInput = {
@@ -406,6 +412,8 @@ export type MediaAssetCreateInput = {
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
   memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUncheckedCreateInput = {
@@ -425,6 +433,8 @@ export type MediaAssetUncheckedCreateInput = {
   updatedAt?: Date | string
   memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUpdateInput = {
@@ -444,6 +454,8 @@ export type MediaAssetUpdateInput = {
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
   memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateInput = {
@@ -463,6 +475,8 @@ export type MediaAssetUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetCreateManyInput = {
@@ -692,6 +706,38 @@ export type MediaAssetUpdateOneWithoutRemindersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MediaAssetUpdateToOneWithWhereWithoutRemindersInput, Prisma.MediaAssetUpdateWithoutRemindersInput>, Prisma.MediaAssetUncheckedUpdateWithoutRemindersInput>
 }
 
+export type MediaAssetCreateNestedOneWithoutSrItemImagesInput = {
+  create?: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemImagesInput>
+  connectOrCreate?: Prisma.MediaAssetCreateOrConnectWithoutSrItemImagesInput
+  connect?: Prisma.MediaAssetWhereUniqueInput
+}
+
+export type MediaAssetCreateNestedOneWithoutSrItemClueImagesInput = {
+  create?: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemClueImagesInput>
+  connectOrCreate?: Prisma.MediaAssetCreateOrConnectWithoutSrItemClueImagesInput
+  connect?: Prisma.MediaAssetWhereUniqueInput
+}
+
+export type MediaAssetUpdateOneWithoutSrItemImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemImagesInput>
+  connectOrCreate?: Prisma.MediaAssetCreateOrConnectWithoutSrItemImagesInput
+  upsert?: Prisma.MediaAssetUpsertWithoutSrItemImagesInput
+  disconnect?: Prisma.MediaAssetWhereInput | boolean
+  delete?: Prisma.MediaAssetWhereInput | boolean
+  connect?: Prisma.MediaAssetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaAssetUpdateToOneWithWhereWithoutSrItemImagesInput, Prisma.MediaAssetUpdateWithoutSrItemImagesInput>, Prisma.MediaAssetUncheckedUpdateWithoutSrItemImagesInput>
+}
+
+export type MediaAssetUpdateOneWithoutSrItemClueImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemClueImagesInput>
+  connectOrCreate?: Prisma.MediaAssetCreateOrConnectWithoutSrItemClueImagesInput
+  upsert?: Prisma.MediaAssetUpsertWithoutSrItemClueImagesInput
+  disconnect?: Prisma.MediaAssetWhereInput | boolean
+  delete?: Prisma.MediaAssetWhereInput | boolean
+  connect?: Prisma.MediaAssetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaAssetUpdateToOneWithWhereWithoutSrItemClueImagesInput, Prisma.MediaAssetUpdateWithoutSrItemClueImagesInput>, Prisma.MediaAssetUncheckedUpdateWithoutSrItemClueImagesInput>
+}
+
 export type MediaAssetCreateNestedOneWithoutMemosInput = {
   create?: Prisma.XOR<Prisma.MediaAssetCreateWithoutMemosInput, Prisma.MediaAssetUncheckedCreateWithoutMemosInput>
   connectOrCreate?: Prisma.MediaAssetCreateOrConnectWithoutMemosInput
@@ -728,6 +774,8 @@ export type MediaAssetCreateWithoutUploadedByInput = {
   owner?: Prisma.UserCreateNestedOneWithoutOwnedAssetsInput
   memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUncheckedCreateWithoutUploadedByInput = {
@@ -746,6 +794,8 @@ export type MediaAssetUncheckedCreateWithoutUploadedByInput = {
   updatedAt?: Date | string
   memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetCreateOrConnectWithoutUploadedByInput = {
@@ -774,6 +824,8 @@ export type MediaAssetCreateWithoutOwnerInput = {
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
   memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUncheckedCreateWithoutOwnerInput = {
@@ -792,6 +844,8 @@ export type MediaAssetUncheckedCreateWithoutOwnerInput = {
   updatedAt?: Date | string
   memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetCreateOrConnectWithoutOwnerInput = {
@@ -872,6 +926,8 @@ export type MediaAssetCreateWithoutRemindersInput = {
   owner?: Prisma.UserCreateNestedOneWithoutOwnedAssetsInput
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
   memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUncheckedCreateWithoutRemindersInput = {
@@ -890,6 +946,8 @@ export type MediaAssetUncheckedCreateWithoutRemindersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetCreateOrConnectWithoutRemindersInput = {
@@ -924,6 +982,8 @@ export type MediaAssetUpdateWithoutRemindersInput = {
   owner?: Prisma.UserUpdateOneWithoutOwnedAssetsNestedInput
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
   memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateWithoutRemindersInput = {
@@ -942,6 +1002,200 @@ export type MediaAssetUncheckedUpdateWithoutRemindersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
+}
+
+export type MediaAssetCreateWithoutSrItemImagesInput = {
+  id?: string
+  assetType?: $Enums.AssetType
+  storageProvider?: string
+  storageKey: string
+  publicUrl?: string | null
+  mimeType?: string | null
+  width?: number | null
+  height?: number | null
+  durationSeconds?: number | null
+  thumbnailUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedAssetsInput
+  uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
+  memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
+}
+
+export type MediaAssetUncheckedCreateWithoutSrItemImagesInput = {
+  id?: string
+  ownerUserId?: string | null
+  uploadedByUserId: string
+  assetType?: $Enums.AssetType
+  storageProvider?: string
+  storageKey: string
+  publicUrl?: string | null
+  mimeType?: string | null
+  width?: number | null
+  height?: number | null
+  durationSeconds?: number | null
+  thumbnailUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
+}
+
+export type MediaAssetCreateOrConnectWithoutSrItemImagesInput = {
+  where: Prisma.MediaAssetWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemImagesInput>
+}
+
+export type MediaAssetCreateWithoutSrItemClueImagesInput = {
+  id?: string
+  assetType?: $Enums.AssetType
+  storageProvider?: string
+  storageKey: string
+  publicUrl?: string | null
+  mimeType?: string | null
+  width?: number | null
+  height?: number | null
+  durationSeconds?: number | null
+  thumbnailUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedAssetsInput
+  uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
+  memos?: Prisma.ContactMemoCreateNestedManyWithoutPhotoAssetInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+}
+
+export type MediaAssetUncheckedCreateWithoutSrItemClueImagesInput = {
+  id?: string
+  ownerUserId?: string | null
+  uploadedByUserId: string
+  assetType?: $Enums.AssetType
+  storageProvider?: string
+  storageKey: string
+  publicUrl?: string | null
+  mimeType?: string | null
+  width?: number | null
+  height?: number | null
+  durationSeconds?: number | null
+  thumbnailUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memos?: Prisma.ContactMemoUncheckedCreateNestedManyWithoutPhotoAssetInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+}
+
+export type MediaAssetCreateOrConnectWithoutSrItemClueImagesInput = {
+  where: Prisma.MediaAssetWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemClueImagesInput>
+}
+
+export type MediaAssetUpsertWithoutSrItemImagesInput = {
+  update: Prisma.XOR<Prisma.MediaAssetUpdateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedUpdateWithoutSrItemImagesInput>
+  create: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemImagesInput>
+  where?: Prisma.MediaAssetWhereInput
+}
+
+export type MediaAssetUpdateToOneWithWhereWithoutSrItemImagesInput = {
+  where?: Prisma.MediaAssetWhereInput
+  data: Prisma.XOR<Prisma.MediaAssetUpdateWithoutSrItemImagesInput, Prisma.MediaAssetUncheckedUpdateWithoutSrItemImagesInput>
+}
+
+export type MediaAssetUpdateWithoutSrItemImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  storageProvider?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  publicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedAssetsNestedInput
+  uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
+  memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
+}
+
+export type MediaAssetUncheckedUpdateWithoutSrItemImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  storageProvider?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  publicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
+}
+
+export type MediaAssetUpsertWithoutSrItemClueImagesInput = {
+  update: Prisma.XOR<Prisma.MediaAssetUpdateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedUpdateWithoutSrItemClueImagesInput>
+  create: Prisma.XOR<Prisma.MediaAssetCreateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedCreateWithoutSrItemClueImagesInput>
+  where?: Prisma.MediaAssetWhereInput
+}
+
+export type MediaAssetUpdateToOneWithWhereWithoutSrItemClueImagesInput = {
+  where?: Prisma.MediaAssetWhereInput
+  data: Prisma.XOR<Prisma.MediaAssetUpdateWithoutSrItemClueImagesInput, Prisma.MediaAssetUncheckedUpdateWithoutSrItemClueImagesInput>
+}
+
+export type MediaAssetUpdateWithoutSrItemClueImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  storageProvider?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  publicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedAssetsNestedInput
+  uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
+  memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+}
+
+export type MediaAssetUncheckedUpdateWithoutSrItemClueImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  storageProvider?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  publicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  width?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  durationSeconds?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
 }
 
 export type MediaAssetCreateWithoutMemosInput = {
@@ -960,6 +1214,8 @@ export type MediaAssetCreateWithoutMemosInput = {
   owner?: Prisma.UserCreateNestedOneWithoutOwnedAssetsInput
   uploadedBy: Prisma.UserCreateNestedOneWithoutUploadedAssetsInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetUncheckedCreateWithoutMemosInput = {
@@ -978,6 +1234,8 @@ export type MediaAssetUncheckedCreateWithoutMemosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutVisualCueAssetInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutImageAssetInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedCreateNestedManyWithoutClueImageAssetInput
 }
 
 export type MediaAssetCreateOrConnectWithoutMemosInput = {
@@ -1012,6 +1270,8 @@ export type MediaAssetUpdateWithoutMemosInput = {
   owner?: Prisma.UserUpdateOneWithoutOwnedAssetsNestedInput
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateWithoutMemosInput = {
@@ -1030,6 +1290,8 @@ export type MediaAssetUncheckedUpdateWithoutMemosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetCreateManyUploadedByInput = {
@@ -1080,6 +1342,8 @@ export type MediaAssetUpdateWithoutUploadedByInput = {
   owner?: Prisma.UserUpdateOneWithoutOwnedAssetsNestedInput
   memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateWithoutUploadedByInput = {
@@ -1098,6 +1362,8 @@ export type MediaAssetUncheckedUpdateWithoutUploadedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateManyWithoutUploadedByInput = {
@@ -1132,6 +1398,8 @@ export type MediaAssetUpdateWithoutOwnerInput = {
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutUploadedAssetsNestedInput
   memos?: Prisma.ContactMemoUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateWithoutOwnerInput = {
@@ -1150,6 +1418,8 @@ export type MediaAssetUncheckedUpdateWithoutOwnerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memos?: Prisma.ContactMemoUncheckedUpdateManyWithoutPhotoAssetNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutVisualCueAssetNestedInput
+  srItemImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutImageAssetNestedInput
+  srItemClueImages?: Prisma.SpacedRetrievalItemUncheckedUpdateManyWithoutClueImageAssetNestedInput
 }
 
 export type MediaAssetUncheckedUpdateManyWithoutOwnerInput = {
@@ -1176,11 +1446,15 @@ export type MediaAssetUncheckedUpdateManyWithoutOwnerInput = {
 export type MediaAssetCountOutputType = {
   memos: number
   reminders: number
+  srItemImages: number
+  srItemClueImages: number
 }
 
 export type MediaAssetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memos?: boolean | MediaAssetCountOutputTypeCountMemosArgs
   reminders?: boolean | MediaAssetCountOutputTypeCountRemindersArgs
+  srItemImages?: boolean | MediaAssetCountOutputTypeCountSrItemImagesArgs
+  srItemClueImages?: boolean | MediaAssetCountOutputTypeCountSrItemClueImagesArgs
 }
 
 /**
@@ -1207,6 +1481,20 @@ export type MediaAssetCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.
   where?: Prisma.ReminderWhereInput
 }
 
+/**
+ * MediaAssetCountOutputType without action
+ */
+export type MediaAssetCountOutputTypeCountSrItemImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SpacedRetrievalItemWhereInput
+}
+
+/**
+ * MediaAssetCountOutputType without action
+ */
+export type MediaAssetCountOutputTypeCountSrItemClueImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SpacedRetrievalItemWhereInput
+}
+
 
 export type MediaAssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1227,6 +1515,8 @@ export type MediaAssetSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memos?: boolean | Prisma.MediaAsset$memosArgs<ExtArgs>
   reminders?: boolean | Prisma.MediaAsset$remindersArgs<ExtArgs>
+  srItemImages?: boolean | Prisma.MediaAsset$srItemImagesArgs<ExtArgs>
+  srItemClueImages?: boolean | Prisma.MediaAsset$srItemClueImagesArgs<ExtArgs>
   _count?: boolean | Prisma.MediaAssetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mediaAsset"]>
 
@@ -1291,6 +1581,8 @@ export type MediaAssetInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memos?: boolean | Prisma.MediaAsset$memosArgs<ExtArgs>
   reminders?: boolean | Prisma.MediaAsset$remindersArgs<ExtArgs>
+  srItemImages?: boolean | Prisma.MediaAsset$srItemImagesArgs<ExtArgs>
+  srItemClueImages?: boolean | Prisma.MediaAsset$srItemClueImagesArgs<ExtArgs>
   _count?: boolean | Prisma.MediaAssetCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MediaAssetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1309,6 +1601,8 @@ export type $MediaAssetPayload<ExtArgs extends runtime.Types.Extensions.Internal
     uploadedBy: Prisma.$UserPayload<ExtArgs>
     memos: Prisma.$ContactMemoPayload<ExtArgs>[]
     reminders: Prisma.$ReminderPayload<ExtArgs>[]
+    srItemImages: Prisma.$SpacedRetrievalItemPayload<ExtArgs>[]
+    srItemClueImages: Prisma.$SpacedRetrievalItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1723,6 +2017,8 @@ export interface Prisma__MediaAssetClient<T, Null = never, ExtArgs extends runti
   uploadedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   memos<T extends Prisma.MediaAsset$memosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MediaAsset$memosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactMemoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reminders<T extends Prisma.MediaAsset$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MediaAsset$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  srItemImages<T extends Prisma.MediaAsset$srItemImagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MediaAsset$srItemImagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpacedRetrievalItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  srItemClueImages<T extends Prisma.MediaAsset$srItemClueImagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MediaAsset$srItemClueImagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SpacedRetrievalItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2231,6 +2527,54 @@ export type MediaAsset$remindersArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[]
+}
+
+/**
+ * MediaAsset.srItemImages
+ */
+export type MediaAsset$srItemImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SpacedRetrievalItem
+   */
+  select?: Prisma.SpacedRetrievalItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SpacedRetrievalItem
+   */
+  omit?: Prisma.SpacedRetrievalItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SpacedRetrievalItemInclude<ExtArgs> | null
+  where?: Prisma.SpacedRetrievalItemWhereInput
+  orderBy?: Prisma.SpacedRetrievalItemOrderByWithRelationInput | Prisma.SpacedRetrievalItemOrderByWithRelationInput[]
+  cursor?: Prisma.SpacedRetrievalItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SpacedRetrievalItemScalarFieldEnum | Prisma.SpacedRetrievalItemScalarFieldEnum[]
+}
+
+/**
+ * MediaAsset.srItemClueImages
+ */
+export type MediaAsset$srItemClueImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SpacedRetrievalItem
+   */
+  select?: Prisma.SpacedRetrievalItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SpacedRetrievalItem
+   */
+  omit?: Prisma.SpacedRetrievalItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SpacedRetrievalItemInclude<ExtArgs> | null
+  where?: Prisma.SpacedRetrievalItemWhereInput
+  orderBy?: Prisma.SpacedRetrievalItemOrderByWithRelationInput | Prisma.SpacedRetrievalItemOrderByWithRelationInput[]
+  cursor?: Prisma.SpacedRetrievalItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SpacedRetrievalItemScalarFieldEnum | Prisma.SpacedRetrievalItemScalarFieldEnum[]
 }
 
 /**

@@ -564,6 +564,8 @@ model SpacedRetrievalItem {
   category               SpacedRetrievalCategory @default(OTHER)
   active                 Boolean                 @default(true)
   linkedContactId        String?
+  imageAssetId           String?   // main question image (e.g. uploaded person photo)
+  clueImageAssetId       String?   // optional clue/hint image shown when patient taps hint
   supportRole            String?
   sensitive              Boolean                 @default(false)
   patientVisible         Boolean                 @default(true)
@@ -585,8 +587,10 @@ model SpacedRetrievalItem {
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
 
-  patient   User @relation("PatientSRItems", fields: [patientId], references: [id])
-  createdBy User @relation("CreatedSRItems", fields: [createdByUserId], references: [id])
+  patient        User        @relation("PatientSRItems", fields: [patientId], references: [id])
+  createdBy      User        @relation("CreatedSRItems", fields: [createdByUserId], references: [id])
+  imageAsset     MediaAsset? @relation("SRItemImage", fields: [imageAssetId], references: [id])
+  clueImageAsset MediaAsset? @relation("SRItemClueImage", fields: [clueImageAssetId], references: [id])
 
   @@index([patientId])
   @@index([patientId, active])
@@ -606,6 +610,7 @@ model PersonalOrientationSettings {
   maxQuestionsPerSession     Int?         @default(6)
   cueStyle                   String?      @default("button")
   allowMaintenanceItems      Boolean      @default(true)
+  memoryMatchLevel           Int          @default(1) // patient's current Memory Match difficulty level
   createdAt                  DateTime     @default(now())
   updatedAt                  DateTime     @updatedAt
   updatedByUserId            String?
@@ -747,8 +752,10 @@ model MediaAsset {
 
   owner      User? @relation("OwnedAssets", fields: [ownerUserId], references: [id])
   uploadedBy User  @relation("UploadedAssets", fields: [uploadedByUserId], references: [id])
-  memos      ContactMemo[]
-  reminders  Reminder[]    @relation("ReminderVisualCue")
+  memos              ContactMemo[]
+  reminders          Reminder[]             @relation("ReminderVisualCue")
+  srItemImages       SpacedRetrievalItem[]  @relation("SRItemImage")
+  srItemClueImages   SpacedRetrievalItem[]  @relation("SRItemClueImage")
 
   @@index([ownerUserId])
   @@map("media_assets")

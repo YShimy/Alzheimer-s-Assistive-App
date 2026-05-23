@@ -353,6 +353,8 @@ export const SpacedRetrievalItemScalarFieldEnum = {
   category: 'category',
   active: 'active',
   linkedContactId: 'linkedContactId',
+  imageAssetId: 'imageAssetId',
+  clueImageAssetId: 'clueImageAssetId',
   supportRole: 'supportRole',
   sensitive: 'sensitive',
   patientVisible: 'patientVisible',
@@ -389,6 +391,7 @@ export const PersonalOrientationSettingsScalarFieldEnum = {
   maxQuestionsPerSession: 'maxQuestionsPerSession',
   cueStyle: 'cueStyle',
   allowMaintenanceItems: 'allowMaintenanceItems',
+  memoryMatchLevel: 'memoryMatchLevel',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   updatedByUserId: 'updatedByUserId'

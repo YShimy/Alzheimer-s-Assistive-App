@@ -29,11 +29,13 @@ export type AggregatePersonalOrientationSettings = {
 export type PersonalOrientationSettingsAvgAggregateOutputType = {
   weeklyTargetSessions: number | null
   maxQuestionsPerSession: number | null
+  memoryMatchLevel: number | null
 }
 
 export type PersonalOrientationSettingsSumAggregateOutputType = {
   weeklyTargetSessions: number | null
   maxQuestionsPerSession: number | null
+  memoryMatchLevel: number | null
 }
 
 export type PersonalOrientationSettingsMinAggregateOutputType = {
@@ -46,6 +48,7 @@ export type PersonalOrientationSettingsMinAggregateOutputType = {
   maxQuestionsPerSession: number | null
   cueStyle: string | null
   allowMaintenanceItems: boolean | null
+  memoryMatchLevel: number | null
   createdAt: Date | null
   updatedAt: Date | null
   updatedByUserId: string | null
@@ -61,6 +64,7 @@ export type PersonalOrientationSettingsMaxAggregateOutputType = {
   maxQuestionsPerSession: number | null
   cueStyle: string | null
   allowMaintenanceItems: boolean | null
+  memoryMatchLevel: number | null
   createdAt: Date | null
   updatedAt: Date | null
   updatedByUserId: string | null
@@ -77,6 +81,7 @@ export type PersonalOrientationSettingsCountAggregateOutputType = {
   maxQuestionsPerSession: number
   cueStyle: number
   allowMaintenanceItems: number
+  memoryMatchLevel: number
   createdAt: number
   updatedAt: number
   updatedByUserId: number
@@ -87,11 +92,13 @@ export type PersonalOrientationSettingsCountAggregateOutputType = {
 export type PersonalOrientationSettingsAvgAggregateInputType = {
   weeklyTargetSessions?: true
   maxQuestionsPerSession?: true
+  memoryMatchLevel?: true
 }
 
 export type PersonalOrientationSettingsSumAggregateInputType = {
   weeklyTargetSessions?: true
   maxQuestionsPerSession?: true
+  memoryMatchLevel?: true
 }
 
 export type PersonalOrientationSettingsMinAggregateInputType = {
@@ -104,6 +111,7 @@ export type PersonalOrientationSettingsMinAggregateInputType = {
   maxQuestionsPerSession?: true
   cueStyle?: true
   allowMaintenanceItems?: true
+  memoryMatchLevel?: true
   createdAt?: true
   updatedAt?: true
   updatedByUserId?: true
@@ -119,6 +127,7 @@ export type PersonalOrientationSettingsMaxAggregateInputType = {
   maxQuestionsPerSession?: true
   cueStyle?: true
   allowMaintenanceItems?: true
+  memoryMatchLevel?: true
   createdAt?: true
   updatedAt?: true
   updatedByUserId?: true
@@ -135,6 +144,7 @@ export type PersonalOrientationSettingsCountAggregateInputType = {
   maxQuestionsPerSession?: true
   cueStyle?: true
   allowMaintenanceItems?: true
+  memoryMatchLevel?: true
   createdAt?: true
   updatedAt?: true
   updatedByUserId?: true
@@ -238,6 +248,7 @@ export type PersonalOrientationSettingsGroupByOutputType = {
   maxQuestionsPerSession: number | null
   cueStyle: string | null
   allowMaintenanceItems: boolean
+  memoryMatchLevel: number
   createdAt: Date
   updatedAt: Date
   updatedByUserId: string | null
@@ -277,6 +288,7 @@ export type PersonalOrientationSettingsWhereInput = {
   maxQuestionsPerSession?: Prisma.IntNullableFilter<"PersonalOrientationSettings"> | number | null
   cueStyle?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
   allowMaintenanceItems?: Prisma.BoolFilter<"PersonalOrientationSettings"> | boolean
+  memoryMatchLevel?: Prisma.IntFilter<"PersonalOrientationSettings"> | number
   createdAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedByUserId?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
@@ -295,6 +307,7 @@ export type PersonalOrientationSettingsOrderByWithRelationInput = {
   maxQuestionsPerSession?: Prisma.SortOrderInput | Prisma.SortOrder
   cueStyle?: Prisma.SortOrderInput | Prisma.SortOrder
   allowMaintenanceItems?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   updatedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -316,6 +329,7 @@ export type PersonalOrientationSettingsWhereUniqueInput = Prisma.AtLeast<{
   maxQuestionsPerSession?: Prisma.IntNullableFilter<"PersonalOrientationSettings"> | number | null
   cueStyle?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
   allowMaintenanceItems?: Prisma.BoolFilter<"PersonalOrientationSettings"> | boolean
+  memoryMatchLevel?: Prisma.IntFilter<"PersonalOrientationSettings"> | number
   createdAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedByUserId?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
@@ -334,6 +348,7 @@ export type PersonalOrientationSettingsOrderByWithAggregationInput = {
   maxQuestionsPerSession?: Prisma.SortOrderInput | Prisma.SortOrder
   cueStyle?: Prisma.SortOrderInput | Prisma.SortOrder
   allowMaintenanceItems?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   updatedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -358,6 +373,7 @@ export type PersonalOrientationSettingsScalarWhereWithAggregatesInput = {
   maxQuestionsPerSession?: Prisma.IntNullableWithAggregatesFilter<"PersonalOrientationSettings"> | number | null
   cueStyle?: Prisma.StringNullableWithAggregatesFilter<"PersonalOrientationSettings"> | string | null
   allowMaintenanceItems?: Prisma.BoolWithAggregatesFilter<"PersonalOrientationSettings"> | boolean
+  memoryMatchLevel?: Prisma.IntWithAggregatesFilter<"PersonalOrientationSettings"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PersonalOrientationSettings"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PersonalOrientationSettings"> | Date | string
   updatedByUserId?: Prisma.StringNullableWithAggregatesFilter<"PersonalOrientationSettings"> | string | null
@@ -373,6 +389,7 @@ export type PersonalOrientationSettingsCreateInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutPersonalOrientationSettingsInput
@@ -390,6 +407,7 @@ export type PersonalOrientationSettingsUncheckedCreateInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   updatedByUserId?: string | null
@@ -405,6 +423,7 @@ export type PersonalOrientationSettingsUpdateInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutPersonalOrientationSettingsNestedInput
@@ -422,6 +441,7 @@ export type PersonalOrientationSettingsUncheckedUpdateInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -438,6 +458,7 @@ export type PersonalOrientationSettingsCreateManyInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   updatedByUserId?: string | null
@@ -453,6 +474,7 @@ export type PersonalOrientationSettingsUpdateManyMutationInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -468,6 +490,7 @@ export type PersonalOrientationSettingsUncheckedUpdateManyInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -499,6 +522,7 @@ export type PersonalOrientationSettingsCountOrderByAggregateInput = {
   maxQuestionsPerSession?: Prisma.SortOrder
   cueStyle?: Prisma.SortOrder
   allowMaintenanceItems?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   updatedByUserId?: Prisma.SortOrder
@@ -507,6 +531,7 @@ export type PersonalOrientationSettingsCountOrderByAggregateInput = {
 export type PersonalOrientationSettingsAvgOrderByAggregateInput = {
   weeklyTargetSessions?: Prisma.SortOrder
   maxQuestionsPerSession?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
 }
 
 export type PersonalOrientationSettingsMaxOrderByAggregateInput = {
@@ -519,6 +544,7 @@ export type PersonalOrientationSettingsMaxOrderByAggregateInput = {
   maxQuestionsPerSession?: Prisma.SortOrder
   cueStyle?: Prisma.SortOrder
   allowMaintenanceItems?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   updatedByUserId?: Prisma.SortOrder
@@ -534,6 +560,7 @@ export type PersonalOrientationSettingsMinOrderByAggregateInput = {
   maxQuestionsPerSession?: Prisma.SortOrder
   cueStyle?: Prisma.SortOrder
   allowMaintenanceItems?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   updatedByUserId?: Prisma.SortOrder
@@ -542,6 +569,7 @@ export type PersonalOrientationSettingsMinOrderByAggregateInput = {
 export type PersonalOrientationSettingsSumOrderByAggregateInput = {
   weeklyTargetSessions?: Prisma.SortOrder
   maxQuestionsPerSession?: Prisma.SortOrder
+  memoryMatchLevel?: Prisma.SortOrder
 }
 
 export type PersonalOrientationSettingsCreateNestedOneWithoutPatientInput = {
@@ -632,6 +660,7 @@ export type PersonalOrientationSettingsCreateWithoutPatientInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   updatedBy?: Prisma.UserCreateNestedOneWithoutUpdatedPOSettingsInput
@@ -647,6 +676,7 @@ export type PersonalOrientationSettingsUncheckedCreateWithoutPatientInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   updatedByUserId?: string | null
@@ -667,6 +697,7 @@ export type PersonalOrientationSettingsCreateWithoutUpdatedByInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   patient: Prisma.UserCreateNestedOneWithoutPersonalOrientationSettingsInput
@@ -683,6 +714,7 @@ export type PersonalOrientationSettingsUncheckedCreateWithoutUpdatedByInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -718,6 +750,7 @@ export type PersonalOrientationSettingsUpdateWithoutPatientInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedBy?: Prisma.UserUpdateOneWithoutUpdatedPOSettingsNestedInput
@@ -733,6 +766,7 @@ export type PersonalOrientationSettingsUncheckedUpdateWithoutPatientInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -768,6 +802,7 @@ export type PersonalOrientationSettingsScalarWhereInput = {
   maxQuestionsPerSession?: Prisma.IntNullableFilter<"PersonalOrientationSettings"> | number | null
   cueStyle?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
   allowMaintenanceItems?: Prisma.BoolFilter<"PersonalOrientationSettings"> | boolean
+  memoryMatchLevel?: Prisma.IntFilter<"PersonalOrientationSettings"> | number
   createdAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PersonalOrientationSettings"> | Date | string
   updatedByUserId?: Prisma.StringNullableFilter<"PersonalOrientationSettings"> | string | null
@@ -784,6 +819,7 @@ export type PersonalOrientationSettingsCreateManyUpdatedByInput = {
   maxQuestionsPerSession?: number | null
   cueStyle?: string | null
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -798,6 +834,7 @@ export type PersonalOrientationSettingsUpdateWithoutUpdatedByInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patient?: Prisma.UserUpdateOneRequiredWithoutPersonalOrientationSettingsNestedInput
@@ -814,6 +851,7 @@ export type PersonalOrientationSettingsUncheckedUpdateWithoutUpdatedByInput = {
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -829,6 +867,7 @@ export type PersonalOrientationSettingsUncheckedUpdateManyWithoutUpdatedByInput 
   maxQuestionsPerSession?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cueStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowMaintenanceItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memoryMatchLevel?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -846,6 +885,7 @@ export type PersonalOrientationSettingsSelect<ExtArgs extends runtime.Types.Exte
   maxQuestionsPerSession?: boolean
   cueStyle?: boolean
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   updatedByUserId?: boolean
@@ -864,6 +904,7 @@ export type PersonalOrientationSettingsSelectCreateManyAndReturn<ExtArgs extends
   maxQuestionsPerSession?: boolean
   cueStyle?: boolean
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   updatedByUserId?: boolean
@@ -882,6 +923,7 @@ export type PersonalOrientationSettingsSelectUpdateManyAndReturn<ExtArgs extends
   maxQuestionsPerSession?: boolean
   cueStyle?: boolean
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   updatedByUserId?: boolean
@@ -900,12 +942,13 @@ export type PersonalOrientationSettingsSelectScalar = {
   maxQuestionsPerSession?: boolean
   cueStyle?: boolean
   allowMaintenanceItems?: boolean
+  memoryMatchLevel?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   updatedByUserId?: boolean
 }
 
-export type PersonalOrientationSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "supportLevel" | "weeklyTargetSessions" | "enabledFamilies" | "includePeopleWithoutPhotos" | "includeSensitiveContacts" | "maxQuestionsPerSession" | "cueStyle" | "allowMaintenanceItems" | "createdAt" | "updatedAt" | "updatedByUserId", ExtArgs["result"]["personalOrientationSettings"]>
+export type PersonalOrientationSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "patientId" | "supportLevel" | "weeklyTargetSessions" | "enabledFamilies" | "includePeopleWithoutPhotos" | "includeSensitiveContacts" | "maxQuestionsPerSession" | "cueStyle" | "allowMaintenanceItems" | "memoryMatchLevel" | "createdAt" | "updatedAt" | "updatedByUserId", ExtArgs["result"]["personalOrientationSettings"]>
 export type PersonalOrientationSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   updatedBy?: boolean | Prisma.PersonalOrientationSettings$updatedByArgs<ExtArgs>
@@ -936,6 +979,7 @@ export type $PersonalOrientationSettingsPayload<ExtArgs extends runtime.Types.Ex
     maxQuestionsPerSession: number | null
     cueStyle: string | null
     allowMaintenanceItems: boolean
+    memoryMatchLevel: number
     createdAt: Date
     updatedAt: Date
     updatedByUserId: string | null
@@ -1374,6 +1418,7 @@ export interface PersonalOrientationSettingsFieldRefs {
   readonly maxQuestionsPerSession: Prisma.FieldRef<"PersonalOrientationSettings", 'Int'>
   readonly cueStyle: Prisma.FieldRef<"PersonalOrientationSettings", 'String'>
   readonly allowMaintenanceItems: Prisma.FieldRef<"PersonalOrientationSettings", 'Boolean'>
+  readonly memoryMatchLevel: Prisma.FieldRef<"PersonalOrientationSettings", 'Int'>
   readonly createdAt: Prisma.FieldRef<"PersonalOrientationSettings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PersonalOrientationSettings", 'DateTime'>
   readonly updatedByUserId: Prisma.FieldRef<"PersonalOrientationSettings", 'String'>

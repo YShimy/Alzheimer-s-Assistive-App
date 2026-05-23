@@ -3,19 +3,23 @@
  * Spaced Retrieval / Personal Orientation Practice game.
  * Evidence-informed reality orientation and spaced retrieval training.
  * Citations: Savulich et al., 2017; Han et al., 2017; Smith et al., 2024.
+ *
+ * Updated: fetches game contacts for people-recognition questions,
+ * shows caregiver-uploaded photos for question images and clue images.
  */
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  ActivityIndicator, SafeAreaView, Animated,
+  ActivityIndicator, SafeAreaView,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useSpacedRetrievalStore } from '@/src/features/games/spacedRetrieval/store';
 import {
-  buildQuestions, computeSessionScore, processAnswer,
-  type SRItem, type PracticeQuestion, type SupportLevel,
+  buildQuestions, buildContactQuestions, mergeAndLimitQuestions, computeSessionScore, processAnswer,
+  type SRItem, type PracticeQuestion, type SupportLevel, type GameContact,
 } from '@/src/features/games/spacedRetrieval/engine';
 import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
@@ -52,11 +56,11 @@ function IntroScreen() {
   const handleStart = async () => {
     setLoading(true);
     try {
-      // Fetch patient items & settings from backend
       let srItems: SRItem[] = [];
       let supportLevel: SupportLevel = 'GUIDED_SUPPORT';
       let enabledFamilies: string[] | undefined = undefined;
       let maxQs = 6;
+      let gameContacts: GameContact[] = [];
 
       try {
         const [itemsRes, settingsRes] = await Promise.all([
@@ -71,7 +75,7 @@ function IntroScreen() {
           if (fetchedSettings.maxQuestionsPerSession) maxQs = fetchedSettings.maxQuestionsPerSession;
         }
 
-        srItems = (itemsRes.items ?? []).map((i: any) => ({
+        srItems = (itemsRes.items ?? []).map((i: any): SRItem => ({
           id: i.id,
           prompt: i.prompt,
           correctAnswer: i.correctAnswer,
@@ -84,21 +88,51 @@ function IntroScreen() {
           masteryStatus: i.masteryStatus ?? 'NEW',
           patientVisible: i.patientVisible ?? true,
           supportLevelOverride: i.supportLevelOverride ?? null,
+          imageAssetId: i.imageAssetId ?? null,
+          clueImageAssetId: i.clueImageAssetId ?? null,
+          imageUrl: i.imageUrl ?? null,
+          clueImageUrl: i.clueImageUrl ?? null,
+          linkedContactId: i.linkedContactId ?? null,
         }));
+
+        // Fetch game contacts for people-recognition questions
+        try {
+          const contactsRes = await spacedRetrievalApi.getGameContacts('me');
+          gameContacts = (contactsRes.contacts ?? []).map((c: any): GameContact => ({
+            id: c.id,
+            displayName: c.displayName,
+            relationLabel: c.relationLabel ?? null,
+            shortMemo: c.shortMemo ?? null,
+            photoUrl: c.photoUrl ?? null,
+            supportRole: c.supportRole ?? null,
+            isSensitive: c.isSensitive ?? false,
+          }));
+        } catch {
+          // Contacts are optional — game proceeds without them
+        }
       } catch {
         srItems = getDefaultItems(t);
       }
 
       if (srItems.length === 0) srItems = getDefaultItems(t);
 
+      // Build caregiver SR questions (already include image fields)
+      const srQuestions = buildQuestions(srItems, supportLevel, enabledFamilies, maxQs);
+
+      // Build contact-based people-recognition questions
+      const allNames = gameContacts.map((c) => c.displayName);
+      const contactQuestions = buildContactQuestions(gameContacts, srItems, supportLevel, allNames);
+
+      // Merge: caregiver items first, then contacts to fill remaining slots
+      const finalQuestions = mergeAndLimitQuestions(srQuestions, contactQuestions, maxQs);
+
       const sessionRes = await gamesApi.startSession({
         gameType: 'PERSONAL_ORIENTATION_PRACTICE',
         reminderId: params.reminderId,
       });
       const sessionId = sessionRes.session?.id ?? `local-${Date.now()}`;
-      
-      const questions = buildQuestions(srItems, supportLevel, enabledFamilies, maxQs);
-      store.startSession(questions, sessionId);
+
+      store.startSession(finalQuestions, sessionId);
     } catch {
       const questions = buildQuestions(getDefaultItems(t), 'GUIDED_SUPPORT');
       store.startSession(questions, `local-${Date.now()}`);
@@ -135,7 +169,7 @@ function IntroScreen() {
 function QuestionScreen() {
   const { t } = useTranslation();
   const store = useSpacedRetrievalStore();
-  const question = store.questions[store.currentQuestionIndex];
+  const question: PracticeQuestion = store.questions[store.currentQuestionIndex];
   const [showCue, setShowCue] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -154,12 +188,14 @@ function QuestionScreen() {
     );
     setSelected(choice);
     setTimeout(() => {
-      store.answer(isCorrect, showCue, isUnsure, question);
+      store.answer(isCorrect, showCue, isUnsure, question, question.isContactQuestion, question.contactId);
       store.setPhase('feedback');
     }, 400);
   };
 
   const unsureText = t('orientationPractice.imNotSure', "I'm not sure");
+  const hasQuestionImage = !!question.imageUrl;
+  const hasCueImage = showCue && !!question.clueImageUrl;
 
   return (
     <SafeAreaView style={s.safeArea}>
@@ -172,14 +208,35 @@ function QuestionScreen() {
 
       <ScrollView contentContainerStyle={s.questionBody}>
         <View style={s.questionCard}>
-          <Ionicons name="help-circle-outline" size={32} color={colors.secondary[400]} style={{ marginBottom: spacing.md }} />
+          {/* Question image (person photo or caregiver-uploaded image) */}
+          {hasQuestionImage && (
+            <Image
+              source={{ uri: question.imageUrl! }}
+              style={s.questionImage}
+              contentFit="cover"
+              placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+            />
+          )}
+          {!hasQuestionImage && (
+            <Ionicons name="help-circle-outline" size={32} color={colors.secondary[400]} style={{ marginBottom: spacing.md }} />
+          )}
           <Text style={s.questionText}>{question.prompt}</Text>
         </View>
 
+        {/* Cue card: text + optional clue image */}
         {showCue && question.cueText && (
           <View style={s.cueCard}>
             <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
-            <Text style={s.cueText}>{question.cueText}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={s.cueText}>{question.cueText}</Text>
+              {hasCueImage && (
+                <Image
+                  source={{ uri: question.clueImageUrl! }}
+                  style={s.cueImage}
+                  contentFit="cover"
+                />
+              )}
+            </View>
           </View>
         )}
 
@@ -224,7 +281,7 @@ function FeedbackScreen() {
   const { t } = useTranslation();
   const store = useSpacedRetrievalStore();
   const lastResult = store.results[store.results.length - 1];
-  const question = store.questions[store.currentQuestionIndex];
+  const question: PracticeQuestion = store.questions[store.currentQuestionIndex];
   const isCorrect = lastResult?.correct ?? false;
   const isUnsure = lastResult?.unsure ?? false;
 
@@ -232,22 +289,31 @@ function FeedbackScreen() {
     if (store.currentQuestionIndex + 1 >= store.questions.length) {
       const score = computeSessionScore(store.results);
       store.finish(score);
-      // Submit
+      // Submit to backend
       gamesApi.completeSpacedRetrieval(store.sessionId!, {
         score: score.score,
         accuracyPercent: score.accuracyPercent,
         status: 'COMPLETED',
         durationSeconds: Math.max(15, Math.round((Date.now() - store.startedAt) / 1000)),
-        metadata: { cueUseRate: score.cueUseRate / 100, correctWithoutCue: score.correctWithoutCue, correctWithCue: score.correctWithCue, levelReached: score.levelReached },
+        metadata: {
+          cueUseRate: score.cueUseRate / 100,
+          correctWithoutCue: score.correctWithoutCue,
+          correctWithCue: score.correctWithCue,
+          levelReached: score.levelReached,
+          contactQuestionsCount: store.results.filter((r) => r.isContactQuestion).length,
+        },
         itemResults: store.questions.map((q, i) => {
           const r = store.results[i];
           return {
-            itemId: q.itemId,
+            itemIndex: i,
             prompt: q.prompt,
             correct: r?.correct ?? false,
             usedCue: r?.usedCue ?? false,
-            unsure: r?.unsure ?? false,
+            firstTryCorrect: r?.correct ?? false,
+            responseTimeMs: null,
+            selectedAnswer: null,
             correctAnswer: q.correctAnswer,
+            metadata: q.isContactQuestion ? { isContactQuestion: true, contactId: q.contactId } : undefined,
           };
         }),
       }).catch(() => {});
@@ -274,6 +340,10 @@ function FeedbackScreen() {
             ? t('orientationPractice.youRemembered', 'You remembered that one without any trouble.')
             : t('orientationPractice.answerIs', { answer: question?.correctAnswer })}
         </Text>
+        {/* Show cue image on feedback if available */}
+        {!isCorrect && question?.imageUrl && (
+          <Image source={{ uri: question.imageUrl }} style={s.feedbackImage} contentFit="cover" />
+        )}
         {!isCorrect && question?.cueText && (
           <View style={s.cueCard}>
             <Ionicons name="bulb-outline" size={18} color={colors.warning.main} />
@@ -356,9 +426,11 @@ const s = StyleSheet.create({
   progressText: { fontSize: 12, color: colors.neutral[400], alignSelf: 'flex-end' },
   questionBody: { padding: spacing.lg, paddingTop: 0, gap: spacing.lg },
   questionCard: { backgroundColor: '#fff', borderRadius: radius.xl ?? radius.lg, padding: spacing.xl, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+  questionImage: { width: 140, height: 140, borderRadius: 70, marginBottom: spacing.lg },
   questionText: { fontSize: 20, fontWeight: '600', color: colors.neutral[800], textAlign: 'center', lineHeight: 28 },
   cueCard: { flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.warning.main + '15', borderRadius: radius.md, padding: spacing.md, alignItems: 'flex-start' },
   cueText: { flex: 1, fontSize: 14, color: colors.neutral[700], lineHeight: 20 },
+  cueImage: { width: '100%', height: 120, borderRadius: radius.md, marginTop: spacing.sm },
   choicesContainer: { gap: spacing.md },
   choiceBtn: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: colors.neutral[200], borderRadius: radius.lg, paddingVertical: 16, paddingHorizontal: 20, minHeight: 56 },
   choiceText: { fontSize: 16, color: colors.neutral[800], textAlign: 'center' },
@@ -370,6 +442,7 @@ const s = StyleSheet.create({
   feedbackBadge: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.sm },
   feedbackHeading: { fontSize: 22, fontWeight: '700', color: colors.neutral[800] },
   feedbackBody: { fontSize: 16, color: colors.neutral[600], textAlign: 'center', lineHeight: 24 },
+  feedbackImage: { width: 120, height: 120, borderRadius: 60, marginVertical: spacing.md },
   nextBtn: { backgroundColor: colors.secondary[500] ?? colors.primary[500], paddingVertical: 16, paddingHorizontal: 40, borderRadius: radius.lg, alignItems: 'center', width: '100%', marginTop: spacing.lg },
   nextBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
   resultCard: { width: '100%', backgroundColor: colors.surface ?? '#f0f0ee', borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md, marginBottom: spacing.xl },

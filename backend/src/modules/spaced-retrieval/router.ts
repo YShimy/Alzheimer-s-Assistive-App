@@ -7,6 +7,8 @@ export const spacedRetrievalRouter = Router();
 
 spacedRetrievalRouter.use(authMiddleware);
 
+// ─── SR Items ─────────────────────────────────────────────────────────────────
+
 // All SR item routes require an active care link (patient owns data, caregiver needs link)
 spacedRetrievalRouter.get(
   '/:patientId/spaced-retrieval/items',
@@ -32,6 +34,8 @@ spacedRetrievalRouter.delete(
   srController.archiveItem,
 );
 
+// ─── SR Settings ──────────────────────────────────────────────────────────────
+
 spacedRetrievalRouter.get(
   '/:patientId/spaced-retrieval/settings',
   careLinkGuard('canViewProgress'),
@@ -42,4 +46,26 @@ spacedRetrievalRouter.put(
   '/:patientId/spaced-retrieval/settings',
   careLinkGuard('canEditReminders'),
   srController.upsertSettings,
+);
+
+// ─── Game Contacts ─────────────────────────────────────────────────────────────
+
+spacedRetrievalRouter.get(
+  '/:patientId/spaced-retrieval/game-contacts',
+  careLinkGuard('canViewProgress'),
+  srController.getGameContacts,
+);
+
+// ─── Memory Match Level Persistence ───────────────────────────────────────────
+
+spacedRetrievalRouter.get(
+  '/:patientId/memory-match/level',
+  careLinkGuard('canViewProgress'),
+  srController.getMemoryMatchLevel,
+);
+
+spacedRetrievalRouter.put(
+  '/:patientId/memory-match/level',
+  careLinkGuard('canViewProgress'), // patient can update their own level; caregiver can view
+  srController.setMemoryMatchLevel,
 );

@@ -5,7 +5,9 @@
     "ok": "OK",
     "error": "Error",
     "loading": "Loading...",
-    "managing": "Managing"
+    "managing": "Managing",
+    "permissionRequired": "Permission Required",
+    "uploadFailed": "Upload Failed"
   },
   "auth": {
     "code": "Code",
@@ -1028,7 +1030,19 @@
       "rolePrefix": "Role: ",
       "manageRemindersLink": "Set Practice Reminders",
       "weeklyTarget": "Weekly Practice Target",
-      "sessions": "sessions/week"
+      "sessions": "sessions/week",
+      "questionImage": "Question Photo (optional)",
+      "questionImageDesc": "Shown to the patient as the question. Useful for people-recognition practice.",
+      "addQuestionImage": "Add Question Photo",
+      "changeQuestionImage": "Change Question Photo",
+      "removeQuestionImage": "Remove",
+      "clueImage": "Hint Photo (optional)",
+      "clueImageDesc": "Shown when the patient taps 'Show hint'. Can be a close-up or context photo.",
+      "addClueImage": "Add Hint Photo",
+      "changeClueImage": "Change Hint Photo",
+      "removeClueImage": "Remove",
+      "photoPermission": "Please allow access to your photo library.",
+      "uploadError": "Could not upload photo. Please try again."
     }
   },
   "memoryMatch": {
@@ -1059,6 +1073,9 @@
     "practiceScore": "Practice score",
     "accuracy": "Accuracy",
     "levelLabel": "Level",
+    "currentLevel": "Current Level",
+    "continuingFrom": "Continuing from Level {{level}}",
+    "levelSaved": "Progress saved",
     "practiceAgain": "Practice Again",
     "done": "Done",
     "recommended": "3×/week recommended"

@@ -17,7 +17,7 @@ import {
   MEMORY_MATCH_LEVELS, clampLevel,
   type PlacedItem, type RecallQuestion,
 } from '@/src/features/games/memoryMatch/engine';
-import { gamesApi } from '@/src/features/games/api';
+import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -29,12 +29,33 @@ export default function MemoryMatchGameScreen() {
   const params = useLocalSearchParams<{ level?: string; reminderId?: string }>();
   const store = useMemoryMatchStore();
 
+  // Start from param level or 1; will be overridden by backend-persisted level
   const [currentLevel, setCurrentLevel] = useState(clampLevel(parseInt(params.level ?? '1', 10) || 1));
+  const [levelLoaded, setLevelLoaded] = useState(false);
 
-  // Reset on mount
+  // Fetch persisted level from backend on mount
   useEffect(() => {
     store.reset();
+    spacedRetrievalApi.getMemoryMatchLevel('me')
+      .then((res) => {
+        const savedLevel = clampLevel(res.level ?? 1);
+        setCurrentLevel(savedLevel);
+      })
+      .catch(() => {
+        // Use default (1 or param) if backend is unavailable
+      })
+      .finally(() => setLevelLoaded(true));
   }, []);
+
+  if (!levelLoaded) {
+    return (
+      <SafeAreaView style={s.safeArea}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary[500]} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (store.phase === 'intro') {
     return <IntroScreen level={currentLevel} reminderId={params.reminderId} />;
@@ -50,16 +71,18 @@ export default function MemoryMatchGameScreen() {
   }
   if (store.phase === 'result') {
     return (
-      <ResultScreen 
+      <ResultScreen
         onPlayAgain={() => {
           const decision = store.advanceDecision;
           let nextLevel = currentLevel;
           if (decision === 'advance') nextLevel = clampLevel(currentLevel + 1);
           else if (decision === 'regress') nextLevel = clampLevel(currentLevel - 1);
+          // Persist the new level to the backend
+          spacedRetrievalApi.setMemoryMatchLevel('me', nextLevel).catch(() => {});
           setCurrentLevel(nextLevel);
           store.reset();
-        }} 
-        onExit={() => router.back()} 
+        }}
+        onExit={() => router.back()}
       />
     );
   }

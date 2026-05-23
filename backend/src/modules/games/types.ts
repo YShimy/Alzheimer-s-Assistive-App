@@ -160,6 +160,8 @@ export interface CreateSRItemDto {
   cueText?: string;
   category: string;
   linkedContactId?: string;
+  imageAssetId?: string;
+  clueImageAssetId?: string;
   supportRole?: string;
   sensitive?: boolean;
   patientVisible?: boolean;
@@ -175,6 +177,8 @@ export interface UpdateSRItemDto {
   category?: string;
   active?: boolean;
   linkedContactId?: string | null;
+  imageAssetId?: string | null;
+  clueImageAssetId?: string | null;
   supportRole?: string | null;
   sensitive?: boolean;
   patientVisible?: boolean;
@@ -192,6 +196,10 @@ export interface SRItemResponse {
   category: string;
   active: boolean;
   linkedContactId?: string | null;
+  imageAssetId?: string | null;
+  clueImageAssetId?: string | null;
+  imageUrl?: string | null;
+  clueImageUrl?: string | null;
   supportRole?: string | null;
   sensitive?: boolean;
   patientVisible?: boolean;

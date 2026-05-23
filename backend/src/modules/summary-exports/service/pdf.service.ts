@@ -118,6 +118,7 @@ const DICT = {
     assocMemoryNote: 'This reflects app-based paired-association memory practice activity only.',
     srPractice: 'My Day & People',
     srNote: 'This reflects app-based daily orientation and personal recognition practice only.',
+    cueUseRate: 'Hint use rate',
     historicalData: 'Historical Engagement Data',
     historicalSessions: 'Historical completed sessions',
     noEngagement: 'No engagement activity in selected range.',
@@ -179,6 +180,7 @@ const DICT = {
     assocMemoryNote: 'هذا يعكس نشاط ممارسة الذاكرة الترابطية القائم على التطبيق فقط.',
     srPractice: 'يومي وأشخاصي',
     srNote: 'هذا يعكس ممارسة التوجيه اليومي والتعرف الشخصي القائم على التطبيق فقط.',
+    cueUseRate: 'معدل استخدام التلميح',
     historicalData: 'بيانات المشاركة التاريخية',
     historicalSessions: 'الجلسات التاريخية المكتملة',
     noEngagement: 'لا يوجد نشاط مشاركة في النطاق المحدد.',
@@ -559,10 +561,15 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const srAvgScore = srScores.length > 0 ? Math.round(srScores.reduce((a, b) => a + b, 0) / srScores.length) : 0;
         const srAccuracies = srStats.map(g => g.accuracyPercent ?? 0).filter(a => a > 0);
         const srAvgAccuracy = srAccuracies.length > 0 ? Math.round(srAccuracies.reduce((a, b) => a + b, 0) / srAccuracies.length) : 0;
+        // Cue use rate from item results metadata
+        const srCueItems = srStats.flatMap(g => (g as any).itemResults ?? []);
+        const srCueUsed = srCueItems.filter((ir: any) => ir.usedCue).length;
+        const srCueRate = srCueItems.length > 0 ? Math.round((srCueUsed / srCueItems.length) * 100) : 0;
 
         writeStatRow(doc, t.sessionsCompleted, srCompleted, isAr);
         writeStatRow(doc, t.avgScore, srAvgScore, isAr);
         if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${srAvgAccuracy}%`, isAr);
+        if (srCueItems.length > 0) writeStatRow(doc, t.cueUseRate, `${srCueRate}%`, isAr);
         doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
           .text(t.srNote, { align });
         doc.moveDown(1);

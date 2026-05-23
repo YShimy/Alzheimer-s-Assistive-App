@@ -5,7 +5,9 @@
     "ok": "موافق",
     "error": "خطأ",
     "loading": "جار التحميل...",
-    "managing": "إدارة"
+    "managing": "إدارة",
+    "permissionRequired": "إذن مطلوب",
+    "uploadFailed": "فشل الرفع"
   },
   "auth": {
     "code": "الرمز",
@@ -954,6 +956,9 @@
     "practiceScore": "نقاط التدريب",
     "accuracy": "الدقة",
     "levelLabel": "المستوى",
+    "currentLevel": "المستوى الحالي",
+    "continuingFrom": "الاستمرار من المستوى {{level}}",
+    "levelSaved": "تم حفظ التقدم",
     "practiceAgain": "تدرب مرة أخرى",
     "done": "تم",
     "recommended": "موصى به ٣ مرات أسبوعياً"
@@ -1169,7 +1174,19 @@
       "rolePrefix": "الدور: ",
       "manageRemindersLink": "إعداد تذكيرات التدريب",
       "weeklyTarget": "هدف التدريب الأسبوعي",
-      "sessions": "جلسات/أسبوع"
+      "sessions": "جلسات/أسبوع",
+      "questionImage": "صورة السؤال (اختياري)",
+      "questionImageDesc": "تُعرض على المريض كسؤال. مفيد للتدريب على التعرف على الأشخاص.",
+      "addQuestionImage": "إضافة صورة للسؤال",
+      "changeQuestionImage": "تغيير صورة السؤال",
+      "removeQuestionImage": "إزالة",
+      "clueImage": "صورة التلميح (اختياري)",
+      "clueImageDesc": "تُعرض عند ضغط المريض على 'عرض التلميح'.",
+      "addClueImage": "إضافة صورة للتلميح",
+      "changeClueImage": "تغيير صورة التلميح",
+      "removeClueImage": "إزالة",
+      "photoPermission": "يرجى السماح بالوصول إلى مكتبة الصور.",
+      "uploadError": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى."
     }
   }
 }

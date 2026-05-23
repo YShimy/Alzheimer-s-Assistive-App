@@ -1,5 +1,5 @@
 /**
- * Spaced Retrieval controller — HTTP request handlers for SR items.
+ * Spaced Retrieval controller — HTTP request handlers for SR items, settings, level, and game contacts.
  */
 import { Request, Response } from 'express';
 import { srService } from '../service/sr.service.js';
@@ -71,6 +71,61 @@ export class SpacedRetrievalController {
     const patientId = raw === 'me' ? user.userId : raw;
     const settings = await srService.upsertSettings(patientId, user.userId, req.body);
     res.json({ settings });
+  };
+
+  // ─── Memory Match Level ───────────────────────────────────────────────────
+
+  /**
+   * GET /api/patients/:patientId/memory-match/level
+   * Returns the patient's persisted Memory Match difficulty level.
+   */
+  getMemoryMatchLevel = async (req: Request, res: Response) => {
+    const raw = req.params.patientId as string;
+    const patientId = raw === 'me' ? req.user!.userId : raw;
+    const level = await srService.getMemoryMatchLevel(patientId);
+    res.json({ level });
+  };
+
+  /**
+   * PUT /api/patients/:patientId/memory-match/level
+   * Body: { level: number } — saves the patient's current Memory Match level.
+   */
+  setMemoryMatchLevel = async (req: Request, res: Response) => {
+    const raw = req.params.patientId as string;
+    const patientId = raw === 'me' ? req.user!.userId : raw;
+    const { level } = req.body;
+
+    if (typeof level !== 'number' || level < 1 || level > 12) {
+      throw AppError.badRequest('level must be a number between 1 and 12');
+    }
+
+    await srService.setMemoryMatchLevel(patientId, level);
+    res.json({ level: Math.max(1, Math.min(12, level)) });
+  };
+
+  // ─── Game Contacts ────────────────────────────────────────────────────────
+
+  /**
+   * GET /api/patients/:patientId/spaced-retrieval/game-contacts
+   * Returns contacts eligible for people-recognition practice questions.
+   * Respects includePeopleWithoutPhotos and includeSensitiveContacts from settings.
+   */
+  getGameContacts = async (req: Request, res: Response) => {
+    const raw = req.params.patientId as string;
+    const patientId = raw === 'me' ? req.user!.userId : raw;
+    const contacts = await srService.getGameContacts(patientId);
+
+    const result = contacts.map((c: any) => ({
+      id: c.id,
+      displayName: c.displayName,
+      relationLabel: c.memos?.[0]?.relationLabel ?? null,
+      shortMemo: c.memos?.[0]?.shortMemo ?? null,
+      photoUrl: c.memos?.[0]?.photoAsset?.publicUrl ?? null,
+      supportRole: c.memos?.[0]?.supportRole ?? null,
+      isSensitive: c.memos?.[0]?.isSensitive ?? false,
+    }));
+
+    res.json({ contacts: result });
   };
 }
 

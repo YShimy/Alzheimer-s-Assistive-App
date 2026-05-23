@@ -9,6 +9,7 @@ import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { usePatientProgress } from '@/src/features/progress/usePatientProgress';
 import { useChecklistTracking, usePriorityBreakdown, useEscalations } from '@/src/features/progress/hooks';
+import { gamesApi } from '@/src/features/games/api';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { eventLogger } from '@/src/infrastructure/events/eventLogger';
 import { EventNames } from '@/src/infrastructure/events/eventNames';
@@ -30,6 +31,8 @@ export default function CaregiverProgressScreen() {
   const { data: checklistTracking } = useChecklistTracking(selectedPatient);
   const { data: priorityData } = usePriorityBreakdown(selectedPatient, 7);
   const { data: escalationData } = useEscalations(selectedPatient, 10);
+  const [mmProgress, setMmProgress] = useState<any>(null);
+  const [srProgress, setSrProgress] = useState<any>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,7 +42,15 @@ export default function CaregiverProgressScreen() {
         screenName: 'CaregiverProgressScreen',
         payload: { viewType: 'caregiver' },
       });
-    }, [reload])
+      if (selectedPatient) {
+        gamesApi.getMemoryMatchProgress({ patientId: selectedPatient })
+          .then((res) => setMmProgress(res))
+          .catch(() => {});
+        gamesApi.getSpacedRetrievalProgress({ patientId: selectedPatient })
+          .then((res) => setSrProgress(res))
+          .catch(() => {});
+      }
+    }, [reload, selectedPatient])
   );
 
   if (!loaded) return <LoadingState message={t('loading') || 'Loading...'} />;
@@ -278,6 +289,61 @@ export default function CaregiverProgressScreen() {
             </AppCard>
           </View>
         )}
+
+        {/* SEPARATE GAME PROGRESS CARDS */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('patientProgress.cognitiveActivities', 'Cognitive Engagement Activities')}</Text>
+
+          {/* Memory Match Card */}
+          <AppCard style={styles.gameCard}>
+            <View style={styles.gameCardHeader}>
+              <View style={[styles.gameIconBadge, { backgroundColor: colors.primary[50] }]}>
+                <Icon name="grid-outline" size={20} color={colors.primary[500]} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.gameCardTitle}>{t('memoryMatch.title', 'Memory Match')}</Text>
+                <Text style={styles.gameCardSubtitle}>{t('patientProgress.associativeMemoryPractice', 'Associative memory practice')}</Text>
+              </View>
+              <Pressable onPress={() => router.push('/(caregiver)/manage-sr-items' as any)} style={styles.gameConfigBtn}>
+                <Text style={styles.gameConfigBtnText}>{t('patientProgress.configure', 'Configure')}</Text>
+              </Pressable>
+            </View>
+            {mmProgress ? (
+              <View style={styles.gameStatsRow}>
+                <GameStatItem label={t('patientProgress.sessionsThisWeek', 'Sessions')} value={`${mmProgress.weeklySessionsCompleted ?? mmProgress.summary?.sessionsPlayed ?? 0}`} />
+                <GameStatItem label={t('patientProgress.highestLevel', 'Highest Level')} value={`${mmProgress.highestStableLevel ?? mmProgress.summary?.highestLevelEver ?? 1}`} />
+                <GameStatItem label={t('patientProgress.avgAccuracy', 'Avg. Accuracy')} value={`${Math.round(mmProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
+              </View>
+            ) : (
+              <Text style={styles.gameNoData}>{t('patientProgress.noGameDataYet', 'No sessions recorded yet.')}</Text>
+            )}
+          </AppCard>
+
+          {/* My Day & People Card */}
+          <AppCard style={styles.gameCard}>
+            <View style={styles.gameCardHeader}>
+              <View style={[styles.gameIconBadge, { backgroundColor: colors.secondary[50] }]}>
+                <Icon name="people-outline" size={20} color={colors.secondary[500]} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.gameCardTitle}>{t('orientationPractice.title', 'My Day & People')}</Text>
+                <Text style={styles.gameCardSubtitle}>{t('patientProgress.orientationPractice', 'Daily orientation & personal recognition')}</Text>
+              </View>
+              <Pressable onPress={() => router.push('/(caregiver)/manage-sr-items')} style={[styles.gameConfigBtn, { backgroundColor: colors.secondary[50] }]}>
+                <Text style={[styles.gameConfigBtnText, { color: colors.secondary[600] }]}>{t('patientProgress.configure', 'Configure')}</Text>
+              </Pressable>
+            </View>
+            {srProgress ? (
+              <View style={styles.gameStatsRow}>
+                <GameStatItem label={t('patientProgress.sessionsThisWeek', 'Sessions')} value={`${srProgress.weeklySessionsCompleted ?? srProgress.summary?.sessionsPlayed ?? 0}`} />
+                <GameStatItem label={t('patientProgress.avgAccuracy', 'Accuracy')} value={`${Math.round(srProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
+                <GameStatItem label={t('patientProgress.cueUseRate', 'Hint Rate')} value={`${Math.round((srProgress.cueUseRate ?? 0) * 100)}%`} />
+              </View>
+            ) : (
+              <Text style={styles.gameNoData}>{t('patientProgress.noGameDataYet', 'No sessions recorded yet.')}</Text>
+            )}
+          </AppCard>
+        </View>
 
         {/* PRIORITY BREAKDOWN */}
         {priorityData && priorityData.priorityBreakdown.length > 0 && (
@@ -622,4 +688,79 @@ const styles = StyleSheet.create({
     fontSize: typography.size.xs,
     color: colors.neutral[400],
   },
+  // Game progress cards
+  gameCard: {
+    padding: spacing.md,
+    gap: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  gameCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  gameIconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gameCardTitle: {
+    fontSize: typography.size.base,
+    fontWeight: '700',
+    color: colors.neutral[800],
+  },
+  gameCardSubtitle: {
+    fontSize: typography.size.xs,
+    color: colors.neutral[400],
+  },
+  gameConfigBtn: {
+    backgroundColor: colors.primary[50],
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+  },
+  gameConfigBtnText: {
+    fontSize: typography.size.xs,
+    fontWeight: '600',
+    color: colors.primary[600],
+  },
+  gameStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.neutral[100],
+  },
+  gameStatItem: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  gameStatValue: {
+    fontSize: typography.size.xl,
+    fontWeight: '700',
+    color: colors.neutral[800],
+  },
+  gameStatLabel: {
+    fontSize: typography.size.xs,
+    color: colors.neutral[400],
+    textAlign: 'center',
+  },
+  gameNoData: {
+    fontSize: typography.size.sm,
+    color: colors.neutral[400],
+    textAlign: 'center',
+    paddingVertical: spacing.sm,
+    fontStyle: 'italic',
+  },
 });
+
+function GameStatItem({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ alignItems: 'center', gap: 2 }}>
+      <Text style={{ fontSize: typography.size.xl, fontWeight: '700', color: colors.neutral[800] }}>{value}</Text>
+      <Text style={{ fontSize: typography.size.xs, color: colors.neutral[400], textAlign: 'center' }}>{label}</Text>
+    </View>
+  );
+}

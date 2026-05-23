@@ -45,16 +45,45 @@ export const gamesApi = {
 };
 
 export const spacedRetrievalApi = {
-  /** List SR items for a patient */
+  /** List SR items for a patient — now includes imageUrl and clueImageUrl */
   listItems: (patientId: string, activeOnly = true) =>
     apiClient.get<{ items: any[] }>(`/patients/${patientId}/spaced-retrieval/items?activeOnly=${activeOnly}`),
 
   /** Create an SR item */
-  createItem: (patientId: string, body: { prompt: string; correctAnswer: string; acceptableAnswers?: string[]; distractors?: string[]; cueText?: string; category: string; linkedContactId?: string; supportRole?: string; sensitive?: boolean; patientVisible?: boolean; supportLevelOverride?: string }) =>
+  createItem: (patientId: string, body: {
+    prompt: string;
+    correctAnswer: string;
+    acceptableAnswers?: string[];
+    distractors?: string[];
+    cueText?: string;
+    category: string;
+    linkedContactId?: string;
+    imageAssetId?: string;
+    clueImageAssetId?: string;
+    supportRole?: string;
+    sensitive?: boolean;
+    patientVisible?: boolean;
+    supportLevelOverride?: string;
+  }) =>
     apiClient.post<{ item: any }>(`/patients/${patientId}/spaced-retrieval/items`, body),
 
   /** Update an SR item */
-  updateItem: (patientId: string, itemId: string, body: Partial<{ prompt: string; correctAnswer: string; acceptableAnswers: string[]; distractors: string[]; cueText: string; category: string; active: boolean; linkedContactId: string | null; supportRole: string | null; sensitive: boolean; patientVisible: boolean; supportLevelOverride: string | null }>) =>
+  updateItem: (patientId: string, itemId: string, body: Partial<{
+    prompt: string;
+    correctAnswer: string;
+    acceptableAnswers: string[];
+    distractors: string[];
+    cueText: string;
+    category: string;
+    active: boolean;
+    linkedContactId: string | null;
+    imageAssetId: string | null;
+    clueImageAssetId: string | null;
+    supportRole: string | null;
+    sensitive: boolean;
+    patientVisible: boolean;
+    supportLevelOverride: string | null;
+  }>) =>
     apiClient.patch<{ item: any }>(`/patients/${patientId}/spaced-retrieval/items/${itemId}`, body),
 
   /** Archive an SR item */
@@ -68,4 +97,16 @@ export const spacedRetrievalApi = {
   /** Upsert SR settings */
   upsertSettings: (patientId: string, body: any) =>
     apiClient.put<{ settings: any }>(`/patients/${patientId}/spaced-retrieval/settings`, body),
+
+  /** Get game-eligible contacts (for people-recognition questions) */
+  getGameContacts: (patientId: string) =>
+    apiClient.get<{ contacts: any[] }>(`/patients/${patientId}/spaced-retrieval/game-contacts`),
+
+  /** Get patient's current Memory Match difficulty level */
+  getMemoryMatchLevel: (patientId: string) =>
+    apiClient.get<{ level: number }>(`/patients/${patientId}/memory-match/level`),
+
+  /** Save patient's current Memory Match difficulty level */
+  setMemoryMatchLevel: (patientId: string, level: number) =>
+    apiClient.put<{ level: number }>(`/patients/${patientId}/memory-match/level`, { level }),
 };

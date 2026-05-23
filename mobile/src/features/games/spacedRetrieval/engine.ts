@@ -3,6 +3,9 @@
  *
  * Evidence-informed reality orientation and spaced retrieval training.
  * Citations: Savulich et al., 2017; Han et al., 2017; Smith et al., 2024.
+ *
+ * Updated: supports image fields for question images and clue images,
+ * and builds contact-based people-recognition questions automatically.
  */
 
 export const INTERVAL_LADDER_SECONDS = [0, 15, 30, 60, 120, 300, 600];
@@ -23,6 +26,24 @@ export interface SRItem {
   masteryStatus: string;
   patientVisible?: boolean;
   supportLevelOverride?: string | null;
+  // Image fields (from backend MediaAsset join)
+  imageAssetId?: string | null;
+  clueImageAssetId?: string | null;
+  imageUrl?: string | null;
+  clueImageUrl?: string | null;
+  // Contact link
+  linkedContactId?: string | null;
+}
+
+/** A game-eligible contact with photo/memo details. */
+export interface GameContact {
+  id: string;
+  displayName: string;
+  relationLabel?: string | null;
+  shortMemo?: string | null;
+  photoUrl?: string | null;
+  supportRole?: string | null;
+  isSensitive?: boolean;
 }
 
 export interface PracticeQuestion {
@@ -32,6 +53,12 @@ export interface PracticeQuestion {
   correctAnswer: string;
   cueText?: string | null;
   category: string;
+  // Image support
+  imageUrl?: string | null;
+  clueImageUrl?: string | null;
+  // Source metadata
+  isContactQuestion?: boolean;
+  contactId?: string | null;
 }
 
 export interface AnswerResult {
@@ -62,10 +89,19 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export function buildQuestions(items: SRItem[], supportLevel: SupportLevel = 'GUIDED_SUPPORT', enabledFamilies?: string[], maxQuestions?: number): PracticeQuestion[] {
+/**
+ * Build practice questions from caregiver-configured SR items.
+ * Items now carry imageUrl and clueImageUrl for photo-based questions.
+ */
+export function buildQuestions(
+  items: SRItem[],
+  supportLevel: SupportLevel = 'GUIDED_SUPPORT',
+  enabledFamilies?: string[],
+  maxQuestions?: number,
+): PracticeQuestion[] {
   const activeItems = items.filter((i) => i.active && (i.patientVisible !== false));
   const filtered = enabledFamilies ? activeItems.filter((i) => enabledFamilies.includes(i.category)) : activeItems;
-  
+
   let choiceCount = 3;
   let defaultCount = 6;
   if (supportLevel === 'LIGHT_SUPPORT') {
@@ -105,8 +141,79 @@ export function buildQuestions(items: SRItem[], supportLevel: SupportLevel = 'GU
       correctAnswer: item.correctAnswer,
       cueText: item.cueText,
       category: item.category,
+      imageUrl: item.imageUrl ?? null,
+      clueImageUrl: item.clueImageUrl ?? null,
+      isContactQuestion: false,
+      contactId: item.linkedContactId ?? null,
     };
   });
+}
+
+/**
+ * Build people-recognition questions from game-eligible contacts.
+ * These are auto-generated from contacts with a photo and includeInGame=true.
+ * Caregiver-typed SR items with linkedContactId take priority (deduplicated).
+ *
+ * @param contacts     List of game contacts (from /spaced-retrieval/game-contacts)
+ * @param srItems      Existing SR items (to deduplicate by linkedContactId)
+ * @param supportLevel Current support level (controls choice count)
+ * @param allNames     All contact display names (used as distractors for name questions)
+ */
+export function buildContactQuestions(
+  contacts: GameContact[],
+  srItems: SRItem[],
+  supportLevel: SupportLevel = 'GUIDED_SUPPORT',
+  allNames?: string[],
+): PracticeQuestion[] {
+  // Skip contacts already covered by a linked SR item
+  const linkedContactIds = new Set(srItems.map((i) => i.linkedContactId).filter(Boolean));
+  const unlinked = contacts.filter((c) => !linkedContactIds.has(c.id));
+
+  let choiceCount = 3;
+  if (supportLevel === 'LIGHT_SUPPORT') choiceCount = 4;
+  else if (supportLevel === 'HIGH_SUPPORT') choiceCount = 2;
+
+  const namePool = allNames ?? contacts.map((c) => c.displayName);
+
+  return unlinked.map((contact) => {
+    const hasPhoto = !!contact.photoUrl;
+    const relationLabel = contact.relationLabel ?? contact.supportRole ?? 'person';
+
+    // Build choices: other contact names as distractors for name questions
+    const otherNames = namePool.filter((n) => n !== contact.displayName);
+    const wrong = shuffle(otherNames).slice(0, choiceCount - 1);
+    const choices = shuffle([...wrong, contact.displayName]);
+
+    return {
+      // Use a synthetic itemId so results can be tracked
+      itemId: `contact-${contact.id}`,
+      prompt: hasPhoto
+        ? `Who is this person?`
+        : `Who is your ${relationLabel}?`,
+      choices: choices.length >= choiceCount ? choices : shuffle([contact.displayName, 'Someone else', 'Not sure']),
+      correctAnswer: contact.displayName,
+      cueText: contact.shortMemo ?? `Your ${relationLabel}`,
+      category: 'PEOPLE_RECOGNITION',
+      imageUrl: contact.photoUrl ?? null,
+      clueImageUrl: null,
+      isContactQuestion: true,
+      contactId: contact.id,
+    };
+  });
+}
+
+/**
+ * Merge caregiver SR questions and contact questions.
+ * Caregiver items take priority (listed first).
+ * Contact questions fill remaining slots up to maxQuestions.
+ */
+export function mergeAndLimitQuestions(
+  srQuestions: PracticeQuestion[],
+  contactQuestions: PracticeQuestion[],
+  maxQuestions: number,
+): PracticeQuestion[] {
+  const combined = [...srQuestions, ...contactQuestions];
+  return shuffle(combined).slice(0, maxQuestions);
 }
 
 export function processAnswer(
@@ -163,10 +270,10 @@ export function computeSessionScore(results: { correct: boolean; usedCue: boolea
   const correctWithCue = results.filter((r) => r.correct && r.usedCue && !r.unsure).length;
   const incorrect = results.filter((r) => !r.correct && !r.unsure).length;
   const unsureCount = results.filter((r) => r.unsure).length;
-  
+
   // Prompt score rules: Correct without cue (100), correct with cue (60), I'm not sure (30), wrong (0)
   const score = correctWithoutCue * 100 + correctWithCue * 60 + unsureCount * 30;
-  
+
   // Level 1 to 6 calculation based on mastery steps
   const steps = results.map((r) => r.item?.currentIntervalStep ?? 1);
   const avgStep = steps.reduce((a, b) => a + b, 0) / steps.length;

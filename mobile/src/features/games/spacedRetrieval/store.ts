@@ -11,6 +11,8 @@ interface AnswerLog {
   usedCue: boolean;
   unsure: boolean;
   item?: any;
+  isContactQuestion?: boolean;
+  contactId?: string | null;
 }
 
 interface SRState {
@@ -24,7 +26,7 @@ interface SRState {
 
   startSession: (questions: PracticeQuestion[], sessionId: string) => void;
   setPhase: (phase: SRPhase) => void;
-  answer: (correct: boolean, usedCue: boolean, unsure: boolean, item?: any) => void;
+  answer: (correct: boolean, usedCue: boolean, unsure: boolean, item?: any, isContactQuestion?: boolean, contactId?: string | null) => void;
   nextQuestion: () => void;
   finish: (score: SessionScore) => void;
   reset: () => void;
@@ -58,9 +60,9 @@ export const useSpacedRetrievalStore = create<SRState>((set) => ({
 
   setPhase: (phase) => set({ phase }),
 
-  answer: (correct, usedCue, unsure, item) =>
+  answer: (correct, usedCue, unsure, item, isContactQuestion, contactId) =>
     set((state) => ({
-      results: [...state.results, { correct, usedCue, unsure, item }],
+      results: [...state.results, { correct, usedCue, unsure, item, isContactQuestion, contactId }],
     })),
 
   nextQuestion: () =>
@@ -73,3 +75,4 @@ export const useSpacedRetrievalStore = create<SRState>((set) => ({
 
   reset: () => set(initialState()),
 }));
+

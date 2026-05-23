@@ -1,5 +1,5 @@
 /**
- * Spaced Retrieval service — business logic for SR items.
+ * Spaced Retrieval service — business logic for SR items, settings, and game support.
  */
 import { srRepo } from '../repo/sr.repo.js';
 import type { CreateSRItemDto, UpdateSRItemDto, SRItemResponse } from '../../games/types.js';
@@ -16,6 +16,10 @@ function toResponse(item: any): SRItemResponse {
     category: item.category,
     active: item.active,
     linkedContactId: item.linkedContactId,
+    imageAssetId: item.imageAssetId ?? null,
+    clueImageAssetId: item.clueImageAssetId ?? null,
+    imageUrl: item.imageAsset?.publicUrl ?? null,
+    clueImageUrl: item.clueImageAsset?.publicUrl ?? null,
     supportRole: item.supportRole,
     sensitive: item.sensitive,
     patientVisible: item.patientVisible,
@@ -46,6 +50,8 @@ export class SpacedRetrievalService {
       cueText: dto.cueText,
       category: dto.category,
       linkedContactId: dto.linkedContactId,
+      imageAssetId: dto.imageAssetId,
+      clueImageAssetId: dto.clueImageAssetId,
       supportRole: dto.supportRole,
       sensitive: dto.sensitive,
       patientVisible: dto.patientVisible,
@@ -67,6 +73,8 @@ export class SpacedRetrievalService {
       category: dto.category,
       active: dto.active,
       linkedContactId: dto.linkedContactId,
+      imageAssetId: dto.imageAssetId,
+      clueImageAssetId: dto.clueImageAssetId,
       supportRole: dto.supportRole,
       sensitive: dto.sensitive,
       patientVisible: dto.patientVisible,
@@ -90,6 +98,27 @@ export class SpacedRetrievalService {
 
   async upsertSettings(patientId: string, updatedByUserId: string, data: any) {
     return srRepo.upsertSettings(patientId, updatedByUserId, data);
+  }
+
+  // ─── Memory Match Level Persistence ──────────────────────────────────────
+
+  async getMemoryMatchLevel(patientId: string): Promise<number> {
+    return srRepo.getMemoryMatchLevel(patientId);
+  }
+
+  async setMemoryMatchLevel(patientId: string, level: number): Promise<void> {
+    const clamped = Math.max(1, Math.min(12, level));
+    return srRepo.setMemoryMatchLevel(patientId, clamped);
+  }
+
+  // ─── Game Contacts ────────────────────────────────────────────────────────
+
+  async getGameContacts(patientId: string) {
+    const settings = await srRepo.getSettings(patientId);
+    return srRepo.getGameContacts(patientId, {
+      includeWithoutPhotos: settings.includePeopleWithoutPhotos,
+      includeSensitive: settings.includeSensitiveContacts,
+    });
   }
 }
 
