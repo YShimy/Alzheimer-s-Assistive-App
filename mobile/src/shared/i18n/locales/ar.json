@@ -1186,7 +1186,10 @@
       "changeClueImage": "تغيير صورة التلميح",
       "removeClueImage": "إزالة",
       "photoPermission": "يرجى السماح بالوصول إلى مكتبة الصور.",
-      "uploadError": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى."
+      "uploadError": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى.",
+      "gameOptionsSection": "خيارات اللعبة",
+      "questionsPerSession": "عدد الأسئلة في الجلسة (الحد الأقصى)",
+      "includeInGame": "تضمين في اللعبة"
     }
   }
 }

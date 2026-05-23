@@ -73,21 +73,32 @@ export default function MemoryMatchGameScreen() {
     return (
       <ResultScreen
         onPlayAgain={() => {
-          const decision = store.advanceDecision;
-          let nextLevel = currentLevel;
-          if (decision === 'advance') nextLevel = clampLevel(currentLevel + 1);
-          else if (decision === 'regress') nextLevel = clampLevel(currentLevel - 1);
-          // Persist the new level to the backend
-          spacedRetrievalApi.setMemoryMatchLevel('me', nextLevel).catch(() => {});
+          const nextLevel = handleLevelAdvancement();
           setCurrentLevel(nextLevel);
           store.reset();
         }}
-        onExit={() => router.back()}
+        onExit={() => {
+          handleLevelAdvancement();
+          router.back();
+        }}
       />
     );
   }
   return null;
+
+  function handleLevelAdvancement() {
+    const decision = store.advanceDecision;
+    let nextLevel = currentLevel;
+    if (decision === 'advance') nextLevel = clampLevel(currentLevel + 1);
+    else if (decision === 'regress') nextLevel = clampLevel(currentLevel - 1);
+    
+    if (nextLevel !== currentLevel) {
+      spacedRetrievalApi.setMemoryMatchLevel('me', nextLevel).catch(() => {});
+    }
+    return nextLevel;
+  }
 }
+
 
 // ─── Intro Screen ─────────────────────────────────────────────────────────────
 function IntroScreen({ level, reminderId }: { level: number; reminderId?: string }) {

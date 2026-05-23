@@ -203,6 +203,16 @@ export default function ManageSRItemsScreen() {
     }
   };
 
+  const handleToggleVisible = async (itemId: string, value: boolean) => {
+    if (!selectedPatientId) return;
+    try {
+      await spacedRetrievalApi.updateItem(selectedPatientId, itemId, { patientVisible: value });
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const startEdit = (item: any) => {
     setEditingId(item.id);
     setPrompt(item.prompt);
@@ -277,6 +287,30 @@ export default function ManageSRItemsScreen() {
                       </View>
                     );
                   })}
+                </View>
+
+                <View style={styles.divider} />
+
+                <Text style={styles.sectionTitle}>{t('myDayPeople.settings.gameOptionsSection', 'Game Options')}</Text>
+                <View style={styles.switchRow}>
+                  <Text style={styles.switchLabel}>{t('myDayPeople.settings.questionsPerSession', 'Questions per session (max)')}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                    <Pressable
+                      style={styles.counterBtn}
+                      onPress={() => updateSettingsField('maxQuestionsPerSession', Math.max(1, (settings.maxQuestionsPerSession || 6) - 1))}
+                    >
+                      <Ionicons name="remove" size={20} color={colors.primary[600]} />
+                    </Pressable>
+                    <Text style={{ fontSize: typography.size.base, fontWeight: '600', color: colors.neutral[800] }}>
+                      {settings.maxQuestionsPerSession ?? 6}
+                    </Text>
+                    <Pressable
+                      style={styles.counterBtn}
+                      onPress={() => updateSettingsField('maxQuestionsPerSession', Math.min(20, (settings.maxQuestionsPerSession || 6) + 1))}
+                    >
+                      <Ionicons name="add" size={20} color={colors.primary[600]} />
+                    </Pressable>
+                  </View>
                 </View>
 
                 <View style={styles.divider} />
@@ -404,6 +438,17 @@ export default function ManageSRItemsScreen() {
                   </View>
                   {item.cueText ? <Text style={styles.itemCue}>{t('myDayPeople.settings.hintPrefix', 'Hint: ')}{item.cueText}</Text> : null}
                   {item.supportRole ? <Text style={styles.itemRole}>{t('myDayPeople.settings.rolePrefix', 'Role: ')}{item.supportRole}</Text> : null}
+                  
+                  <View style={styles.divider} />
+                  
+                  <View style={styles.switchRow}>
+                    <Text style={styles.switchLabel}>{t('myDayPeople.settings.includeInGame', 'Include in Game')}</Text>
+                    <Switch
+                      value={item.patientVisible ?? true}
+                      onValueChange={(val) => handleToggleVisible(item.id, val)}
+                    />
+                  </View>
+
                   <View style={styles.metaRow}>
                     <Text style={styles.itemMeta}>{t(`myDayPeople.questionFamilies.${item.category}`, { defaultValue: item.category.replace(/_/g, ' ') })}</Text>
                     <Text style={styles.itemMastery}>{t(`myDayPeople.mastery.${item.masteryStatus}`, { defaultValue: item.masteryStatus.replace(/_/g, ' ') })}</Text>
@@ -440,6 +485,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: colors.neutral[100], marginVertical: spacing.xs },
   switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 },
   switchLabel: { fontSize: typography.size.sm, color: colors.neutral[700], flex: 1, marginRight: spacing.sm },
+  counterBtn: { width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary[50], alignItems: 'center', justifyContent: 'center' },
   formCard: { padding: spacing.lg, gap: spacing.md, marginBottom: spacing.md },
   label: { fontSize: typography.size.sm, fontWeight: '600', color: colors.neutral[700], marginTop: spacing.xs },
   labelDesc: { fontSize: typography.size.xs, color: colors.neutral[400], lineHeight: 18, marginBottom: spacing.xs },

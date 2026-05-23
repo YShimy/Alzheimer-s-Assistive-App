@@ -1042,7 +1042,10 @@
       "changeClueImage": "Change Hint Photo",
       "removeClueImage": "Remove",
       "photoPermission": "Please allow access to your photo library.",
-      "uploadError": "Could not upload photo. Please try again."
+      "uploadError": "Could not upload photo. Please try again.",
+      "gameOptionsSection": "Game Options",
+      "questionsPerSession": "Questions per session (max)",
+      "includeInGame": "Include in Game"
     }
   },
   "memoryMatch": {
