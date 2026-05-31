@@ -15,6 +15,7 @@ import type { CareLink } from '@/src/features/carelinks/types';
  */
 export default function CaregiverHomeScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const displayName = useSessionStore((s) => s.displayName);
   const logout = useLogout();
@@ -58,10 +59,10 @@ export default function CaregiverHomeScreen() {
   return (
     <ScreenContainer>
       {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>{t('caregiverHome.welcomeBack')}</Text>
-          <Text style={styles.name}>{displayName || 'Caregiver'}</Text>
+      <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={{ alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+          <Text style={[styles.greeting, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverHome.welcomeBack')}</Text>
+          <Text style={[styles.name, { textAlign: isRTL ? 'right' : 'left' }]}>{displayName || 'Caregiver'}</Text>
         </View>
         <Pressable onPress={() => logout().catch(console.warn)} style={styles.logoutBtn} accessibilityLabel="Log out">
           <Icon name="log-out-outline" size={22} color={colors.neutral[500]} />
@@ -69,7 +70,7 @@ export default function CaregiverHomeScreen() {
       </View>
 
       {/* Stats row */}
-      <View style={styles.statsRow}>
+      <View style={[styles.statsRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <View style={[styles.statCard, { backgroundColor: colors.secondary[50] }]}>
           <Text style={[styles.statValue, { color: colors.secondary[600] }]}>{activeLinks.length}</Text>
           <Text style={styles.statLabel}>{t('caregiverHome.statsLinked')}</Text>
@@ -89,28 +90,28 @@ export default function CaregiverHomeScreen() {
       />
 
       {/* Active patients with manage buttons */}
-      <Text style={styles.sectionTitle}>{t('caregiverHome.statsLinked')}</Text>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverHome.statsLinked')}</Text>
       {activeLinks.length === 0 ? (
         <AppCard>
-          <View style={styles.emptyRow}>
+          <View style={[styles.emptyRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Icon name="people-outline" size={24} color={colors.neutral[300]} />
-            <Text style={styles.emptyText}>{t('caregiverHome.noLinkedPatients')}</Text>
+            <Text style={[styles.emptyText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverHome.noLinkedPatients')}</Text>
           </View>
         </AppCard>
       ) : (
         activeLinks.map((link) => (
           <AppCard key={link.id} style={styles.linkCard}>
-            <View style={styles.patientRow}>
+            <View style={[styles.patientRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
-              <View style={styles.patientInfo}>
-                <Text style={styles.patientName}>{link.patient?.displayName || 'Patient'}</Text>
-                <Text style={styles.patientEmail}>{link.patient?.email || ''}</Text>
+              <View style={[styles.patientInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                <Text style={[styles.patientName, { textAlign: isRTL ? 'right' : 'left' }]}>{link.patient?.displayName || 'Patient'}</Text>
+                <Text style={[styles.patientEmail, { textAlign: isRTL ? 'right' : 'left' }]}>{link.patient?.email || ''}</Text>
               </View>
               <StatusChip label={t('caregiverHome.active')} variant="success" />
             </View>
 
             {/* Per-patient quick-action buttons */}
-            <View style={styles.actionRow}>
+            <View style={[styles.actionRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Pressable
                 style={styles.actionBtn}
                 onPress={() => {
@@ -169,14 +170,14 @@ export default function CaregiverHomeScreen() {
       {/* Pending */}
       {pendingLinks.length > 0 && (
         <>
-          <Text style={styles.sectionTitle}>{t('caregiverHome.statsPending')}</Text>
+          <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverHome.statsPending')}</Text>
           {pendingLinks.map((link) => (
             <AppCard key={link.id} style={styles.linkCard}>
-              <View style={styles.patientRow}>
+              <View style={[styles.patientRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="hourglass-outline" size={24} color={colors.warning.main} />
-                <View style={styles.patientInfo}>
-                  <Text style={styles.patientName}>{`Code: ${link.inviteCode}`}</Text>
-                  <Text style={styles.patientEmail}>{t('caregiverHome.waitingForPatient')}</Text>
+                <View style={[styles.patientInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                  <Text style={[styles.patientName, { textAlign: isRTL ? 'right' : 'left' }]}>{`Code: ${link.inviteCode}`}</Text>
+                  <Text style={[styles.patientEmail, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverHome.waitingForPatient')}</Text>
                 </View>
                 <StatusChip label={t('caregiverHome.pending')} variant="warning" />
               </View>

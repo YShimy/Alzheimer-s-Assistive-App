@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, Pressable, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppInput, AppButton, Icon } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
@@ -30,6 +30,7 @@ interface SelectedFile {
 
 export default function RecordsUploadScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { selectedPatientId } = useCaregiverPatientStore();
 
@@ -92,16 +93,17 @@ export default function RecordsUploadScreen() {
 
   return (
     <ScreenContainer scroll={true}>
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn}>
-          <View style={{ transform: [{ scaleX: i18n.language === 'ar' ? -1 : 1 }] }}>
+      <Tabs.Screen options={{ title: t('records.uploadTitle', 'Upload Record'), headerTitle: t('records.uploadTitle', 'Upload Record') }} />
+      <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <Pressable onPress={() => router.back()} style={[styles.backBtn, { marginEnd: isRTL ? 0 : spacing.md, marginStart: isRTL ? spacing.md : 0 }]}>
+          <View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }] }}>
             <Icon name="arrow-back" size={24} color={colors.on_surface} />
           </View>
         </Pressable>
-        <Text style={styles.title}>{t('records.uploadTitle', 'Upload Record')}</Text>
+        <Text style={[styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{t('records.uploadTitle', 'Upload Record')}</Text>
       </View>
 
-      <Text style={styles.disclaimer}>
+      <Text style={[styles.disclaimer, { textAlign: isRTL ? 'right' : 'left' }]}>
         {t('records.uploadDisclaimer', 'This app stores caregiver-provided documents and does not interpret or diagnose medical conditions.')}
       </Text>
 
@@ -113,8 +115,8 @@ export default function RecordsUploadScreen() {
         maxLength={120}
       />
 
-      <Text style={styles.label}>{t('records.fieldCategory', 'Category *')}</Text>
-      <View style={styles.categoryContainer}>
+      <Text style={[styles.label, { textAlign: isRTL ? 'right' : 'left' }]}>{t('records.fieldCategory', 'Category *')}</Text>
+      <View style={[styles.categoryContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         {CATEGORIES.map(cat => (
           <Pressable 
             key={cat} 
@@ -146,10 +148,10 @@ export default function RecordsUploadScreen() {
         maxLength={1000}
       />
 
-      <Text style={styles.label}>{t('records.fieldFile', 'Document File *')}</Text>
-      <Pressable style={styles.filePicker} onPress={handleSelectFile}>
+      <Text style={[styles.label, { textAlign: isRTL ? 'right' : 'left' }]}>{t('records.fieldFile', 'Document File *')}</Text>
+      <Pressable style={[styles.filePicker, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={handleSelectFile}>
         <Icon name="document-attach-outline" size={32} color={colors.primary.main} />
-        <Text style={styles.filePickerText}>
+        <Text style={[styles.filePickerText, { marginStart: isRTL ? 0 : spacing.sm, marginEnd: isRTL ? spacing.sm : 0 }]}>
           {file ? file.name : t('records.selectFile', 'Select PDF or Image')}
         </Text>
         {file && file.size && (

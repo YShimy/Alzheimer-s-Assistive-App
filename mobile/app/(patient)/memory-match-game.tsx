@@ -19,6 +19,7 @@ import {
 } from '@/src/features/games/memoryMatch/engine';
 import { gamesApi, spacedRetrievalApi } from '@/src/features/games/api';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
+import { sessionStore } from '@/src/state/sessionStore';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const FEEDBACK_DURATION_MS = 1000;
@@ -36,7 +37,8 @@ export default function MemoryMatchGameScreen() {
   // Fetch persisted level from backend on mount
   useEffect(() => {
     store.reset();
-    spacedRetrievalApi.getMemoryMatchLevel('me')
+    const patientId = sessionStore.getState().userId || 'me';
+    spacedRetrievalApi.getMemoryMatchLevel(patientId)
       .then((res) => {
         const savedLevel = clampLevel(res.level ?? 1);
         setCurrentLevel(savedLevel);
@@ -93,7 +95,8 @@ export default function MemoryMatchGameScreen() {
     else if (decision === 'regress') nextLevel = clampLevel(currentLevel - 1);
     
     if (nextLevel !== currentLevel) {
-      spacedRetrievalApi.setMemoryMatchLevel('me', nextLevel).catch(() => {});
+      const patientId = sessionStore.getState().userId || 'me';
+      spacedRetrievalApi.setMemoryMatchLevel(patientId, nextLevel).catch(() => {});
     }
     return nextLevel;
   }

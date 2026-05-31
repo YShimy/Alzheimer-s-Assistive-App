@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { useSessionStore } from '@/src/state/sessionStore';
@@ -20,7 +21,8 @@ import { ApiError } from '@/src/infrastructure/api/client';
  * Signup Step 3 — Set password, full name, and age to complete registration.
  */
 export default function SignupCompleteScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { email, verificationToken, role } = useLocalSearchParams<{
     email: string;
@@ -120,9 +122,13 @@ export default function SignupCompleteScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
+        <View style={{ position: 'absolute', top: 10, right: -8, zIndex: 10 }}>
+          <LanguageToggleButton />
+        </View>
+
         <View style={styles.content}>
           {/* Back */}
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Pressable onPress={() => router.back()} style={[styles.backButton, { transform: [{ scaleX: isRTL ? -1 : 1 }] }]}>
             <Icon name="arrow-back" size={24} color={colors.neutral[700]} />
           </Pressable>
 
@@ -131,7 +137,7 @@ export default function SignupCompleteScreen() {
             <View style={styles.iconCircle}>
               <Icon name="person-outline" size={32} color={colors.primary[500]} />
             </View>
-            <Text style={styles.title}>{t('auth.completeTitle')}</Text>
+            <Text style={[styles.title, { textAlign: 'center' }]}>{t('auth.completeTitle')}</Text>
             <Text style={styles.subtitle}>{t('auth.completeSubtitle')}</Text>
             <Text style={styles.emailText}>{email}</Text>
           </View>
@@ -172,7 +178,7 @@ export default function SignupCompleteScreen() {
               error={fieldErrors.password}
             />
 
-            <Text style={styles.passwordHint}>{t('auth.passwordRules')}</Text>
+            <Text style={[styles.passwordHint, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.passwordRules')}</Text>
 
             <AppInput
               label={t('auth.confirmPassword')}
@@ -194,9 +200,9 @@ export default function SignupCompleteScreen() {
             />
 
             {!!error && (
-              <View style={styles.errorBox}>
+              <View style={[styles.errorBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
-                <Text style={styles.errorText}>{error}</Text>
+                <Text style={[styles.errorText, { textAlign: isRTL ? 'right' : 'left' }]}>{error}</Text>
               </View>
             )}
           </View>

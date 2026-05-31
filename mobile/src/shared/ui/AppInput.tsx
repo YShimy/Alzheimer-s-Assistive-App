@@ -1,6 +1,8 @@
 import { View, TextInput, Text, StyleSheet, type TextInputProps, type ViewStyle } from 'react-native';
 import { colors, typography, spacing, radius, layout } from '../../infrastructure/theme/tokens';
 
+import { useTranslation } from 'react-i18next';
+
 interface AppInputProps extends TextInputProps {
   label?: string;
   error?: string;
@@ -8,16 +10,21 @@ interface AppInputProps extends TextInputProps {
 }
 
 export function AppInput({ label, error, containerStyle, style, ...rest }: AppInputProps) {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+  
+  const textAlignmentStyle = { textAlign: isRTL ? 'right' : 'left' } as const;
+
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, textAlignmentStyle]}>{label}</Text>}
       <TextInput
-        style={[styles.input, error ? styles.inputError : undefined, style]}
+        style={[styles.input, textAlignmentStyle, error ? styles.inputError : undefined, style]}
         placeholderTextColor={colors.neutral[400]}
         accessibilityLabel={label}
         {...rest}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={[styles.error, textAlignmentStyle]}>{error}</Text>}
     </View>
   );
 }

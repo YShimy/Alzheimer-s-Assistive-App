@@ -80,7 +80,8 @@ function formFromReminder(r: Reminder): ReminderForm {
  * Patient reminders management — view, create, edit, and archive reminders.
  */
 export default function PatientManageRemindersScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const userId = useSessionStore((s) => s.userId);
   const selectedPatient = userId;
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -258,9 +259,9 @@ export default function PatientManageRemindersScreen() {
         ListEmptyComponent={
           !remindersLoading ? (
             <AppCard style={{ marginHorizontal: 0 }}>
-              <View style={styles.emptyRow}>
+              <View style={[styles.emptyRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="alarm-outline" size={24} color={colors.neutral[300]} />
-                <Text style={styles.emptyText}>{t('caregiverReminders.noActiveReminders')}</Text>
+                <Text style={[styles.emptyText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.noActiveReminders')}</Text>
               </View>
             </AppCard>
           ) : null
@@ -293,7 +294,7 @@ export default function PatientManageRemindersScreen() {
       <Modal visible={modalVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
-          <View style={styles.modalHeader}>
+          <View style={[styles.modalHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverReminders.newReminder') : t('caregiverReminders.editReminder')}</Text>
             <Pressable onPress={() => setModalVisible(false)} style={styles.modalClose}>
               <Icon name="close" size={22} color={colors.neutral[600]} />
@@ -311,7 +312,7 @@ export default function PatientManageRemindersScreen() {
 
             {/* Category picker */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('caregiverReminders.categoryLabel')}</Text>
+              <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.categoryLabel')}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
                 {CATEGORIES.map((cat) => (
                   <Pressable
@@ -329,7 +330,7 @@ export default function PatientManageRemindersScreen() {
             </View>
 
             {/* Time + Date row */}
-            <View style={styles.rowFields}>
+            <View style={[styles.rowFields, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <View style={{ flex: 1 }}>
                 <AppInput
                   label={t('caregiverReminders.timeLabel')}
@@ -364,8 +365,8 @@ export default function PatientManageRemindersScreen() {
 
             {/* Days of week */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('caregiverReminders.repeatLabel')}</Text>
-              <View style={styles.dayRow}>
+              <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.repeatLabel')}</Text>
+              <View style={[styles.dayRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 {DAY_LABELS.map((day, idx) => (
                   <Pressable
                     key={day}
@@ -392,10 +393,10 @@ export default function PatientManageRemindersScreen() {
             />
 
             {/* Snooze */}
-            <View style={styles.switchRow}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.switchLabel}>{t('caregiverReminders.allowSnooze')}</Text>
-                <Text style={styles.switchSub}>{t('caregiverReminders.snoozeSub')}</Text>
+            <View style={[styles.switchRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+                <Text style={[styles.switchLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.allowSnooze')}</Text>
+                <Text style={[styles.switchSub, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.snoozeSub')}</Text>
               </View>
               <Switch
                 value={form.snoozeEnabled}
@@ -444,9 +445,11 @@ export default function PatientManageRemindersScreen() {
 // ─── Sub-components ────────────────────────────────────────────────────────
 
 function SectionHeader({ title, count, loading }: { title: string; count: number; loading?: boolean }) {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
-    <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={[styles.sectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
       {loading ? (
         <Text style={styles.sectionCount}>Loading…</Text>
       ) : (
@@ -465,16 +468,17 @@ function PatientReminderCard({
   onEdit: () => void;
   onArchive: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
     <AppCard style={styles.reminderCard}>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <Icon name={getCategoryIcon(reminder.category) as any} size={22} color={colors.primary[500]} />
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle}>{reminder.title}</Text>
-          <Text style={styles.cardTime}>{reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}</Text>
+        <View style={[styles.cardInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+          <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{reminder.title}</Text>
+          <Text style={[styles.cardTime, { textAlign: isRTL ? 'right' : 'left' }]}>{reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}</Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
-            <Text style={styles.cardDays}>
+            <Text style={[styles.cardDays, { textAlign: isRTL ? 'right' : 'left' }]}>
               {reminder.daysOfWeek.map((d) => DAY_LABELS[d]).join(' · ')}
             </Text>
           )}
@@ -485,10 +489,10 @@ function PatientReminderCard({
         />
       </View>
       {reminder.description ? (
-        <Text style={styles.cardDesc} numberOfLines={2}>{reminder.description}</Text>
+        <Text style={[styles.cardDesc, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={2}>{reminder.description}</Text>
       ) : null}
       {reminder.isActive && (
-        <View style={styles.cardActions}>
+        <View style={[styles.cardActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <AppButton title={t("caregiverPatients.editReminders").split(" ")[0]} onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
           <AppButton title={t("caregiverReminders.archived")} onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
         </View>

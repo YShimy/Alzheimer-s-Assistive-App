@@ -99,6 +99,7 @@ function formFromReminder(r: Reminder): ReminderForm {
 
 export default function CaregiverRemindersScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
 
   // ─── Global patient context ─────────────────────────────────────────────
   useCaregiverLinks(); // load links into store if not yet loaded
@@ -308,9 +309,9 @@ export default function CaregiverRemindersScreen() {
         ListEmptyComponent={
           !remindersLoading ? (
             <AppCard style={{ marginHorizontal: 0 }}>
-              <View style={styles.emptyRow}>
+              <View style={[styles.emptyRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="alarm-outline" size={24} color={colors.neutral[300]} />
-                <Text style={styles.emptyText}>{t('caregiverReminders.noActiveReminders')}</Text>
+                <Text style={[styles.emptyText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.noActiveReminders')}</Text>
               </View>
             </AppCard>
           ) : null
@@ -343,118 +344,148 @@ export default function CaregiverRemindersScreen() {
       <Modal visible={modalVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverReminders.newReminder') : t('caregiverReminders.editReminder')}</Text>
+          <View style={[styles.modalHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <View style={[styles.modalTitleGroup, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+              <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverReminders.newReminder') : t('caregiverReminders.editReminder')}</Text>
+              <Text style={[styles.modalSubtitle, { textAlign: isRTL ? 'right' : 'left' }]}>
+                {formMode === 'create' ? t('caregiverReminders.titlePlaceholder') : form.title}
+              </Text>
+            </View>
             <Pressable onPress={() => setModalVisible(false)} style={styles.modalClose}>
-              <Icon name="close" size={22} color={colors.neutral[600]} />
+              <Icon name="close" size={22} color={colors.neutral[700]} />
             </Pressable>
           </View>
+
           <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-            {/* Title */}
-            <AppInput
-              label={t('caregiverReminders.titleLabel')}
-              value={form.title}
-              onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
-              placeholder={t('caregiverReminders.titlePlaceholder')}
-              error={formErrors.title}
-            />
 
-            {/* Category picker */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('caregiverReminders.categoryLabel')}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-                {CATEGORIES.map((cat) => (
-                  <Pressable
-                    key={cat}
-                    style={[styles.categoryChip, form.category === cat && styles.categoryChipActive]}
-                    onPress={() => setForm((f) => ({ ...f, category: cat }))}
-                  >
-                    <Icon name={getCategoryIcon(cat)} size={16} color={form.category === cat ? '#fff' : colors.neutral[600]} />
-                    <Text style={[styles.categoryChipText, form.category === cat && styles.categoryChipTextActive]}>
-                      {t(`categories.${cat}`)}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
+            {/* ── Section: Basic Info ── */}
+            <View style={styles.formSection}>
+              <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Icon name="create-outline" size={15} color={colors.secondary[500]} />
+                <Text style={styles.sectionLabel}>{t('caregiverReminders.titleLabel')}</Text>
+              </View>
+              <AppInput
+                label={""}
+                value={form.title}
+                onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
+                placeholder={t('caregiverReminders.titlePlaceholder')}
+                error={formErrors.title}
+              />
+
+              {/* Category picker */}
+              <View style={[styles.fieldGroup, { marginTop: spacing.sm }]}>
+                <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.categoryLabel')}</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+                  {CATEGORIES.map((cat) => (
+                    <Pressable
+                      key={cat}
+                      style={[styles.categoryChip, form.category === cat && styles.categoryChipActive]}
+                      onPress={() => setForm((f) => ({ ...f, category: cat }))}
+                    >
+                      <Icon name={getCategoryIcon(cat)} size={16} color={form.category === cat ? '#fff' : colors.neutral[700]} />
+                      <Text style={[styles.categoryChipText, form.category === cat && styles.categoryChipTextActive]}>
+                        {t(`categories.${cat}`)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
             </View>
 
-            {/* Redesigned: Priority selector */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('patientReminders.priority')}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-                {PRIORITIES.map((prio) => (
-                  <Pressable
-                    key={prio}
-                    style={[
-                      styles.categoryChip,
-                      form.priority === prio && styles.priorityChipActive,
-                      prio === 'high' && styles.highPriorityChip,
-                      prio === 'critical' && styles.criticalPriorityChip,
-                    ]}
-                    onPress={() => setForm((f) => ({ ...f, priority: prio }))}
-                  >
-                    <Text style={[styles.categoryChipText, form.priority === prio && styles.categoryChipTextActive]}>
-                      {t(`patientReminders.priority${prio.charAt(0).toUpperCase() + prio.slice(1)}`)}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </View>
+            {/* ── Section: Priority & Type ── */}
+            <View style={styles.formSection}>
+              <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Icon name="flag-outline" size={15} color={colors.secondary[500]} />
+                <Text style={styles.sectionLabel}>{t('patientReminders.priority')} & {t('patientReminders.reminderType')}</Text>
+              </View>
 
-            {/* Native Alarm Toggle — only visible for critical priority */}
-            {form.priority === 'critical' && (
-              <View style={[styles.switchRow, styles.alarmToggleRow]}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Icon name="alarm-outline" size={18} color={colors.error?.main ?? '#FF3B30'} />
-                    <Text style={[styles.switchLabel, { color: colors.error?.main ?? '#FF3B30' }]}>
-                      {t('caregiverReminders.nativeAlarmLabel')}
+              {/* Priority selector */}
+              <View style={styles.fieldGroup}>
+                <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.priority')}</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+                  {PRIORITIES.map((prio) => (
+                    <Pressable
+                      key={prio}
+                      style={[
+                        styles.categoryChip,
+                        form.priority === prio && styles.priorityChipActive,
+                        prio === 'high' && styles.highPriorityChip,
+                        prio === 'critical' && styles.criticalPriorityChip,
+                      ]}
+                      onPress={() => setForm((f) => ({ ...f, priority: prio }))}
+                    >
+                      <Icon
+                        name={prio === 'critical' ? 'warning-outline' : prio === 'high' ? 'arrow-up-circle-outline' : 'remove-circle-outline'}
+                        size={15}
+                        color={form.priority === prio ? '#fff' : prio === 'critical' ? colors.error.main : prio === 'high' ? colors.warning.main : colors.neutral[600]}
+                      />
+                      <Text style={[styles.categoryChipText, form.priority === prio && styles.categoryChipTextActive]}>
+                        {t(`patientReminders.priority${prio.charAt(0).toUpperCase() + prio.slice(1)}`)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+
+              {/* Native Alarm Toggle — only visible for critical priority */}
+              {form.priority === 'critical' && (
+                <View style={[styles.switchRow, styles.alarmToggleRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+                    <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6 }}>
+                      <Icon name="alarm-outline" size={18} color={colors.error?.main ?? '#FF3B30'} />
+                      <Text style={[styles.switchLabel, { color: colors.error?.main ?? '#FF3B30', textAlign: isRTL ? 'right' : 'left' }]}>
+                        {t('caregiverReminders.nativeAlarmLabel')}
+                      </Text>
+                    </View>
+                    <Text style={[styles.switchSub, { textAlign: isRTL ? 'right' : 'left' }]}>
+                      {t('caregiverReminders.nativeAlarmSub')}
                     </Text>
                   </View>
-                  <Text style={styles.switchSub}>
-                    {t('caregiverReminders.nativeAlarmSub')}
-                  </Text>
+                  <Switch
+                    value={form.nativeAlarmEnabled}
+                    onValueChange={(v) => setForm((f) => ({ ...f, nativeAlarmEnabled: v }))}
+                    trackColor={{ true: colors.error?.main ?? '#FF3B30', false: colors.neutral[300] }}
+                    thumbColor={form.nativeAlarmEnabled ? '#fff' : colors.neutral[400]}
+                  />
                 </View>
-                <Switch
-                  value={form.nativeAlarmEnabled}
-                  onValueChange={(v) => setForm((f) => ({ ...f, nativeAlarmEnabled: v }))}
-                  trackColor={{ true: colors.error?.main ?? '#FF3B30', false: colors.neutral[300] }}
-                  thumbColor={form.nativeAlarmEnabled ? '#fff' : colors.neutral[400]}
-                />
-              </View>
-            )}
+              )}
 
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('patientReminders.reminderType')}</Text>
-              <View style={styles.typeRow}>
-                {REMINDER_TYPES.map((type) => (
-                  <Pressable
-                    key={type}
-                    style={[styles.typeChip, form.reminderType === type && styles.typeChipActive]}
-                    onPress={() => setForm((f) => ({ ...f, reminderType: type }))}
-                  >
-                    <Icon 
-                      name={type === 'guided' ? 'list-outline' : type === 'game_session' ? 'game-controller-outline' : 'checkmark-circle-outline'} 
-                      size={18} 
-                      color={form.reminderType === type ? '#fff' : colors.neutral[600]} 
-                    />
-                    <Text style={[styles.typeChipText, form.reminderType === type && styles.typeChipTextActive]}>
-                      {t(`patientReminders.${type}`)}
-                    </Text>
-                    <Text style={styles.typeChipDesc}>
-                      {type === 'guided' ? t('patientReminders.guidedDesc') : type === 'game_session' ? t('patientReminders.game_sessionDesc') : t('patientReminders.simpleDesc')}
-                    </Text>
-                  </Pressable>
-                ))}
+              {/* Reminder Type */}
+              <View style={[styles.fieldGroup, { marginBottom: 0 }]}>
+                <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.reminderType')}</Text>
+                <View style={styles.typeRow}>
+                  {REMINDER_TYPES.map((type) => (
+                    <Pressable
+                      key={type}
+                      style={[styles.typeChip, form.reminderType === type && styles.typeChipActive]}
+                      onPress={() => setForm((f) => ({ ...f, reminderType: type }))}
+                    >
+                      <Icon
+                        name={type === 'guided' ? 'list-outline' : type === 'game_session' ? 'game-controller-outline' : 'checkmark-circle-outline'}
+                        size={18}
+                        color={form.reminderType === type ? '#fff' : colors.neutral[600]}
+                      />
+                      <Text style={[styles.typeChipText, form.reminderType === type && styles.typeChipTextActive]}>
+                        {t(`patientReminders.${type}`)}
+                      </Text>
+                      <Text style={[styles.typeChipDesc, form.reminderType === type && styles.typeChipDescActive]}>
+                        {type === 'guided' ? t('patientReminders.guidedDesc') : type === 'game_session' ? t('patientReminders.game_sessionDesc') : t('patientReminders.simpleDesc')}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
               </View>
             </View>
 
-            {/* Redesigned: Checklist linking for guided reminders */}
+            {/* ── Checklist / Game Linking ── */}
             {form.reminderType === 'guided' && (
-              <View style={[styles.fieldGroup, styles.guidedSection]}>
-                <Text style={styles.fieldLabel}>{t('patientReminders.linkedChecklist')}</Text>
+              <View style={[styles.formSection, styles.guidedSection]}>
+                <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <Icon name="list-outline" size={15} color={colors.primary[500]} />
+                  <Text style={[styles.sectionLabel, { color: colors.primary[600] }]}>{t('patientReminders.linkedChecklist')}</Text>
+                </View>
                 <TouchableOpacity
-                  style={styles.checklistSelector}
+                  style={[styles.checklistSelector, { flexDirection: isRTL ? 'row-reverse' : 'row', width: '100%' }]}
                   onPress={() => {
                     console.log('[ManageReminders] Opening checklist picker');
                     Alert.alert('Debug', 'Checklist selector tapped');
@@ -465,142 +496,166 @@ export default function CaregiverRemindersScreen() {
                   accessibilityLabel={t('caregiverReminders.selectChecklist')}
                 >
                   <Icon name="list-outline" size={24} color={colors.primary[500]} />
-                  <Text style={styles.checklistPlaceholder}>
+                  <Text style={[styles.checklistPlaceholder, { flex: 1, textAlign: isRTL ? 'right' : 'left' },
+                    form.linkedChecklistTemplateId ? styles.checklistPlaceholderSelected : {}]}>
                     {form.linkedChecklistTemplateId
                       ? checklists.find((c) => c.id === form.linkedChecklistTemplateId)?.title || t('caregiverReminders.checklistLinked')
                       : t('caregiverReminders.selectChecklist')}
                   </Text>
-                  <Icon name="chevron-forward" size={20} color={colors.neutral[400]} />
+                  <Icon name={isRTL ? "chevron-back" : "chevron-forward"} size={20} color={colors.primary[400]} />
                 </TouchableOpacity>
-                <Text style={styles.guidedHelper}>{t('caregiverReminders.checklistHelp')}</Text>
+                <Text style={[styles.guidedHelper, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.checklistHelp')}</Text>
               </View>
             )}
 
-            {/* Game Selection for game_session reminders */}
             {form.reminderType === 'game_session' && (
-              <View style={[styles.fieldGroup, styles.guidedSection]}>
-                <Text style={styles.fieldLabel}>{t('patientReminders.linkedGame')}</Text>
-                <View style={{ gap: spacing.sm }}>
+              <View style={[styles.formSection, styles.guidedSection]}>
+                <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <Icon name="game-controller-outline" size={15} color={colors.primary[500]} />
+                  <Text style={[styles.sectionLabel, { color: colors.primary[600] }]}>{t('patientReminders.linkedGame')}</Text>
+                </View>
+                <View style={{ gap: spacing.sm, width: '100%' }}>
                   <TouchableOpacity
                     style={[
                       styles.checklistSelector,
-                      form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
+                      { flexDirection: isRTL ? 'row-reverse' : 'row' },
+                      form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && { borderColor: colors.primary[500], backgroundColor: colors.primary[200] + '30' }
                     ]}
                     onPress={() => setForm(f => ({ ...f, gameType: 'ASSOCIATIVE_MEMORY_MATCH' }))}
                   >
-                    <Icon name="albums-outline" size={24} color={form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? colors.primary[500] : colors.neutral[500]} />
-                    <Text style={[styles.checklistPlaceholder, form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && { color: colors.primary[700], fontWeight: '600' }]}>
+                    <Icon name="albums-outline" size={24} color={form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? colors.primary[500] : colors.neutral[600]} />
+                    <Text style={[styles.checklistPlaceholder, { flex: 1, textAlign: isRTL ? 'right' : 'left' },
+                      form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && styles.checklistPlaceholderSelected]}>
                       {t('patientReminders.gameMemoryMatch')}
                     </Text>
+                    {form.gameType === 'ASSOCIATIVE_MEMORY_MATCH' && <Icon name="checkmark-circle" size={20} color={colors.primary[500]} />}
                   </TouchableOpacity>
-                  
+
                   <TouchableOpacity
                     style={[
                       styles.checklistSelector,
-                      form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && { borderColor: colors.primary[500], backgroundColor: colors.primary[50] }
+                      { flexDirection: isRTL ? 'row-reverse' : 'row' },
+                      form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && { borderColor: colors.primary[500], backgroundColor: colors.primary[200] + '30' }
                     ]}
                     onPress={() => setForm(f => ({ ...f, gameType: 'PERSONAL_ORIENTATION_PRACTICE' }))}
                   >
-                    <Icon name="people-outline" size={24} color={form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' ? colors.primary[500] : colors.neutral[500]} />
-                    <Text style={[styles.checklistPlaceholder, form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && { color: colors.primary[700], fontWeight: '600' }]}>
+                    <Icon name="people-outline" size={24} color={form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' ? colors.primary[500] : colors.neutral[600]} />
+                    <Text style={[styles.checklistPlaceholder, { flex: 1, textAlign: isRTL ? 'right' : 'left' },
+                      form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && styles.checklistPlaceholderSelected]}>
                       {t('patientReminders.gameOrientation')}
                     </Text>
+                    {form.gameType === 'PERSONAL_ORIENTATION_PRACTICE' && <Icon name="checkmark-circle" size={20} color={colors.primary[500]} />}
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.guidedHelper}>{t('patientReminders.gameHelp')}</Text>
+                <Text style={[styles.guidedHelper, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.gameHelp')}</Text>
               </View>
             )}
 
-
-            {/* Time + Date row */}
-            <View style={styles.rowFields}>
-              <View style={{ flex: 1 }}>
-                <AppInput
-                  label={t('caregiverReminders.timeLabel')}
-                  value={form.scheduledTime}
-                  onChangeText={(v) => setForm((f) => ({ ...f, scheduledTime: v }))}
-                  placeholder="08:00"
-                  keyboardType="numbers-and-punctuation"
-                  error={formErrors.scheduledTime}
-                />
+            {/* ── Section: Schedule ── */}
+            <View style={styles.formSection}>
+              <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Icon name="time-outline" size={15} color={colors.secondary[500]} />
+                <Text style={styles.sectionLabel}>{t('caregiverReminders.timeLabel')} & {t('caregiverReminders.repeatLabel')}</Text>
               </View>
-              <View style={{ flex: 1 }}>
-                <AppInput
-                  label={t('caregiverReminders.startDateLabel')}
-                  value={form.startDate}
-                  onChangeText={(v) => setForm((f) => ({ ...f, startDate: v }))}
-                  placeholder="YYYY-MM-DD"
-                  keyboardType="numbers-and-punctuation"
-                  error={formErrors.startDate}
-                />
+
+              {/* Time + Start Date row */}
+              <View style={[styles.rowFields, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <View style={{ flex: 1 }}>
+                  <AppInput
+                    label={t('caregiverReminders.timeLabel')}
+                    value={form.scheduledTime}
+                    onChangeText={(v) => setForm((f) => ({ ...f, scheduledTime: v }))}
+                    placeholder="08:00"
+                    keyboardType="numbers-and-punctuation"
+                    error={formErrors.scheduledTime}
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <AppInput
+                    label={t('caregiverReminders.startDateLabel')}
+                    value={form.startDate}
+                    onChangeText={(v) => setForm((f) => ({ ...f, startDate: v }))}
+                    placeholder="YYYY-MM-DD"
+                    keyboardType="numbers-and-punctuation"
+                    error={formErrors.startDate}
+                  />
+                </View>
               </View>
-            </View>
 
-            {/* End date */}
-            <AppInput
-              label={t('caregiverReminders.endDateLabel')}
-              value={form.endDate}
-              onChangeText={(v) => setForm((f) => ({ ...f, endDate: v }))}
-              placeholder="YYYY-MM-DD"
-              keyboardType="numbers-and-punctuation"
-              error={formErrors.endDate}
-            />
-
-            {/* Days of week */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('caregiverReminders.repeatLabel')}</Text>
-              <View style={styles.dayRow}>
-                {['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((day, idx) => (
-                  <Pressable
-                    key={day}
-                    style={[styles.dayChip, form.daysOfWeek.includes(idx) && styles.dayChipActive]}
-                    onPress={() => toggleDay(idx)}
-                    accessibilityLabel={t(`days.${day}`)}
-                  >
-                    <Text style={[styles.dayChipText, form.daysOfWeek.includes(idx) && styles.dayChipTextActive]}>
-                      {t(`days.${day}_short`)}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-
-            {/* Description */}
-            <AppInput
-              label={t('caregiverReminders.notesLabel')}
-              value={form.description}
-              onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
-              placeholder={t('caregiverReminders.notesPlaceholder')}
-              multiline
-              style={{ height: 80, paddingTop: spacing.md }}
-            />
-
-            {/* Snooze */}
-            <View style={styles.switchRow}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.switchLabel}>{t('caregiverReminders.allowSnooze')}</Text>
-                <Text style={styles.switchSub}>{t('caregiverReminders.snoozeSub')}</Text>
-              </View>
-              <Switch
-                value={form.snoozeEnabled}
-                onValueChange={(v) => setForm((f) => ({ ...f, snoozeEnabled: v }))}
-                trackColor={{ true: colors.secondary[400], false: colors.neutral[300] }}
-                thumbColor={form.snoozeEnabled ? colors.secondary[500] : colors.neutral[400]}
-              />
-            </View>
-            {form.snoozeEnabled && (
+              {/* End date */}
               <AppInput
-                label={t('caregiverReminders.snoozeDurationLabel')}
-                value={form.defaultSnoozeMinutes}
-                onChangeText={(v) => setForm((f) => ({ ...f, defaultSnoozeMinutes: v }))}
-                placeholder="10"
-                keyboardType="number-pad"
-                error={formErrors.defaultSnoozeMinutes}
+                label={t('caregiverReminders.endDateLabel')}
+                value={form.endDate}
+                onChangeText={(v) => setForm((f) => ({ ...f, endDate: v }))}
+                placeholder="YYYY-MM-DD"
+                keyboardType="numbers-and-punctuation"
+                error={formErrors.endDate}
               />
-            )}
 
-            {/* Submit */}
-            <View style={{ gap: spacing.md, paddingBottom: spacing['4xl'] }}>
+              {/* Days of week */}
+              <View style={[styles.fieldGroup, { marginBottom: 0 }]}>
+                <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.repeatLabel')}</Text>
+                <View style={[styles.dayRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  {['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((day, idx) => (
+                    <Pressable
+                      key={day}
+                      style={[styles.dayChip, form.daysOfWeek.includes(idx) && styles.dayChipActive]}
+                      onPress={() => toggleDay(idx)}
+                      accessibilityLabel={t(`days.${day}`)}
+                    >
+                      <Text style={[styles.dayChipText, form.daysOfWeek.includes(idx) && styles.dayChipTextActive]}>
+                        {t(`days.${day}_short`)}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            </View>
+
+            {/* ── Section: Notes & Snooze ── */}
+            <View style={styles.formSection}>
+              <View style={[styles.sectionLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Icon name="document-text-outline" size={15} color={colors.secondary[500]} />
+                <Text style={styles.sectionLabel}>{t('caregiverReminders.notesLabel')} & {t('caregiverReminders.allowSnooze')}</Text>
+              </View>
+
+              {/* Description */}
+              <AppInput
+                label={t('caregiverReminders.notesLabel')}
+                value={form.description}
+                onChangeText={(v) => setForm((f) => ({ ...f, description: v }))}
+                placeholder={t('caregiverReminders.notesPlaceholder')}
+                multiline
+                style={{ height: 88, paddingTop: spacing.md }}
+              />
+
+              {/* Snooze */}
+              <View style={[styles.switchRow, { flexDirection: isRTL ? 'row-reverse' : 'row', marginBottom: form.snoozeEnabled ? spacing.md : 0 }]}>
+                <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+                  <Text style={[styles.switchLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.allowSnooze')}</Text>
+                  <Text style={[styles.switchSub, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.snoozeSub')}</Text>
+                </View>
+                <Switch
+                  value={form.snoozeEnabled}
+                  onValueChange={(v) => setForm((f) => ({ ...f, snoozeEnabled: v }))}
+                  trackColor={{ true: colors.secondary[500], false: colors.neutral[300] }}
+                  thumbColor={form.snoozeEnabled ? '#fff' : colors.neutral[400]}
+                />
+              </View>
+              {form.snoozeEnabled && (
+                <AppInput
+                  label={t('caregiverReminders.snoozeDurationLabel')}
+                  value={form.defaultSnoozeMinutes}
+                  onChangeText={(v) => setForm((f) => ({ ...f, defaultSnoozeMinutes: v }))}
+                  placeholder="10"
+                  keyboardType="number-pad"
+                  error={formErrors.defaultSnoozeMinutes}
+                />
+              )}
+            </View>
+
+            {/* ── Submit Buttons ── */}
+            <View style={styles.submitSection}>
               <AppButton
                 title={submitting ? t('common.loading') : formMode === 'create' ? t('caregiverReminders.createBtn') : t('caregiverReminders.saveChangesBtn')}
                 onPress={handleSubmit}
@@ -693,9 +748,10 @@ export default function CaregiverRemindersScreen() {
 
 function SectionHeader({ title, count, loading }: { title: string; count: number; loading?: boolean }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
-    <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={[styles.sectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
       {loading ? (
         <Text style={styles.sectionCount}>{t('common.loading')}</Text>
       ) : (
@@ -805,13 +861,14 @@ function CaregiverReminderCard({
   onEdit: () => void;
   onArchive: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const isGuided = reminder.reminderType === 'guided';
   const isHighPriority = reminder.priority === 'high' || reminder.priority === 'critical';
   
   return (
     <AppCard style={StyleSheet.flatten([styles.reminderCard, isHighPriority && styles.highPriorityCard])}>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <View style={[styles.iconBadge, isGuided && styles.guidedBadge, reminder.reminderType === 'game_session' && { backgroundColor: colors.primary[100] }]}>
           <Icon 
             name={isGuided ? 'list-outline' : reminder.reminderType === 'game_session' ? 'game-controller-outline' : getCategoryIcon(reminder.category) as any} 
@@ -819,9 +876,9 @@ function CaregiverReminderCard({
             color={isGuided ? colors.warning.main : reminder.reminderType === 'game_session' ? colors.primary[600] : colors.secondary[500]} 
           />
         </View>
-        <View style={styles.cardInfo}>
-          <View style={styles.titleRow}>
-            <Text style={styles.cardTitle}>{reminder.title}</Text>
+        <View style={[styles.cardInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+          <View style={[styles.titleRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{reminder.title}</Text>
             {/* Priority Badge */}
             {isHighPriority && (
               <View style={[styles.priorityBadge, reminder.priority === 'critical' && styles.criticalBadge]}>
@@ -831,7 +888,7 @@ function CaregiverReminderCard({
               </View>
             )}
           </View>
-          <Text style={styles.cardTime}>
+          <Text style={[styles.cardTime, { textAlign: isRTL ? 'right' : 'left' }]}>
             {reminder.scheduledTime} · {t('categories.' + reminder.category) || reminder.category}
             {isGuided && (
               <Text style={styles.guidedIndicator}> · {t('patientReminders.guided')}</Text>
@@ -841,15 +898,15 @@ function CaregiverReminderCard({
             )}
           </Text>
           {(reminder.daysOfWeek ?? []).length > 0 && (
-            <Text style={styles.cardDays}>
+            <Text style={[styles.cardDays, { textAlign: isRTL ? 'right' : 'left' }]}>
               {reminder.daysOfWeek.map((d) => t(`days.${['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][d]}_short`)).join(' · ')}
             </Text>
           )}
           {/* Linked Checklist Info */}
           {isGuided && reminder.linkedChecklist && (
-            <View style={styles.checklistInfo}>
+            <View style={[styles.checklistInfo, { flexDirection: isRTL ? 'row-reverse' : 'row', width: '100%' }]}>
               <Icon name="list-outline" size={12} color={colors.primary[500]} />
-              <Text style={styles.checklistText}>
+              <Text style={[styles.checklistText, { textAlign: isRTL ? 'right' : 'left' }]}>
                 {reminder.linkedChecklist.title} · {reminder.linkedChecklist.stepCount} {t('patientReminders.steps')}
               </Text>
             </View>
@@ -857,9 +914,9 @@ function CaregiverReminderCard({
           
           {/* Linked Game Info */}
           {reminder.reminderType === 'game_session' && reminder.gameType && (
-            <View style={styles.checklistInfo}>
+            <View style={[styles.checklistInfo, { flexDirection: isRTL ? 'row-reverse' : 'row', width: '100%' }]}>
               <Icon name="game-controller-outline" size={12} color={colors.primary[500]} />
-              <Text style={styles.checklistText}>
+              <Text style={[styles.checklistText, { textAlign: isRTL ? 'right' : 'left' }]}>
                 {reminder.gameType === 'ASSOCIATIVE_MEMORY_MATCH' ? t('patientReminders.gameMemoryMatch') : t('patientReminders.gameOrientation')}
               </Text>
             </View>
@@ -871,10 +928,10 @@ function CaregiverReminderCard({
         />
       </View>
       {reminder.description ? (
-        <Text style={styles.cardDesc} numberOfLines={2}>{reminder.description}</Text>
+        <Text style={[styles.cardDesc, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={2}>{reminder.description}</Text>
       ) : null}
       {reminder.isActive && (
-        <View style={styles.cardActions}>
+        <View style={[styles.cardActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <AppButton title={t("caregiverPatients.editReminders").split(" ")[0]} onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
           <AppButton title={t("caregiverReminders.archived")} onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
         </View>
@@ -996,7 +1053,7 @@ const styles = StyleSheet.create({
   emptyRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   emptyText: { fontSize: typography.size.sm, color: colors.neutral[500], flex: 1 },
   // ─── Modal
-  modal: { flex: 1, backgroundColor: colors.background },
+  modal: { flex: 1, backgroundColor: colors.surface_container_low },
   modalHandle: {
     width: 40, height: 4, borderRadius: 2,
     backgroundColor: colors.neutral[300],
@@ -1008,22 +1065,56 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing['2xl'],
     paddingVertical: spacing.lg,
+    backgroundColor: colors.surface_container_lowest,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral[100],
+    borderBottomColor: colors.neutral[300],
   },
+  modalTitleGroup: { flex: 1 },
   modalTitle: { fontSize: typography.size.xl, fontWeight: '700', color: colors.neutral[900] },
+  modalSubtitle: { fontSize: typography.size.sm, color: colors.neutral[500], marginTop: 2 },
   modalClose: {
     padding: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.neutral[200],
+    marginLeft: spacing.md,
   },
-  modalScroll: { padding: spacing['2xl'] },
-  // ─── Form
+  modalScroll: { paddingHorizontal: spacing['2xl'], paddingTop: spacing.xl },
+  // ─── Form Sections
+  formSection: {
+    backgroundColor: colors.surface_container_lowest,
+    borderRadius: radius.xl,
+    padding: spacing.xl,
+    marginBottom: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.neutral[300],
+    ...shadows.sm,
+  },
+  sectionLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginBottom: spacing.lg,
+    paddingBottom: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.neutral[200],
+  },
+  sectionLabel: {
+    fontSize: typography.size.sm,
+    fontWeight: '700',
+    color: colors.secondary[500],
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  submitSection: {
+    gap: spacing.md,
+    paddingBottom: spacing['5xl'],
+  },
+  // ─── Form fields
   fieldGroup: { marginBottom: spacing.lg },
   fieldLabel: {
     fontSize: typography.size.sm,
-    fontWeight: '500',
-    color: colors.neutral[700],
+    fontWeight: '700',
+    color: colors.neutral[800],
     marginBottom: spacing.sm,
   },
   categoryScroll: { flexGrow: 0 },
@@ -1034,114 +1125,122 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderRadius: radius.full,
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.neutral[200],
     marginRight: spacing.sm,
-    borderWidth: 1,
-    borderColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: colors.neutral[300],
   },
   categoryChipActive: {
     backgroundColor: colors.secondary[500],
     borderColor: colors.secondary[600],
   },
-  categoryChipText: { fontSize: typography.size.sm, color: colors.neutral[700], fontWeight: '500' },
-  categoryChipTextActive: { color: '#fff' },
+  categoryChipText: { fontSize: typography.size.sm, color: colors.neutral[800], fontWeight: '600' },
+  categoryChipTextActive: { color: '#fff', fontWeight: '700' },
   rowFields: { flexDirection: 'row', gap: spacing.md },
-  dayRow: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
+  dayRow: { flexDirection: 'row', gap: spacing.xs, flexWrap: 'wrap' },
   dayChip: {
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderRadius: radius.full,
-    backgroundColor: colors.neutral[100],
-    borderWidth: 1,
-    borderColor: 'transparent',
+    backgroundColor: colors.neutral[200],
+    borderWidth: 1.5,
+    borderColor: colors.neutral[300],
   },
   dayChipActive: {
     backgroundColor: colors.secondary[500],
     borderColor: colors.secondary[600],
   },
-  dayChipText: { fontSize: typography.size.sm, color: colors.neutral[600], fontWeight: '600' },
+  dayChipText: { fontSize: typography.size.sm, color: colors.neutral[800], fontWeight: '700' },
   dayChipTextActive: { color: '#fff' },
   switchRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.neutral[100],
     borderRadius: radius.lg,
-    ...shadows.sm,
+    borderWidth: 1,
+    borderColor: colors.neutral[300],
   },
-  switchLabel: { fontSize: typography.size.base, fontWeight: '600', color: colors.neutral[800] },
-  switchSub: { fontSize: typography.size.xs, color: colors.neutral[500], marginTop: 2 },
+  switchLabel: { fontSize: typography.size.base, fontWeight: '700', color: colors.neutral[900] },
+  switchSub: { fontSize: typography.size.xs, color: colors.neutral[600], marginTop: 2 },
   
-  // Redesigned: Priority styles
+  // Priority styles
   priorityChipActive: {
     backgroundColor: colors.warning.main,
     borderColor: colors.warning.dark,
   },
   highPriorityChip: {
     borderColor: colors.warning.main,
+    backgroundColor: colors.warning.light + '40',
   },
   criticalPriorityChip: {
     borderColor: colors.error.main,
-    backgroundColor: colors.error.light,
+    backgroundColor: colors.error[50],
   },
   
-  // Redesigned: Reminder Type styles
+  // Reminder Type styles
   typeRow: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   typeChip: {
     flex: 1,
     alignItems: 'center',
     gap: spacing.xs,
     paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.sm,
     borderRadius: radius.lg,
-    backgroundColor: colors.neutral[100],
-    borderWidth: 1,
-    borderColor: 'transparent',
+    backgroundColor: colors.neutral[200],
+    borderWidth: 1.5,
+    borderColor: colors.neutral[300],
   },
   typeChipActive: {
     backgroundColor: colors.secondary[500],
     borderColor: colors.secondary[600],
   },
-  typeChipText: { fontSize: typography.size.sm, color: colors.neutral[700], fontWeight: '600' },
-  typeChipTextActive: { color: '#fff' },
+  typeChipText: { fontSize: typography.size.sm, color: colors.neutral[800], fontWeight: '700' },
+  typeChipTextActive: { color: '#fff', fontWeight: '700' },
   typeChipDesc: { 
     fontSize: typography.size.xs, 
-    color: colors.neutral[500],
+    color: colors.neutral[600],
     textAlign: 'center',
     marginTop: spacing.xs,
+    lineHeight: 16,
+  },
+  typeChipDescActive: {
+    color: 'rgba(255,255,255,0.85)',
   },
   
-  // Redesigned: Guided section styles
+  // Guided section styles
   guidedSection: {
     backgroundColor: colors.primary[50],
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.primary[100],
+    borderColor: colors.primary[200],
   },
   checklistSelector: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    padding: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
+    padding: spacing.lg,
+    backgroundColor: colors.surface_container_lowest,
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
+    borderColor: colors.neutral[300],
   },
   checklistPlaceholder: {
     fontSize: typography.size.sm,
-    color: colors.neutral[500],
+    color: colors.neutral[600],
+    fontWeight: '500',
+  },
+  checklistPlaceholderSelected: {
+    color: colors.primary[600],
+    fontWeight: '700',
   },
   guidedHelper: {
     fontSize: typography.size.xs,
-    color: colors.neutral[500],
-    marginTop: spacing.xs,
+    color: colors.neutral[600],
+    marginTop: spacing.sm,
     fontStyle: 'italic',
   },
   

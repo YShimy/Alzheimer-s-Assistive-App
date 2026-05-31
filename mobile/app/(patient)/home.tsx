@@ -16,6 +16,7 @@ import type { Reminder } from '@/src/features/reminders/types';
  */
 export default function PatientHomeScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const displayName = useSessionStore((s) => s.displayName);
   const userId = useSessionStore((s) => s.userId);
   const logout = useLogout();
@@ -69,10 +70,10 @@ export default function PatientHomeScreen() {
   return (
     <ScreenContainer>
       {/* Greeting */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>{greeting}</Text>
-          <Text style={styles.name}>{displayName || t('patientHome.defaultName', 'there')}</Text>
+      <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={{ alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+          <Text style={[styles.greeting, { textAlign: isRTL ? 'right' : 'left' }]}>{greeting}</Text>
+          <Text style={[styles.name, { textAlign: isRTL ? 'right' : 'left' }]}>{displayName || t('patientHome.defaultName', 'there')}</Text>
         </View>
         <Pressable onPress={handleLogout} style={styles.logoutBtn} accessibilityLabel="Log out">
           <Icon name="log-out-outline" size={22} color={colors.on_surface_variant} />
@@ -80,20 +81,20 @@ export default function PatientHomeScreen() {
       </View>
 
       {/* Date orientation card */}
-      <View style={styles.dateCard}>
+      <View style={[styles.dateCard, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <Icon name="calendar-outline" size={24} color={colors.primary.main} />
-        <Text style={styles.dateText}>{dateString}</Text>
+        <Text style={[styles.dateText, { textAlign: isRTL ? 'right' : 'left' }]}>{dateString}</Text>
       </View>
 
       {/* Upcoming reminders */}
-      <Text style={styles.sectionTitle}>{t('patientHome.upcomingReminders')}</Text>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.upcomingReminders')}</Text>
       {loading ? (
         <LoadingState message={t('patientHome.loadingReminders')} />
       ) : reminders.length === 0 ? (
         <AppCard>
-          <View style={styles.emptyRow}>
+          <View style={[styles.emptyRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Icon name="checkmark-circle-outline" size={24} color={colors.secondary.main} />
-            <Text style={styles.emptyText}>{t('patientHome.noReminders')}</Text>
+            <Text style={[styles.emptyText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.noReminders')}</Text>
           </View>
         </AppCard>
       ) : (
@@ -112,18 +113,18 @@ export default function PatientHomeScreen() {
       )}
 
       {/* Connect Caregiver */}
-      <Text style={styles.sectionTitle}>{t('patientHome.connectTitle')}</Text>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.connectTitle')}</Text>
       {showInviteInput ? (
         <AppCard style={styles.inviteCard}>
-          <Text style={styles.inviteTitle}>{t('patientHome.linkCaregiver')}</Text>
-          <Text style={styles.inviteText}>{t('patientHome.enterCodeGuide')}</Text>
+          <Text style={[styles.inviteTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.linkCaregiver')}</Text>
+          <Text style={[styles.inviteText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.enterCodeGuide')}</Text>
           <AppInput
             placeholder={t('patientHome.codePlaceholder')}
             value={inviteCode}
             onChangeText={(text) => setInviteCode(text.toUpperCase())}
             autoCapitalize="characters"
           />
-          <View style={styles.inviteActions}>
+          <View style={[styles.inviteActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <AppButton
               title={t('patientHome.cancel')}
               onPress={() => setShowInviteInput(false)}
@@ -150,8 +151,8 @@ export default function PatientHomeScreen() {
       )}
 
       {/* Quick actions */}
-      <Text style={styles.sectionTitle}>{t('patientHome.quickActions')}</Text>
-      <View style={styles.grid}>
+      <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientHome.quickActions')}</Text>
+      <View style={[styles.grid, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <QuickCard
           icon="alarm-outline"
           title={t('patientHome.reminders')}

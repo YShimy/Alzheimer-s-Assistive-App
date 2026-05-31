@@ -26,7 +26,9 @@ export function careLinkGuard(requiredPermission: CareLinkPermission) {
       throw AppError.unauthorized();
     }
 
-    const patientId = (req.params.patientId ?? req.params.id) as string;
+    const rawPatientId = (req.params.patientId ?? req.params.id) as string;
+    // Resolve 'me' alias to the actual user ID
+    const patientId = rawPatientId === 'me' ? req.user.userId : rawPatientId;
     console.log(`[careLinkGuard] Checking - userId: ${req.user.userId}, patientId: ${patientId}, requiredPermission: ${requiredPermission}, role: ${req.user.role}`);
 
     // Patients can always access their own data

@@ -552,7 +552,7 @@ async function seedPatientData(patientId: string, caregiverId: string, patientNa
       updatedByUserId: caregiverId,
       supportLevel: 'GUIDED_SUPPORT',
       weeklyTargetSessions: 7,
-      enabledFamilies: ['TIME_ORIENTATION', 'PLACE_ORIENTATION', 'ROUTINE_ORIENTATION', 'APP_NAVIGATION', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+      enabledFamilies: ['ORIENTATION_DATE', 'ORIENTATION_PLACE', 'CAREGIVER', 'DAILY_ROUTINE', 'APP_NAVIGATION', 'SAFETY_SUPPORT', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
       includePeopleWithoutPhotos: true,
       includeSensitiveContacts: false,
       maxQuestionsPerSession: 6,

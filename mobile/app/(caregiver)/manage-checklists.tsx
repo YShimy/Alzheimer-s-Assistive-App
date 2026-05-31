@@ -85,6 +85,7 @@ type FormMode = 'create' | 'edit';
  */
 export default function CaregiverChecklistScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
 
   // ─── Global patient context ─────────────────────────────────────────────
   useCaregiverLinks();
@@ -369,8 +370,8 @@ export default function CaregiverChecklistScreen() {
           ListFooterComponent={
             archivedTemplates.length > 0 ? (
               <View style={{ marginTop: spacing['2xl'] }}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>{t('caregiverChecklists.archived')}</Text>
+                <View style={[styles.sectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                  <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverChecklists.archived')}</Text>
                   <StatusChip label={String(archivedTemplates.length)} variant="default" />
                 </View>
                 {archivedTemplates.map((t) => (
@@ -391,8 +392,8 @@ export default function CaregiverChecklistScreen() {
       >
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{formMode === 'create' ? t('caregiverChecklists.newTemplate') : t('caregiverChecklists.editTemplate')}</Text>
+          <View style={[styles.modalHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Text style={[styles.modalTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{formMode === 'create' ? t('caregiverChecklists.newTemplate') : t('caregiverChecklists.editTemplate')}</Text>
             <Pressable onPress={() => setModalVisible(false)} style={styles.modalClose} accessibilityLabel="Close">
               <Icon name="close" size={22} color={colors.neutral[600]} />
             </Pressable>
@@ -423,12 +424,12 @@ export default function CaregiverChecklistScreen() {
 
             {/* Category picker */}
             <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{t('caregiverChecklists.categoryLabel')}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverChecklists.categoryLabel')}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
                 {CATEGORIES.map((cat) => (
                   <Pressable
                     key={cat}
-                    style={[styles.chip, form.category === cat && styles.chipActive]}
+                    style={[styles.chip, form.category === cat && styles.chipActive, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
                     onPress={() => setForm((f) => ({ ...f, category: cat }))}
                   >
                     <Icon
@@ -456,9 +457,9 @@ export default function CaregiverChecklistScreen() {
 
             {/* Steps editor */}
             <View style={styles.stepsSection}>
-              <View style={styles.stepsSectionHeader}>
-                <Text style={styles.fieldLabel}>{t('caregiverChecklists.stepsCount', { count: form.steps.length })}</Text>
-                <Pressable style={styles.addStepBtn} onPress={addStep} accessibilityLabel="Add step">
+              <View style={[styles.stepsSectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left', marginBottom: 0 }]}>{t('caregiverChecklists.stepsCount', { count: form.steps.length })}</Text>
+                <Pressable style={[styles.addStepBtn, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={addStep} accessibilityLabel="Add step">
                   <Icon name="add-circle" size={20} color={colors.secondary[500]} />
                   <Text style={styles.addStepText}>{t('caregiverChecklists.addStep')}</Text>
                 </Pressable>
@@ -473,11 +474,11 @@ export default function CaregiverChecklistScreen() {
 
               {form.steps.map((step, idx) => (
                 <View key={step.id} style={styles.stepEditor}>
-                  <View style={styles.stepEditorHeader}>
-                    <Text style={styles.stepEditorNum}>
+                  <View style={[styles.stepEditorHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    <Text style={[styles.stepEditorNum, { textAlign: isRTL ? 'right' : 'left' }]}>
                       {t('caregiverChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}
                     </Text>
-                    <View style={styles.stepEditorActions}>
+                    <View style={[styles.stepEditorActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                       {idx > 0 && (
                         <Pressable onPress={() => moveStep(step.id, 'up')} style={styles.stepActionBtn} accessibilityLabel="Move up">
                           <Icon name="chevron-up" size={18} color={colors.neutral[500]} />
@@ -494,31 +495,31 @@ export default function CaregiverChecklistScreen() {
                     </View>
                   </View>
                   <TextInput
-                    style={[styles.stepInput, !!formErrors[`step_${idx}`] && styles.stepInputError]}
+                    style={[styles.stepInput, !!formErrors[`step_${idx}`] && styles.stepInputError, { textAlign: isRTL ? 'right' : 'left' }]}
                     value={step.title}
                     onChangeText={(v) => updateStep(step.id, 'title', v)}
                     placeholder={t('caregiverChecklists.stepTitlePlaceholder', { num: idx + 1 })}
                     placeholderTextColor={colors.neutral[400]}
                   />
                   {formErrors[`step_${idx}`] && (
-                    <Text style={styles.stepError}>{formErrors[`step_${idx}`]}</Text>
+                    <Text style={[styles.stepError, { textAlign: isRTL ? 'right' : 'left' }]}>{formErrors[`step_${idx}`]}</Text>
                   )}
                   <TextInput
-                    style={styles.stepDescInput}
+                    style={[styles.stepDescInput, { textAlign: isRTL ? 'right' : 'left' }]}
                     value={step.description}
                     onChangeText={(v) => updateStep(step.id, 'description', v)}
                     placeholder={t('caregiverChecklists.stepDescPlaceholder')}
                     placeholderTextColor={colors.neutral[400]}
                   />
 
-                  <View style={styles.stepMediaRow}>
+                  <View style={[styles.stepMediaRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                      {!step.imageAssetId && !step.videoAssetId ? (
                        <>
-                        <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'image')}>
+                        <Pressable style={[styles.mediaBtn, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={() => handlePickMediaForStep(step.id, 'image')}>
                           <Icon name="image-outline" size={16} color={colors.primary.main} />
                           <Text style={styles.mediaBtnText}>{t('caregiverChecklists.addImage')}</Text>
                         </Pressable>
-                        <Pressable style={styles.mediaBtn} onPress={() => handlePickMediaForStep(step.id, 'video')}>
+                        <Pressable style={[styles.mediaBtn, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={() => handlePickMediaForStep(step.id, 'video')}>
                           <Icon name="videocam-outline" size={16} color={colors.secondary.main} />
                           <Text style={styles.mediaBtnText}>{t('caregiverChecklists.addVideo')}</Text>
                         </Pressable>
@@ -526,18 +527,18 @@ export default function CaregiverChecklistScreen() {
                      ) : (
                        <View style={styles.mediaPreview}>
                           {step.imageAssetId && (
-                            <View style={styles.previewContainer}>
+                            <View style={[styles.previewContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                                <Icon name="image" size={16} color={colors.primary.main} />
-                               <Text style={styles.previewText}>{t('caregiverChecklists.imageAttached')}</Text>
+                               <Text style={[styles.previewText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverChecklists.imageAttached')}</Text>
                                <Pressable onPress={() => removeMediaFromStep(step.id, 'image')}>
                                  <Icon name="close-circle" size={18} color={colors.error.main} />
                                </Pressable>
                             </View>
                           )}
                           {step.videoAssetId && (
-                            <View style={styles.previewContainer}>
+                            <View style={[styles.previewContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                                <Icon name="videocam" size={16} color={colors.secondary.main} />
-                               <Text style={styles.previewText}>{t('caregiverChecklists.videoAttached')}</Text>
+                               <Text style={[styles.previewText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverChecklists.videoAttached')}</Text>
                                <Pressable onPress={() => removeMediaFromStep(step.id, 'video')}>
                                  <Icon name="close-circle" size={18} color={colors.error.main} />
                                </Pressable>
@@ -588,21 +589,22 @@ function TemplateCard({
   onArchive: () => void;
 }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
     <AppCard style={styles.templateCard}>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <View style={styles.catBadge}>
           <Icon name={getCategoryIcon(template.category)} size={20} color={colors.secondary[500]} />
         </View>
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle}>{template.title}</Text>
-          <View style={styles.cardMeta}>
-            <Text style={styles.cardStat}>
+        <View style={[styles.cardInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+          <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{template.title}</Text>
+          <View style={[styles.cardMeta, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Text style={[styles.cardStat, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name="list" size={14} color={colors.neutral[500]} />{' '}
               {t('caregiverChecklists.steps', { count: Intl.NumberFormat(i18n.language).format(template.steps?.length ?? 0) })}
             </Text>
             {template.estimatedMinutes && (
-              <Text style={styles.cardStat}>
+              <Text style={[styles.cardStat, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="time-outline" size={14} color={colors.neutral[500]} />{' '}
                 {t('caregiverChecklists.minutes', { count: Intl.NumberFormat(i18n.language).format(template.estimatedMinutes) })}
               </Text>
@@ -615,10 +617,10 @@ function TemplateCard({
         />
       </View>
       {template.description ? (
-        <Text style={styles.cardDesc} numberOfLines={2}>{template.description}</Text>
+        <Text style={[styles.cardDesc, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={2}>{template.description}</Text>
       ) : null}
       {template.isActive && (
-        <View style={styles.cardActions}>
+        <View style={[styles.cardActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <AppButton title={t("caregiverPatients.editReminders").split(" ")[0]} onPress={onEdit} variant="outline" size="sm" style={{ flex: 1 }} />
           <AppButton title={t("caregiverChecklists.archived")} onPress={onArchive} variant="ghost" size="sm" style={{ flex: 1 }} />
         </View>

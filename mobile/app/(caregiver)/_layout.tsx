@@ -98,15 +98,57 @@ export default function CaregiverLayout() {
         }}
       />
       {/* Records screens — hidden from tab bar, navigated to programmatically */}
-      <Tabs.Screen name="records" options={{ href: null }} />
-      <Tabs.Screen name="records/index" options={{ href: null }} />
-      <Tabs.Screen name="records/upload" options={{ href: null }} />
+      <Tabs.Screen
+        name="records"
+        options={{
+          href: null,
+          title: t('caregiverTabs.recordsTitle', 'Records'),
+          headerTitle: t('caregiverTabs.recordsHeader', 'Patient Records'),
+        }}
+      />
+      <Tabs.Screen
+        name="records/index"
+        options={{
+          href: null,
+          title: t('caregiverTabs.recordsTitle', 'Records'),
+          headerTitle: t('caregiverTabs.recordsHeader', 'Patient Records'),
+        }}
+      />
+      <Tabs.Screen
+        name="records/upload"
+        options={{
+          href: null,
+          title: t('caregiverTabs.recordsUploadTitle', 'Upload Record'),
+          headerTitle: t('caregiverTabs.recordsUploadHeader', 'Upload Record'),
+        }}
+      />
       {/* Important Information — hidden from tab bar */}
-      <Tabs.Screen name="important-info" options={{ href: null }} />
+      <Tabs.Screen
+        name="important-info"
+        options={{
+          href: null,
+          title: t('importantInfo.title', 'Important Info'),
+          headerTitle: t('importantInfo.title', 'Important Information'),
+        }}
+      />
       {/* Export Summary PDF — hidden from tab bar */}
-      <Tabs.Screen name="export-summary" options={{ href: null }} />
+      <Tabs.Screen
+        name="export-summary"
+        options={{
+          href: null,
+          title: t('summaryExport.title', 'Export Summary'),
+          headerTitle: t('summaryExport.title', 'Export Summary PDF'),
+        }}
+      />
       {/* Manage SR Items — hidden from tab bar */}
-      <Tabs.Screen name="manage-sr-items" options={{ href: null }} />
+      <Tabs.Screen
+        name="manage-sr-items"
+        options={{
+          href: null,
+          title: t('myDayPeople.settings.titleShort', 'My Day & People'),
+          headerTitle: t('myDayPeople.settings.title', 'My Day & People Settings'),
+        }}
+      />
     </Tabs>
   );
 }

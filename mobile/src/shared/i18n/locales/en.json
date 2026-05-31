@@ -100,7 +100,11 @@
     "progressTitle": "Progress",
     "progressHeader": "Patient Progress",
     "contactsTitle": "Contacts",
-    "contactsHeader": "Patient Contacts"
+    "contactsHeader": "Patient Contacts",
+    "recordsTitle": "Records",
+    "recordsHeader": "Patient Records",
+    "recordsUploadTitle": "Upload Record",
+    "recordsUploadHeader": "Upload Patient Record"
   },
   "patientTabs": {
     "homeTitle": "Today",
@@ -167,6 +171,7 @@
     "viewProgress": "View Progress",
     "createChecklists": "Create Checklists",
     "manageContacts": "Manage Contacts",
+    "manageReminders": "Manage Reminders",
     "revokeLink": "Revoke Link",
     "revokeAction": "Revoke",
     "revokeConfirm": "Are you sure you want to revoke this care link?",
@@ -966,7 +971,12 @@
       "TIME_ORIENTATION": "Day & Time",
       "PLACE_ORIENTATION": "Place & Location",
       "ROUTINE_ORIENTATION": "Daily Routines",
+      "ORIENTATION_DATE": "Day & Time",
+      "ORIENTATION_PLACE": "Place & Location",
+      "CAREGIVER": "Caregiver",
+      "DAILY_ROUTINE": "Daily Routines",
       "APP_NAVIGATION": "Using the App",
+      "SAFETY_SUPPORT": "Safety & Support",
       "PEOPLE_RECOGNITION": "Familiar People",
       "SUPPORT_FACT": "Helpful Support Facts",
       "OTHER": "Other"

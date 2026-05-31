@@ -100,7 +100,11 @@
     "progressTitle": "التقدم",
     "progressHeader": "تقدم المريض",
     "contactsTitle": "جهات الاتصال",
-    "contactsHeader": "جهات اتصال المريض"
+    "contactsHeader": "جهات اتصال المريض",
+    "recordsTitle": "السجلات",
+    "recordsHeader": "سجلات المريض",
+    "recordsUploadTitle": "تحميل سجل",
+    "recordsUploadHeader": "تحميل سجل مريض"
   },
   "patientTabs": {
     "homeTitle": "اليوم",
@@ -167,6 +171,7 @@
     "viewProgress": "عرض التقدم",
     "createChecklists": "إنشاء قوائم",
     "manageContacts": "إدارة جهات الاتصال",
+    "manageReminders": "إدارة التذكيرات",
     "revokeLink": "إبطال الارتباط",
     "revokeAction": "إبطال",
     "revokeConfirm": "هل أنت متأكد أنك تريد إبطال هذا الارتباط؟",
@@ -1110,7 +1115,12 @@
       "TIME_ORIENTATION": "اليوم والوقت",
       "PLACE_ORIENTATION": "المكان والموقع",
       "ROUTINE_ORIENTATION": "الروتين اليومي",
+      "ORIENTATION_DATE": "اليوم والوقت",
+      "ORIENTATION_PLACE": "المكان والموقع",
+      "CAREGIVER": "مقدم الرعاية",
+      "DAILY_ROUTINE": "الروتين اليومي",
       "APP_NAVIGATION": "استخدام التطبيق",
+      "SAFETY_SUPPORT": "السلامة والدعم",
       "PEOPLE_RECOGNITION": "الأشخاص المألوفون",
       "SUPPORT_FACT": "حقائق الدعم المفيدة",
       "OTHER": "أخرى"

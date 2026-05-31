@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable, Alert, RefreshControl } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppCard, Icon, LoadingState, EmptyState, AppButton } from '@/src/shared/ui';
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
@@ -11,6 +11,7 @@ import type { PatientDocument, PatientDocumentCategory } from '@/src/features/re
 
 export default function RecordsListScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { selectedPatientId, selectedPatientName, loaded } = useCaregiverPatientStore();
 
@@ -79,10 +80,10 @@ export default function RecordsListScreen() {
 
   const renderItem = ({ item }: { item: PatientDocument }) => (
     <AppCard style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.cardTitleContainer}>
+      <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <View style={[styles.cardTitleContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Icon name={item.mimeType.includes('pdf') ? "document-text-outline" : "image-outline"} size={20} color={colors.primary.main} />
-          <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
+          <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]} numberOfLines={1}>{item.title}</Text>
         </View>
         <View style={styles.categoryBadge}>
           <Text style={styles.categoryText}>
@@ -92,19 +93,19 @@ export default function RecordsListScreen() {
       </View>
       
       {item.documentDate && (
-        <View style={styles.cardDetailRow}>
+        <View style={[styles.cardDetailRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Icon name="calendar-outline" size={14} color={colors.on_surface_variant} />
-          <Text style={styles.cardDetail}>{new Date(item.documentDate).toLocaleDateString(i18n.language)}</Text>
+          <Text style={[styles.cardDetail, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>{new Date(item.documentDate).toLocaleDateString(i18n.language)}</Text>
         </View>
       )}
       {item.sourceName && (
-        <View style={styles.cardDetailRow}>
+        <View style={[styles.cardDetailRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Icon name="business-outline" size={14} color={colors.on_surface_variant} />
-          <Text style={styles.cardDetail}>{item.sourceName}</Text>
+          <Text style={[styles.cardDetail, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>{item.sourceName}</Text>
         </View>
       )}
 
-      <View style={styles.cardActions}>
+      <View style={[styles.cardActions, { flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: 'flex-start' }]}>
         <AppButton 
           title={t('records.openBtn', 'Open')} 
           variant="outline" 
@@ -125,17 +126,20 @@ export default function RecordsListScreen() {
 
   return (
     <ScreenContainer scroll={false}>
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn}>
-          <Icon name="arrow-back" size={24} color={colors.on_surface} />
+      <Tabs.Screen options={{ title: t('records.title', 'Patient Records'), headerTitle: t('records.title', 'Patient Records') }} />
+      <View style={[styles.header, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+        <Pressable onPress={() => router.back()} style={[styles.backBtn, { marginEnd: isRTL ? 0 : spacing.md, marginStart: isRTL ? spacing.md : 0 }]}>
+          <View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }] }}>
+            <Icon name="arrow-back" size={24} color={colors.on_surface} />
+          </View>
         </Pressable>
-        <View>
-          <Text style={styles.title}>{t('records.title', 'Patient Records')}</Text>
-          <Text style={styles.subtitle}>{t('caregiverReminders.managingFor')} {selectedPatientName}</Text>
+        <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+          <Text style={[styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{t('records.title', 'Patient Records')}</Text>
+          <Text style={[styles.subtitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('caregiverReminders.managingFor')} {selectedPatientName}</Text>
         </View>
       </View>
 
-      <View style={styles.actionRow}>
+      <View style={[styles.actionRow, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
         <AppButton 
           title={t('records.uploadBtn', 'Upload Record')} 
           onPress={() => router.push('/(caregiver)/records/upload')}
@@ -171,13 +175,10 @@ export default function RecordsListScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
-  backBtn: {
-    marginEnd: spacing.md,
-  },
+  backBtn: {},
   title: {
     fontFamily: typography.family.display,
     fontSize: typography.size.xl,
@@ -199,13 +200,11 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   cardHeader: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.sm,
   },
   cardTitleContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     marginEnd: spacing.sm,
@@ -214,7 +213,6 @@ const styles = StyleSheet.create({
     fontFamily: typography.family.title,
     fontSize: typography.size.base,
     color: colors.on_surface,
-    marginStart: spacing.xs,
     flex: 1,
   },
   categoryBadge: {
@@ -233,16 +231,12 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.on_surface_variant,
     marginBottom: spacing.xs,
-    marginStart: spacing.xs,
   },
   cardDetailRow: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: spacing.xs,
   },
   cardActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     gap: spacing.sm,
     marginTop: spacing.md,
     paddingTop: spacing.sm,

@@ -261,6 +261,7 @@ interface ReminderCardProps {
 
 function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCardProps) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const isGuided = reminder.reminderType === 'guided';
   const isHighPriority = reminder.priority === 'high' || reminder.priority === 'critical';
   
@@ -327,13 +328,13 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
 
       {/* Action buttons - Different for Simple vs Guided */}
       {actionLoading ? (
-        <View style={styles.actionLoading}>
+        <View style={[styles.actionLoading, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <ActivityIndicator size="small" color={colors.primary[500]} />
           <Text style={styles.actionLoadingText}>{t('patientReminders.saving')}</Text>
         </View>
       ) : isGuided ? (
         // Guided Reminder: Start Now, Snooze, Skip
-        <View style={styles.actionRow}>
+        <View style={[styles.actionRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <ActionButton
             label={t('patientReminders.startNow')}
             icon="play-circle"
@@ -358,7 +359,7 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
         </View>
       ) : reminder.reminderType === 'game_session' ? (
         // Game Session Reminder: Play Game, Snooze, Skip
-        <View style={styles.actionRow}>
+        <View style={[styles.actionRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <ActionButton
             label={t('patientReminders.game_session')}
             icon="play-circle"
@@ -383,7 +384,7 @@ function ReminderCard({ reminder, actionLoading, onAction, onPress }: ReminderCa
         </View>
       ) : (
         // Simple Reminder: Done, Snooze, Skip
-        <View style={styles.actionRow}>
+        <View style={[styles.actionRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <ActionButton
             label={t('patientReminders.done')}
             icon="checkmark-circle"
@@ -426,9 +427,11 @@ function ActionButton({
   bg: string;
   onPress: () => void;
 }) {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
     <Pressable
-      style={({ pressed }) => [styles.actionBtn, { backgroundColor: bg }, pressed && styles.actionBtnPressed]}
+      style={({ pressed }) => [styles.actionBtn, { backgroundColor: bg, flexDirection: isRTL ? 'row-reverse' : 'row' }, pressed && styles.actionBtnPressed]}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -443,6 +446,7 @@ function ActionButton({
 
 function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null; onClose: () => void }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   if (!reminder) return null;
 
   const days = [
@@ -454,7 +458,7 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={styles.modal}>
         <View style={styles.modalHandle} />
-        <View style={styles.modalHeader}>
+        <View style={[styles.modalHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Text style={styles.modalTitle}>{t('patientReminders.details')}</Text>
           <Pressable onPress={onClose} style={styles.modalClose} accessibilityLabel="Close">
             <Icon name="close" size={24} color={colors.neutral[600]} />
@@ -463,10 +467,10 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
         <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
           {/* Main info */}
           <View style={styles.detailSection}>
-            <View style={styles.detailIconRow}>
+            <View style={[styles.detailIconRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name={getCategoryIcon(reminder.category)} size={32} color={colors.primary[500]} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.detailTitle}>{reminder.title}</Text>
+              <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+                <Text style={[styles.detailTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{reminder.title}</Text>
                 <StatusChip label={t(`categories.${reminder.category}`, { defaultValue: reminder.category })} variant="info" />
               </View>
             </View>
@@ -474,7 +478,7 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
 
           {/* Schedule */}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionLabel}>{t('patientReminders.schedule')}</Text>
+            <Text style={[styles.detailSectionLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.schedule')}</Text>
             <DetailRow icon="time-outline" label={t('patientReminders.time')} value={reminder.scheduledTime} />
             <DetailRow icon="calendar-outline" label={t('patientReminders.startDate')} value={reminder.startDate} />
             {reminder.endDate && <DetailRow icon="calendar-clear-outline" label={t('patientReminders.endDate')} value={reminder.endDate} />}
@@ -498,15 +502,15 @@ function ReminderDetailModal({ reminder, onClose }: { reminder: Reminder | null;
           {/* Description */}
           {reminder.description && (
             <View style={styles.detailSection}>
-              <Text style={styles.detailSectionLabel}>{t('patientReminders.notes')}</Text>
-              <Text style={styles.detailDescription}>{reminder.description}</Text>
+              <Text style={[styles.detailSectionLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.notes')}</Text>
+              <Text style={[styles.detailDescription, { textAlign: isRTL ? 'right' : 'left' }]}>{reminder.description}</Text>
             </View>
           )}
 
           {/* Snooze */}
           {reminder.snoozeEnabled && (
             <View style={styles.detailSection}>
-              <Text style={styles.detailSectionLabel}>{t('patientReminders.snoozeLabel')}</Text>
+              <Text style={[styles.detailSectionLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientReminders.snoozeLabel')}</Text>
               <DetailRow
                 icon="notifications-outline"
                 label={t('patientReminders.snoozeDuration')}
@@ -574,11 +578,12 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
   };
 
   if (!visible || !run) return null;
-
+  const isRTL = i18n.language === 'ar';
+ 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <View style={styles.runContainer}>
-        <View style={styles.runHeader}>
+        <View style={[styles.runHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Text style={styles.runTitle}>{run.template?.title || t('patientReminders.checklistDefaultTitle')}</Text>
           <Pressable onPress={onClose} style={styles.runClose}>
             <Icon name="close" size={24} color={colors.neutral[600]} />
@@ -587,7 +592,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
 
         {/* Progress bar */}
         <View style={styles.runProgressSection}>
-          <View style={styles.runProgressLabelRow}>
+          <View style={[styles.runProgressLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Text style={styles.runProgressLabel}>
               {Intl.NumberFormat(i18n.language).format(completedCount)} / {Intl.NumberFormat(i18n.language).format(totalSteps)} {t('patientReminders.stepsCompleted')}
             </Text>
@@ -610,7 +615,7 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
             return (
               <Pressable
                 key={step.id}
-                style={[styles.runStepRow, done && styles.runStepRowDone]}
+                style={[styles.runStepRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }, done && styles.runStepRowDone]}
                 onPress={() => toggleStep(step.id)}
                 accessibilityRole="checkbox"
                 accessibilityLabel={step.title}
@@ -619,11 +624,11 @@ function ChecklistExecutionModal({ run, visible, onClose, onComplete }: Checklis
                 <View style={[styles.runStepCheck, done && styles.runStepCheckDone]}>
                   {done && <Icon name="checkmark" size={16} color="#fff" />}
                 </View>
-                <View style={styles.runStepInfo}>
-                  <Text style={styles.runStepNumber}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
-                  <Text style={[styles.runStepTitle, done && styles.runStepTitleDone]}>{step.title}</Text>
+                <View style={[styles.runStepInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                  <Text style={[styles.runStepNumber, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
+                  <Text style={[styles.runStepTitle, { textAlign: isRTL ? 'right' : 'left' }, done && styles.runStepTitleDone]}>{step.title}</Text>
                   {step.description ? (
-                    <Text style={styles.runStepDesc}>{step.description}</Text>
+                    <Text style={[styles.runStepDesc, { textAlign: isRTL ? 'right' : 'left' }]}>{step.description}</Text>
                   ) : null}
                   {/* Media Section */}
                   {(imageSource || videoSource) && (
@@ -677,11 +682,13 @@ function VideoPlayer({ url }: { url: string }) {
 }
 
 function DetailRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
-    <View style={styles.detailRow}>
+    <View style={[styles.detailRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
       <Icon name={icon as any} size={16} color={colors.neutral[400]} />
-      <Text style={styles.detailRowLabel}>{label}</Text>
-      <Text style={styles.detailRowValue}>{value}</Text>
+      <Text style={[styles.detailRowLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{label}</Text>
+      <Text style={[styles.detailRowValue, { textAlign: isRTL ? 'right' : 'left' }]}>{value}</Text>
     </View>
   );
 }

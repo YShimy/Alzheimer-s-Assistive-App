@@ -167,9 +167,9 @@ export default function ImportantInfoScreen() {
               <Icon name="arrow-back" size={24} color={colors.on_surface} />
             </View>
           </Pressable>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.title}>{t('importantInfo.title', 'Important Information')}</Text>
-            <Text style={styles.subtitle} numberOfLines={1}>
+          <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+            <Text style={[styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{t('importantInfo.title', 'Important Information')}</Text>
+            <Text style={[styles.subtitle, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={1}>
               {selectedPatientName ?? t('auth.patient', 'Patient')}
             </Text>
           </View>
@@ -177,23 +177,23 @@ export default function ImportantInfoScreen() {
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {/* Subtitle */}
-          <Text style={styles.description}>
+          <Text style={[styles.description, { textAlign: isRTL ? 'right' : 'left' }]}>
             {t('importantInfo.description', 'Caregiver-provided information to support daily care and communication.')}
           </Text>
 
           {/* Last reviewed / updated info */}
           {info.lastReviewedAt && (
-            <View style={styles.metaRow}>
+            <View style={[styles.metaRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name="checkmark-circle-outline" size={16} color={colors.secondary.main} />
-              <Text style={styles.metaText}>
+              <Text style={[styles.metaText, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>
                 {t('importantInfo.lastReviewed', 'Last reviewed')}: {new Date(info.lastReviewedAt).toLocaleDateString()}
               </Text>
             </View>
           )}
           {info.updatedAt && (
-            <View style={styles.metaRow}>
+            <View style={[styles.metaRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name="time-outline" size={16} color={colors.on_surface_variant} />
-              <Text style={styles.metaText}>
+              <Text style={[styles.metaText, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>
                 {t('importantInfo.lastUpdated', 'Last updated')}: {new Date(info.updatedAt).toLocaleDateString()}
               </Text>
             </View>
@@ -208,7 +208,7 @@ export default function ImportantInfoScreen() {
                   style={[styles.sectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
                   onPress={() => toggleSection(section.titleKey)}
                 >
-                  <Text style={styles.sectionTitle}>
+                  <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>
                     {t(section.titleKey, section.defaultTitle)}
                   </Text>
                   <View style={{ transform: [{ rotate: isCollapsed ? '0deg' : '180deg' }] }}>
@@ -219,14 +219,14 @@ export default function ImportantInfoScreen() {
                 {!isCollapsed && (
                   <View style={styles.sectionBody}>
                     {section.warning && (
-                      <View style={styles.warningBox}>
+                      <View style={[styles.warningBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                         <Icon name="information-circle-outline" size={16} color={colors.warning.main} />
-                        <Text style={styles.warningText}>{section.warning}</Text>
+                        <Text style={[styles.warningText, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.sm, marginEnd: isRTL ? spacing.sm : 0 }]}>{section.warning}</Text>
                       </View>
                     )}
                     {section.fields.map((field) => (
                       <View key={field.key} style={styles.fieldContainer}>
-                        <Text style={styles.fieldLabel}>{field.label}</Text>
+                        <Text style={[styles.fieldLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{field.label}</Text>
                         <TextInput
                           style={[
                             styles.input,
@@ -263,7 +263,7 @@ export default function ImportantInfoScreen() {
           </Pressable>
 
           <Pressable
-            style={[styles.reviewBtn, reviewing && styles.btnDisabled]}
+            style={[styles.reviewBtn, reviewing && styles.btnDisabled, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
             onPress={handleMarkReviewed}
             disabled={reviewing}
           >

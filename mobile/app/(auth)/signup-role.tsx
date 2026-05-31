@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, Icon } from '@/src/shared/ui';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 
 /**
@@ -9,7 +10,8 @@ import { colors, typography, spacing, radius, shadows } from '@/src/infrastructu
  * Inserted between signup-email and signup-verify.
  */
 export default function SignupRoleScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { email } = useLocalSearchParams<{ email: string }>();
 
@@ -22,9 +24,12 @@ export default function SignupRoleScreen() {
 
   return (
     <ScreenContainer scroll={false} backgroundColor={colors.primary[50]}>
+      <View style={{ position: 'absolute', top: 10, right: -8, zIndex: 10 }}>
+        <LanguageToggleButton />
+      </View>
       <View style={styles.content}>
         {/* Back */}
-        <Pressable onPress={() => router.back()} style={styles.backButton} accessibilityLabel="Go back">
+        <Pressable onPress={() => router.back()} style={[styles.backButton, { transform: [{ scaleX: isRTL ? -1 : 1 }] }]} accessibilityLabel="Go back">
           <Icon name="arrow-back" size={24} color={colors.neutral[700]} />
         </Pressable>
 
@@ -41,7 +46,7 @@ export default function SignupRoleScreen() {
         <View style={styles.cards}>
           {/* Patient Card */}
           <Pressable
-            style={({ pressed }) => [styles.roleCard, pressed && styles.roleCardPressed]}
+            style={({ pressed }) => [styles.roleCard, { flexDirection: isRTL ? 'row-reverse' : 'row' }, pressed && styles.roleCardPressed]}
             onPress={() => handleSelect('patient')}
             accessibilityRole="button"
             accessibilityLabel={t('auth.rolePatient')}
@@ -50,15 +55,15 @@ export default function SignupRoleScreen() {
               <Icon name="accessibility-outline" size={40} color={colors.primary[500]} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.roleTitle}>{t('auth.rolePatient')}</Text>
-              <Text style={styles.roleSub}>{t('auth.rolePatientSub')}</Text>
+              <Text style={[styles.roleTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.rolePatient')}</Text>
+              <Text style={[styles.roleSub, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.rolePatientSub')}</Text>
             </View>
-            <Icon name="chevron-forward" size={24} color={colors.primary[400]} />
+            <Icon name={isRTL ? "chevron-back" : "chevron-forward"} size={24} color={colors.primary[400]} />
           </Pressable>
 
           {/* Caregiver Card */}
           <Pressable
-            style={({ pressed }) => [styles.roleCard, styles.caregiverCard, pressed && styles.roleCardPressed]}
+            style={({ pressed }) => [styles.roleCard, styles.caregiverCard, { flexDirection: isRTL ? 'row-reverse' : 'row' }, pressed && styles.roleCardPressed]}
             onPress={() => handleSelect('caregiver')}
             accessibilityRole="button"
             accessibilityLabel={t('auth.roleCaregiver')}
@@ -67,10 +72,10 @@ export default function SignupRoleScreen() {
               <Icon name="heart-outline" size={40} color={colors.secondary[600]} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.roleTitle, { color: colors.secondary[700] }]}>{t('auth.roleCaregiver')}</Text>
-              <Text style={styles.roleSub}>{t('auth.roleCaregiverSub')}</Text>
+              <Text style={[styles.roleTitle, { color: colors.secondary[700], textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.roleCaregiver')}</Text>
+              <Text style={[styles.roleSub, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.roleCaregiverSub')}</Text>
             </View>
-            <Icon name="chevron-forward" size={24} color={colors.secondary[400]} />
+            <Icon name={isRTL ? "chevron-back" : "chevron-forward"} size={24} color={colors.secondary[400]} />
           </Pressable>
         </View>
 

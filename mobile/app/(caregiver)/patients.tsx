@@ -6,14 +6,17 @@ import { ScreenContainer, AppCard, AppButton, AppInput, StatusChip, Icon, Loadin
 import { colors, typography, spacing, radius } from '@/src/infrastructure/theme/tokens';
 import { carelinksApi } from '@/src/features/carelinks/api';
 import type { CareLink } from '@/src/features/carelinks/types';
+import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 
 /**
  * Caregiver — linked patients management screen.
  * View, invite, and manage care links.
  */
 export default function CaregiverPatientsScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
+  const { selectPatient } = useCaregiverPatientStore();
   const [links, setLinks] = useState<CareLink[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,12 +72,12 @@ export default function CaregiverPatientsScreen() {
         }
         renderItem={({ item }) => (
           <AppCard style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={styles.cardLeft}>
+            <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <View style={[styles.cardLeft, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="person-circle-outline" size={36} color={colors.secondary[500]} />
-                <View>
-                  <Text style={styles.patientName}>{item.patient?.displayName || t('caregiverHome.pending')}</Text>
-                  <Text style={styles.patientEmail}>{item.patient?.email || `${t('auth.code')}: ${item.inviteCode}`}</Text>
+                <View style={{ alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+                  <Text style={[styles.patientName, { textAlign: isRTL ? 'right' : 'left' }]}>{item.patient?.displayName || t('caregiverHome.pending')}</Text>
+                  <Text style={[styles.patientEmail, { textAlign: isRTL ? 'right' : 'left' }]}>{item.patient?.email || `${t('auth.code')}: ${item.inviteCode}`}</Text>
                 </View>
               </View>
               <StatusChip
@@ -91,7 +94,7 @@ export default function CaregiverPatientsScreen() {
                   <PermItem label={t('caregiverPatients.viewProgress')} enabled={item.permissions.canViewProgress} />
                   <PermItem label={t('caregiverPatients.createChecklists')} enabled={item.permissions.canCreateChecklists} />
                 </View>
-                <View style={styles.cardActions}>
+                <View style={[styles.cardActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                     <AppButton
                       title={t('caregiverPatients.manageContacts')}
                       onPress={() => router.push({
@@ -103,11 +106,11 @@ export default function CaregiverPatientsScreen() {
                       style={styles.actionBtn}
                     />
                     <AppButton
-                      title={t('patientHome.checklists')}
-                      onPress={() => router.push({
-                         pathname: '/(caregiver)/manage-checklists',
-                         params: { patientId: item.patientUserId, patientName: item.patient?.displayName }
-                      })}
+                      title={t('caregiverPatients.manageReminders')}
+                      onPress={() => {
+                        selectPatient(item.patientUserId as string, (item.patient?.displayName || t('caregiverHome.pending')) as string);
+                        router.push('/(caregiver)/manage-reminders');
+                      }}
                       variant="outline"
                       size="sm"
                       style={styles.actionBtn}
@@ -130,14 +133,16 @@ export default function CaregiverPatientsScreen() {
 }
 
 function PermItem({ label, enabled }: { label: string; enabled: boolean }) {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   return (
-    <View style={styles.permRow}>
+    <View style={[styles.permRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
       <Icon
         name={enabled ? 'checkmark-circle' : 'close-circle-outline'}
         size={18}
         color={enabled ? colors.success.main : colors.neutral[300]}
       />
-      <Text style={[styles.permLabel, !enabled && { color: colors.neutral[400] }]}>{label}</Text>
+      <Text style={[styles.permLabel, { textAlign: isRTL ? 'right' : 'left' }, !enabled && { color: colors.neutral[400] }]}>{label}</Text>
     </View>
   );
 }

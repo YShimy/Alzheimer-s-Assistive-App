@@ -21,12 +21,15 @@ import { useCaregiverPatientStore } from '@/src/state/caregiverPatientStore';
 import { useTranslation } from 'react-i18next';
 
 const QUESTION_FAMILIES = [
-  'TIME_ORIENTATION',
-  'PLACE_ORIENTATION',
-  'ROUTINE_ORIENTATION',
+  'ORIENTATION_DATE',
+  'ORIENTATION_PLACE',
+  'CAREGIVER',
+  'DAILY_ROUTINE',
   'APP_NAVIGATION',
+  'SAFETY_SUPPORT',
   'PEOPLE_RECOGNITION',
   'SUPPORT_FACT',
+  'OTHER',
 ];
 
 const SUPPORT_LEVEL_KEYS = [
@@ -52,7 +55,7 @@ export default function ManageSRItemsScreen() {
   const [prompt, setPrompt] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [cueText, setCueText] = useState('');
-  const [category, setCategory] = useState('TIME_ORIENTATION');
+  const [category, setCategory] = useState('ORIENTATION_DATE');
   const [distractors, setDistractors] = useState('');
   const [supportRole, setSupportRole] = useState('');
   const [patientVisible, setPatientVisible] = useState(true);
@@ -153,7 +156,7 @@ export default function ManageSRItemsScreen() {
     setPrompt('');
     setCorrectAnswer('');
     setCueText('');
-    setCategory('TIME_ORIENTATION');
+    setCategory('ORIENTATION_DATE');
     setDistractors('');
     setSupportRole('');
     setPatientVisible(true);

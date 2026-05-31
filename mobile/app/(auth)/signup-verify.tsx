@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { authApi } from '@/src/features/auth/api';
 import { ApiError } from '@/src/infrastructure/api/client';
@@ -20,7 +21,8 @@ const RESEND_COOLDOWN = 60; // seconds
  * Signup Step 2 — Enter the 6-digit verification code.
  */
 export default function SignupVerifyScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { email, role } = useLocalSearchParams<{ email: string; role: string }>();
   const [code, setCode] = useState('');
@@ -116,9 +118,13 @@ export default function SignupVerifyScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
+        <View style={{ position: 'absolute', top: 10, right: -8, zIndex: 10 }}>
+          <LanguageToggleButton />
+        </View>
+
         <View style={styles.content}>
           {/* Back */}
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Pressable onPress={() => router.back()} style={[styles.backButton, { transform: [{ scaleX: isRTL ? -1 : 1 }] }]}>
             <Icon name="arrow-back" size={24} color={colors.neutral[700]} />
           </Pressable>
 
@@ -127,7 +133,7 @@ export default function SignupVerifyScreen() {
             <View style={styles.iconCircle}>
               <Icon name="shield-checkmark-outline" size={32} color={colors.primary[500]} />
             </View>
-            <Text style={styles.title}>{t('auth.verifyTitle')}</Text>
+            <Text style={[styles.title, { textAlign: 'center' }]}>{t('auth.verifyTitle')}</Text>
             <Text style={styles.subtitle}>
               {t('auth.verifySubtitle')}
             </Text>
@@ -158,17 +164,17 @@ export default function SignupVerifyScreen() {
 
             {/* Success message */}
             {!!success && (
-              <View style={styles.successBox}>
+              <View style={[styles.successBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="checkmark-circle-outline" size={16} color={colors.success.main} />
-                <Text style={styles.successText}>{success}</Text>
+                <Text style={[styles.successText, { textAlign: isRTL ? 'right' : 'left' }]}>{success}</Text>
               </View>
             )}
 
             {/* Error message */}
             {!!error && (
-              <View style={styles.errorBox}>
+              <View style={[styles.errorBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
-                <Text style={styles.errorText}>{error}</Text>
+                <Text style={[styles.errorText, { textAlign: isRTL ? 'right' : 'left' }]}>{error}</Text>
               </View>
             )}
 

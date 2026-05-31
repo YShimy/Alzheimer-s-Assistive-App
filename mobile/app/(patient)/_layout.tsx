@@ -104,15 +104,27 @@ export default function PatientLayout() {
       {/* Hidden screens from the tab bar */}
       <Tabs.Screen
         name="contacts/import"
-        options={{ href: null }}
+        options={{
+          href: null,
+          title: t('contacts.importTitle', 'Import Contacts'),
+          headerTitle: t('contacts.importTitle', 'Import Contacts'),
+        }}
       />
       <Tabs.Screen
         name="contacts/consent"
-        options={{ href: null }}
+        options={{
+          href: null,
+          title: t('contacts.consentTitle', 'Contacts Consent'),
+          headerTitle: t('contacts.consentTitle', 'Contacts Consent'),
+        }}
       />
       <Tabs.Screen
         name="contacts/[id]"
-        options={{ href: null }}
+        options={{
+          href: null,
+          title: t('contacts.detailsTitle', 'Contact Details'),
+          headerTitle: t('contacts.detailsTitle', 'Contact Details'),
+        }}
       />
       <Tabs.Screen
         name="memory-match-game"

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer, AppButton, AppInput, Icon } from '@/src/shared/ui';
+import { LanguageToggleButton } from '@/src/shared/ui/LanguageToggleButton';
 import { colors, typography, spacing, radius, shadows } from '@/src/infrastructure/theme/tokens';
 import { useSessionStore } from '@/src/state/sessionStore';
 
@@ -15,7 +16,8 @@ import { useSessionStore } from '@/src/state/sessionStore';
  * User can skip this step entirely.
  */
 export default function CaregiverLinkScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const role = useSessionStore((s) => s.role);
   const [code, setCode] = useState('');
@@ -53,6 +55,9 @@ export default function CaregiverLinkScreen() {
 
   return (
     <ScreenContainer scroll={false} backgroundColor={colors.primary[50]}>
+      <View style={{ position: 'absolute', top: 10, right: -8, zIndex: 10 }}>
+        <LanguageToggleButton />
+      </View>
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
@@ -83,9 +88,9 @@ export default function CaregiverLinkScreen() {
           />
 
           {!!error && (
-            <View style={styles.errorBox}>
+            <View style={[styles.errorBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
-              <Text style={styles.errorText}>{error}</Text>
+              <Text style={[styles.errorText, { textAlign: isRTL ? 'right' : 'left' }]}>{error}</Text>
             </View>
           )}
         </View>

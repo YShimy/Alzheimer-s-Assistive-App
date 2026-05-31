@@ -27,6 +27,7 @@ import { useSessionStore } from '@/src/state/sessionStore';
  */
 export default function PatientChecklistScreen() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const { userId } = useSessionStore();
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
@@ -161,7 +162,7 @@ export default function PatientChecklistScreen() {
 
         {/* FAB to Manage Checklists */}
         <Pressable
-          style={styles.fab}
+          style={[styles.fab, { left: isRTL ? spacing['2xl'] : undefined, right: isRTL ? undefined : spacing['2xl'] }]}
           onPress={() => router.push('/(patient)/manage-checklists')}
           accessibilityRole="button"
           accessibilityLabel="Manage Checklists"
@@ -199,16 +200,17 @@ function ChecklistTemplateCard({
   starting: boolean;
 }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const stepCount = template.steps?.length ?? 0;
   return (
     <AppCard style={styles.templateCard}>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
         <View style={styles.categoryBadge}>
           <Icon name={getCategoryIcon(template.category)} size={22} color={colors.primary[500]} />
         </View>
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle}>{template.title}</Text>
-          <View style={styles.cardMeta}>
+        <View style={[styles.cardInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+          <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{template.title}</Text>
+          <View style={[styles.cardMeta, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Icon name="list-outline" size={12} color={colors.neutral[400]} />
             <Text style={styles.cardMetaText}>{Intl.NumberFormat(i18n.language).format(stepCount)} {stepCount === 1 ? t('patientChecklists.step') : t('patientChecklists.steps')}</Text>
             {template.estimatedMinutes && (
@@ -222,13 +224,13 @@ function ChecklistTemplateCard({
         </View>
       </View>
       {template.description ? (
-        <Text style={styles.cardDesc} numberOfLines={2}>{template.description}</Text>
+        <Text style={[styles.cardDesc, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={2}>{template.description}</Text>
       ) : null}
       <AppButton
         title={starting ? t('patientChecklists.starting') : t('patientChecklists.startBtn')}
         onPress={onStart}
         loading={starting}
-        icon={<Icon name="play-circle-outline" size={20} color="#fff" />}
+        icon={<View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }] }}><Icon name="play-circle-outline" size={20} color="#fff" /></View>}
         style={{ marginTop: spacing.md }}
       />
     </AppCard>
@@ -253,6 +255,7 @@ function RunModal({
   submitting: boolean;
 }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const steps = run.template?.steps ?? [];
   const completedCount = steps.filter((s) =>
     run.stepProgress.find((sp) => sp.stepId === s.id && sp.completed),
@@ -264,8 +267,8 @@ function RunModal({
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onAbandon}>
       <View style={styles.modal}>
         <View style={styles.modalHandle} />
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>{run.template?.title ?? t('patientReminders.checklistDefaultTitle')}</Text>
+        <View style={[styles.modalHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+          <Text style={[styles.modalTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{run.template?.title ?? t('patientReminders.checklistDefaultTitle')}</Text>
           <Pressable onPress={onAbandon} style={styles.modalClose} accessibilityLabel="Close">
             <Icon name="close" size={22} color={colors.neutral[600]} />
           </Pressable>
@@ -273,8 +276,8 @@ function RunModal({
 
         {/* Progress bar */}
         <View style={styles.progressSection}>
-          <View style={styles.progressLabelRow}>
-            <Text style={styles.progressLabel}>{t('patientChecklists.stepsDone', { done: completedCount, total: steps.length })}</Text>
+          <View style={[styles.progressLabelRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Text style={[styles.progressLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientChecklists.stepsDone', { done: completedCount, total: steps.length })}</Text>
             {allDone && (
               <Icon name="checkmark-circle" size={18} color={colors.success.main} />
             )}
@@ -291,7 +294,7 @@ function RunModal({
             return (
               <Pressable
                 key={step.id}
-                style={[styles.stepRow, done && styles.stepRowDone]}
+                style={[styles.stepRow, done && styles.stepRowDone, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
                 onPress={() => onToggleStep(step.id)}
                 accessibilityRole="checkbox"
                 accessibilityLabel={step.title}
@@ -300,11 +303,11 @@ function RunModal({
                 <View style={[styles.stepCheck, done && styles.stepCheckDone]}>
                   {done && <Icon name="checkmark" size={16} color="#fff" />}
                 </View>
-                <View style={styles.stepInfo}>
-                  <Text style={[styles.stepNumber]}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
-                  <Text style={[styles.stepTitle, done && styles.stepTitleDone]}>{step.title}</Text>
+                <View style={[styles.stepInfo, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                  <Text style={[styles.stepNumber, { textAlign: isRTL ? 'right' : 'left' }]}>{t('patientChecklists.stepNumber', { num: Intl.NumberFormat(i18n.language).format(idx + 1) })}</Text>
+                  <Text style={[styles.stepTitle, done && styles.stepTitleDone, { textAlign: isRTL ? 'right' : 'left' }]}>{step.title}</Text>
                   {step.description ? (
-                    <Text style={styles.stepDesc}>{step.description}</Text>
+                    <Text style={[styles.stepDesc, { textAlign: isRTL ? 'right' : 'left' }]}>{step.description}</Text>
                   ) : null}
                   <MediaSection step={step} />
                 </View>
@@ -318,7 +321,7 @@ function RunModal({
               onPress={onComplete}
               loading={submitting}
               variant={allDone ? 'primary' : 'outline'}
-              icon={<Icon name="checkmark-circle-outline" size={20} color={allDone ? '#fff' : colors.primary[500]} />}
+              icon={<View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }] }}><Icon name="checkmark-circle-outline" size={20} color={allDone ? '#fff' : colors.primary[500]} /></View>}
             />
             <AppButton
               title={t('patientChecklists.saveExitBtn')}

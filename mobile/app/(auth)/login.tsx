@@ -51,7 +51,8 @@ if (!isExpoGo) {
  * Supports email/password sign-in, Google sign-in, and signup navigation.
  */
 export default function LoginScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const router = useRouter();
   const setSession = useSessionStore((s) => s.setSession);
   const [email, setEmail] = useState('');
@@ -174,14 +175,14 @@ export default function LoginScreen() {
             <View style={styles.logoCircle}>
               <MemoCareLogo size={52} />
             </View>
-            <Text style={styles.title}>{t('auth.appTitle')}</Text>
+            <Text style={[styles.title, { textAlign: 'center' }]}>{t('auth.appTitle')}</Text>
             <Text style={styles.subtitle}>{t('auth.appSubtitle')}</Text>
           </View>
 
           {/* Sign In Card */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>{t('auth.signInTitle')}</Text>
-            <Text style={styles.cardSubtitle}>{t('auth.signInSubtitle')}</Text>
+            <Text style={[styles.cardTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.signInTitle')}</Text>
+            <Text style={[styles.cardSubtitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('auth.signInSubtitle')}</Text>
 
             <AppInput
               label={t('auth.email')}
@@ -216,16 +217,16 @@ export default function LoginScreen() {
 
             {/* Error message */}
             {!!error && (
-              <View style={styles.errorBox}>
+              <View style={[styles.errorBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="alert-circle-outline" size={16} color={colors.error.main} />
-                <Text style={styles.errorText}>{error}</Text>
+                <Text style={[styles.errorText, { textAlign: isRTL ? 'right' : 'left' }]}>{error}</Text>
               </View>
             )}
 
 
 
             {/* Sign Up Link */}
-            <View style={styles.switchRow}>
+            <View style={[styles.switchRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
               <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
               <Pressable onPress={() => router.push('/(auth)/signup-email')}>
                 <Text style={styles.switchLink}>{t('auth.signUp')}</Text>

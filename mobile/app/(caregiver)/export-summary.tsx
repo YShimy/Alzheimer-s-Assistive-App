@@ -139,30 +139,30 @@ export default function ExportSummaryScreen() {
             <Icon name="arrow-back" size={24} color={colors.on_surface} />
           </View>
         </Pressable>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.title}>{t('summaryExport.title', 'Export Summary PDF')}</Text>
-          <Text style={styles.subtitle} numberOfLines={1}>
+        <View style={{ flex: 1, alignItems: isRTL ? 'flex-end' : 'flex-start' }}>
+          <Text style={[styles.title, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.title', 'Export Summary PDF')}</Text>
+          <Text style={[styles.subtitle, { textAlign: isRTL ? 'right' : 'left' }]} numberOfLines={1}>
             {selectedPatientName ?? t('auth.patient', 'Patient')}
           </Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.description}>
+        <Text style={[styles.description, { textAlign: isRTL ? 'right' : 'left' }]}>
           {t('summaryExport.description', 'Create a caregiver summary from reminders, routines, engagement, records, and important information.')}
         </Text>
 
         {/* Date Range */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('summaryExport.dateRange', 'Date Range')}</Text>
+          <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.dateRange', 'Date Range')}</Text>
           {PRESETS.map(p => (
             <Pressable
               key={p.value}
-              style={[styles.presetOption, preset === p.value && styles.presetOptionSelected]}
+              style={[styles.presetOption, preset === p.value && styles.presetOptionSelected, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
               onPress={() => setPreset(p.value)}
             >
               <View style={[styles.radio, preset === p.value && styles.radioSelected]} />
-              <Text style={[styles.presetLabel, preset === p.value && styles.presetLabelSelected]}>
+              <Text style={[styles.presetLabel, preset === p.value && styles.presetLabelSelected, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.sm, marginEnd: isRTL ? spacing.sm : 0 }]}>
                 {t(p.labelKey, p.defaultLabel)}
               </Text>
             </Pressable>
@@ -171,7 +171,7 @@ export default function ExportSummaryScreen() {
 
         {/* Language Selection */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('summaryExport.language', 'Export Language')}</Text>
+          <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.language', 'Export Language')}</Text>
           <View style={[styles.langRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Pressable
               style={[styles.langOption, exportLang === 'en' && styles.langOptionSelected]}
@@ -194,10 +194,10 @@ export default function ExportSummaryScreen() {
 
         {/* Sections */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('summaryExport.sections', 'Include Sections')}</Text>
+          <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.sections', 'Include Sections')}</Text>
           {SECTION_LABELS.map(s => (
             <View key={s.key} style={[styles.switchRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-              <Text style={styles.switchLabel}>{t(s.labelKey, s.defaultLabel)}</Text>
+              <Text style={[styles.switchLabel, { textAlign: isRTL ? 'right' : 'left' }]}>{t(s.labelKey, s.defaultLabel)}</Text>
               <Switch
                 value={sections[s.key]}
                 onValueChange={v => setSections(prev => ({ ...prev, [s.key]: v }))}
@@ -210,10 +210,10 @@ export default function ExportSummaryScreen() {
 
         {/* Success state after generation */}
         {lastExportUrl && (
-          <View style={styles.successBox}>
+          <View style={[styles.successBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
             <Icon name="checkmark-circle" size={22} color={colors.success.main} />
-            <Text style={styles.successText}>{t('summaryExport.successMsg', 'Summary PDF generated.')}</Text>
-            <Pressable style={styles.openPdfBtn} onPress={() => handleOpenPdf(lastExportUrl)}>
+            <Text style={[styles.successText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.successMsg', 'Summary PDF generated.')}</Text>
+            <Pressable style={[styles.openPdfBtn, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={() => handleOpenPdf(lastExportUrl)}>
               <Icon name="open-outline" size={18} color={colors.on_secondary} />
               <Text style={styles.openPdfBtnText}>{t('summaryExport.openPdf', 'Open PDF')}</Text>
             </Pressable>
@@ -227,12 +227,12 @@ export default function ExportSummaryScreen() {
           disabled={generating}
         >
           {generating ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: spacing.sm }}>
               <ActivityIndicator size="small" color="#fff" />
               <Text style={styles.generateBtnText}>{t('summaryExport.generating', 'Generating…')}</Text>
             </View>
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: spacing.sm }}>
               <Icon name="document-text-outline" size={20} color={colors.on_secondary} />
               <Text style={styles.generateBtnText}>{t('summaryExport.generateBtn', 'Generate PDF')}</Text>
             </View>
@@ -240,9 +240,9 @@ export default function ExportSummaryScreen() {
         </Pressable>
 
         {/* Disclaimer */}
-        <View style={styles.disclaimerBox}>
+        <View style={[styles.disclaimerBox, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <Icon name="information-circle-outline" size={16} color={colors.on_surface_variant} />
-          <Text style={styles.disclaimerText}>
+          <Text style={[styles.disclaimerText, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.sm, marginEnd: isRTL ? spacing.sm : 0 }]}>
             {t('summaryExport.disclaimer',
               'This summary is generated from app activity and caregiver-entered information. It is intended for caregiver organization and communication support only and is not a medical diagnosis or clinical assessment.'
             )}
@@ -250,37 +250,37 @@ export default function ExportSummaryScreen() {
         </View>
 
         {/* Previous exports */}
-        <Text style={styles.previousTitle}>{t('summaryExport.previousExports', 'Previous Exports')}</Text>
+        <Text style={[styles.previousTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.previousExports', 'Previous Exports')}</Text>
 
         {loadingList ? (
           <ActivityIndicator color={colors.secondary.main} style={{ marginVertical: spacing.xl }} />
         ) : previousExports.length === 0 ? (
-          <Text style={styles.emptyText}>{t('summaryExport.noExports', 'No previous exports yet.')}</Text>
+          <Text style={[styles.emptyText, { textAlign: isRTL ? 'right' : 'left' }]}>{t('summaryExport.noExports', 'No previous exports yet.')}</Text>
         ) : (
           previousExports.map(ex => (
             <AppCard key={ex.id} style={styles.exportCard}>
-              <View style={styles.exportCardHeader}>
+              <View style={[styles.exportCardHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 <Icon name="document-text-outline" size={18} color={colors.secondary.main} />
-                <Text style={styles.exportTitle} numberOfLines={1}>{ex.title ?? 'Export'}</Text>
+                <Text style={[styles.exportTitle, { textAlign: isRTL ? 'right' : 'left', marginStart: isRTL ? 0 : spacing.sm, marginEnd: isRTL ? spacing.sm : 0 }]} numberOfLines={1}>{ex.title ?? 'Export'}</Text>
               </View>
-              <Text style={styles.exportMeta}>
+              <Text style={[styles.exportMeta, { textAlign: isRTL ? 'right' : 'left' }]}>
                 {t('summaryExport.generated', 'Generated')}: {new Date(ex.createdAt).toLocaleDateString()}
               </Text>
-              <Text style={styles.exportMeta}>
+              <Text style={[styles.exportMeta, { textAlign: isRTL ? 'right' : 'left' }]}>
                 {t('summaryExport.range', 'Range')}: {new Date(ex.rangeStart).toLocaleDateString()} – {new Date(ex.rangeEnd).toLocaleDateString()}
               </Text>
-              <View style={styles.exportActions}>
-                <Pressable style={styles.exportActionBtn} onPress={() => handleGetDownloadUrl(ex)}>
+              <View style={[styles.exportActions, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                <Pressable style={[styles.exportActionBtn, { flexDirection: isRTL ? 'row-reverse' : 'row' }]} onPress={() => handleGetDownloadUrl(ex)}>
                   <Icon name="open-outline" size={16} color={colors.secondary.main} />
-                  <Text style={styles.exportActionText}>{t('summaryExport.openPdf', 'Open PDF')}</Text>
+                  <Text style={[styles.exportActionText, { marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>{t('summaryExport.openPdf', 'Open PDF')}</Text>
                 </Pressable>
                 <Pressable
-                  style={[styles.exportActionBtn, archivingId === ex.id && { opacity: 0.5 }]}
+                  style={[styles.exportActionBtn, archivingId === ex.id && { opacity: 0.5 }, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
                   onPress={() => handleArchive(ex)}
                   disabled={archivingId === ex.id}
                 >
                   <Icon name="archive-outline" size={16} color={colors.on_surface_variant} />
-                  <Text style={[styles.exportActionText, { color: colors.on_surface_variant }]}>{t('summaryExport.archive', 'Archive')}</Text>
+                  <Text style={[styles.exportActionText, { color: colors.on_surface_variant, marginStart: isRTL ? 0 : spacing.xs, marginEnd: isRTL ? spacing.xs : 0 }]}>{t('summaryExport.archive', 'Archive')}</Text>
                 </Pressable>
               </View>
             </AppCard>
