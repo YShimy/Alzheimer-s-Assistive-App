@@ -14,10 +14,16 @@ interface MemoryMatchState {
   currentQuestionIndex: number;
   correctFirstTry: number;
   incorrectFirstTry: number;
+  /** Per-question correctness (index matches questions array) — fixes backend submission bug */
+  answerResults: boolean[];
   responseTimesMs: number[];
   questionStartTime: number;
   scoreResult: ScoreResult | null;
   advanceDecision: AdvanceDecision | null;
+  /** Next level as computed by backend (or local fallback). Read before reset() on Practice Again. */
+  nextLevel: number | null;
+  levelChange: 'advance' | 'stay' | 'regress' | null;
+  levelMessage: string;
   sessionId: string | null;
   startedAt: number;
 
@@ -26,7 +32,13 @@ interface MemoryMatchState {
   setPhase: (phase: GamePhase) => void;
   answerQuestion: (isCorrect: boolean, responseTimeMs: number) => void;
   nextQuestion: () => void;
-  finishSession: (scoreResult: ScoreResult, advanceDecision: AdvanceDecision) => void;
+  finishSession: (
+    scoreResult: ScoreResult,
+    advanceDecision: AdvanceDecision,
+    nextLevel: number,
+    levelChange?: 'advance' | 'stay' | 'regress',
+    levelMessage?: string,
+  ) => void;
   reset: () => void;
 }
 
@@ -41,16 +53,20 @@ function initialState(): Omit<MemoryMatchState, keyof {
     currentQuestionIndex: 0,
     correctFirstTry: 0,
     incorrectFirstTry: 0,
+    answerResults: [],
     responseTimesMs: [],
     questionStartTime: 0,
     scoreResult: null,
     advanceDecision: null,
+    nextLevel: null,
+    levelChange: null,
+    levelMessage: '',
     sessionId: null,
     startedAt: 0,
   };
 }
 
-export const useMemoryMatchStore = create<MemoryMatchState>((set, get) => ({
+export const useMemoryMatchStore = create<MemoryMatchState>((set) => ({
   ...initialState(),
 
   startSession: (level, layout, questions, sessionId) =>
@@ -63,10 +79,14 @@ export const useMemoryMatchStore = create<MemoryMatchState>((set, get) => ({
       currentQuestionIndex: 0,
       correctFirstTry: 0,
       incorrectFirstTry: 0,
+      answerResults: [],
       responseTimesMs: [],
       questionStartTime: 0,
       scoreResult: null,
       advanceDecision: null,
+      nextLevel: null,
+      levelChange: null,
+      levelMessage: '',
       startedAt: Date.now(),
     }),
 
@@ -76,6 +96,7 @@ export const useMemoryMatchStore = create<MemoryMatchState>((set, get) => ({
     set((state) => ({
       correctFirstTry: state.correctFirstTry + (isCorrect ? 1 : 0),
       incorrectFirstTry: state.incorrectFirstTry + (isCorrect ? 0 : 1),
+      answerResults: [...state.answerResults, isCorrect],
       responseTimesMs: [...state.responseTimesMs, responseTimeMs],
     })),
 
@@ -85,8 +106,8 @@ export const useMemoryMatchStore = create<MemoryMatchState>((set, get) => ({
       questionStartTime: Date.now(),
     })),
 
-  finishSession: (scoreResult, advanceDecision) =>
-    set({ phase: 'result', scoreResult, advanceDecision }),
+  finishSession: (scoreResult, advanceDecision, nextLevel, levelChange = 'stay', levelMessage = '') =>
+    set({ phase: 'result', scoreResult, advanceDecision, nextLevel, levelChange, levelMessage }),
 
   reset: () => set(initialState()),
 }));

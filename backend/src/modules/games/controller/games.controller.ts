@@ -4,6 +4,8 @@
 import { Request, Response } from 'express';
 import { gamesService } from '../service/games.service.js';
 import { AppError } from '../../../shared/errors/AppError.js';
+import { shouldAdvanceLevel, clampLevel } from '../engines/memoryMatch.js';
+import { srService } from '../../spaced-retrieval/service/sr.service.js';
 
 export class GamesController {
   /**
@@ -45,10 +47,14 @@ export class GamesController {
 
   /**
    * POST /api/games/sessions/:id/complete-memory-match
-   * Complete a Memory Match session.
+   * Complete a Memory Match session and compute + persist level progression.
+   *
+   * The backend owns level computation so it cannot be faked or lost if the
+   * user closes the app before "Practice Again" is tapped.
+   *
+   * Returns { session, nextLevel, levelChange, message }.
    */
   completeMemoryMatch = async (req: Request, res: Response) => {
-    const user = req.user!;
     const sessionId = req.params.id as string;
     const dto = req.body;
 
@@ -58,15 +64,50 @@ export class GamesController {
       status: dto.quitEarly ? 'ABANDONED' : 'COMPLETED',
     });
 
-    res.json({ session });
+    let nextLevel: number = dto.levelStarted ?? 1;
+    let levelChange: 'advance' | 'stay' | 'regress' = 'stay';
+    let message = '';
+
+    // Compute level progression only for completed (non-quit) sessions
+    if (!dto.quitEarly) {
+      const accuracyPercent: number = typeof dto.accuracyPercent === 'number' ? dto.accuracyPercent : 0;
+      const itemResults: any[] = Array.isArray(dto.itemResults) ? dto.itemResults : [];
+      const totalItems = itemResults.length;
+      const incorrectFirstTry = itemResults.filter((ir: any) => !ir.firstTryCorrect).length;
+      const currentLevel: number = dto.levelStarted ?? 1;
+
+      const decision = shouldAdvanceLevel(accuracyPercent, incorrectFirstTry, totalItems, true);
+
+      if (decision === 'advance') {
+        nextLevel = clampLevel(currentLevel + 1);
+        levelChange = 'advance';
+        message = 'Great work. The next round will be a little more challenging.';
+      } else if (decision === 'regress') {
+        nextLevel = clampLevel(Math.max(1, currentLevel - 1));
+        levelChange = 'regress';
+        message = "We'll make the next round a little easier.";
+      } else {
+        nextLevel = currentLevel;
+        levelChange = 'stay';
+        message = "Good practice. We'll keep this level for another round.";
+      }
+
+      // Persist new level — non-fatal (session data is already safely saved)
+      try {
+        await srService.setMemoryMatchLevel(session.patientUserId, nextLevel);
+      } catch (e) {
+        console.error('[games] Failed to persist memory match level:', e);
+      }
+    }
+
+    res.json({ session, nextLevel, levelChange, message });
   };
 
   /**
    * POST /api/games/sessions/:id/complete-spaced-retrieval
-   * Complete a Spaced Retrieval session.
+   * Complete a Spaced Retrieval / My Day & People session.
    */
   completeSpacedRetrieval = async (req: Request, res: Response) => {
-    const user = req.user!;
     const sessionId = req.params.id as string;
     const dto = req.body;
 
@@ -81,7 +122,7 @@ export class GamesController {
 
   /**
    * GET /api/games/sessions?gameType=&limit=30
-   * List recent sessions.
+   * List recent sessions for the current patient (or specified patientId).
    */
   getSessions = async (req: Request, res: Response) => {
     const user = req.user!;
@@ -99,7 +140,7 @@ export class GamesController {
 
   /**
    * GET /api/games/progress?gameType=&patientId=
-   * Get aggregated progress data.
+   * Get aggregated progress data for a game type.
    */
   getProgress = async (req: Request, res: Response) => {
     const user = req.user!;
@@ -119,7 +160,7 @@ export class GamesController {
 
   /**
    * GET /api/games/progress/memory-match?patientId=
-   * Memory Match specific progress.
+   * Memory Match specific aggregated progress.
    */
   getMemoryMatchProgress = async (req: Request, res: Response) => {
     const user = req.user!;
@@ -135,7 +176,7 @@ export class GamesController {
 
   /**
    * GET /api/games/progress/spaced-retrieval?patientId=
-   * Spaced Retrieval specific progress.
+   * My Day & People specific aggregated progress.
    */
   getSpacedRetrievalProgress = async (req: Request, res: Response) => {
     const user = req.user!;

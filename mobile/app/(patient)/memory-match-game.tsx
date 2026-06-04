@@ -3,10 +3,10 @@
  * Associative Memory Matching: object-location paired-associate learning.
  * Inspired by Savulich et al. 2017.
  */
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, Alert, ActivityIndicator, SafeAreaView,
+  Animated, ActivityIndicator, SafeAreaView,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -75,31 +75,18 @@ export default function MemoryMatchGameScreen() {
     return (
       <ResultScreen
         onPlayAgain={() => {
-          const nextLevel = handleLevelAdvancement();
-          setCurrentLevel(nextLevel);
+          // nextLevel is set in the store by finishRecall after the backend responds
+          const nextLevel = store.nextLevel ?? currentLevel;
           store.reset();
+          setCurrentLevel(nextLevel);
         }}
         onExit={() => {
-          handleLevelAdvancement();
           router.back();
         }}
       />
     );
   }
   return null;
-
-  function handleLevelAdvancement() {
-    const decision = store.advanceDecision;
-    let nextLevel = currentLevel;
-    if (decision === 'advance') nextLevel = clampLevel(currentLevel + 1);
-    else if (decision === 'regress') nextLevel = clampLevel(currentLevel - 1);
-    
-    if (nextLevel !== currentLevel) {
-      const patientId = sessionStore.getState().userId || 'me';
-      spacedRetrievalApi.setMemoryMatchLevel(patientId, nextLevel).catch(() => {});
-    }
-    return nextLevel;
-  }
 }
 
 
@@ -298,10 +285,21 @@ function RecallScreen() {
     const total = questions.length;
     const correct = store.correctFirstTry;
     const incorrect = store.incorrectFirstTry;
+    // Capture answerResults synchronously before any async call
+    const answerResults = [...store.answerResults];
     const result = computeScore(correct, incorrect, total, store.responseTimesMs);
-    const decision = shouldAdvance(result.accuracyPercent, incorrect, total, true);
-    store.finishSession(result, decision);
-    // Submit to backend
+    const localDecision = shouldAdvance(result.accuracyPercent, incorrect, total, true);
+    // Compute local fallback nextLevel in case backend fails
+    const localNextLevel = localDecision === 'advance'
+      ? clampLevel(store.level + 1)
+      : localDecision === 'regress'
+        ? clampLevel(Math.max(1, store.level - 1))
+        : store.level;
+
+    // Show result screen immediately with local data
+    store.finishSession(result, localDecision, localNextLevel, localDecision);
+
+    // Submit to backend asynchronously — backend computes and persists the authoritative level
     gamesApi.completeMemoryMatch(store.sessionId!, {
       score: result.score,
       accuracyPercent: result.accuracyPercent,
@@ -313,12 +311,26 @@ function RecallScreen() {
       itemResults: questions.map((q, i) => ({
         itemIndex: i,
         prompt: `Where was the ${q.targetItem.label}?`,
-        correct: i < store.correctFirstTry,
-        firstTryCorrect: i < store.correctFirstTry,
+        // Use per-item result — fixes the bug where i < correctFirstTry was used
+        correct: answerResults[i] ?? false,
+        firstTryCorrect: answerResults[i] ?? false,
         correctAnswer: String(q.correctGridIndex),
         metadata: { objectId: q.targetItem.id, gridIndex: q.correctGridIndex },
       })),
-    }).catch(() => {});
+    }).then((res: any) => {
+      // Update store with authoritative backend level (replaces local fallback)
+      if (typeof res?.nextLevel === 'number') {
+        store.finishSession(
+          result,
+          res.levelChange ?? localDecision,
+          res.nextLevel,
+          res.levelChange ?? localDecision,
+          res.message ?? '',
+        );
+      }
+    }).catch(() => {
+      // Local fallback already applied — no further action needed
+    });
   };
 
   if (!question) return null;
@@ -363,24 +375,45 @@ function ResultScreen({ onPlayAgain, onExit }: { onPlayAgain: () => void; onExit
   const store = useMemoryMatchStore();
   const score = store.scoreResult!;
   const decision = store.advanceDecision!;
+  const nextLevel = store.nextLevel ?? store.level;
+  const levelMessage = store.levelMessage;
 
+  // Use backend-provided message, or fall back to local translation
   const getMessage = () => {
+    if (levelMessage) return levelMessage;
     if (decision === 'advance') return t('memoryMatch.advanceMsg', "Great practice! You're ready for the next level.");
     if (decision === 'stay') return t('memoryMatch.stayMsg', "Nice effort! Let's practice this level again.");
     return t('memoryMatch.regressMsg', "We'll make the next round a little easier.");
   };
 
+  const nextLevelBadgeColor = decision === 'advance'
+    ? colors.success.main
+    : decision === 'regress'
+      ? colors.warning.main
+      : colors.primary[400];
+
   return (
     <SafeAreaView style={s.safeArea}>
       <ScrollView contentContainerStyle={s.resultContainer}>
         <View style={s.resultIcon}>
-          <Ionicons name="checkmark-circle-outline" size={64} color={colors.success.main} />
+          <Ionicons
+            name={decision === 'advance' ? 'trophy-outline' : decision === 'regress' ? 'arrow-down-circle-outline' : 'checkmark-circle-outline'}
+            size={64}
+            color={decision === 'advance' ? colors.success.main : decision === 'regress' ? colors.warning.main : colors.primary[400]}
+          />
         </View>
         <Text style={s.resultTitle}>{t('memoryMatch.sessionComplete', 'Session Complete')}</Text>
         <Text style={s.resultMessage}>{getMessage()}</Text>
 
+        {/* Next level indicator */}
+        <View style={[s.nextLevelBadge, { borderColor: nextLevelBadgeColor }]}>
+          <Text style={[s.nextLevelBadgeLabel, { color: nextLevelBadgeColor }]}>
+            {t('memoryMatch.nextLevel', { level: nextLevel, defaultValue: `Next Level: ${nextLevel}` })}
+          </Text>
+        </View>
+
         <View style={s.resultCard}>
-          <StatRow label={t('memoryMatch.itemsRecalled', 'Items recalled')} value={t('memoryMatch.recalledValue', { correct: store.correctFirstTry, total: store.questions.length })} />
+          <StatRow label={t('memoryMatch.itemsRecalled', 'Items recalled')} value={`${store.correctFirstTry} / ${store.questions.length}`} />
           <StatRow label={t('memoryMatch.practiceScore', 'Practice score')} value={String(score.score)} />
           <StatRow label={t('memoryMatch.accuracy', 'Accuracy')} value={`${Math.round(score.accuracyPercent)}%`} />
           <StatRow label={t('memoryMatch.levelLabel', 'Level')} value={String(store.level)} />
@@ -494,7 +527,9 @@ const s = StyleSheet.create({
   resultContainer: { padding: spacing.xl, alignItems: 'center', paddingBottom: 48 },
   resultIcon: { marginBottom: spacing.lg },
   resultTitle: { fontSize: 26, fontWeight: '700', color: colors.neutral[800], marginBottom: spacing.sm },
-  resultMessage: { fontSize: 16, color: colors.neutral[500], textAlign: 'center', lineHeight: 24, marginBottom: spacing.xl },
+  resultMessage: { fontSize: 16, color: colors.neutral[500], textAlign: 'center', lineHeight: 24, marginBottom: spacing.md },
+  nextLevelBadge: { borderWidth: 1.5, borderRadius: radius.full ?? 24, paddingHorizontal: 18, paddingVertical: 6, marginBottom: spacing.xl },
+  nextLevelBadgeLabel: { fontSize: 14, fontWeight: '700' },
   resultCard: { width: '100%', backgroundColor: colors.surface ?? '#f0f0ee', borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md, marginBottom: spacing.xl },
   statRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   statLabel: { fontSize: 15, color: colors.neutral[600] },

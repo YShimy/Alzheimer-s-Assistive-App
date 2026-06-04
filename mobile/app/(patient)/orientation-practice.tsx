@@ -30,13 +30,6 @@ const getDefaultItems = (t: any): SRItem[] => [
   { id: 'def2', prompt: t('orientationPractice.defaults.def2.prompt', 'What month are we currently in?'), correctAnswer: new Date().toLocaleDateString(t('orientationPractice.locale', 'en-US'), { month: 'long' }), cueText: t('orientationPractice.defaults.def2.cue', 'Look at a calendar or your phone.'), category: 'ORIENTATION_DATE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
   { id: 'def3', prompt: t('orientationPractice.defaults.def3.prompt', 'Where can you find your daily reminders?'), correctAnswer: t('orientationPractice.defaults.def3.answer', 'In the Reminders section of the app'), cueText: t('orientationPractice.defaults.def3.cue', 'Tap the alarm icon at the bottom.'), category: 'APP_NAVIGATION', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
   { id: 'def4', prompt: t('orientationPractice.defaults.def4.prompt', 'What should you do if you feel unwell or need help?'), correctAnswer: t('orientationPractice.defaults.def4.answer', 'Contact your caregiver or call for help'), cueText: t('orientationPractice.defaults.def4.cue', "Your caregiver's number is in your contacts."), category: 'SAFETY_SUPPORT', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  
-  // Extra manually added items for screenshot purposes (Demo Patient 1 profile)
-  { id: 'def5', prompt: 'What is the name of your primary caregiver?', correctAnswer: 'Demo Caregiver', cueText: 'Their name is listed in your Contacts section.', category: 'PEOPLE_RECOGNITION', active: true, currentIntervalStep: 0, masteryStatus: 'MASTERED' },
-  { id: 'def6', prompt: 'Who is Dr. Sameh?', correctAnswer: 'Your Doctor', cueText: 'He checks your health every month.', category: 'PEOPLE_RECOGNITION', active: true, currentIntervalStep: 0, masteryStatus: 'STRENGTHENING' },
-  { id: 'def7', prompt: 'What is your morning routine after breakfast?', correctAnswer: 'Check reminders, then follow the morning checklist', cueText: 'Check the morning checklist in the app.', category: 'DAILY_ROUTINE', active: true, currentIntervalStep: 0, masteryStatus: 'NEW' },
-  { id: 'def8', prompt: 'Where do you live?', correctAnswer: 'Cairo, Egypt', cueText: 'Your home city.', category: 'ORIENTATION_PLACE', active: true, currentIntervalStep: 0, masteryStatus: 'MASTERED' },
-  { id: 'def9', prompt: 'Who helps you with daily medicine reminders?', correctAnswer: 'Demo Caregiver', cueText: 'Your primary caregiver.', category: 'SUPPORT_FACT', active: true, currentIntervalStep: 0, masteryStatus: 'MASTERED' },
 ];
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────

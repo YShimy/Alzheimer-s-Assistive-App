@@ -2,47 +2,29 @@ import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
 import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
 import { shapeArabicText } from 'naqqash';
-import bidiFactory from 'bidi-js';
-
-const bidi = bidiFactory();
 
 function shapeArabic(text: string | null | undefined, isAr: boolean, convertDigits = true): string {
   if (!isAr || !text) return text || '';
+  // Only apply Arabic shaping when the string actually contains Arabic characters.
+  // English-only values (scores, percentages, phone numbers) should pass through unchanged
+  // so that digit conversion and bidi reordering don't corrupt them.
+  const hasArabic = /[\u0600-\u06FF\uFE70-\uFEFF]/.test(text);
+  if (!hasArabic) return text;
+
   let arText = convertDigits
     ? text.replace(/\d+/g, (match) =>
         new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match))
       )
     : text;
-  arText = shapeArabicText(arText);
-  // Use bidi-js to compute the visual reordering for PDFKit (which renders LTR).
-  // getReorderSegments returns ranges that must be reversed in-place to produce
-  // the correct visual order when the string is drawn left-to-right.
-  const embeddingLevels = bidi.getEmbeddingLevels(arText, 'rtl');
-  const flips = bidi.getReorderSegments(arText, embeddingLevels);
-  const mirrored = bidi.getMirroredCharactersMap(arText, embeddingLevels);
-  let chars = Array.from(arText);
-  // Apply mirrored characters (e.g. parentheses swap in RTL context)
-  if (mirrored.size > 0) {
-    for (const [index, char] of mirrored.entries()) {
-      chars[index] = char;
-    }
-  }
-  // Apply segment reversals. Process from rightmost to leftmost so that
-  // splicing doesn't shift indices of earlier segments.
-  const sortedFlips = [...flips].sort((a, b) => b[0] - a[0]);
-  sortedFlips.forEach(([start, end]) => {
-    const slice = chars.slice(start, end + 1).reverse();
-    chars.splice(start, slice.length, ...slice);
-  });
-  let result = chars.join('');
-  // If bidi-js returned no segments to flip (can happen when the entire string
-  // is a single RTL run), the shaped text is still in logical order and we need
-  // to reverse the whole string so PDFKit draws it correctly right-to-left.
-  if (flips.length === 0 && /[\u0600-\u06FF\uFE70-\uFEFF]/.test(result)) {
-    result = Array.from(result).reverse().join('');
-  }
-  return result;
+
+  // naqqash.shapeArabicText converts Arabic text from logical Unicode order to
+  // the visual (presentation-forms) order needed by a LTR renderer like PDFKit.
+  // It handles both letter joining/shaping AND the overall RTL visual ordering.
+  // Do NOT apply bidi-js reordering afterwards — that would double-process the
+  // already-visualised string and produce reversed / disconnected output.
+  return shapeArabicText(arText);
 }
+
 
 const DISCLAIMER =
   'This summary is generated from app activity and caregiver-entered information. ' +
