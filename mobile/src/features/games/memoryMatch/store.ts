@@ -81,7 +81,7 @@ export const useMemoryMatchStore = create<MemoryMatchState>((set) => ({
       incorrectFirstTry: 0,
       answerResults: [],
       responseTimesMs: [],
-      questionStartTime: 0,
+      questionStartTime: Date.now(),
       scoreResult: null,
       advanceDecision: null,
       nextLevel: null,
