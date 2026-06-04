@@ -75,10 +75,18 @@ export default function MemoryMatchGameScreen() {
     return (
       <ResultScreen
         onPlayAgain={() => {
-          // nextLevel is set in the store by finishRecall after the backend responds
           const nextLevel = store.nextLevel ?? currentLevel;
           store.reset();
           setCurrentLevel(nextLevel);
+        }}
+        onNextLevel={() => {
+          // Force-advance one level regardless of backend/local decision
+          const forced = clampLevel(currentLevel + 1);
+          store.reset();
+          setCurrentLevel(forced);
+          // Persist the manually chosen level so it survives app restarts
+          const patientId = sessionStore.getState().userId || 'me';
+          spacedRetrievalApi.setMemoryMatchLevel(patientId, forced).catch(() => {});
         }}
         onExit={() => {
           router.back();
@@ -370,7 +378,11 @@ function RecallScreen() {
 }
 
 // ─── Result Screen ─────────────────────────────────────────────────────────────
-function ResultScreen({ onPlayAgain, onExit }: { onPlayAgain: () => void; onExit: () => void }) {
+function ResultScreen({ onPlayAgain, onNextLevel, onExit }: {
+  onPlayAgain: () => void;
+  onNextLevel: () => void;
+  onExit: () => void;
+}) {
   const { t } = useTranslation();
   const store = useMemoryMatchStore();
   const score = store.scoreResult!;
@@ -421,6 +433,10 @@ function ResultScreen({ onPlayAgain, onExit }: { onPlayAgain: () => void; onExit
 
         <TouchableOpacity style={s.startBtn} onPress={onPlayAgain} activeOpacity={0.85}>
           <Text style={s.startBtnText}>{t('memoryMatch.practiceAgain', 'Practice Again')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={s.nextLevelBtn} onPress={onNextLevel} activeOpacity={0.85}>
+          <Ionicons name="arrow-up-circle-outline" size={18} color={colors.success.main} />
+          <Text style={s.nextLevelBtnText}>{t('memoryMatch.tryNextLevel', 'Try Next Level')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={s.exitBtn} onPress={onExit} activeOpacity={0.85}>
           <Text style={s.exitBtnText}>{t('memoryMatch.done', 'Done')}</Text>
@@ -498,6 +514,8 @@ const s = StyleSheet.create({
   startBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
   exitBtn: { paddingVertical: 14, alignItems: 'center', width: '100%' },
   exitBtnText: { fontSize: 16, color: colors.neutral[500] },
+  nextLevelBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 14, marginBottom: 4 },
+  nextLevelBtnText: { fontSize: 15, color: colors.success.main, fontWeight: '600' },
   studyHeader: { padding: spacing.lg, paddingBottom: spacing.sm },
   studyHeaderText: { fontSize: 16, color: colors.neutral[600], textAlign: 'center', marginBottom: spacing.md },
   timerBar: { height: 6, backgroundColor: colors.neutral[200], borderRadius: 3, overflow: 'hidden', marginBottom: 4 },
