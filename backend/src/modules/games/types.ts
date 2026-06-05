@@ -117,6 +117,7 @@ export interface MemoryMatchProgress {
   highestStableLevel: number;
   averageResponseTimeMs: number;
   completionVsTarget: number;
+  averageAccuracyPercent: number;
   recentSessions: Array<{
     id: string;
     date: string;
@@ -139,6 +140,7 @@ export interface SpacedRetrievalProgress {
   needsReviewCount: number;
   learningItemCount: number;
   completionVsTarget: number;
+  averageAccuracyPercent: number;
   recentSessions: Array<{
     id: string;
     date: string;

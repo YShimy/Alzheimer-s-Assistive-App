@@ -118,14 +118,15 @@ function IntroScreen() {
 
       if (srItems.length === 0) srItems = getDefaultItems(t);
 
-      // Build caregiver SR questions (already include image fields)
-      const srQuestions = buildQuestions(srItems, supportLevel, enabledFamilies, maxQs);
+      // Build caregiver SR questions — pass a generous limit here;
+      // mergeAndLimitQuestions applies the final maxQs cap after combining with contacts
+      const srQuestions = buildQuestions(srItems, supportLevel, enabledFamilies, maxQs + 4);
 
       // Build contact-based people-recognition questions
       const allNames = gameContacts.map((c) => c.displayName);
       const contactQuestions = buildContactQuestions(gameContacts, srItems, supportLevel, allNames);
 
-      // Merge: caregiver items first, then contacts to fill remaining slots
+      // Merge: photo questions are prioritized, then capped to maxQs total
       const finalQuestions = mergeAndLimitQuestions(srQuestions, contactQuestions, maxQs);
 
       const sessionRes = await gamesApi.startSession({

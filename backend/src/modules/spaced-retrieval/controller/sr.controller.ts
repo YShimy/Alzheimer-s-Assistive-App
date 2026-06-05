@@ -115,15 +115,24 @@ export class SpacedRetrievalController {
     const patientId = raw === 'me' ? req.user!.userId : raw;
     const contacts = await srService.getGameContacts(patientId);
 
-    const result = contacts.map((c: any) => ({
-      id: c.id,
-      displayName: c.displayName,
-      relationLabel: c.memos?.[0]?.relationLabel ?? null,
-      shortMemo: c.memos?.[0]?.shortMemo ?? null,
-      photoUrl: c.memos?.[0]?.photoAsset?.publicUrl ?? null,
-      supportRole: c.memos?.[0]?.supportRole ?? null,
-      isSensitive: c.memos?.[0]?.isSensitive ?? false,
-    }));
+    const result = contacts.map((c: any) => {
+      // Pick the best memo: prefer one with a photo, then most recent
+      const memos = c.memos ?? [];
+      const bestMemo =
+        memos.find((m: any) => m.photoAsset?.publicUrl) ??
+        memos[0] ??
+        null;
+
+      return {
+        id: c.id,
+        displayName: c.displayName,
+        relationLabel: bestMemo?.relationLabel ?? null,
+        shortMemo: bestMemo?.shortMemo ?? null,
+        photoUrl: bestMemo?.photoAsset?.publicUrl ?? null,
+        supportRole: bestMemo?.supportRole ?? null,
+        isSensitive: bestMemo?.isSensitive ?? false,
+      };
+    });
 
     res.json({ contacts: result });
   };

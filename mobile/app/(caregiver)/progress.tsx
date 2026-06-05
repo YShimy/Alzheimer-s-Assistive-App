@@ -312,7 +312,7 @@ export default function CaregiverProgressScreen() {
               <View style={styles.gameStatsRow}>
                 <GameStatItem label={t('patientProgress.sessionsThisWeek', 'Sessions')} value={`${mmProgress.weeklySessionsCompleted ?? mmProgress.summary?.sessionsPlayed ?? 0}`} />
                 <GameStatItem label={t('patientProgress.highestLevel', 'Highest Level')} value={`${mmProgress.highestStableLevel ?? mmProgress.summary?.highestLevelEver ?? 1}`} />
-                <GameStatItem label={t('patientProgress.avgAccuracy', 'Avg. Accuracy')} value={`${Math.round(mmProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
+                <GameStatItem label={t('patientProgress.avgAccuracy', 'Avg. Accuracy')} value={`${Math.round(mmProgress.averageAccuracyPercent ?? mmProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
               </View>
             ) : (
               <Text style={styles.gameNoData}>{t('patientProgress.noGameDataYet', 'No sessions recorded yet.')}</Text>
@@ -336,7 +336,7 @@ export default function CaregiverProgressScreen() {
             {srProgress ? (
               <View style={styles.gameStatsRow}>
                 <GameStatItem label={t('patientProgress.sessionsThisWeek', 'Sessions')} value={`${srProgress.weeklySessionsCompleted ?? srProgress.summary?.sessionsPlayed ?? 0}`} />
-                <GameStatItem label={t('patientProgress.avgAccuracy', 'Accuracy')} value={`${Math.round(srProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
+                <GameStatItem label={t('patientProgress.avgAccuracy', 'Accuracy')} value={`${Math.round(srProgress.averageAccuracyPercent ?? srProgress.summary?.averageAccuracyPercent ?? 0)}%`} />
                 <GameStatItem label={t('patientProgress.cueUseRate', 'Hint Rate')} value={`${Math.round((srProgress.cueUseRate ?? 0) * 100)}%`} />
               </View>
             ) : (

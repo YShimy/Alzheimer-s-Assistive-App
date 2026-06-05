@@ -142,7 +142,7 @@ export class SpacedRetrievalRepo {
           patientId,
           supportLevel: 'GUIDED_SUPPORT',
           weeklyTargetSessions: 5,
-          enabledFamilies: ['ORIENTATION_DATE', 'ORIENTATION_PLACE', 'CAREGIVER', 'DAILY_ROUTINE', 'APP_NAVIGATION', 'SAFETY_SUPPORT', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+          enabledFamilies: ['ORIENTATION_DATE', 'ORIENTATION_PLACE', 'CAREGIVER', 'DAILY_ROUTINE', 'APP_NAVIGATION', 'SAFETY_SUPPORT', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT', 'OTHER'],
           includePeopleWithoutPhotos: false,
           includeSensitiveContacts: false,
           maxQuestionsPerSession: 6,
@@ -165,7 +165,7 @@ export class SpacedRetrievalRepo {
         updatedByUserId,
         supportLevel: data.supportLevel ?? 'GUIDED_SUPPORT',
         weeklyTargetSessions: data.weeklyTargetSessions ?? 5,
-        enabledFamilies: data.enabledFamilies ?? ['ORIENTATION_DATE', 'ORIENTATION_PLACE', 'CAREGIVER', 'DAILY_ROUTINE', 'APP_NAVIGATION', 'SAFETY_SUPPORT', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT'],
+        enabledFamilies: data.enabledFamilies ?? ['ORIENTATION_DATE', 'ORIENTATION_PLACE', 'CAREGIVER', 'DAILY_ROUTINE', 'APP_NAVIGATION', 'SAFETY_SUPPORT', 'PEOPLE_RECOGNITION', 'SUPPORT_FACT', 'OTHER'],
         includePeopleWithoutPhotos: data.includePeopleWithoutPhotos ?? false,
         includeSensitiveContacts: data.includeSensitiveContacts ?? false,
         maxQuestionsPerSession: data.maxQuestionsPerSession ?? 6,
@@ -208,24 +208,41 @@ export class SpacedRetrievalRepo {
   // ─── Game Contacts ──────────────────────────────────────────────────────────
 
   async getGameContacts(patientId: string, opts: { includeWithoutPhotos: boolean; includeSensitive: boolean }) {
-    return prisma.patientContact.findMany({
+    const contacts = await prisma.patientContact.findMany({
       where: {
         patientUserId: patientId,
         memos: {
           some: {
             includeInGame: true,
             ...(opts.includeSensitive ? {} : { isSensitive: false }),
+            // When includeWithoutPhotos is false, require the memo to have a photo
+            ...(!opts.includeWithoutPhotos ? { photoAssetId: { not: null } } : {}),
           },
         },
       },
       include: {
         memos: {
+          where: {
+            includeInGame: true,
+            ...(opts.includeSensitive ? {} : { isSensitive: false }),
+          },
           include: {
             photoAsset: true,
           },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });
+
+    // When includeWithoutPhotos is false, additionally filter out contacts
+    // whose matching memos all lack a photo (belt-and-suspenders guard)
+    if (!opts.includeWithoutPhotos) {
+      return contacts.filter((c: any) =>
+        c.memos.some((m: any) => m.photoAsset?.publicUrl),
+      );
+    }
+
+    return contacts;
   }
 }
 

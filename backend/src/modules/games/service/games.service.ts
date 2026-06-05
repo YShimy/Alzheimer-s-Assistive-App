@@ -138,6 +138,11 @@ export class GamesService {
       (s) => s.startedAt >= weekStart && (s.status === 'COMPLETED' || s.completed),
     ).length;
 
+    const accuracies = sessions.map((s) => s.accuracyPercent ?? 0).filter((a) => a > 0);
+    const averageAccuracyPercent = accuracies.length
+      ? Math.round(accuracies.reduce((a, b) => a + b, 0) / accuracies.length)
+      : 0;
+
     return {
       gameType: 'ASSOCIATIVE_MEMORY_MATCH',
       weeklySessionsCompleted: weeklyCompleted,
@@ -153,6 +158,7 @@ export class GamesService {
       highestStableLevel: Math.max(...sessions.map((s) => s.highestLevel ?? s.highestTierReached ?? 0), 0),
       averageResponseTimeMs: 0, // populated from metadata if available
       completionVsTarget: Math.min(1, weeklyCompleted / 3),
+      averageAccuracyPercent,
       recentSessions: sessions.slice(-10).reverse().map((s) => ({
         id: s.id,
         date: s.startedAt.toISOString().split('T')[0],
@@ -177,6 +183,11 @@ export class GamesService {
       .filter((v) => v > 0);
     const avgCueUse = cueUses.length ? cueUses.reduce((a, b) => a + b, 0) / cueUses.length : 0;
 
+    const accuracies = sessions.map((s) => s.accuracyPercent ?? 0).filter((a) => a > 0);
+    const averageAccuracyPercent = accuracies.length
+      ? Math.round(accuracies.reduce((a, b) => a + b, 0) / accuracies.length)
+      : 0;
+
     return {
       gameType: 'SPACED_RETRIEVAL_ORIENTATION',
       weeklySessionsCompleted: weeklyCompleted,
@@ -190,6 +201,7 @@ export class GamesService {
       needsReviewCount: 0,
       learningItemCount: 0,
       completionVsTarget: Math.min(1, weeklyCompleted / 7),
+      averageAccuracyPercent,
       recentSessions: sessions.slice(-10).reverse().map((s) => ({
         id: s.id,
         date: s.startedAt.toISOString().split('T')[0],

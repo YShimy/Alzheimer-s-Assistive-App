@@ -113,7 +113,11 @@ export function buildQuestions(
   }
 
   const limit = maxQuestions && maxQuestions > 0 ? maxQuestions : defaultCount;
-  const selectedItems = shuffle(filtered).slice(0, limit);
+
+  // Prioritize items with images — they should always be included
+  const withImage = shuffle(filtered.filter((i) => !!i.imageUrl || !!i.clueImageUrl));
+  const withoutImage = shuffle(filtered.filter((i) => !i.imageUrl && !i.clueImageUrl));
+  const selectedItems = [...withImage, ...withoutImage].slice(0, limit);
 
   return selectedItems.map((item) => {
     // Generate safe distractors
@@ -213,7 +217,12 @@ export function mergeAndLimitQuestions(
   maxQuestions: number,
 ): PracticeQuestion[] {
   const combined = [...srQuestions, ...contactQuestions];
-  return shuffle(combined).slice(0, maxQuestions);
+
+  // Prioritize questions with photos — they should always be included
+  const withPhoto = combined.filter((q) => !!q.imageUrl);
+  const withoutPhoto = combined.filter((q) => !q.imageUrl);
+  const prioritized = [...shuffle(withPhoto), ...shuffle(withoutPhoto)];
+  return shuffle(prioritized.slice(0, maxQuestions));
 }
 
 export function processAnswer(
