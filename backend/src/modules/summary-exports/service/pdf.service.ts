@@ -2,27 +2,45 @@ import PDFDocument from 'pdfkit';
 import { prisma } from '../../../shared/db/prisma.js';
 import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
 import { shapeArabicText } from 'naqqash';
+import {
+  isolateLtrFragments,
+  ltr,
+  formatPdfDate,
+  formatPdfDateTime,
+  formatPdfDateVerbose,
+  formatPdfNumber,
+  formatPdfPercent,
+  buildFooterString,
+} from './pdf-arabic-helpers.js';
 
-function shapeArabic(text: string | null | undefined, isAr: boolean, convertDigits = true): string {
+/**
+ * Prepare Arabic text for PDFKit (a pure LTR renderer).
+ *
+ * Pipeline:
+ *   1. isolateLtrFragments()  — wrap dates/times/numbers/English with LRI..PDI
+ *      before naqqash sees them, so they are treated as opaque LTR atoms.
+ *   2. shapeArabicText()      — shape Arabic glyphs into visual presentation form
+ *      and reorder the string so PDFKit renders it correctly right-to-left.
+ *
+ * Digit conversion (Intl.NumberFormat 'ar-EG') is intentionally removed:
+ *   Western digits (0-9) are universally readable and must survive unshaped
+ *   so that dates/percentages/scores display correctly without reversal.
+ */
+function shapeArabic(text: string | null | undefined, isAr: boolean): string {
   if (!isAr || !text) return text || '';
   // Only apply Arabic shaping when the string actually contains Arabic characters.
-  // English-only values (scores, percentages, phone numbers) should pass through unchanged
-  // so that digit conversion and bidi reordering don't corrupt them.
+  // English-only values pass through unchanged.
   const hasArabic = /[\u0600-\u06FF\uFE70-\uFEFF]/.test(text);
   if (!hasArabic) return text;
 
-  let arText = convertDigits
-    ? text.replace(/\d+/g, (match) =>
-        new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(parseInt(match))
-      )
-    : text;
+  // Step 1: Isolate LTR fragments (dates, times, numbers, English) BEFORE shaping.
+  const protected_ = isolateLtrFragments(text);
 
-  // naqqash.shapeArabicText converts Arabic text from logical Unicode order to
-  // the visual (presentation-forms) order needed by a LTR renderer like PDFKit.
-  // It handles both letter joining/shaping AND the overall RTL visual ordering.
-  // Do NOT apply bidi-js reordering afterwards — that would double-process the
-  // already-visualised string and produce reversed / disconnected output.
-  return shapeArabicText(arText);
+  // Step 2: Shape Arabic glyphs for visual LTR rendering via naqqash.
+  // naqqash handles letter joining/shaping AND overall RTL visual ordering.
+  // Do NOT apply bidi-js reordering afterwards — that would double-process
+  // the already-visualised string.
+  return shapeArabicText(protected_);
 }
 
 
@@ -195,19 +213,21 @@ const theme = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+// formatDate / formatDateTime are now provided by pdf-arabic-helpers.ts
+// Re-export as local shorthands so existing call sites don't need to change.
 function formatDate(d: Date, isAr: boolean = false): string {
-  return d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const lang = isAr ? 'ar' : 'en';
+  return formatPdfDateVerbose(d, lang);
 }
 
 function formatDateTime(d: Date, isAr: boolean = false): string {
-  return d.toLocaleString(isAr ? 'ar-EG' : 'en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  });
+  const lang = isAr ? 'ar' : 'en';
+  return formatPdfDateTime(d, lang);
 }
 
-function pct(n: number): string {
-  return `${Math.round(n * 100)}%`;
+function pct(n: number, isAr: boolean = false): string {
+  const raw = `${Math.round(n * 100)}%`;
+  return isAr ? ltr(raw) : raw;
 }
 
 // ─── Section writers ──────────────────────────────────────────────────────────
@@ -244,8 +264,10 @@ function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, valu
 
   if (isAr) {
     // For RTL: render as a single shaped line "label : value" right-aligned.
+    // The value is wrapped with LRI..PDI to ensure it renders LTR (dates, numbers, %).
     // Using continued:true in RTL causes PDFKit to lay out text LTR, so we combine into one call.
-    const combined = `${label} : ${value}`;
+    const safeValue = ltr(String(value));
+    const combined = `${label} : ${safeValue}`;
     doc.font(fontBold).fillColor(theme.text).fontSize(11).text(combined, { align: 'right' });
   } else {
     doc.font(fontReg).fillColor(theme.text_variant).fontSize(11).text(label, { continued: true, align: 'left' });
@@ -387,7 +409,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
     doc.fillColor(theme.text_variant)
       .fontSize(12)
       .font(fontReg)
-      .text(`${APP_NAME} • ${formatDate(new Date(), isAr)}`, { align });
+      .text(isAr
+        ? `${ltr(APP_NAME)} • ${formatPdfDate(new Date(), 'ar')}`
+        : `${APP_NAME} • ${formatDate(new Date())}`,
+        { align });
 
     doc.moveDown(2);
 
@@ -462,11 +487,11 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const total = fired || done + skipped + snoozed;
       const rate = total > 0 ? done / total : 0;
 
-      writeStatRow(doc, t.totalReminders, reminderStats.length, isAr);
-      writeStatRow(doc, t.completed, done, isAr);
-      writeStatRow(doc, t.snoozed, snoozed, isAr);
-      writeStatRow(doc, t.skipped, skipped, isAr);
-      writeStatRow(doc, t.completionRate, pct(rate), isAr);
+      writeStatRow(doc, t.totalReminders, formatPdfNumber(reminderStats.length, language), isAr);
+      writeStatRow(doc, t.completed, formatPdfNumber(done, language), isAr);
+      writeStatRow(doc, t.snoozed, formatPdfNumber(snoozed, language), isAr);
+      writeStatRow(doc, t.skipped, formatPdfNumber(skipped, language), isAr);
+      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100), language), isAr);
     } else if (sections.reminders) {
       writeSectionHeader(doc, `${sectionNum++}. ${t.remindersSum}`);
       doc.fillColor(theme.text_variant).font(fontReg).text(t.noReminders, { align });
@@ -479,9 +504,9 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const completed = checklistStats.filter(r => r.status === 'COMPLETED').length;
       const rate = checklistStats.length > 0 ? completed / checklistStats.length : 0;
 
-      writeStatRow(doc, t.routinesStarted, checklistStats.length, isAr);
-      writeStatRow(doc, t.routinesCompleted, completed, isAr);
-      writeStatRow(doc, t.completionRate, pct(rate), isAr);
+      writeStatRow(doc, t.routinesStarted, formatPdfNumber(checklistStats.length, language), isAr);
+      writeStatRow(doc, t.routinesCompleted, formatPdfNumber(completed, language), isAr);
+      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100), language), isAr);
 
       // Most used templates
       const templateCounts = new Map<string, number>();
@@ -525,10 +550,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const mmAvgAccuracy = mmAccuracies.length > 0 ? Math.round(mmAccuracies.reduce((a, b) => a + b, 0) / mmAccuracies.length) : 0;
         const mmMaxLevel = Math.max(...mmStats.map(g => g.highestLevel ?? g.highestTierReached ?? 0));
 
-        writeStatRow(doc, t.sessionsCompleted, mmCompleted, isAr);
-        writeStatRow(doc, t.avgScore, mmAvgScore, isAr);
-        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${mmAvgAccuracy}%`, isAr);
-        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, mmMaxLevel, isAr);
+        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(mmCompleted, language), isAr);
+        writeStatRow(doc, t.avgScore, formatPdfNumber(mmAvgScore, language), isAr);
+        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(mmAvgAccuracy, language), isAr);
+        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, formatPdfNumber(mmMaxLevel, language), isAr);
         doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
           .text(t.assocMemoryNote, { align });
         doc.moveDown(1);
@@ -548,10 +573,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const srCueUsed = srCueItems.filter((ir: any) => ir.usedCue).length;
         const srCueRate = srCueItems.length > 0 ? Math.round((srCueUsed / srCueItems.length) * 100) : 0;
 
-        writeStatRow(doc, t.sessionsCompleted, srCompleted, isAr);
-        writeStatRow(doc, t.avgScore, srAvgScore, isAr);
-        if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, `${srAvgAccuracy}%`, isAr);
-        if (srCueItems.length > 0) writeStatRow(doc, t.cueUseRate, `${srCueRate}%`, isAr);
+        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(srCompleted, language), isAr);
+        writeStatRow(doc, t.avgScore, formatPdfNumber(srAvgScore, language), isAr);
+        if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(srAvgAccuracy, language), isAr);
+        if (srCueItems.length > 0) writeStatRow(doc, t.cueUseRate, formatPdfPercent(srCueRate, language), isAr);
         doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
           .text(t.srNote, { align });
         doc.moveDown(1);
@@ -562,7 +587,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         doc.font(fontBold).fillColor(theme.text).fontSize(11).text(t.historicalData, { align });
         doc.moveDown(0.5);
         const legacyCompleted = legacyStats.filter(g => g.completed).length;
-        writeStatRow(doc, t.historicalSessions, legacyCompleted, isAr);
+        writeStatRow(doc, t.historicalSessions, formatPdfNumber(legacyCompleted, language), isAr);
         doc.moveDown(1);
       }
     } else if (sections.games) {
@@ -642,7 +667,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         .font(fontReg)
         .fillColor(theme.text_variant)
         .text(
-          `${APP_NAME} • ${t.generated} ${formatDateTime(new Date(), isAr)} • ${t.page} ${i + 1} ${t.of} ${pages.count}`,
+          buildFooterString(APP_NAME, new Date(), i + 1, pages.count, language),
           60,
           range,
           { align: 'center', width: W },

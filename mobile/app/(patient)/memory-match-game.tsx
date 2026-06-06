@@ -171,21 +171,6 @@ function StudyScreen() {
   const layout = store.layout!;
   const level = layout.level;
   const [timeLeft, setTimeLeft] = useState(level.studyTimeSeconds);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) {
-          clearInterval(timerRef.current!);
-          goNext();
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timerRef.current!);
-  }, []);
 
   const goNext = () => {
     if (level.delaySeconds > 0) {
@@ -194,6 +179,17 @@ function StudyScreen() {
       store.setPhase('recall');
     }
   };
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      goNext();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTimeLeft(t => t - 1);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
 
   const gridSize = level.gridRows * level.gridCols;
   const cells: (PlacedItem | null)[] = Array(gridSize).fill(null);
@@ -228,18 +224,15 @@ function DelayScreen() {
   const [timeLeft, setTimeLeft] = useState(delaySeconds);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) {
-          clearInterval(timer);
-          store.setPhase('recall');
-          return 0;
-        }
-        return t - 1;
-      });
+    if (timeLeft <= 0) {
+      store.setPhase('recall');
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTimeLeft(t => t - 1);
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
 
   return (
     <SafeAreaView style={s.safeArea}>
