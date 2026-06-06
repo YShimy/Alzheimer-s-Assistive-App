@@ -22,9 +22,11 @@ import type { CareLink } from '../../features/carelinks/types';
 interface Props {
   /** Shown inside the tab's list header area */
   style?: object;
+  /** Context label shown as the pill subtitle and modal title (e.g. 'Managing reminders') */
+  context?: string;
 }
 
-export function PatientSwitcher({ style }: Props) {
+export function PatientSwitcher({ style, context }: Props) {
   const { t } = useTranslation();
   const { links, selectedPatientId, selectedPatientName, selectPatient } =
     useCaregiverPatientStore();
@@ -44,7 +46,9 @@ export function PatientSwitcher({ style }: Props) {
       >
         <Ionicons name="person-circle-outline" size={20} color={colors.secondary[500]} />
         <View style={styles.pillText}>
-          <Text style={styles.pillLabel}>{t('common.managing')}</Text>
+          <Text style={styles.pillLabel}>
+            {context ?? t('common.managing')}
+          </Text>
           <Text style={styles.pillName} numberOfLines={1}>
             {selectedPatientName ?? t('auth.patient')}
           </Text>
@@ -64,7 +68,9 @@ export function PatientSwitcher({ style }: Props) {
         <View style={styles.modal}>
           <View style={styles.modalHandle} />
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{t('caregiverReminders.managingFor')}</Text>
+            <Text style={styles.modalTitle}>
+              {context ?? t('patientSwitcher.selectPatient')}
+            </Text>
             <Pressable onPress={() => setOpen(false)} style={styles.closeBtn} accessibilityLabel="Close">
               <Ionicons name="close" size={22} color={colors.neutral[600]} />
             </Pressable>

@@ -75,7 +75,7 @@ export default function CaregiverProgressScreen() {
           title={t('caregiverReminders.noPatientSelected')}
           message={t('caregiverReminders.selectPatientMsg')}
         />
-        <PatientSwitcher />
+        <PatientSwitcher context={t('patientSwitcher.managingProgress')} />
       </ScreenContainer>
     );
   }
@@ -107,7 +107,7 @@ export default function CaregiverProgressScreen() {
         <View style={styles.patientCard}>
           <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
+            <Text style={styles.patientLabel}>{t('patientSwitcher.managingProgress')}</Text>
             <Text style={styles.patientName}>
               {selectedPatientName ?? 'Patient'}
             </Text>
@@ -123,13 +123,13 @@ export default function CaregiverProgressScreen() {
       <View style={styles.patientCard}>
         <Icon name="person-circle-outline" size={28} color={colors.secondary[500]} />
         <View style={{ flex: 1 }}>
-          <Text style={styles.patientLabel}>{t('caregiverReminders.managingFor')}</Text>
+          <Text style={styles.patientLabel}>{t('patientSwitcher.managingProgress')}</Text>
           <Text style={styles.patientName}>
             {selectedPatientName ?? 'Patient'}
           </Text>
         </View>
         {links.length > 1 && (
-          <PatientSwitcher />
+          <PatientSwitcher context={t('patientSwitcher.managingProgress')} />
         )}
       </View>
 
@@ -139,7 +139,7 @@ export default function CaregiverProgressScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} colors={[colors.primary.main]} />}
       >
         <Text style={styles.headerTitle}>{t('caregiverTabs.progressHeader')}</Text>
-        <Text style={styles.headerSubtitle}>{t('caregiverReminders.managingFor')} {selectedPatientName ?? t('auth.patient')}</Text>
+        <Text style={styles.headerSubtitle}>{t('patientSwitcher.managingProgress')} — {selectedPatientName ?? t('auth.patient')}</Text>
 
         {/* PATIENT RECORDS ENTRY */}
         <AppCard

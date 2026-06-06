@@ -3,8 +3,7 @@ import { prisma } from '../../../shared/db/prisma.js';
 import { NOTO_ARABIC_REGULAR_B64, NOTO_ARABIC_BOLD_B64 } from '../../../assets/fonts/arabicFonts.js';
 import { shapeArabicText } from 'naqqash';
 import {
-  isolateLtrFragments,
-  ltr,
+  preReverseFragments,
   formatPdfDate,
   formatPdfDateTime,
   formatPdfDateVerbose,
@@ -33,14 +32,13 @@ function shapeArabic(text: string | null | undefined, isAr: boolean): string {
   const hasArabic = /[\u0600-\u06FF\uFE70-\uFEFF]/.test(text);
   if (!hasArabic) return text;
 
-  // Step 1: Isolate LTR fragments (dates, times, numbers, English) BEFORE shaping.
-  const protected_ = isolateLtrFragments(text);
+  // Step 1: Pre-reverse LTR fragments (dates, times, numbers, English) BEFORE shaping.
+  //   naqqash will reverse the entire string; pre-reversing LTR atoms means naqqash's
+  //   reversal restores them to the correct visual order.
+  const preProcessed = preReverseFragments(text);
 
   // Step 2: Shape Arabic glyphs for visual LTR rendering via naqqash.
-  // naqqash handles letter joining/shaping AND overall RTL visual ordering.
-  // Do NOT apply bidi-js reordering afterwards — that would double-process
-  // the already-visualised string.
-  return shapeArabicText(protected_);
+  return shapeArabicText(preProcessed);
 }
 
 
@@ -225,9 +223,8 @@ function formatDateTime(d: Date, isAr: boolean = false): string {
   return formatPdfDateTime(d, lang);
 }
 
-function pct(n: number, isAr: boolean = false): string {
-  const raw = `${Math.round(n * 100)}%`;
-  return isAr ? ltr(raw) : raw;
+function pct(n: number): string {
+  return `${Math.round(n * 100)}%`;
 }
 
 // ─── Section writers ──────────────────────────────────────────────────────────
@@ -264,10 +261,9 @@ function writeStatRow(doc: InstanceType<typeof PDFDocument>, label: string, valu
 
   if (isAr) {
     // For RTL: render as a single shaped line "label : value" right-aligned.
-    // The value is wrapped with LRI..PDI to ensure it renders LTR (dates, numbers, %).
-    // Using continued:true in RTL causes PDFKit to lay out text LTR, so we combine into one call.
-    const safeValue = ltr(String(value));
-    const combined = `${label} : ${safeValue}`;
+    // The combined string goes through shapeArabic → preReverseFragments, so
+    // numeric values are pre-reversed and naqqash restores them correctly.
+    const combined = shapeArabic(`${label} : ${String(value)}`, true);
     doc.font(fontBold).fillColor(theme.text).fontSize(11).text(combined, { align: 'right' });
   } else {
     doc.font(fontReg).fillColor(theme.text_variant).fontSize(11).text(label, { continued: true, align: 'left' });
@@ -410,7 +406,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       .fontSize(12)
       .font(fontReg)
       .text(isAr
-        ? `${ltr(APP_NAME)} • ${formatPdfDate(new Date(), 'ar')}`
+        ? shapeArabic(`${APP_NAME} • ${formatPdfDate(new Date())}`, true)
         : `${APP_NAME} • ${formatDate(new Date())}`,
         { align });
 
@@ -487,11 +483,11 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const total = fired || done + skipped + snoozed;
       const rate = total > 0 ? done / total : 0;
 
-      writeStatRow(doc, t.totalReminders, formatPdfNumber(reminderStats.length, language), isAr);
-      writeStatRow(doc, t.completed, formatPdfNumber(done, language), isAr);
-      writeStatRow(doc, t.snoozed, formatPdfNumber(snoozed, language), isAr);
-      writeStatRow(doc, t.skipped, formatPdfNumber(skipped, language), isAr);
-      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100), language), isAr);
+      writeStatRow(doc, t.totalReminders, formatPdfNumber(reminderStats.length), isAr);
+      writeStatRow(doc, t.completed, formatPdfNumber(done), isAr);
+      writeStatRow(doc, t.snoozed, formatPdfNumber(snoozed), isAr);
+      writeStatRow(doc, t.skipped, formatPdfNumber(skipped), isAr);
+      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100)), isAr);
     } else if (sections.reminders) {
       writeSectionHeader(doc, `${sectionNum++}. ${t.remindersSum}`);
       doc.fillColor(theme.text_variant).font(fontReg).text(t.noReminders, { align });
@@ -504,9 +500,9 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
       const completed = checklistStats.filter(r => r.status === 'COMPLETED').length;
       const rate = checklistStats.length > 0 ? completed / checklistStats.length : 0;
 
-      writeStatRow(doc, t.routinesStarted, formatPdfNumber(checklistStats.length, language), isAr);
-      writeStatRow(doc, t.routinesCompleted, formatPdfNumber(completed, language), isAr);
-      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100), language), isAr);
+      writeStatRow(doc, t.routinesStarted, formatPdfNumber(checklistStats.length), isAr);
+      writeStatRow(doc, t.routinesCompleted, formatPdfNumber(completed), isAr);
+      writeStatRow(doc, t.completionRate, formatPdfPercent(Math.round(rate * 100)), isAr);
 
       // Most used templates
       const templateCounts = new Map<string, number>();
@@ -550,10 +546,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const mmAvgAccuracy = mmAccuracies.length > 0 ? Math.round(mmAccuracies.reduce((a, b) => a + b, 0) / mmAccuracies.length) : 0;
         const mmMaxLevel = Math.max(...mmStats.map(g => g.highestLevel ?? g.highestTierReached ?? 0));
 
-        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(mmCompleted, language), isAr);
-        writeStatRow(doc, t.avgScore, formatPdfNumber(mmAvgScore, language), isAr);
-        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(mmAvgAccuracy, language), isAr);
-        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, formatPdfNumber(mmMaxLevel, language), isAr);
+        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(mmCompleted), isAr);
+        writeStatRow(doc, t.avgScore, formatPdfNumber(mmAvgScore), isAr);
+        if (mmAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(mmAvgAccuracy), isAr);
+        if (mmMaxLevel > 0) writeStatRow(doc, t.highestLevel, formatPdfNumber(mmMaxLevel), isAr);
         doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
           .text(t.assocMemoryNote, { align });
         doc.moveDown(1);
@@ -573,10 +569,10 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         const srCueUsed = srCueItems.filter((ir: any) => ir.usedCue).length;
         const srCueRate = srCueItems.length > 0 ? Math.round((srCueUsed / srCueItems.length) * 100) : 0;
 
-        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(srCompleted, language), isAr);
-        writeStatRow(doc, t.avgScore, formatPdfNumber(srAvgScore, language), isAr);
-        if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(srAvgAccuracy, language), isAr);
-        if (srCueItems.length > 0) writeStatRow(doc, t.cueUseRate, formatPdfPercent(srCueRate, language), isAr);
+        writeStatRow(doc, t.sessionsCompleted, formatPdfNumber(srCompleted), isAr);
+        writeStatRow(doc, t.avgScore, formatPdfNumber(srAvgScore), isAr);
+        if (srAvgAccuracy > 0) writeStatRow(doc, t.avgAccuracy, formatPdfPercent(srAvgAccuracy), isAr);
+        if (srCueItems.length > 0) writeStatRow(doc, t.cueUseRate, formatPdfPercent(srCueRate), isAr);
         doc.font(fontReg).fontSize(9).fillColor(theme.text_variant)
           .text(t.srNote, { align });
         doc.moveDown(1);
@@ -587,7 +583,7 @@ export async function generateSummaryPdfBuffer(opts: GeneratePdfOptions): Promis
         doc.font(fontBold).fillColor(theme.text).fontSize(11).text(t.historicalData, { align });
         doc.moveDown(0.5);
         const legacyCompleted = legacyStats.filter(g => g.completed).length;
-        writeStatRow(doc, t.historicalSessions, formatPdfNumber(legacyCompleted, language), isAr);
+        writeStatRow(doc, t.historicalSessions, formatPdfNumber(legacyCompleted), isAr);
         doc.moveDown(1);
       }
     } else if (sections.games) {

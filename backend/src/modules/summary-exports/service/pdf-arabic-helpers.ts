@@ -1,177 +1,176 @@
 /**
  * pdf-arabic-helpers.ts
  *
- * LTR-fragment isolation and date/number formatting utilities for Arabic PDF export.
+ * LTR-fragment protection and date/number formatting utilities for Arabic PDF export.
  *
- * Problem being solved:
+ * Problem:
  *   PDFKit is a pure LTR renderer. naqqash.shapeArabicText() shapes Arabic glyphs
- *   and reorders the visual string for LTR display. Embedded LTR fragments (dates,
- *   times, percentages, English words, numbers) inside Arabic lines end up visually
- *   reversed or scrambled unless explicitly isolated.
+ *   AND reverses the character order of the whole string so it displays correctly in
+ *   a left-to-right renderer. Any embedded LTR fragment (date, number, English word)
+ *   is reversed along with the Arabic, making it appear backwards in the PDF.
  *
- * Strategy:
- *   1. Use Unicode LRI (U+2066) / PDI (U+2069) directional isolates around LTR runs.
- *      These are control characters naqqash passes through unchanged.
- *   2. Apply isolation BEFORE calling naqqash.shapeArabicText() so the shaper
- *      treats isolated runs as opaque LTR atoms.
- *   3. Provide explicit date/time/number formatters so locale-based formatting
- *      cannot introduce Eastern Arabic digits or unexpected reversal.
+ *   Note: Unicode directional isolates (LRI U+2066 / PDI U+2069) do NOT work here
+ *   because naqqash treats them as regular characters and reverses them too. They also
+ *   render as visible boxes in most PDF fonts.
+ *
+ * Strategy — PRE-REVERSAL:
+ *   Since naqqash reverses every character in the string linearly, we can pre-reverse
+ *   LTR fragment character sequences BEFORE passing to naqqash. naqqash then reverses
+ *   them again → the double reversal restores the correct visual order.
+ *
+ *   Example: "نسبة: 100%"
+ *     1. Pre-reverse LTR fragments: "نسبة: %001"
+ *     2. naqqash reverses whole string: "100% :ةبسن" (Arabic shaped)
+ *     3. PDFKit renders left→right:  نسبة: 100%  ✓
+ *
+ *   IMPORTANT: Only apply preReverseFragments to Arabic-mode strings that will be
+ *   shaped by naqqash. For English-mode output, return the string unchanged.
  */
 
-// ── Unicode directional markers ──────────────────────────────────────────────
-
-/** Left-to-Right Isolate — opens a LTR directional isolate scope */
-export const LRI = '\u2066';
-/** Pop Directional Isolate — closes the most recently opened isolate scope */
-export const PDI = '\u2069';
-/** Left-to-Right Mark — a zero-width LTR marker used as a fallback */
-export const LRM = '\u200E';
-
-// ── Core isolation helpers ────────────────────────────────────────────────────
+// ── Core pre-reversal helpers ──────────────────────────────────────────────────
 
 /**
- * Wrap a value with LRI...PDI so it is rendered left-to-right inside an RTL line.
- * Preferred over ltrSafe() because directional isolates are scope-aware.
+ * Reverse a string's characters.
  */
-export function ltr(value: string | number | null | undefined): string {
-  if (value === null || value === undefined) return '';
-  return `${LRI}${String(value)}${PDI}`;
+function revStr(s: string): string {
+  return s.split('').reverse().join('');
 }
-
-/**
- * Wrap a value with LRM markers as a fallback when LRI/PDI might not be supported.
- */
-export function ltrSafe(value: string | number | null | undefined): string {
-  if (value === null || value === undefined) return '';
-  return `${LRM}${String(value)}${LRM}`;
-}
-
-// ── Auto-isolation of LTR fragments inside Arabic strings ─────────────────────
 
 /**
  * Scan `input` for LTR fragments (dates, times, percentages, numbers, English words)
- * and wrap each with LRI...PDI so they display correctly inside an RTL Arabic line.
+ * and pre-reverse each fragment's characters so that naqqash's subsequent string
+ * reversal restores them to the correct LTR visual order.
  *
- * Applied BEFORE naqqash shaping so the shaper treats these atoms as opaque.
+ * ONLY call this before passing to naqqash.shapeArabicText().
+ * Do NOT call this for English-mode strings or strings without Arabic.
  *
  * Replacement order matters — more specific patterns before more generic ones:
- *   1. Already-wrapped fragments (skip — avoid double-wrapping)
- *   2. Dates: DD/MM/YYYY or YYYY-MM-DD
- *   3. Times: HH:MM or HH:MM AM/PM
- *   4. Percentages: 100% or 88.5%
- *   5. Page expressions: Page 1 of 3
- *   6. English words/acronyms (multi-character sequences)
- *   7. Standalone numbers (after everything else so they don't pre-empt patterns above)
+ *   1. Dates: DD/MM/YYYY or YYYY-MM-DD
+ *   2. Times with AM/PM
+ *   3. Times without AM/PM (HH:MM)
+ *   4. Percentages: 88.5%
+ *   5. English multi-word phrases / acronyms (e.g. "Memory Match", "Page 1 of 3")
+ *   6. Standalone numbers
  */
-export function isolateLtrFragments(input: string): string {
+export function preReverseFragments(input: string): string {
   if (!input) return '';
 
-  // If the string has no Arabic characters, it is entirely LTR — no wrapping needed.
+  // If the string has no Arabic characters, naqqash won't reverse it — return as-is
   const hasArabic = /[\u0600-\u06FF\uFE70-\uFEFF]/.test(input);
   if (!hasArabic) return input;
 
-  // Guard: if already wrapped at the top level, skip (caller already isolated this)
-  if (input.startsWith(LRI) && input.endsWith(PDI)) return input;
+  // Patterns in priority order (most specific first).
+  // We collect ALL match positions from ALL patterns, then replace right-to-left
+  // to avoid one replacement affecting subsequent regex matches.
+  const patterns = [
+    // 1. Dates: DD/MM/YYYY, YYYY-MM-DD, DD-MM-YYYY
+    /(?<![0-9])\d{1,4}[\/\-]\d{1,2}[\/\-]\d{2,4}(?![0-9])/g,
+    // 2. Times with AM/PM (before bare times so the suffix stays attached)
+    /(?<![0-9])\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)(?![0-9A-Za-z])/g,
+    // 3. Times without AM/PM
+    /(?<![0-9])\d{1,2}:\d{2}(?![0-9A-Za-z\/\-])/g,
+    // 4. Percentages (number + %)  — must come before standalone numbers
+    /(?<![0-9])\d+(?:\.\d+)?%/g,
+    // 5. English sequences (Latin letters, digits, common punctuation, min 2 chars)
+    /[A-Za-z][A-Za-z0-9&.,:()\- ]*[A-Za-z0-9)]/g,
+    // 6. Standalone numbers — only if not already part of a pattern above
+    /(?<![0-9\u0660-\u0669])\d+(?:\.\d+)?(?![0-9%\/\-:])/g,
+  ];
 
-  // NOTE: \b (word-boundary) does not work adjacent to Arabic characters in JavaScript
-  // because Arabic code-points are not "word" characters in the \w sense. We use
-  // (?<![0-9A-Za-z\u2066]) and (?![0-9A-Za-z\u2069]) lookarounds instead, which
-  // correctly detect edges even when the neighbour is an Arabic letter or space.
+  // Collect all non-overlapping matches across all patterns
+  type Match = { start: number; end: number; text: string };
+  const matches: Match[] = [];
+  const covered = new Set<number>(); // track which positions are already matched
 
-  return input
-    // ── 1. Skip already-isolated fragments ───────────────────────────────────
-    // Fragments already wrapped with LRI..PDI won't re-match because the LRI/PDI
-    // characters break every boundary check below.
+  for (const pattern of patterns) {
+    pattern.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = pattern.exec(input)) !== null) {
+      const start = m.index;
+      const end = start + m[0].length;
+      // Skip if any position in this range is already covered
+      let overlap = false;
+      for (let i = start; i < end; i++) {
+        if (covered.has(i)) { overlap = true; break; }
+      }
+      if (!overlap) {
+        matches.push({ start, end, text: m[0] });
+        for (let i = start; i < end; i++) covered.add(i);
+      }
+    }
+  }
 
-    // ── 2. Dates ─────────────────────────────────────────────────────────────
-    // DD/MM/YYYY, YYYY-MM-DD, etc.  Lookarounds replace \b for Arabic adjacency.
-    .replace(/(?<![0-9])\d{1,4}[\/\-]\d{1,2}[\/\-]\d{2,4}(?![0-9])/g, m => `${LRI}${m}${PDI}`)
+  if (matches.length === 0) return input;
 
-    // ── 3. Times with AM/PM (must come before generic English words) ──────────
-    // Match "HH:MM AM" or "HH:MM PM" as a single atom so the AM/PM stays attached.
-    .replace(/(?<![0-9])\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)(?![0-9A-Za-z])/g, m => `${LRI}${m}${PDI}`)
-
-    // ── 4. Times without AM/PM ───────────────────────────────────────────────
-    .replace(/(?<![0-9])\d{1,2}:\d{2}(?![0-9A-Za-z])/g, m => `${LRI}${m}${PDI}`)
-
-    // ── 5. Percentages ───────────────────────────────────────────────────────
-    .replace(/(?<![0-9])\d+(?:\.\d+)?%/g, m => `${LRI}${m}${PDI}`)
-
-    // ── 6. Page expressions (before generic English to prevent "Page" being split off) ──
-    .replace(/(?<![A-Za-z\u2066])Page\s+\d+\s+of\s+\d+(?![A-Za-z\u2069])/gi, m => `${LRI}${m}${PDI}`)
-
-    // ── 7. English words / acronyms ──────────────────────────────────────────
-    // Minimum 2 ASCII chars.  trimEnd() removes trailing spaces.
-    // Already-wrapped fragments won't re-match because LRI/PDI break the char-class.
-    .replace(/[A-Za-z][A-Za-z0-9&.,:;()_\- ]*[A-Za-z0-9)]/g, m => `${LRI}${m.trimEnd()}${PDI}`)
-
-    // ── 8. Standalone numbers not already wrapped ─────────────────────────────
-    .replace(/(?<![0-9\u2066])\d+(?:\.\d+)?(?![0-9\u2069%\/\-:])/g, m => `${LRI}${m}${PDI}`);
+  // Replace right-to-left so positions stay valid
+  matches.sort((a, b) => b.start - a.start);
+  let result = input;
+  for (const { start, end, text } of matches) {
+    const reversed = text.trimEnd().split('').reverse().join('');
+    result = result.slice(0, start) + reversed + result.slice(end);
+  }
+  return result;
 }
 
-// ── Date / Time formatters ────────────────────────────────────────────────────
+// ── Date / Time formatters ─────────────────────────────────────────────────────
 
 /**
  * Format a Date as DD/MM/YYYY.
- * In Arabic mode the result is wrapped with LRI...PDI so it renders LTR.
+ * Returns a plain string regardless of language — caller passes it to preReverseFragments
+ * or naqqash as needed.
  */
-export function formatPdfDate(date: Date, language: 'en' | 'ar'): string {
+export function formatPdfDate(date: Date, _language?: 'en' | 'ar'): string {
   const day   = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year  = String(date.getFullYear());
-  const value = `${day}/${month}/${year}`;
-  return language === 'ar' ? ltr(value) : value;
+  return `${day}/${month}/${year}`;
 }
 
 /**
  * Format a Date as "DD/MM/YYYY HH:MM".
- * In Arabic mode each fragment is wrapped individually.
+ * Returns a plain string regardless of language.
  */
-export function formatPdfDateTime(date: Date, language: 'en' | 'ar'): string {
+export function formatPdfDateTime(date: Date, _language?: 'en' | 'ar'): string {
   const day     = String(date.getDate()).padStart(2, '0');
   const month   = String(date.getMonth() + 1).padStart(2, '0');
   const year    = String(date.getFullYear());
   const hours   = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
-  const dateStr = `${day}/${month}/${year}`;
-  const timeStr = `${hours}:${minutes}`;
-  if (language === 'ar') {
-    return `${ltr(dateStr)} ${ltr(timeStr)}`;
-  }
-  return `${dateStr} ${timeStr}`;
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
 /**
- * Format a Date as "DD MonthName YYYY" (verbose, English-only for non-Arabic cover page).
+ * Format a Date as "DD MonthName YYYY" (verbose, English-only for non-Arabic cover).
  * For Arabic mode falls back to formatPdfDate.
  */
 export function formatPdfDateVerbose(date: Date, language: 'en' | 'ar'): string {
-  if (language === 'ar') return formatPdfDate(date, 'ar');
+  if (language === 'ar') return formatPdfDate(date);
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 // ── Number / Percentage formatters ────────────────────────────────────────────
 
 /**
- * Format a number for PDF output.
- * In Arabic mode the result is wrapped with LRI...PDI.
+ * Format a number for PDF output. Returns a plain string.
  */
-export function formatPdfNumber(value: number | string, language: 'en' | 'ar'): string {
-  const text = String(value);
-  return language === 'ar' ? ltr(text) : text;
+export function formatPdfNumber(value: number | string): string {
+  return String(value);
 }
 
 /**
  * Format a percentage for PDF output (appends % if not already present).
- * In Arabic mode the result is wrapped with LRI...PDI.
+ * Returns a plain string.
  */
-export function formatPdfPercent(value: number | string, language: 'en' | 'ar'): string {
-  const text = String(value).includes('%') ? String(value) : `${value}%`;
-  return language === 'ar' ? ltr(text) : text;
+export function formatPdfPercent(value: number | string): string {
+  return String(value).includes('%') ? String(value) : `${value}%`;
 }
 
+// ── Footer builder ─────────────────────────────────────────────────────────────
+
 /**
- * Build a properly-isolated Arabic footer string, or a plain English footer.
+ * Build the footer string. For Arabic this is a mixed Arabic+LTR line that will be
+ * passed through preReverseFragments + naqqash in the caller (shapeArabic).
+ * For English it is returned as-is.
  *
  * Arabic:  "MemoCare • تم الإنشاء في DD/MM/YYYY HH:MM • صفحة N من T"
  * English: "MemoCare • Generated DD/MM/YYYY HH:MM • Page N of T"
@@ -183,12 +182,11 @@ export function buildFooterString(
   totalPages: number,
   language: 'en' | 'ar',
 ): string {
-  const dateTime = formatPdfDateTime(now, language);
-  const page     = formatPdfNumber(pageNum, language);
-  const total    = formatPdfNumber(totalPages, language);
+  const dateTime = formatPdfDateTime(now);
 
   if (language === 'ar') {
-    return `${ltr(appName)} • تم الإنشاء في ${dateTime} • صفحة ${page} من ${total}`;
+    // Return as a plain Arabic string — preReverseFragments will handle the LTR atoms
+    return `${appName} • تم الإنشاء في ${dateTime} • صفحة ${pageNum} من ${totalPages}`;
   }
   return `${appName} • Generated ${dateTime} • Page ${pageNum} of ${totalPages}`;
 }

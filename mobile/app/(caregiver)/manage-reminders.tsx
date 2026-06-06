@@ -270,7 +270,7 @@ export default function CaregiverRemindersScreen() {
           title={t('caregiverReminders.noPatientSelected')}
           message={t('caregiverReminders.selectPatientMsg')}
         />
-        <PatientSwitcher />
+        <PatientSwitcher context={t('patientSwitcher.managingReminders')} />
       </ScreenContainer>
     );
   }
@@ -287,7 +287,7 @@ export default function CaregiverRemindersScreen() {
         ListHeaderComponent={
           <View>
             {/* Patient switcher pill */}
-            <PatientSwitcher style={{ marginHorizontal: 0, marginTop: 0, marginBottom: spacing.md }} />
+            <PatientSwitcher context={t('patientSwitcher.managingReminders')} style={{ marginHorizontal: 0, marginTop: 0, marginBottom: spacing.md }} />
 
             {/* Create button */}
             <AppButton

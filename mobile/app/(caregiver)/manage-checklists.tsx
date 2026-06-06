@@ -322,7 +322,7 @@ export default function CaregiverChecklistScreen() {
           title={t('caregiverChecklists.noPatientSelected')}
           message={t('caregiverChecklists.selectPatientMsg')}
         />
-        <PatientSwitcher />
+        <PatientSwitcher context={t('patientSwitcher.managingChecklists')} />
       </ScreenContainer>
     );
   }
@@ -334,7 +334,7 @@ export default function CaregiverChecklistScreen() {
     <>
       <ScreenContainer scroll={false} padded={false}>
         {/* Patient switcher pill */}
-        <PatientSwitcher />
+        <PatientSwitcher context={t('patientSwitcher.managingChecklists')} />
 
         <FlatList
           data={activeTemplates}

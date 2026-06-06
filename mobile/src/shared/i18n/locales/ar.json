@@ -9,6 +9,15 @@
     "permissionRequired": "إذن مطلوب",
     "uploadFailed": "فشل الرفع"
   },
+  "patientSwitcher": {
+    "managingFor": "المريض",
+    "managingReminders": "إدارة التذكيرات",
+    "managingChecklists": "إدارة الروتين",
+    "managingProgress": "عرض التقدم",
+    "managingContacts": "إدارة جهات الاتصال",
+    "managingRecords": "إدارة السجلات",
+    "selectPatient": "اختر المريض"
+  },
   "auth": {
     "code": "الرمز",
     "login": "تسجيل الدخول",
@@ -913,6 +922,7 @@
     "title": "تصدير ملخص PDF",
     "subtitle": "إنشاء ملخص لمقدم الرعاية من التذكيرات والروتين والأنشطة والسجلات والمعلومات المهمة.",
     "description": "إنشاء ملخص لمقدم الرعاية من التذكيرات والروتين والأنشطة والسجلات والمعلومات المهمة.",
+    "language": "لغة التقرير",
     "dateRange": "النطاق الزمني",
     "last7Days": "آخر 7 أيام",
     "last30Days": "آخر 30 يوم",

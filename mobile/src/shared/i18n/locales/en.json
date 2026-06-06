@@ -9,6 +9,15 @@
     "permissionRequired": "Permission Required",
     "uploadFailed": "Upload Failed"
   },
+  "patientSwitcher": {
+    "managingFor": "Patient",
+    "managingReminders": "Managing reminders",
+    "managingChecklists": "Managing routines",
+    "managingProgress": "Viewing progress",
+    "managingContacts": "Managing contacts",
+    "managingRecords": "Managing records",
+    "selectPatient": "Select Patient"
+  },
   "auth": {
     "code": "Code",
     "login": "Login",
@@ -880,6 +889,7 @@
     "title": "Export Summary PDF",
     "subtitle": "Create a caregiver summary from reminders, routines, engagement, records, and important information.",
     "description": "Create a caregiver summary from reminders, routines, engagement, records, and important information.",
+    "language": "Export Language",
     "dateRange": "Date Range",
     "last7Days": "Last 7 days",
     "last30Days": "Last 30 days",

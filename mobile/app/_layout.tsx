@@ -12,6 +12,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 // Initialize i18n
 import '@/src/shared/i18n';
+import i18n, { setAppLanguage } from '@/src/shared/i18n';
 import { useSessionStore } from '@/src/state/sessionStore';
 import { authApi } from '@/src/features/auth/api';
 import { usePushNotifications, useNotificationListener } from '@/src/features/notifications/hooks';
@@ -47,6 +48,14 @@ export default function RootLayout() {
   // Bootstrap: restore token from SecureStore on mount
   useEffect(() => {
     bootstrap();
+    // Enforce RTL/LTR layout direction to match the saved language
+    // (i18n languageDetector is async so language may already be set by now)
+    const applyLanguage = () => setAppLanguage(i18n.language);
+    if (i18n.isInitialized) {
+      applyLanguage();
+    } else {
+      i18n.on('initialized', applyLanguage);
+    }
   }, []);
 
   // Validate token once bootstrap has found one

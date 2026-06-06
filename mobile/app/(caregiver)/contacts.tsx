@@ -276,13 +276,13 @@ export default function CaregiverContactsScreen() {
     <ScreenContainer scroll={false}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Contacts</Text>
-          <Text style={styles.headerSubtitle}>Managing contacts for {selectedPatientName ?? 'Patient'}</Text>
+          <Text style={styles.headerTitle}>{t('caregiverTabs.contactsHeader', 'Contacts')}</Text>
+          <Text style={styles.headerSubtitle}>
+            {t('patientSwitcher.managingContacts')} — {selectedPatientName ?? t('auth.patient')}
+          </Text>
         </View>
-        {links.length > 1 && (
-          <PatientSwitcher />
-        )}
       </View>
+      <PatientSwitcher context={t('patientSwitcher.managingContacts')} />
 
       <FlatList
         data={contacts}
